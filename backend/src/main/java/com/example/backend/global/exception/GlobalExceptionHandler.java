@@ -1,7 +1,7 @@
 // 예외를 잡아서 프론트가 보기 좋은 JSON으로 바꿔주는 곳
 package com.example.backend.global.exception;
 
-import com.example.backend.member.exception.MemberException;
+import com.example.backend.chld.exception.MemberException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

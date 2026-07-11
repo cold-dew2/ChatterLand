@@ -1,0 +1,44 @@
+// 프론트 요청을 받아 Service에게 전달하는 역할
+
+// 1. package
+package com.example.backend.chld.controller;
+
+// 2. import
+import com.example.backend.chld.dto.*;
+import com.example.backend.chld.service.UserService;
+import org.springframework.web.bind.annotation.*;
+
+// 3. 클래스 어노테이션
+@RestController
+@RequestMapping("/login")
+//   @RequiredArgsConstructor
+
+// 4. 클래스 선언
+public class UserController {
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    //아이디 중복확인
+    @PostMapping("/existsUserId")
+    public ExistsUserIdResponse existsUserId(@RequestBody ExistsUserIdRequest request){
+        //System.out.println("request : " + request);
+        return userService.existsUserId(request);
+    }
+
+    //회원가입
+    @PostMapping("/signup")
+    public SignupResponse signup(@RequestBody SignupRequest request){
+        //System.out.println("request : " + request);
+        return userService.signup(request);
+    }
+
+    //로그인
+    @PostMapping("/login")
+    public LoginResponse login(@RequestBody LoginRequest request){
+        //System.out.println("request : " + request);
+        return userService.login(request);
+    }
+}

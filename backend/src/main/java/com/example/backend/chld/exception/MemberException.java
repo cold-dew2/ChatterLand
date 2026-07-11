@@ -1,7 +1,7 @@
 // 회원 관련 예외 처리
 
 // 1. package
-package com.example.backend.member.exception;
+package com.example.backend.chld.exception;
 
 // 2. import
 
