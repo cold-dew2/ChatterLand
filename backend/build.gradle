@@ -22,11 +22,13 @@ dependencies {
     // Spring MVC 기반 웹 애플리케이션 개발
     // REST API(@RestController), 요청 매핑(@GetMapping),
     // JSON 변환 등을 제공
-    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 
     // JPA(Hibernate)를 사용한 데이터베이스 연동
     // @Entity, @Repository, JpaRepository 등을 사용 가능
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    //implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    //--> mybatis로 변경
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
 
     // 인증(Authentication) 및 인가(Authorization)
     // 로그인, 권한 관리, JWT 연동 시 사용
@@ -68,8 +70,6 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.7'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.7'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.7'
-
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
 }
 
 tasks.named('test') {

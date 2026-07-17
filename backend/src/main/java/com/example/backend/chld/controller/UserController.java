@@ -4,7 +4,12 @@
 package com.example.backend.chld.controller;
 
 // 2. import
-import com.example.backend.chld.dto.*;
+import com.example.backend.chld.dto.request.SignupRequest;
+import com.example.backend.chld.dto.request.ExistsUserIdRequest;
+import com.example.backend.chld.dto.request.LoginRequest;
+import com.example.backend.chld.dto.response.SignupResponse;
+import com.example.backend.chld.dto.response.ExistsUserIdResponse;
+import com.example.backend.chld.dto.response.LoginResponse;
 import com.example.backend.chld.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
