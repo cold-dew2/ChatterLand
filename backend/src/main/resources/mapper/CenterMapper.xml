@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.chld.mapper.CenterMapper">
+  <resultMap id="centerResult" type="com.example.backend.chld.dto.response.CenterResponse">
+    <constructor>
+      <arg column="center_id" javaType="java.lang.Long"/>
+      <arg column="name" javaType="string"/>
+    </constructor>
+  </resultMap>
+  <select id="findActiveCenters" resultMap="centerResult">
+    SELECT center_id,name FROM centers WHERE active=TRUE ORDER BY center_id
+  </select>
+  <select id="findActiveCenter" resultMap="centerResult">
+    SELECT center_id,name FROM centers WHERE center_id=#{centerId} AND active=TRUE
+  </select>
+</mapper>

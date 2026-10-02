@@ -1,0 +1,10 @@
+@import 'tailwindcss';
+@import '../shared/styles/variables.css';
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; margin: 0; }
+body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #b9c9f4; outline-offset: 2px; }
+::selection { color: #142c78; background: #dfe7ff; }

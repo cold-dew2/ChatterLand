@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.chld.mapper.ConsentMapper">
+  <sql id="consentColumns">
+    consent_type AS type,agreed,policy_version AS policyVersion,
+    DATE_FORMAT(agreed_at,'%Y-%m-%d %H:%i') AS agreedAt,DATE_FORMAT(withdrawn_at,'%Y-%m-%d %H:%i') AS withdrawnAt,
+    guardian_name AS guardianName,guardian_relation AS guardianRelation
+  </sql>
+  <select id="findConsents" resultType="map">
+    SELECT <include refid="consentColumns"/> FROM user_consents WHERE user_id=#{userId}
+  </select>
+  <select id="findConsent" resultType="map">
+    SELECT <include refid="consentColumns"/> FROM user_consents WHERE user_id=#{userId} AND consent_type=#{type}
+  </select>
+  <!-- 동의하면 동의 시각을 새로 기록하고, 철회하면 철회 시각을 기록한다(동의 시각 이력은 유지). -->
+  <insert id="upsertConsent">
+    INSERT INTO user_consents(user_id,consent_type,agreed,policy_version,agreed_at,withdrawn_at,guardian_name,guardian_relation)
+    VALUES(#{userId},#{type},#{agreed},#{policyVersion},
+      CASE WHEN #{agreed} THEN CURRENT_TIMESTAMP ELSE NULL END,CASE WHEN #{agreed} THEN NULL ELSE CURRENT_TIMESTAMP END,
+      #{guardianName},#{guardianRelation})
+    ON DUPLICATE KEY UPDATE
+      agreed=VALUES(agreed),policy_version=VALUES(policy_version),
+      agreed_at=CASE WHEN VALUES(agreed) THEN CURRENT_TIMESTAMP ELSE agreed_at END,
+      withdrawn_at=CASE WHEN VALUES(agreed) THEN NULL ELSE CURRENT_TIMESTAMP END,
+      guardian_name=COALESCE(VALUES(guardian_name),guardian_name),guardian_relation=COALESCE(VALUES(guardian_relation),guardian_relation)
+  </insert>
+  <select id="findUserProfile" resultType="map">
+    SELECT u.user_id AS userId,u.role,COALESCE(sp.age,u.age) AS age,sp.student_id AS studentId
+    FROM users u LEFT JOIN student_profiles sp ON sp.user_id=u.user_id WHERE u.user_id=#{userId}
+  </select>
+</mapper>

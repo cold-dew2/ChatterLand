@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.chld.mapper.TeacherMapper">
+  <select id="findStudents" resultType="map">
+    SELECT sp.student_id AS id,sp.student_id AS studentId,sp.name,sp.age,sp.parent_phone AS parentPhone,
+      sp.memo,sp.focus_areas AS focusAreas,sp.learner_type AS learnerType,
+      c.name AS centerName,
+      CASE sp.status WHEN 'ACTIVE' THEN '진행중' WHEN 'PAUSED' THEN '예정' ELSE '완료' END AS status,
+      sp.sessions_limit AS sessionsTotal,
+      COUNT(DISTINCT ts.session_id) AS sessionsScheduled,
+      COUNT(DISTINCT CASE WHEN ts.status='COMPLETED' THEN ts.session_id END) AS sessionsDone,
+      ROUND(AVG(pa.score),0) AS score,
+      DATE_FORMAT(MAX(ts.scheduled_at),'%Y-%m-%d') AS lastSession
+    FROM teacher_students relation
+    JOIN student_profiles sp ON sp.student_id=relation.student_id
+    JOIN centers c ON c.center_id=sp.center_id
+    LEFT JOIN therapy_sessions ts ON ts.student_id=sp.student_id
+    LEFT JOIN practice_attempts pa ON pa.student_id=sp.student_id
+    WHERE relation.teacher_id=#{teacherId} AND relation.status='ACTIVE'
+    <if test="keyword != null and keyword != ''">AND (sp.name LIKE CONCAT('%',#{keyword},'%') OR sp.parent_phone LIKE CONCAT('%',#{keyword},'%'))</if>
+    <if test="status != null and status != ''">
+      AND ((#{status}='진행중' AND sp.status='ACTIVE') OR (#{status}='예정' AND sp.status='PAUSED') OR (#{status}='완료' AND sp.status='COMPLETED') OR (#{status}=sp.status))
+    </if>
+    GROUP BY sp.student_id,sp.name,sp.age,sp.parent_phone,sp.memo,sp.focus_areas,sp.status,sp.learner_type,sp.sessions_limit,c.name
+    ORDER BY sp.name LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="countStudents" resultType="long">
+    SELECT COUNT(*) FROM teacher_students r JOIN student_profiles sp ON sp.student_id=r.student_id
+    WHERE r.teacher_id=#{teacherId} AND r.status='ACTIVE'
+    <if test="keyword != null and keyword != ''">AND (sp.name LIKE CONCAT('%',#{keyword},'%') OR sp.parent_phone LIKE CONCAT('%',#{keyword},'%'))</if>
+    <if test="status != null and status != ''">
+      AND ((#{status}='진행중' AND sp.status='ACTIVE') OR (#{status}='예정' AND sp.status='PAUSED') OR (#{status}='완료' AND sp.status='COMPLETED') OR (#{status}=sp.status))
+    </if>
+  </select>
+  <select id="findAvailableStudents" resultType="map">
+    SELECT sp.student_id AS studentId,sp.name,sp.age,sp.parent_phone AS parentPhone,sp.focus_areas AS focusAreas,
+      sp.sessions_limit AS sessionsTotal,sp.memo,c.name AS centerName
+    FROM student_profiles sp JOIN centers c ON c.center_id=sp.center_id
+    LEFT JOIN teacher_students ts ON ts.student_id=sp.student_id AND ts.teacher_id=#{teacherId} AND ts.status='ACTIVE'
+    WHERE sp.center_id=#{centerId} AND sp.user_id IS NOT NULL AND ts.student_id IS NULL
+    ORDER BY sp.name,sp.student_id
+  </select>
+  <select id="findStudent" resultType="map">
+    SELECT sp.student_id AS id,sp.student_id AS studentId,sp.user_id AS userId,sp.center_id AS centerId,sp.name,sp.age,
+      sp.parent_phone AS parentPhone,sp.memo,sp.focus_areas AS focusAreas,sp.learner_type AS learnerType,
+      c.name AS centerName,
+      CASE sp.status WHEN 'ACTIVE' THEN '진행중' WHEN 'PAUSED' THEN '예정' ELSE '완료' END AS status,
+      sp.sessions_limit AS sessionsTotal,
+      COUNT(DISTINCT ts.session_id) AS sessionsScheduled,
+      COUNT(DISTINCT CASE WHEN ts.status='COMPLETED' THEN ts.session_id END) AS sessionsDone,
+      ROUND(AVG(pa.score),0) AS score,DATE_FORMAT(MAX(ts.scheduled_at),'%Y-%m-%d') AS lastSession
+    FROM teacher_students r JOIN student_profiles sp ON sp.student_id=r.student_id JOIN centers c ON c.center_id=sp.center_id
+    LEFT JOIN therapy_sessions ts ON ts.student_id=sp.student_id LEFT JOIN practice_attempts pa ON pa.student_id=sp.student_id
+    WHERE r.teacher_id=#{teacherId} AND r.student_id=#{studentId} AND r.status='ACTIVE'
+    GROUP BY sp.student_id,sp.sessions_limit,c.name
+  </select>
+  <select id="findProfileById" resultType="map">
+    SELECT student_id AS studentId,center_id AS centerId,user_id AS userId,name FROM student_profiles WHERE student_id=#{studentId}
+  </select>
+  <insert id="insertStudentProfile" useGeneratedKeys="true" keyProperty="profile.studentId" keyColumn="student_id">
+    INSERT INTO student_profiles(center_id,name,age,parent_phone,memo,focus_areas,sessions_limit,status,learner_type)
+    VALUES(#{profile.centerId},#{profile.name},#{profile.age},#{profile.phone},#{profile.memo},#{profile.focusAreas},#{profile.sessionsLimit},#{profile.status},#{profile.learnerType})
+  </insert>
+  <insert id="linkStudent">
+    INSERT INTO teacher_students(teacher_id,student_id,memo) VALUES(#{teacherId},#{studentId},#{memo})
+    ON DUPLICATE KEY UPDATE status='ACTIVE',memo=VALUES(memo)
+  </insert>
+  <update id="updateStudent">
+    UPDATE student_profiles SET name=#{name},age=#{age},parent_phone=#{phone},memo=#{memo},
+      focus_areas=#{focusAreas},sessions_limit=COALESCE(#{sessionsLimit},sessions_limit),status=#{status},
+      learner_type=COALESCE(#{learnerType},learner_type)
+    WHERE student_id=#{studentId} AND EXISTS (
+      SELECT 1 FROM teacher_students WHERE teacher_id=#{teacherId} AND student_id=#{studentId} AND status='ACTIVE'
+    )
+  </update>
+  <update id="unlinkStudent">
+    UPDATE teacher_students SET status='INACTIVE' WHERE teacher_id=#{teacherId} AND student_id=#{studentId} AND status='ACTIVE'
+  </update>
+  <select id="findStudentSessions" resultType="map">
+    SELECT session_id AS sessionId,title,DATE_FORMAT(scheduled_at,'%Y-%m-%d') AS date,
+      status,(status='COMPLETED') AS done,summary
+    FROM therapy_sessions WHERE student_id=#{studentId} ORDER BY scheduled_at DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="countStudentSessions" resultType="long">SELECT COUNT(*) FROM therapy_sessions WHERE student_id=#{studentId}</select>
+  <select id="findHomeworks" resultType="map">
+    SELECT h.homework_id AS homeworkId,h.homework_id AS id,h.student_id AS studentId,sp.name AS studentName,
+      h.title,h.type,h.description,h.target_minutes AS targetMinutes,DATE_FORMAT(h.due_date,'%Y-%m-%d') AS dueDate,
+      h.status,(h.status='COMPLETED') AS done,DATE_FORMAT(h.created_at,'%Y-%m-%dT%H:%i:%s') AS createdAt
+    FROM homeworks h JOIN student_profiles sp ON sp.student_id=h.student_id
+    WHERE h.teacher_id=#{teacherId}
+    <if test="studentId != null">AND h.student_id=#{studentId}</if>
+    <if test="status != null and status != ''">AND h.status=#{status}</if>
+    ORDER BY h.due_date,h.homework_id DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="countHomeworks" resultType="long">
+    SELECT COUNT(*) FROM homeworks WHERE teacher_id=#{teacherId}
+    <if test="studentId != null">AND student_id=#{studentId}</if>
+    <if test="status != null and status != ''">AND status=#{status}</if>
+  </select>
+  <insert id="insertHomework">
+    INSERT INTO homeworks(teacher_id,student_id,title,type,description,target_minutes,due_date)
+    VALUES(#{teacherId},#{studentId},#{title},#{type},#{description},#{targetMinutes},#{dueDate})
+  </insert>
+  <select id="findLatestHomework" resultType="map">
+    SELECT h.homework_id AS homeworkId,h.homework_id AS id,h.student_id AS studentId,sp.name AS studentName,
+      h.title,h.type,h.description,h.target_minutes AS targetMinutes,DATE_FORMAT(h.due_date,'%Y-%m-%d') AS dueDate,
+      h.status,(h.status='COMPLETED') AS done
+    FROM homeworks h JOIN student_profiles sp ON sp.student_id=h.student_id
+    WHERE h.teacher_id=#{teacherId} AND h.student_id=#{studentId} AND h.title=#{title}
+    ORDER BY h.homework_id DESC LIMIT 1
+  </select>
+  <select id="findHomework" resultType="map">
+    SELECT homework_id AS homeworkId,student_id AS studentId,title,type,description,target_minutes AS targetMinutes,
+      due_date AS dueDate,status,(status='COMPLETED') AS done FROM homeworks
+    WHERE teacher_id=#{teacherId} AND homework_id=#{homeworkId}
+  </select>
+  <update id="updateHomework">
+    UPDATE homeworks SET
+      <trim suffixOverrides=",">
+        <if test="title != null">title=#{title},</if>
+        <if test="type != null">type=#{type},</if>
+        <if test="description != null">description=#{description},</if>
+        <if test="targetMinutes != null">target_minutes=#{targetMinutes},</if>
+        <if test="dueDate != null">due_date=#{dueDate},</if>
+        <if test="status != null">status=#{status},</if>
+        <if test="done != null">status=CASE WHEN #{done}=TRUE THEN 'COMPLETED' ELSE 'PENDING' END,</if>
+      </trim>
+    WHERE teacher_id=#{teacherId} AND homework_id=#{homeworkId}
+  </update>
+  <delete id="deleteHomework">DELETE FROM homeworks WHERE teacher_id=#{teacherId} AND homework_id=#{homeworkId}</delete>
+  <select id="analytics" resultType="map">
+    SELECT pa.overallScore,pa.averageMatchRate,COALESCE(pa.totalAttempts,0) AS totalAttempts,
+      COALESCE(pa.scoredAttempts,0) AS scoredAttempts,COALESCE(pa.matchedAttempts,0) AS matchedAttempts,
+      (SELECT COUNT(*) FROM speech_analyses sa WHERE sa.student_id=sp.student_id AND sa.review_status='PENDING') AS pendingReviews,
+      (SELECT COUNT(*) FROM homeworks h WHERE h.student_id=sp.student_id AND h.due_date BETWEEN #{startDate} AND #{endDate}) AS homeworkTotal,
+      (SELECT COUNT(*) FROM homeworks h WHERE h.student_id=sp.student_id AND h.due_date BETWEEN #{startDate} AND #{endDate} AND h.status='COMPLETED') AS homeworkCompleted,
+      COALESCE(ts.totalSessions,0) AS totalSessions,COALESCE(ts.completedSessions,0) AS completedSessions
+    FROM student_profiles sp
+    LEFT JOIN (
+      SELECT student_id,ROUND(AVG(score),0) AS overallScore,ROUND(AVG(match_rate),0) AS averageMatchRate,COUNT(*) AS totalAttempts,
+        COUNT(score) AS scoredAttempts,COUNT(match_rate) AS matchedAttempts
+      FROM practice_attempts WHERE created_at &gt;= #{startDate} AND created_at &lt; DATE_ADD(#{endDate},INTERVAL 1 DAY)
+      GROUP BY student_id
+    ) pa ON pa.student_id=sp.student_id
+    LEFT JOIN (
+      SELECT student_id,COUNT(*) AS totalSessions,SUM(status='COMPLETED') AS completedSessions
+      FROM therapy_sessions WHERE scheduled_at &gt;= #{startDate} AND scheduled_at &lt; DATE_ADD(#{endDate},INTERVAL 1 DAY)
+      GROUP BY student_id
+    ) ts ON ts.student_id=sp.student_id
+    WHERE sp.student_id=#{studentId}
+  </select>
+  <select id="areaAnalytics" resultType="map">
+    SELECT c.name AS label,ROUND(AVG(pa.score),0) AS score,ROUND(AVG(pa.match_rate),0) AS matchRate,COUNT(pa.attempt_id) AS attempts
+    FROM practice_categories c LEFT JOIN exercises e ON e.category_id=c.category_id
+    LEFT JOIN practice_attempts pa ON pa.exercise_id=e.exercise_id AND pa.student_id=#{studentId}
+      AND pa.created_at &gt;= #{startDate} AND pa.created_at &lt; DATE_ADD(#{endDate},INTERVAL 1 DAY)
+    WHERE c.active=TRUE GROUP BY c.category_id,c.name,c.sort_order ORDER BY c.sort_order
+  </select>
+  <select id="scoreTrend" resultType="map">
+    SELECT DATE_FORMAT(created_at,'%Y-%m-%d') AS date,ROUND(AVG(score),0) AS score,ROUND(AVG(match_rate),0) AS matchRate,COUNT(*) AS attempts
+    FROM practice_attempts WHERE student_id=#{studentId} AND created_at &gt;= #{startDate}
+      AND created_at &lt; DATE_ADD(#{endDate},INTERVAL 1 DAY)
+    GROUP BY DATE_FORMAT(created_at,'%Y-%m-%d') ORDER BY DATE_FORMAT(created_at,'%Y-%m-%d')
+  </select>
+  <sql id="analysisColumns">
+    sa.analysis_id AS analysisId,sa.student_id AS studentId,sa.exercise_id AS exerciseId,e.title AS exerciseTitle,
+      sa.item_id AS itemId,sa.status,sa.evaluation_mode AS evaluationMode,sa.target_text AS targetText,
+      sa.transcript,sa.match_rate AS matchRate,sa.comparison_json AS comparisonJson,
+      sa.recognition_confidence AS recognitionConfidence,sa.engine_name AS engineName,sa.model_name AS modelName,
+      sa.pronunciation_status AS pronunciationStatus,sa.pronunciation_score AS pronunciationScore,
+      sa.speech_rate_score AS speechRateScore,sa.fluency_score AS fluencyScore,sa.overall_score AS overallScore,
+      sa.review_status AS reviewStatus,sa.teacher_judgement AS teacherJudgement,sa.teacher_note AS teacherNote,
+      DATE_FORMAT(sa.reviewed_at,'%Y-%m-%d %H:%i') AS reviewedAt,(sa.audio_path IS NOT NULL) AS hasAudio,
+      sa.error_code AS errorCode,DATE_FORMAT(sa.created_at,'%Y-%m-%d %H:%i') AS createdAt
+  </sql>
+  <select id="findStudentAnalyses" resultType="map">
+    SELECT <include refid="analysisColumns"/>
+    FROM speech_analyses sa JOIN exercises e ON e.exercise_id=sa.exercise_id
+    WHERE sa.student_id=#{studentId} AND sa.status IN ('COMPLETED','FAILED')
+    <if test="reviewStatus != null and reviewStatus != ''">AND sa.review_status=#{reviewStatus}</if>
+    ORDER BY sa.created_at DESC,sa.analysis_id LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="findAnalysesForReport" resultType="map">
+    SELECT <include refid="analysisColumns"/>
+    FROM speech_analyses sa JOIN exercises e ON e.exercise_id=sa.exercise_id
+    WHERE sa.student_id=#{studentId} AND sa.status='COMPLETED'
+      AND sa.created_at &gt;= #{startDate} AND sa.created_at &lt; DATE_ADD(#{endDate},INTERVAL 1 DAY)
+    ORDER BY sa.created_at,sa.analysis_id LIMIT #{limit}
+  </select>
+  <select id="countStudentAnalyses" resultType="long">
+    SELECT COUNT(*) FROM speech_analyses sa WHERE sa.student_id=#{studentId} AND sa.status IN ('COMPLETED','FAILED')
+    <if test="reviewStatus != null and reviewStatus != ''">AND sa.review_status=#{reviewStatus}</if>
+  </select>
+  <select id="findAnalysisForTeacher" resultType="map">
+    SELECT <include refid="analysisColumns"/>,sa.audio_path AS audioPath,sa.audio_mime AS audioMime
+    FROM speech_analyses sa JOIN exercises e ON e.exercise_id=sa.exercise_id
+    JOIN teacher_students r ON r.student_id=sa.student_id AND r.teacher_id=#{teacherId} AND r.status='ACTIVE'
+    WHERE sa.analysis_id=#{analysisId}
+  </select>
+  <update id="reviewAnalysis">
+    UPDATE speech_analyses sa
+    JOIN teacher_students r ON r.student_id=sa.student_id AND r.teacher_id=#{teacherId} AND r.status='ACTIVE'
+    SET sa.teacher_judgement=#{judgement},sa.teacher_note=#{note},sa.review_status='REVIEWED',
+      sa.reviewed_by=#{teacherId},sa.reviewed_at=CURRENT_TIMESTAMP
+    WHERE sa.analysis_id=#{analysisId} AND sa.status='COMPLETED'
+  </update>
+</mapper>

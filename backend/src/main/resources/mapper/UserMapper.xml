@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.chld.mapper.UserMapper">
+  <select id="findByEmail" resultType="map">
+    SELECT u.user_id AS userId, u.role, u.center_id AS centerId, c.name AS centerName, u.name, u.email, u.password_hash AS passwordHash, u.status
+    FROM users u JOIN centers c ON c.center_id=u.center_id WHERE u.email = LOWER(#{email}) AND u.status = 'ACTIVE' LIMIT 1
+  </select>
+  <select id="findById" resultType="map">
+    SELECT u.user_id AS userId, u.role, u.center_id AS centerId, c.name AS centerName, u.name, u.email, u.status,
+           sp.student_id AS studentId
+    FROM users u JOIN centers c ON c.center_id=u.center_id LEFT JOIN student_profiles sp ON sp.user_id = u.user_id
+    WHERE u.user_id = #{userId} AND u.status = 'ACTIVE'
+  </select>
+  <select id="findStudentIdByUserId" resultType="long">
+    SELECT student_id FROM student_profiles WHERE user_id = #{userId}
+  </select>
+  <insert id="insertUser">
+    INSERT INTO users(role, center_id, name, email, password_hash, age, terms_agreed)
+    VALUES(#{role}, #{centerId}, #{name}, LOWER(#{email}), #{passwordHash}, #{age}, #{termsAgreed})
+  </insert>
+  <insert id="insertStudentProfile">
+    INSERT INTO student_profiles(user_id, center_id, name, age)
+    VALUES(#{userId}, #{centerId}, #{name}, #{age})
+  </insert>
+  <insert id="insertRefreshToken">
+    INSERT INTO refresh_tokens(user_id, token_hash, expires_at) VALUES(#{userId}, #{hash}, #{expiresAt})
+  </insert>
+  <select id="findActiveRefreshToken" resultType="map">
+    SELECT r.user_id AS userId, u.role FROM refresh_tokens r JOIN users u ON u.user_id = r.user_id
+    WHERE r.token_hash = #{hash} AND r.revoked_at IS NULL AND r.expires_at > CURRENT_TIMESTAMP AND u.status = 'ACTIVE'
+  </select>
+  <update id="revokeRefreshToken">
+    UPDATE refresh_tokens SET revoked_at = CURRENT_TIMESTAMP WHERE token_hash = #{hash} AND revoked_at IS NULL
+  </update>
+  <select id="findEmailsByNameCenterRole" resultType="string">
+    SELECT email FROM users WHERE name=#{name} AND center_id=#{centerId} AND role=#{role} AND status='ACTIVE' ORDER BY user_id LIMIT 5
+  </select>
+  <update id="updatePassword">
+    UPDATE users SET password_hash=#{passwordHash} WHERE user_id=#{userId} AND status='ACTIVE'
+  </update>
+  <update id="revokeAllRefreshTokens">
+    UPDATE refresh_tokens SET revoked_at=CURRENT_TIMESTAMP WHERE user_id=#{userId} AND revoked_at IS NULL
+  </update>
+</mapper>

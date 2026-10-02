@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.chld.mapper.StudentMapper">
+  <select id="findStudentByUserId" resultType="map">
+    SELECT sp.student_id AS studentId, sp.user_id AS userId, sp.center_id AS centerId, sp.name, sp.age,
+      sp.status, sp.learner_type AS learnerType,
+      (SELECT ROUND(AVG(pa.score),0) FROM practice_attempts pa WHERE pa.student_id=sp.student_id) AS overallScore,
+      (SELECT ROUND(AVG(pa.match_rate),0) FROM practice_attempts pa WHERE pa.student_id=sp.student_id) AS averageMatchRate,
+      (SELECT COUNT(*) FROM practice_attempts pa WHERE pa.student_id=sp.student_id) AS totalAttempts,
+      (SELECT COUNT(*) FROM therapy_sessions ts WHERE ts.student_id=sp.student_id AND ts.status='COMPLETED') AS completedSessions,
+      (SELECT COUNT(*) FROM therapy_sessions ts WHERE ts.student_id=sp.student_id) AS totalSessions
+    FROM student_profiles sp
+    WHERE sp.user_id=#{userId}
+  </select>
+  <select id="findActivityDates" resultType="java.time.LocalDate">
+    SELECT activity_date FROM (
+      SELECT DATE(created_at) AS activity_date FROM practice_attempts WHERE student_id=#{studentId}
+      UNION SELECT DATE(created_at) FROM conversations WHERE student_id=#{studentId}
+      UNION SELECT DATE(scheduled_at) FROM therapy_sessions WHERE student_id=#{studentId} AND status='COMPLETED'
+    ) activity_days ORDER BY activity_date DESC
+  </select>
+  <select id="findSessions" resultType="map">
+    SELECT session_id AS sessionId, title, DATE_FORMAT(scheduled_at,'%Y-%m-%dT%H:%i:%s') AS scheduledAt,
+      DATE_FORMAT(scheduled_at,'%Y-%m-%d') AS date, status, summary,
+      (status='COMPLETED') AS done
+    FROM therapy_sessions WHERE student_id=#{studentId}
+    <if test="status != null and status != ''">AND status=#{status}</if>
+    ORDER BY scheduled_at DESC, session_id DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="countSessions" resultType="long">
+    SELECT COUNT(*) FROM therapy_sessions WHERE student_id=#{studentId}
+    <if test="status != null and status != ''">AND status=#{status}</if>
+  </select>
+  <select id="findHomeworks" resultType="map">
+    SELECT homework_id AS homeworkId,homework_id AS id,title,type,description,target_minutes AS targetMinutes,
+      DATE_FORMAT(due_date,'%Y-%m-%d') AS dueDate,status,(status='COMPLETED') AS done
+    FROM homeworks WHERE student_id=#{studentId}
+    ORDER BY CASE WHEN status='COMPLETED' THEN 1 ELSE 0 END,due_date,homework_id DESC
+    LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="countHomeworks" resultType="long">
+    SELECT COUNT(*) FROM homeworks WHERE student_id=#{studentId}
+  </select>
+  <update id="completeHomework">
+    UPDATE homeworks SET status='COMPLETED'
+    WHERE student_id=#{studentId} AND homework_id=#{homeworkId} AND status&lt;&gt;'COMPLETED'
+  </update>
+  <select id="findHomework" resultType="map">
+    SELECT homework_id AS homeworkId,homework_id AS id,title,type,description,target_minutes AS targetMinutes,
+      DATE_FORMAT(due_date,'%Y-%m-%d') AS dueDate,status,(status='COMPLETED') AS done
+    FROM homeworks WHERE student_id=#{studentId} AND homework_id=#{homeworkId}
+  </select>
+  <select id="findSession" resultType="map">
+    SELECT session_id AS sessionId, title, DATE_FORMAT(scheduled_at,'%Y-%m-%dT%H:%i:%s') AS scheduledAt,
+      DATE_FORMAT(scheduled_at,'%Y-%m-%d') AS date, status, summary, (status='COMPLETED') AS done
+    FROM therapy_sessions WHERE student_id=#{studentId} AND session_id=#{sessionId}
+  </select>
+  <select id="findSessionExercises" resultType="map">
+    SELECT e.exercise_id AS exerciseId,e.exercise_id AS id,e.title,e.title AS label,e.instruction,e.input_type AS inputType,c.color
+    FROM session_exercises se JOIN exercises e ON e.exercise_id=se.exercise_id
+    JOIN practice_categories c ON c.category_id=e.category_id WHERE se.session_id=#{sessionId} ORDER BY se.sort_order
+  </select>
+  <select id="findCategories" resultType="map">
+    SELECT category_id AS id,category_id AS categoryId,name,name AS label,color,description AS `desc`
+    FROM practice_categories WHERE active=TRUE ORDER BY sort_order
+  </select>
+  <select id="findExercises" resultType="map">
+    SELECT exercise_id AS id,exercise_id AS exerciseId,title,title AS label,instruction,input_type AS inputType,c.color
+    FROM exercises e JOIN practice_categories c ON c.category_id=e.category_id
+    WHERE e.category_id=#{categoryId} AND e.active=TRUE ORDER BY e.sort_order LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="countExercises" resultType="long">SELECT COUNT(*) FROM exercises WHERE category_id=#{categoryId} AND active=TRUE</select>
+  <select id="findExercise" resultType="map">
+    SELECT exercise_id AS exerciseId,category_id AS categoryId,title,instruction,input_type AS inputType
+    FROM exercises WHERE exercise_id=#{exerciseId} AND active=TRUE
+  </select>
+  <select id="findExerciseItems" resultType="map">
+    SELECT item_id AS itemId,text_value AS word,text_value AS text,image_url AS imageUrl,emoji
+    FROM exercise_items WHERE exercise_id=#{exerciseId} ORDER BY sort_order
+  </select>
+  <select id="findExerciseItem" resultType="map">
+    SELECT item_id AS itemId,text_value AS text FROM exercise_items WHERE exercise_id=#{exerciseId} AND item_id=#{itemId}
+  </select>
+  <insert id="insertAttempt">
+    INSERT INTO practice_attempts(student_id,exercise_id,item_id,analysis_id,score,match_rate,attempt_type)
+    VALUES(#{studentId},#{exerciseId},#{itemId},#{analysisId},#{score},#{matchRate},#{type})
+    ON DUPLICATE KEY UPDATE analysis_id=VALUES(analysis_id)
+  </insert>
+  <select id="findAttemptByAnalysis" resultType="map">
+    SELECT attempt_id AS attemptId,exercise_id AS exerciseId,item_id AS itemId,score,match_rate AS matchRate,created_at AS createdAt
+    FROM practice_attempts WHERE student_id=#{studentId} AND analysis_id=#{analysisId}
+  </select>
+  <select id="findHistory" resultType="map">
+    SELECT * FROM (
+      SELECT pa.attempt_id AS id,'word' AS type,e.title AS title,pa.score AS score,pa.match_rate AS matchRate,
+        DATE_FORMAT(pa.created_at,'%Y-%m-%d %H:%i') AS date,pa.created_at AS sortDate
+      FROM practice_attempts pa JOIN exercises e ON e.exercise_id=pa.exercise_id WHERE pa.student_id=#{studentId}
+      UNION ALL
+      SELECT h.homework_id AS id,'hw' AS type,h.title AS title,NULL AS score,NULL AS matchRate,
+        DATE_FORMAT(h.due_date,'%Y-%m-%d') AS date,h.created_at AS sortDate
+      FROM homeworks h WHERE h.student_id=#{studentId}
+      UNION ALL
+      SELECT c.conversation_id AS id,'ai' AS type,CONCAT(c.topic,' 대화') AS title,NULL AS score,NULL AS matchRate,
+        DATE_FORMAT(c.updated_at,'%Y-%m-%d %H:%i') AS date,c.updated_at AS sortDate
+      FROM conversations c WHERE c.student_id=#{studentId}
+    ) h
+    <if test="type == 'ai'">WHERE type='ai'</if>
+    <if test="type == 'word'">WHERE type='word'</if>
+    <if test="type == 'hw'">WHERE type='hw'</if>
+    ORDER BY sortDate DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="countHistory" resultType="long">
+    SELECT SUM(cnt) FROM (
+      SELECT COUNT(*) cnt FROM practice_attempts WHERE student_id=#{studentId} AND (#{type} IS NULL OR #{type}='' OR #{type}='word')
+      UNION ALL SELECT COUNT(*) FROM conversations WHERE student_id=#{studentId} AND (#{type} IS NULL OR #{type}='' OR #{type}='ai')
+      UNION ALL SELECT COUNT(*) FROM homeworks WHERE student_id=#{studentId} AND (#{type} IS NULL OR #{type}='' OR #{type}='hw')
+    ) counts
+  </select>
+  <insert id="insertAnalysis">
+    INSERT INTO speech_analyses(analysis_id,student_id,exercise_id,item_id,audio_path,audio_mime,status,
+      evaluation_mode,target_text,engine_name,model_name,audio_expires_at)
+    VALUES(#{id},#{studentId},#{exerciseId},#{itemId},#{audioPath},#{mime},'PROCESSING',
+      #{evaluationMode},#{targetText},#{engineName},#{modelName},DATE_ADD(CURRENT_TIMESTAMP, INTERVAL #{retentionMonths} MONTH))
+  </insert>
+  <update id="completeAnalysis">
+    UPDATE speech_analyses SET status='COMPLETED',pronunciation_score=#{pronunciation},speech_rate_score=#{rate},
+      fluency_score=#{fluency},overall_score=#{overall},transcript=#{transcript},feedback=#{feedback},completed_at=CURRENT_TIMESTAMP
+    WHERE analysis_id=#{id}
+  </update>
+  <update id="completeLocalAnalysis">
+    UPDATE speech_analyses SET status='COMPLETED',transcript=#{transcript},recognition_confidence=#{confidence},
+      match_rate=#{matchRate},comparison_json=#{comparisonJson},pronunciation_status=#{pronunciationStatus},
+      review_status=#{reviewStatus},engine_name=#{engineName},model_name=#{modelName},completed_at=CURRENT_TIMESTAMP
+    WHERE analysis_id=#{id} AND status='PROCESSING'
+  </update>
+  <update id="markAudioDeleted">
+    UPDATE speech_analyses SET audio_path=NULL,audio_deleted_at=CURRENT_TIMESTAMP WHERE analysis_id=#{id}
+  </update>
+  <update id="failAnalysis">UPDATE speech_analyses SET status='FAILED',error_code=#{code},completed_at=CURRENT_TIMESTAMP WHERE analysis_id=#{id}</update>
+  <select id="findAnalysis" resultType="map">
+    SELECT analysis_id AS analysisId,analysis_id AS audioId,exercise_id AS exerciseId,item_id AS itemId,status,pronunciation_score AS pronunciationScore,
+      speech_rate_score AS speechRateScore,fluency_score AS fluencyScore,overall_score AS overallScore,
+      overall_score AS score,transcript,feedback,created_at AS createdAt,error_code AS errorCode,
+      evaluation_mode AS evaluationMode,target_text AS targetText,match_rate AS matchRate,comparison_json AS comparisonJson,
+      recognition_confidence AS recognitionConfidence,engine_name AS engineName,model_name AS modelName,
+      pronunciation_status AS pronunciationStatus,review_status AS reviewStatus,teacher_judgement AS teacherJudgement,
+      teacher_note AS teacherNote,reviewed_at AS reviewedAt
+    FROM speech_analyses WHERE student_id=#{studentId} AND analysis_id=#{id}
+  </select>
+  <insert id="createConversation">
+    INSERT INTO conversations(conversation_id,student_id,topic) VALUES(#{id},#{studentId},#{topic})
+  </insert>
+  <select id="findConversation" resultType="map">
+    SELECT conversation_id AS conversationId,student_id AS studentId,topic,status,created_at AS createdAt
+    FROM conversations WHERE conversation_id=#{id} AND student_id=#{studentId}
+  </select>
+  <select id="findConversations" resultType="map">
+    SELECT c.conversation_id AS conversationId,c.topic,c.status,c.created_at AS createdAt,c.updated_at AS updatedAt,
+      (SELECT content FROM conversation_messages m WHERE m.conversation_id=c.conversation_id ORDER BY m.message_id DESC LIMIT 1) AS lastMessage
+    FROM conversations c WHERE c.student_id=#{studentId} ORDER BY c.updated_at DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="countConversations" resultType="long">SELECT COUNT(*) FROM conversations WHERE student_id=#{studentId}</select>
+  <insert id="insertMessage">
+    INSERT INTO conversation_messages(conversation_id,speaker,content,feedback,audio_path)
+    VALUES(#{conversationId},#{speaker},#{content},#{feedback},#{audioPath})
+  </insert>
+  <select id="findRecentMessages" resultType="map">
+    SELECT speaker,content,feedback,created_at AS createdAt FROM (
+      SELECT message_id,speaker,content,feedback,created_at FROM conversation_messages
+      WHERE conversation_id=#{conversationId} ORDER BY message_id DESC LIMIT #{limit}
+    ) recent ORDER BY message_id ASC
+  </select>
+  <update id="closeConversation">UPDATE conversations SET status='CLOSED' WHERE conversation_id=#{id} AND student_id=#{studentId}</update>
+  <update id="touchConversation">UPDATE conversations SET updated_at=CURRENT_TIMESTAMP WHERE conversation_id=#{id}</update>
+</mapper>

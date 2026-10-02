@@ -1,24 +1,27 @@
 package com.example.backend.chld.mapper;
 
-import com.example.backend.chld.dto.request.LoginRequest;
-import com.example.backend.chld.dto.request.SignupRequest;
-import com.example.backend.chld.dto.response.LoginResponse;
-import com.example.backend.chld.dto.response.SignupResponse;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Mapper
 public interface UserMapper {
-    //아이디 중복 확인
-    int existsUserId(String userId);
-
-    //회원가입
-    List<Map<String, String>> insertUser(SignupRequest request);
-    SignupResponse insertUserCenter(SignupRequest request);
-
-    //로그인
-    LoginRequest login(LoginRequest request);
-    LoginResponse insertUserHist(LoginRequest request);
+    Map<String, Object> findByEmail(@Param("email") String email);
+    Map<String, Object> findById(@Param("userId") long userId);
+    Long findStudentIdByUserId(@Param("userId") long userId);
+    int insertUser(@Param("role") String role, @Param("centerId") long centerId,
+                   @Param("name") String name, @Param("email") String email,
+                   @Param("passwordHash") String passwordHash, @Param("age") Integer age,
+                   @Param("termsAgreed") boolean termsAgreed);
+    int insertStudentProfile(@Param("userId") long userId, @Param("centerId") long centerId,
+                             @Param("name") String name, @Param("age") Integer age);
+    int insertRefreshToken(@Param("userId") long userId, @Param("hash") String hash,
+                           @Param("expiresAt") LocalDateTime expiresAt);
+    Map<String, Object> findActiveRefreshToken(@Param("hash") String hash);
+    int revokeRefreshToken(@Param("hash") String hash);
+    java.util.List<String> findEmailsByNameCenterRole(@Param("name") String name, @Param("centerId") long centerId, @Param("role") String role);
+    int updatePassword(@Param("userId") long userId, @Param("passwordHash") String passwordHash);
+    int revokeAllRefreshTokens(@Param("userId") long userId);
 }

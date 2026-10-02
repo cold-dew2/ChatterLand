@@ -1,0 +1,170 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Clock, Home, User } from "lucide-react";
+import { authApi } from "@/features/auth/api/authApi";
+import { studentApi } from "@/features/student/api/studentApi";
+import AiChatScreen from "@/features/student/components/AiChatScreen";
+import AiTopicScreen from "@/features/student/components/AiTopicScreen";
+import PracticeCategoryScreen from "@/features/student/components/PracticeCategoryScreen";
+import PracticeListScreen from "@/features/student/components/PracticeListScreen";
+import PracticeResultScreen from "@/features/student/components/PracticeResultScreen";
+import PracticeTypeScreen from "@/features/student/components/PracticeTypeScreen";
+import SessionExercisesScreen from "@/features/student/components/SessionExercisesScreen";
+import SessionListScreen from "@/features/student/components/SessionListScreen";
+import SpeechActivityScreen from "@/features/student/components/SpeechActivityScreen";
+import StudentHistoryScreen from "@/features/student/components/StudentHistoryScreen";
+import StudentHomeScreen from "@/features/student/components/StudentHomeScreen";
+import StudentHomeworkScreen from "@/features/student/components/StudentHomeworkScreen";
+import StudentMyPageScreen from "@/features/student/components/StudentMyPageScreen";
+import { useStudentHome } from "@/features/student/hooks/useStudentHome";
+import type { AppScreen, Exercise, ExerciseResult, PracticeCategory, Session } from "@/features/student/types";
+import { mapSession } from "@/features/student/utils/mappers";
+import { clearAuth } from "@/shared/api/client";
+import PageLayout from "@/layouts/components/PageLayout";
+
+function initialStudentScreen(route: string, sessionId?: string): AppScreen {
+  if (route === "practice") return { kind: "practice-type" };
+  if (route === "ai-chat") return { kind: "ai-chat", topic: "오늘의 기분" };
+  if (route === "sessions") return { kind: "session-list" };
+  if (route === "session-detail") return { kind: "session-exercises", session: { id: sessionId ?? "", title: "세션", date: "", done: false, exercises: [] } };
+  if (route === "history") return { kind: "tabs", tab: "history" };
+  if (route === "mypage") return { kind: "tabs", tab: "mypage" };
+  return { kind: "tabs", tab: "home" };
+}
+
+// ── Main ──────────────────────────────────────────────────────────────────────
+
+export default function StudentPage({ initialRoute = "home", sessionId }: { initialRoute?: string; sessionId?: string }) {
+  const router = useRouter();
+  const [screen, setScreen] = useState<AppScreen>(() => initialStudentScreen(initialRoute, sessionId));
+  const home = useStudentHome();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  useEffect(() => {
+    if (initialRoute !== "session-detail" || !sessionId) return;
+    studentApi.session(sessionId).then((result) => {
+      const payload = result as Record<string, unknown>;
+      const detail = payload.session && typeof payload.session === "object" ? payload.session as Record<string, unknown> : payload;
+      setScreen({ kind: "session-exercises", session: mapSession({ ...detail, sessionId: detail.sessionId ?? sessionId }) });
+    }).catch(() => setScreen({ kind: "session-list" }));
+  }, [initialRoute, sessionId]);
+
+  const goHome = () => { setScreen({ kind: "tabs", tab: "home" }); home.reload(); };
+  const logout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try { await authApi.logout(); } catch { /* always clear the local session */ } finally { clearAuth(); router.push("/"); }
+  };
+
+  const handleActivityComplete = (exercises: Exercise[], session: Session | null, category: PracticeCategory | null) =>
+    (exIdx: number, previous: ExerciseResult[], result: ExerciseResult) => {
+      const results = [...previous, result];
+      if (exIdx + 1 >= exercises.length) {
+        if (session) setScreen({ kind: "session-result", session, results });
+        else if (category) setScreen({ kind: "practice-result", category, results });
+      } else {
+        if (session) setScreen({ kind: "activity", session, exIdx: exIdx + 1, results });
+        else if (category) setScreen({ kind: "practice-activity", category, exIdx: exIdx + 1, results });
+      }
+    };
+
+  return <PageLayout bottomNav={screen.kind === "tabs" ? renderNav(screen.tab) : undefined}>{renderScreen()}</PageLayout>;
+
+  function renderNav(tab: "home" | "history" | "mypage") {
+    const navTabs = [
+      { id: "home" as const, label: "홈", icon: Home },
+      { id: "history" as const, label: "히스토리", icon: Clock },
+      { id: "mypage" as const, label: "마이페이지", icon: User },
+    ];
+    return (
+      <nav aria-label="학생 메뉴" className="flex border-t border-gray-100 bg-white">
+        {navTabs.map((t) => {
+          const active = tab === t.id;
+          return (
+            <button type="button" key={t.id} onClick={() => setScreen({ kind: "tabs", tab: t.id })} aria-current={active ? "page" : undefined}
+              className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium transition-colors
+                ${active ? "text-blue-700" : "text-gray-400 hover:text-gray-600"}`}>
+              <t.icon size={20} aria-hidden="true" />
+              {t.label}
+            </button>
+          );
+        })}
+      </nav>
+    );
+  }
+
+  function renderScreen() {
+  // Full-screen flows
+  if (screen.kind === "ai-chat") {
+    return <AiChatScreen topic={screen.topic} onBack={() => setScreen({ kind: "ai-topic" })} onOpenConsent={() => setScreen({ kind: "tabs", tab: "mypage" })} />;
+  }
+  if (screen.kind === "ai-topic") {
+    return <AiTopicScreen onBack={() => setScreen({ kind: "practice-type" })} onSelect={(topic) => setScreen({ kind: "ai-chat", topic })} />;
+  }
+  if (screen.kind === "practice-type") {
+    return (
+      <PracticeTypeScreen
+        onBack={() => setScreen({ kind: "tabs", tab: "home" })}
+        onSelect={(type) => {
+          if (type === "ai") setScreen({ kind: "ai-topic" });
+          else setScreen({ kind: "practice-list" });
+        }}
+      />
+    );
+  }
+  if (screen.kind === "practice-list") {
+    return <PracticeListScreen onBack={() => setScreen({ kind: "practice-type" })}
+      onSelect={(cat) => setScreen({ kind: "practice-cat", category: cat })} />;
+  }
+  if (screen.kind === "practice-cat") {
+    return <PracticeCategoryScreen category={screen.category}
+      onBack={() => setScreen({ kind: "practice-list" })}
+      onSelect={(i, exercises) => setScreen({ kind: "practice-activity", category: { ...screen.category, exercises }, exIdx: i, results: [] })} />;
+  }
+  if (screen.kind === "practice-activity") {
+    const { category, exIdx, results } = screen;
+    return <SpeechActivityScreen key={`${category.id}-${exIdx}`} onOpenConsent={() => setScreen({ kind: "tabs", tab: "mypage" })} exercises={category.exercises} exIdx={exIdx}
+      onBack={() => exIdx === 0 ? setScreen({ kind: "practice-cat", category }) : setScreen({ kind: "practice-activity", category, exIdx: exIdx - 1, results: results.slice(0, -1) })}
+      onComplete={(result) => handleActivityComplete(category.exercises, null, category)(exIdx, results, result)} />;
+  }
+  if (screen.kind === "practice-result") {
+    return <PracticeResultScreen title={screen.category.label} results={screen.results} onClose={goHome} />;
+  }
+  if (screen.kind === "session-list") {
+    return <SessionListScreen onBack={() => setScreen({ kind: "tabs", tab: "home" })}
+      onSelect={(s) => setScreen({ kind: "session-exercises", session: s })} />;
+  }
+  if (screen.kind === "homework-list") {
+    return <StudentHomeworkScreen onBack={goHome} onStartPractice={() => setScreen({ kind: "practice-type" })}
+      onCompleteHomework={home.markHomeworkDone} />;
+  }
+  if (screen.kind === "session-exercises") {
+    return <SessionExercisesScreen session={screen.session}
+      onBack={() => setScreen({ kind: "session-list" })}
+      onSelect={(i) => setScreen({ kind: "activity", session: screen.session, exIdx: i, results: [] })} />;
+  }
+  if (screen.kind === "activity") {
+    const { session, exIdx, results } = screen;
+    return <SpeechActivityScreen key={`${session.id}-${exIdx}`} onOpenConsent={() => setScreen({ kind: "tabs", tab: "mypage" })} exercises={session.exercises} exIdx={exIdx}
+      onBack={() => exIdx === 0 ? setScreen({ kind: "session-exercises", session }) : setScreen({ kind: "activity", session, exIdx: exIdx - 1, results: results.slice(0, -1) })}
+      onComplete={(result) => handleActivityComplete(session.exercises, session, null)(exIdx, results, result)} />;
+  }
+  if (screen.kind === "session-result") {
+    return <PracticeResultScreen title={screen.session.title} results={screen.results} onClose={goHome} />;
+  }
+
+  const { tab } = screen;
+  return (
+    <main className="flex-1 overflow-y-auto [scrollbar-width:none]">
+      {tab === "home" && (
+        <StudentHomeScreen student={home.student} nextSession={home.nextSession} homeworks={home.homeworks} homeworkState={home.homeworkState}
+          profileState={home.profileState} recent={home.recent} recentState={home.recentState} onRetry={home.reload} onNavigate={(target) => setScreen(target)} />
+      )}
+      {tab === "history" && <StudentHistoryScreen />}
+      {tab === "mypage" && <StudentMyPageScreen student={home.student} loggingOut={loggingOut} onLogout={() => void logout()} />}
+    </main>
+  );
+  }
+}
