@@ -37,7 +37,11 @@ public class StudentController {
     @PostMapping("/practice/attempts") public Map<String,Object> attempt(@AuthenticationPrincipal TokenPrincipal principal,@Valid @RequestBody AttemptRequest request) { return students.saveAttempt(principal,request); }
     @PostMapping(value="/speech/analyze",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
     public Map<String,Object> analyze(@AuthenticationPrincipal TokenPrincipal principal,@RequestPart("audio") MultipartFile audio,
-            @RequestPart("exerciseId") @NotBlank String exerciseId,@RequestPart("itemId") @NotBlank String itemId) { return students.analyzeSpeech(principal,audio,exerciseId,itemId); }
+            @RequestPart("exerciseId") @NotBlank String exerciseId,@RequestPart("itemId") @NotBlank String itemId,
+            @RequestHeader(value="Idempotency-Key",required=false) String requestKey) { return students.analyzeSpeech(principal,audio,exerciseId,itemId,requestKey); }
+    /** AI 학습 피드백(점수가 아닌 설명). GET은 저장된 상태만, POST는 근거가 충분할 때 생성한다. */
+    @GetMapping("/speech/analyses/{analysisId}/feedback") public Map<String,Object> analysisFeedback(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable String analysisId) { return students.speechFeedback(principal,analysisId); }
+    @PostMapping("/speech/analyses/{analysisId}/feedback") public Map<String,Object> generateAnalysisFeedback(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable String analysisId) { return students.generateSpeechFeedback(principal,analysisId); }
     @GetMapping("/speech/analyses/{analysisId}") public Map<String,Object> analysis(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable String analysisId) { return students.speechAnalysis(principal,analysisId); }
     @PostMapping("/ai/conversations") public Map<String,Object> createConversation(@AuthenticationPrincipal TokenPrincipal principal,@Valid @RequestBody ConversationRequest request) { return students.createConversation(principal,request.topic()); }
     @PostMapping(value="/ai/conversations/{conversationId}/messages",consumes=MediaType.APPLICATION_JSON_VALUE)

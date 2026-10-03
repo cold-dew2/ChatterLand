@@ -37,7 +37,13 @@ public interface StudentMapper {
                        @Param("itemId") String itemId, @Param("audioPath") String audioPath, @Param("mime") String mime,
                        @Param("evaluationMode") String evaluationMode, @Param("targetText") String targetText,
                        @Param("engineName") String engineName, @Param("modelName") String modelName,
-                       @Param("retentionMonths") int retentionMonths);
+                       @Param("retentionMonths") int retentionMonths, @Param("requestKey") String requestKey,
+                       @Param("requestHash") String requestHash);
+    Map<String,Object> findAnalysisByRequestKey(@Param("studentId") long studentId, @Param("requestKey") String requestKey);
+    List<Map<String,Object>> findStaleProcessingAnalyses(@Param("staleSeconds") long staleSeconds, @Param("limit") int limit);
+    int failStaleAnalysis(@Param("id") String id, @Param("staleSeconds") long staleSeconds);
+    /** 분석의 오류 코드(늦게 끝난 분석이 이미 STALE_PROCESSING으로 정리됐는지 확인용) */
+    String findAnalysisErrorCode(@Param("analysisId") String analysisId);
     int completeAnalysis(@Param("id") String id, @Param("pronunciation") BigDecimal pronunciation,
                          @Param("rate") BigDecimal rate, @Param("fluency") BigDecimal fluency,
                          @Param("overall") BigDecimal overall, @Param("transcript") String transcript,
@@ -46,7 +52,12 @@ public interface StudentMapper {
                               @Param("confidence") BigDecimal confidence, @Param("matchRate") BigDecimal matchRate,
                               @Param("comparisonJson") String comparisonJson, @Param("pronunciationStatus") String pronunciationStatus,
                               @Param("reviewStatus") String reviewStatus, @Param("engineName") String engineName,
-                              @Param("modelName") String modelName);
+                              @Param("modelName") String modelName, @Param("analysisType") String analysisType,
+                              @Param("assessmentStatus") String assessmentStatus, @Param("assessmentJson") String assessmentJson,
+                              @Param("analysisVersion") String analysisVersion);
+    List<Map<String,Object>> findRecentItemAnalyses(@Param("studentId") long studentId, @Param("exerciseId") long exerciseId,
+                                                    @Param("itemId") String itemId, @Param("excludeId") String excludeId,
+                                                    @Param("limit") int limit);
     int markAudioDeleted(@Param("id") String id);
     int failAnalysis(@Param("id") String id, @Param("code") String code);
     Map<String,Object> findAnalysis(@Param("studentId") long studentId, @Param("id") String id);

@@ -12,10 +12,10 @@ import MenuCard from "@/shared/components/menuCard/MenuCard";
 
 const historyTypeLabel: Record<HistoryItem["type"], string> = { ai: "AI 대화", word: "말하기 연습", hw: "숙제" };
 
-/** 저장된 값만 보여준다: 외부 분석 점수 > 문장 일치도 > 없음 */
+/** 저장된 값만 보여준다: 외부 분석 점수 > 텍스트 일치율 > 없음 */
 function recentResult(item: HistoryItem) {
   if (item.score !== null) return `${item.score}점`;
-  if (item.matchRate !== null) return `일치도 ${Math.round(item.matchRate)}%`;
+  if (item.matchRate !== null) return `텍스트 일치율 ${Math.round(item.matchRate)}%`;
   return item.type === "word" ? "미평가" : "";
 }
 
@@ -68,7 +68,7 @@ export default function StudentHomeScreen({ onNavigate, student, nextSession, ho
 
       {profileState === "ready" && <div className="grid grid-cols-3 gap-2 px-5 pb-5">
         {[
-          { label: "평균 문장 일치도", value: student.averageMatchRate === null ? "기록 없음" : `${student.averageMatchRate}%`, sub: `연습 ${student.totalAttempts}회`, icon: "✦", tint: "bg-blue-50 text-blue-700" },
+          { label: "평균 텍스트 일치율", value: student.averageMatchRate === null ? "기록 없음" : `${student.averageMatchRate}%`, sub: `연습 ${student.totalAttempts}회`, icon: "✦", tint: "bg-blue-50 text-blue-700" },
           { label: "완료 세션", value: `${student.sessionsDone}/${student.sessionsTotal}`, icon: "✓", tint: "bg-green-50 text-green-700" },
           { label: "연속 학습", value: `${student.streak}일`, icon: "🌱", tint: "bg-amber-50 text-amber-700" },
         ].map((stat) => (

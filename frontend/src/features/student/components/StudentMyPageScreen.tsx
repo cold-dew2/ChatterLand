@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Bell, MessageSquare, User } from "lucide-react";
 import { authApi } from "@/features/auth/api/authApi";
+import ChangePasswordForm from "@/features/auth/components/ChangePasswordForm";
 import ConsentManager from "@/features/consent/components/ConsentManager";
 import type { StudentSummary } from "@/features/student/types";
 import Badge from "@/shared/components/badge/Badge";
@@ -51,6 +52,11 @@ export default function StudentMyPageScreen({ onLogout, student, loggingOut }: {
       </Card>
 
       <ConsentManager />
+
+      <Card padding="lg" className="space-y-3">
+        <h2 className="text-sm font-bold text-gray-800">비밀번호 변경</h2>
+        <ChangePasswordForm />
+      </Card>
 
       <Button variant="line" fullWidth loading={loggingOut} loadingLabel="로그아웃 중…" onClick={onLogout} className="py-3.5 rounded-2xl">
         로그아웃

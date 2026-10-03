@@ -116,7 +116,8 @@ public class AccountRecoveryServiceImpl implements AccountRecoveryService {
         if (resets.markUsed(requestId) != 1) throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 사용된 재설정 요청이에요.");
         if (users.updatePassword(userId, passwordEncoder.encode(request.newPassword())) != 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호를 변경할 수 없는 계정이에요.");
-        // 다른 기기에 남은 로그인 세션(refresh token)을 모두 끊는다.
+        // 다른 기기에 남은 로그인 세션을 모두 끊는다: updatePassword가 token_version을 올려 access token을 즉시 무효화하고,
+        // refresh token도 모두 폐기해 다시 발급받지 못하게 한다.
         users.revokeAllRefreshTokens(userId);
         resets.invalidateOpenRequests(userId);
     }

@@ -40,11 +40,16 @@ public class TeacherController {
             @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size) { return teachers.sessions(principal,studentId,page,size); }
     @GetMapping("/homeworks") public PageResponse<Map<String,Object>> homeworks(@AuthenticationPrincipal TokenPrincipal principal,@RequestParam(required=false) Long studentId,
             @RequestParam(required=false) String status,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size) { return teachers.homeworks(principal,studentId,status,page,size); }
-    @PostMapping("/homeworks") @ResponseStatus(HttpStatus.CREATED)
-    public Map<String,Object> addHomework(@AuthenticationPrincipal TokenPrincipal principal,@Valid @RequestBody HomeworkCreateRequest request) { return teachers.addHomework(principal,request); }
+    /** 처음 만들면 201, 같은 Idempotency-Key·같은 내용의 재전송이면 처음 만든 숙제를 200으로 돌려준다(reused=true). */
+    @PostMapping("/homeworks")
+    public ResponseEntity<Map<String,Object>> addHomework(@AuthenticationPrincipal TokenPrincipal principal,@Valid @RequestBody HomeworkCreateRequest request,
+            @RequestHeader(value="Idempotency-Key",required=false) String idempotencyKey) {
+        Map<String,Object> homework=teachers.addHomework(principal,request,idempotencyKey);
+        return ResponseEntity.status(Boolean.TRUE.equals(homework.get("reused"))?HttpStatus.OK:HttpStatus.CREATED).body(homework);
+    }
     @PatchMapping("/homeworks/{homeworkId}") public Map<String,Object> updateHomework(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable long homeworkId,@Valid @RequestBody HomeworkUpdateRequest request) { return teachers.updateHomework(principal,homeworkId,request); }
     @DeleteMapping("/homeworks/{homeworkId}") @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteHomework(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable long homeworkId) { teachers.deleteHomework(principal,homeworkId); }
+    public void deleteHomework(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable long homeworkId,@RequestParam int version) { teachers.deleteHomework(principal,homeworkId,version); }
     @GetMapping("/students/{studentId}/analytics") public Map<String,Object> analytics(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable long studentId,
             @RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate endDate) { return teachers.analytics(principal,studentId,startDate,endDate); }

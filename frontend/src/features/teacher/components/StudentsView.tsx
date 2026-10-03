@@ -15,6 +15,7 @@ import ConfirmDialog from "@/shared/components/feedback/ConfirmDialog";
 import EmptyState from "@/shared/components/feedback/EmptyState";
 import ErrorState from "@/shared/components/feedback/ErrorState";
 import LoadingState from "@/shared/components/feedback/LoadingState";
+import Notice from "@/shared/components/feedback/Notice";
 import Input from "@/shared/components/input/Input";
 import PageHeader from "@/shared/components/pageHeader/PageHeader";
 import Select from "@/shared/components/select/Select";
@@ -24,6 +25,7 @@ export default function StudentsView({ revision, onBack, onAddStudent, onAssignH
   onDeleteStudent: (studentId: number) => Promise<boolean>; initialStudentId?: number | null;
 }) {
   const [selectedId, setSelectedId] = useState<number | null>(initialStudentId);
+  const [detailError, setDetailError] = useState("");
   const [selected, setSelected] = useState<Student | null>(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -54,8 +56,11 @@ export default function StudentsView({ revision, onBack, onAddStudent, onAssignH
     let active = true;
     teacherApi.student(selectedId).then((response) => {
       const item = response as Record<string, unknown>;
-      if (active) setSelected(mapStudent({ ...item, studentId: item.studentId ?? selectedId }));
-    }).catch(() => { if (active) setSelectedId(null); });
+      if (active) { setDetailError(""); setSelected(mapStudent({ ...item, studentId: item.studentId ?? selectedId })); }
+    }).catch((cause: unknown) => {
+      // 담당이 아니거나 없는 학생이면 목록으로 돌아가면서 이유를 알려준다(오류를 조용히 무시하지 않는다).
+      if (active) { setDetailError(errorMessage(cause, "학생 정보를 불러오지 못했어요.")); setSelectedId(null); }
+    });
     return () => { active = false; };
   }, [selectedId, revision]);
 
@@ -81,6 +86,7 @@ export default function StudentsView({ revision, onBack, onAddStudent, onAssignH
         description="선택한 학생과의 담당 연결을 해제합니다. 학생 계정과 학습 기록은 삭제되지 않아요."
         pending={bulkDeleting} onCancel={() => setConfirmBulk(false)} onConfirm={removeChecked} />}
       <PageHeader title="제자 목록" onBack={onBack} />
+      {detailError && <Notice tone="error" className="mx-4 mt-3">{detailError}</Notice>}
 
       <div className="flex items-end gap-2 px-4 py-3">
         <Input label="이름 또는 연락처 검색" hideLabel size="sm" fieldClassName="flex-1" value={search} placeholder="이름 검색"

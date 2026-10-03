@@ -16,22 +16,19 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class ExternalProviderService {
     private final RestClient restClient;
-    private final String aiUrl, aiKey, aiModel, speechUrl, speechKey;
+    private final AiTextClient aiText;
+    private final String speechUrl, speechKey;
 
-    public ExternalProviderService(RestClient.Builder builder,
-                                   @Value("${app.ai.endpoint:}") String aiUrl,
-                                   @Value("${app.ai.api-key:}") String aiKey,
-                                   @Value("${app.ai.model:gpt-4o-mini}") String aiModel,
+    public ExternalProviderService(RestClient.Builder builder, AiTextClient aiText,
                                    @Value("${app.speech.endpoint:}") String speechUrl,
                                    @Value("${app.speech.api-key:}") String speechKey) {
-        this.restClient = builder.build(); this.aiUrl=aiUrl; this.aiKey=aiKey; this.aiModel=aiModel;
+        this.restClient = builder.build(); this.aiText = aiText;
         this.speechUrl=speechUrl; this.speechKey=speechKey;
     }
 
@@ -58,7 +55,7 @@ public class ExternalProviderService {
     }
 
     public void requireSpeechProvider() { requireProvider(speechUrl, speechKey, "SPEECH_API_URL 및 SPEECH_API_KEY"); }
-    public void requireAiProvider() { requireProvider(aiUrl, aiKey, "AI_API_URL 및 AI_API_KEY"); }
+    public void requireAiProvider() { aiText.requireConfigured(); }
 
     public String transcribe(String audioPath, String mime) {
         requireProvider(speechUrl, speechKey, "SPEECH_API_URL 및 SPEECH_API_KEY");
@@ -77,28 +74,17 @@ public class ExternalProviderService {
         }
     }
 
+    /** AI 대화 응답. 제공자 형식(Gemini·OpenAI 호환)과 오류 처리는 AiTextClient가 맡는다. */
     public String generateReply(String topic, List<Map<String,Object>> history) {
-        requireProvider(aiUrl, aiKey, "AI_API_URL 및 AI_API_KEY");
-        List<Map<String,String>> messages = new ArrayList<>();
-        messages.add(Map.of("role","system","content","You are a warm, child-safe Korean speech-language practice partner. Keep responses short and age-appropriate. Encourage clear speech without diagnosing. Topic: "+topic));
+        aiText.requireConfigured();
+        List<AiTextClient.Turn> turns = new ArrayList<>();
         for (Map<String,Object> item : history) {
             String speaker = String.valueOf(item.get("speaker"));
             String content = String.valueOf(item.getOrDefault("content", ""));
-            if (!content.isBlank()) messages.add(Map.of("role", "ASSISTANT".equals(speaker) ? "assistant" : "user", "content", content));
+            if (!content.isBlank()) turns.add(new AiTextClient.Turn("ASSISTANT".equals(speaker) ? "assistant" : "user", content));
         }
-        Map<String,Object> payload = new LinkedHashMap<>(); payload.put("model",aiModel); payload.put("messages",messages); payload.put("temperature",0.4);
-        try {
-            Map<?,?> response = restClient.post().uri(aiUrl).headers(h->h.setBearerAuth(aiKey)).contentType(MediaType.APPLICATION_JSON).body(payload).retrieve().body(Map.class);
-            if (response == null || !(response.get("choices") instanceof List<?> choices) || choices.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,"AI 제공자의 응답이 올바르지 않습니다.");
-            Object message = ((Map<?,?>) choices.get(0)).get("message");
-            Object content = message instanceof Map<?,?> m ? m.get("content") : null;
-            if (!(content instanceof String text) || text.isBlank()) throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,"AI 응답이 비어 있습니다.");
-            return text;
-        } catch (ResourceAccessException e) {
-            throw new ResponseStatusException(HttpStatus.GATEWAY_TIMEOUT,"AI 제공자 응답 시간이 초과되었습니다.");
-        } catch (RestClientResponseException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,"AI 대화 제공자 요청에 실패했습니다.");
-        }
+        return aiText.generate("You are a warm, child-safe Korean speech-language practice partner. Keep responses short and age-appropriate. "
+                + "Reply in Korean. Encourage clear speech without diagnosing. Topic: " + topic, turns, 0.4, 1024);
     }
 
     private void requireProvider(String url, String key, String configName) {

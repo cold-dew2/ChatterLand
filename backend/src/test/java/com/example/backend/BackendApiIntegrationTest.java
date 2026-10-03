@@ -68,14 +68,14 @@ class BackendApiIntegrationTest {
         long homeworkId = objectMapper.readTree(homeworkBody).path("homeworkId").asLong();
 
         mvc.perform(patch("/api/v1/teachers/me/homeworks/{id}", homeworkId).header("Authorization", bearer(token))
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"done\":true}"))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("COMPLETED"));
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"done\":true,\"version\":0}"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("COMPLETED")).andExpect(jsonPath("$.version").value(1));
         mvc.perform(get("/api/v1/teachers/me/students/{id}/analytics", studentId)
                         .param("startDate", "2026-09-01").param("endDate", "2026-10-01")
                         .header("Authorization", bearer(token)))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.areaScores.length()").value(5))
                 .andExpect(jsonPath("$.homeworkTotal").isNumber()).andExpect(jsonPath("$.homeworkCompleted").isNumber());
-        mvc.perform(delete("/api/v1/teachers/me/homeworks/{id}", homeworkId).header("Authorization", bearer(token)))
+        mvc.perform(delete("/api/v1/teachers/me/homeworks/{id}", homeworkId).param("version", "1").header("Authorization", bearer(token)))
                 .andExpect(status().isNoContent());
         mvc.perform(delete("/api/v1/teachers/me/students/{id}", studentId).header("Authorization", bearer(token)))
                 .andExpect(status().isNoContent());

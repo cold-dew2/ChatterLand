@@ -22,6 +22,7 @@ export function mapHomework(item: Row, index = 0): Homework {
     title: String(item.title ?? item.homeworkTitle ?? '숙제'), type: String(item.type ?? '기타'),
     dueDate: String(item.dueDate ?? ''), done: Boolean(item.done ?? item.completed ?? status === 'COMPLETED'),
     description: String(item.description ?? ''), targetMinutes: Number(item.targetMinutes ?? 10),
+    version: typeof item.version === 'number' ? item.version : undefined,
   }
 }
 

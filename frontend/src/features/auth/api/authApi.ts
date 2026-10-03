@@ -21,4 +21,7 @@ export const authApi = {
   revoke: (refreshToken: string) => apiClient.post<void>('/api/v1/auth/logout', { refreshToken }),
   refresh: (refreshToken: string) => apiClient.post<{ accessToken: string; refreshToken: string }>('/api/v1/auth/refresh', { refreshToken }),
   me: () => apiClient.get<User>('/api/v1/auth/me'),
+  /** 로그인 상태 비밀번호 변경. 다른 기기는 로그아웃되고, 이 기기는 응답의 새 토큰으로 로그인을 유지한다. */
+  changePassword: (body: { currentPassword: string; newPassword: string; newPasswordConfirm: string }) =>
+    apiClient.patch<{ accessToken: string; refreshToken: string }>('/api/v1/auth/me/password', body),
 }

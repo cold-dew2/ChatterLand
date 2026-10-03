@@ -5,7 +5,7 @@ import { CheckCircle, ClipboardList, Mic } from "lucide-react";
 import { studentApi } from "@/features/student/api/studentApi";
 import type { Homework } from "@/features/student/types";
 import { isOverdue, mapHomework } from "@/features/student/utils/mappers";
-import { errorMessage } from "@/shared/api/client";
+import { ApiError, errorMessage } from "@/shared/api/client";
 import Badge from "@/shared/components/badge/Badge";
 import Button from "@/shared/components/button/Button";
 import Card from "@/shared/components/card/Card";
@@ -46,7 +46,13 @@ export default function StudentHomeworkScreen({ onBack, onCompleteHomework, onSt
       setHomeworks((current) => current.map((homework) => homework.id === id ? { ...homework, done: true } : homework));
       onCompleteHomework(id);
     } catch (cause) {
-      setActionError(errorMessage(cause, "숙제를 완료 처리하지 못했어요."));
+      if (cause instanceof ApiError && cause.status === 404) {
+        // 선생님이 삭제한 숙제: 안내하고 목록을 서버 기준으로 다시 불러온다.
+        setActionError("선생님이 삭제한 숙제예요. 목록을 새로 불러왔어요.");
+        setRevision((value) => value + 1);
+      } else {
+        setActionError(errorMessage(cause, "숙제를 완료 처리하지 못했어요."));
+      }
     } finally {
       setBusyId(null);
     }

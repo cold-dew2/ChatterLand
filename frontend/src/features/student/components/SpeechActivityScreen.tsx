@@ -5,10 +5,13 @@ import { CheckCircle, Mic, RotateCcw, Square } from "lucide-react";
 import { studentApi } from "@/features/student/api/studentApi";
 import { useAudioRecorder } from "@/features/student/hooks/useAudioRecorder";
 import { isConsentRequired } from "@/features/student/utils/speechErrors";
+import { textMatchRate } from "@/features/student/utils/speechAssessment";
 import { toWav16k } from "@/features/student/utils/wavEncoder";
+import AiFeedbackPanel from "@/features/student/components/AiFeedbackPanel";
 import SpeechAnalysisResult from "@/features/student/components/SpeechAnalysisResult";
 import type { EvaluationMode, Exercise, ExerciseResult, ItemResult, SpeechAnalysis } from "@/features/student/types";
 import { errorMessage } from "@/shared/api/client";
+import { newIdempotencyKey } from "@/shared/api/idempotencyKey";
 import Badge from "@/shared/components/badge/Badge";
 import Button from "@/shared/components/button/Button";
 import Card from "@/shared/components/card/Card";
@@ -53,6 +56,8 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
   const [itemResults, setItemResults] = useState<ItemResult[]>([]);
   const [finished, setFinished] = useState(false);
   const busyRef = useRef(false);
+  // 녹음 한 개당 요청 키 하나. 같은 녹음의 재시도(다시 분석하기·응답 유실)는 같은 키로 보내 서버가 한 번만 분석한다.
+  const requestKeyRef = useRef<{ recording: Blob; key: string } | null>(null);
 
   if (!exercise || exercise.items.length === 0) {
     return (
@@ -81,14 +86,16 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
   };
 
   const analyze = async () => {
-    if (!recorder.recording || busyRef.current) return;
+    const recording = recorder.recording;
+    if (!recording || busyRef.current) return;
     busyRef.current = true;
     setAnalysisError("");
     try {
       setPhase("converting");
-      const wav = await toWav16k(recorder.recording);
+      const wav = await toWav16k(recording);
       setPhase("analyzing");
-      const job = await studentApi.analyzeSpeech(wav, exercise.id, item.id);
+      if (requestKeyRef.current?.recording !== recording) requestKeyRef.current = { recording, key: newIdempotencyKey() };
+      const job = await studentApi.analyzeSpeech(wav, exercise.id, item.id, requestKeyRef.current.key);
       const result = await waitForAnalysis(job.analysisId);
       setAnalysis(result);
       setPhase("done");
@@ -115,7 +122,7 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
     const mode: EvaluationMode = analysis.evaluationMode ?? "EXTERNAL_PROVIDER";
     const nextResults = [...itemResults, {
       itemId: item.id, word: item.word, mode,
-      matchRate: typeof analysis.matchRate === "number" ? analysis.matchRate : null,
+      matchRate: textMatchRate(analysis),
       overallScore: typeof analysis.overallScore === "number" ? analysis.overallScore : null,
       saved: saveState === "saved",
     }];
@@ -142,12 +149,12 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
           </div>
           <Card padding="lg" className="w-full text-center">
             {average !== null ? <>
-              <p className="mb-1 text-sm text-gray-400">평균 문장 일치도</p>
+              <p className="mb-1 text-sm text-gray-400">평균 텍스트 일치율</p>
               <p className="text-5xl font-black text-gray-900">{average}<span className="ml-1 text-xl font-bold text-gray-400">%</span></p>
               <p className="mt-3 text-xs text-gray-500">음성 인식 결과와 목표 문장을 비교한 값이에요. 발음 점수가 아니에요.</p>
             </> : <>
               <p className="text-sm font-semibold text-gray-700">{itemResults.length}개 문항을 녹음했어요</p>
-              <p className="mt-2 text-xs text-gray-500">{pendingReview > 0 ? "선생님이 녹음을 듣고 발음을 확인해 줄 거예요." : "이번 활동에는 계산된 문장 일치도가 없어요."}</p>
+              <p className="mt-2 text-xs text-gray-500">{pendingReview > 0 ? "선생님이 녹음을 듣고 발음을 확인해 줄 거예요." : "이번 활동에는 계산된 텍스트 일치율이 없어요."}</p>
             </>}
             {pendingReview > 0 && <div className="mt-3 flex justify-center"><Badge tone="info">선생님 확인 대기 {pendingReview}개</Badge></div>}
           </Card>
@@ -210,6 +217,7 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
           {phase === "done" && analysis && (
             <div className="flex w-full flex-col gap-3">
               <SpeechAnalysisResult analysis={analysis} />
+              <AiFeedbackPanel analysisId={analysis.analysisId} />
               {saveState === "saving" && <Notice tone="info">학습 기록을 저장하고 있어요…</Notice>}
               {saveState === "saved" && <Notice tone="success">학습 기록에 저장했어요.</Notice>}
               {saveState === "failed" && (

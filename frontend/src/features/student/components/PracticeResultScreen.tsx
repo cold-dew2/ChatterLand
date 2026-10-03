@@ -7,7 +7,7 @@ import PageHeader from "@/shared/components/pageHeader/PageHeader";
 import ProgressBar from "@/shared/components/progressBar/ProgressBar";
 
 /**
- * 세션/연습 결과. 저장된 분석 결과에서 계산 가능한 값(문장 일치도, 문항 수)만 보여준다.
+ * 세션/연습 결과. 저장된 분석 결과에서 계산 가능한 값(텍스트 일치율, 문항 수)만 보여준다.
  * 측정하지 않은 점수나 미리 작성된 칭찬·평가 문구를 만들어 내지 않는다.
  */
 export default function PracticeResultScreen({ title, results, onClose }: { title: string; results: ExerciseResult[]; onClose: () => void }) {
@@ -20,7 +20,7 @@ export default function PracticeResultScreen({ title, results, onClose }: { titl
       <PageHeader title={title} subtitle="연습 결과" onBack={onClose} backLabel="홈으로 돌아가기" />
       <div className="flex-1 space-y-6 overflow-y-auto px-5 py-6">
         <div className="text-center">
-          <p className="mb-3 text-sm text-gray-400">평균 문장 일치도</p>
+          <p className="mb-3 text-sm text-gray-400">평균 텍스트 일치율</p>
           {average !== null
             ? <p className="mb-3 text-6xl font-black leading-none text-gray-900">{average}<span className="ml-1 text-2xl font-bold text-gray-400">%</span></p>
             : <p className="mb-3 text-2xl font-bold text-gray-400">계산된 값 없음</p>}
@@ -37,7 +37,7 @@ export default function PracticeResultScreen({ title, results, onClose }: { titl
                 <li key={result.exerciseId} className="flex items-center gap-3">
                   <span className="w-24 shrink-0 truncate text-sm text-gray-500">{result.label}</span>
                   {rate !== null
-                    ? <><ProgressBar value={rate} label={`${result.label} 문장 일치도 ${rate}%`} size="md" color="var(--brand-primary)" /><span className="w-10 shrink-0 text-right text-sm font-bold text-gray-700">{rate}%</span></>
+                    ? <><ProgressBar value={rate} label={`${result.label} 텍스트 일치율 ${rate}%`} size="md" color="var(--brand-primary)" /><span className="w-10 shrink-0 text-right text-sm font-bold text-gray-700">{rate}%</span></>
                     : <Badge tone="neutral">미평가</Badge>}
                 </li>
               );
@@ -46,7 +46,7 @@ export default function PracticeResultScreen({ title, results, onClose }: { titl
         </section>
 
         <Card tone="muted" className="space-y-1 text-xs leading-relaxed text-gray-500">
-          <p>문장 일치도는 음성 인식 결과와 목표 문장의 글자 일치 정도예요.</p>
+          <p>텍스트 일치율은 음성 인식 결과와 목표 문장의 글자 일치 정도예요.</p>
           <p>발음 정확도, 말하기 속도, 유창성은 아직 평가하지 않아요. 선생님의 평가를 대신하지 않아요.</p>
         </Card>
       </div>

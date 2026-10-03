@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ConfirmedError, PhonemeCandidate } from "@/features/student/types";
+import { candidateText, errorTypeLabel, textMatchRate } from "@/features/student/utils/speechAssessment";
 import { teacherApi } from "@/features/teacher/api/teacherApi";
+import SpeechAssessmentDetails from "@/features/teacher/components/SpeechAssessmentDetails";
 import type { SpeechJudgement, TeacherSpeechAnalysis } from "@/features/teacher/types";
 import { errorMessage } from "@/shared/api/client";
 import Badge, { type BadgeTone } from "@/shared/components/badge/Badge";
 import Button from "@/shared/components/button/Button";
 import Card from "@/shared/components/card/Card";
+import Input from "@/shared/components/input/Input";
 import EmptyState from "@/shared/components/feedback/EmptyState";
 import ErrorState from "@/shared/components/feedback/ErrorState";
 import LoadingState from "@/shared/components/feedback/LoadingState";
@@ -22,6 +26,20 @@ const judgementOptions: { value: SpeechJudgement; label: string }[] = [
   { value: "NEEDS_PRACTICE", label: "연습 필요" },
   { value: "UNCLEAR", label: "판단 어려움 (다시 녹음 필요)" },
 ];
+const errorTypeOptions = Object.entries(errorTypeLabel).map(([value, label]) => ({ value, label }));
+
+/** 자동 후보를 선생님 확정 오류 형식으로 바꾼다(선생님이 체크한 것만 저장). */
+function toConfirmed(candidate: PhonemeCandidate): ConfirmedError {
+  const errorType = candidate.type === "SUBSTITUTION" ? "SUBSTITUTION" : candidate.type.endsWith("ADDITION") ? "ADDITION" : "OMISSION";
+  return {
+    phoneme: (candidate.expected ?? candidate.produced ?? "").slice(0, 4), errorType,
+    produced: candidate.produced?.slice(0, 4) ?? null,
+    position: candidate.word ? `${candidate.word} ${candidate.syllableIndex}번째 음절`.slice(0, 40) : null,
+  };
+}
+
+const confirmedKey = (error: ConfirmedError) => `${error.phoneme}|${error.errorType}|${error.produced ?? ""}|${error.position ?? ""}`;
+
 const judgementLabel = Object.fromEntries(judgementOptions.map((option) => [option.value, option.label])) as Record<string, string>;
 
 function reviewBadge(analysis: TeacherSpeechAnalysis): { tone: BadgeTone; label: string } {
@@ -59,6 +77,18 @@ function AudioPlayer({ analysisId }: { analysisId: string }) {
 function ReviewForm({ analysis, onSaved }: { analysis: TeacherSpeechAnalysis; onSaved: (updated: TeacherSpeechAnalysis) => void }) {
   const [judgement, setJudgement] = useState<SpeechJudgement | "">((analysis.teacherJudgement as SpeechJudgement | null) ?? "");
   const [note, setNote] = useState(analysis.teacherNote ?? "");
+  const candidates = analysis.phonemeCandidates ?? [];
+  const [confirmed, setConfirmed] = useState<ConfirmedError[]>(analysis.teacherConfirmedErrors ?? []);
+  const [manual, setManual] = useState<{ phoneme: string; errorType: ConfirmedError["errorType"] }>({ phoneme: "", errorType: "DISTORTION" });
+  const isChecked = (error: ConfirmedError) => confirmed.some((item) => confirmedKey(item) === confirmedKey(error));
+  const toggle = (error: ConfirmedError) => setConfirmed((current) => isChecked(error)
+    ? current.filter((item) => confirmedKey(item) !== confirmedKey(error)) : [...current, error]);
+  const addManual = () => {
+    const phoneme = manual.phoneme.trim();
+    if (!phoneme) return;
+    toggle({ phoneme: phoneme.slice(0, 4), errorType: manual.errorType, produced: null, position: null });
+    setManual({ phoneme: "", errorType: manual.errorType });
+  };
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
@@ -67,7 +97,7 @@ function ReviewForm({ analysis, onSaved }: { analysis: TeacherSpeechAnalysis; on
     if (!judgement) { setError("검토 결과를 선택해 주세요."); return; }
     setSaving(true); setError(""); setSaved(false);
     try {
-      const updated = await teacherApi.reviewSpeechAnalysis(analysis.analysisId, { judgement, note: note.trim() || undefined });
+      const updated = await teacherApi.reviewSpeechAnalysis(analysis.analysisId, { judgement, note: note.trim() || undefined, confirmedErrors: confirmed });
       onSaved({ ...analysis, ...updated });
       setSaved(true);
     } catch (cause) {
@@ -80,6 +110,31 @@ function ReviewForm({ analysis, onSaved }: { analysis: TeacherSpeechAnalysis; on
     <div className="space-y-3 border-t border-gray-100 pt-3">
       <Select label="선생님 검토 결과" size="sm" value={judgement} placeholder="결과를 선택하세요" options={judgementOptions}
         onChange={(event) => { setJudgement(event.target.value as SpeechJudgement); setError(""); }} error={error || undefined} />
+      <fieldset className="space-y-1.5">
+        <legend className="text-xs font-medium text-gray-600">선생님 확정 오류 (직접 듣고 확인한 것만 선택)</legend>
+        {candidates.map((candidate, index) => {
+          const error = toConfirmed(candidate);
+          return (
+            <label key={index} className="flex items-start gap-2 text-xs text-gray-600">
+              <input type="checkbox" className="mt-0.5 h-4 w-4 accent-[var(--brand-primary)]" checked={isChecked(error)} onChange={() => toggle(error)} />
+              <span>{candidateText(candidate)}</span>
+            </label>
+          );
+        })}
+        {confirmed.filter((error) => !candidates.some((candidate) => confirmedKey(toConfirmed(candidate)) === confirmedKey(error))).map((error) => (
+          <label key={confirmedKey(error)} className="flex items-start gap-2 text-xs text-gray-600">
+            <input type="checkbox" className="mt-0.5 h-4 w-4 accent-[var(--brand-primary)]" checked onChange={() => toggle(error)} />
+            <span>{error.phoneme} {errorTypeLabel[error.errorType]}{error.produced ? ` → ${error.produced}` : ""} (직접 추가)</span>
+          </label>
+        ))}
+        <div className="flex items-end gap-2">
+          <Input label="음소" size="sm" fieldClassName="w-20" maxLength={4} value={manual.phoneme} placeholder="ㄹ"
+            onChange={(event) => setManual({ ...manual, phoneme: event.target.value })} />
+          <Select label="오류 유형" size="sm" fieldClassName="flex-1" value={manual.errorType} options={errorTypeOptions}
+            onChange={(event) => setManual({ ...manual, errorType: event.target.value as ConfirmedError["errorType"] })} />
+          <Button size="sm" variant="secondary" onClick={addManual} disabled={!manual.phoneme.trim()}>추가</Button>
+        </div>
+      </fieldset>
       <Textarea label="검토 메모" size="sm" rows={2} maxLength={1000} value={note} onChange={(event) => setNote(event.target.value)} placeholder="예: ㄹ 받침 소리가 약해요" />
       {saved && <Notice tone="success">검토 결과를 저장했어요.</Notice>}
       <Button size="sm" fullWidth loading={saving} loadingLabel="저장 중…" onClick={() => void save()}>
@@ -142,9 +197,10 @@ export default function SpeechReviewPanel({ studentId }: { studentId: number }) 
             <dl className="space-y-1.5 rounded-xl bg-gray-50 p-3 text-sm">
               <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">목표</dt><dd className="font-semibold text-gray-800">{analysis.targetText ?? "-"}</dd></div>
               <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">AI 인식 결과</dt><dd className="font-semibold text-gray-800">{analysis.transcript || "인식 결과 없음"}</dd></div>
-              {typeof analysis.matchRate === "number" && <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">문장 일치도</dt><dd className="font-semibold text-gray-800">{Math.round(analysis.matchRate)}%</dd></div>}
+              {textMatchRate(analysis) !== null && <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">텍스트 일치율</dt><dd className="font-semibold text-gray-800">{Math.round(textMatchRate(analysis) ?? 0)}%</dd></div>}
               <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">발음 평가</dt><dd>{typeof analysis.pronunciationScore === "number" ? `${analysis.pronunciationScore}점 (외부 제공자)` : <Badge tone="neutral">미평가</Badge>}</dd></div>
             </dl>
+            <SpeechAssessmentDetails analysis={analysis} />
             {analysis.reviewStatus === "REVIEWED" && analysis.teacherJudgement && (
               <p className="text-xs text-gray-600">선생님 판단: <b>{judgementLabel[analysis.teacherJudgement] ?? analysis.teacherJudgement}</b>{analysis.teacherNote ? ` · ${analysis.teacherNote}` : ""}</p>
             )}
@@ -153,7 +209,7 @@ export default function SpeechReviewPanel({ studentId }: { studentId: number }) 
           </Card>
         );
       })}
-      <p className="text-xs leading-relaxed text-gray-400">AI 인식 결과는 음성 인식 모델이 알아들은 글자이며 발음 정확도 평가가 아니에요. 발음 판단은 선생님 검토 결과를 기준으로 해 주세요.</p>
+      <p className="text-xs leading-relaxed text-gray-400">AI 인식 결과는 음성 인식 모델이 알아들은 글자이며 발음 정확도 평가가 아니에요. 오류 후보는 인식 글자를 표기 기준으로 비교한 자동 추정이라 틀린 발음을 놓치거나(모델이 고쳐 적음) 맞는 발음을 후보로 잡을 수 있어요. 발음 판단은 선생님 검토 결과를 기준으로 해 주세요.</p>
     </section>
   );
 }

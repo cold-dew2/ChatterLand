@@ -30,14 +30,18 @@ public interface TeacherMapper {
     long countHomeworks(@Param("teacherId") long teacherId, @Param("studentId") Long studentId, @Param("status") String status);
     int insertHomework(@Param("teacherId") long teacherId, @Param("studentId") long studentId, @Param("title") String title,
                        @Param("type") String type, @Param("description") String description,
-                       @Param("targetMinutes") int targetMinutes, @Param("dueDate") LocalDate dueDate);
+                       @Param("targetMinutes") int targetMinutes, @Param("dueDate") LocalDate dueDate,
+                       @Param("requestKey") String requestKey, @Param("requestHash") String requestHash);
+    /** 같은 선생님이 같은 Idempotency-Key로 만든 숙제(요청 지문 requestHash 포함) */
+    Map<String,Object> findHomeworkByRequestKey(@Param("teacherId") long teacherId, @Param("requestKey") String requestKey);
     Map<String,Object> findLatestHomework(@Param("teacherId") long teacherId,@Param("studentId") long studentId,@Param("title") String title);
     Map<String,Object> findHomework(@Param("teacherId") long teacherId, @Param("homeworkId") long homeworkId);
     int updateHomework(@Param("teacherId") long teacherId, @Param("homeworkId") long homeworkId,
                        @Param("title") String title, @Param("type") String type, @Param("description") String description,
                        @Param("targetMinutes") Integer targetMinutes, @Param("dueDate") LocalDate dueDate,
-                       @Param("status") String status, @Param("done") Boolean done);
-    int deleteHomework(@Param("teacherId") long teacherId, @Param("homeworkId") long homeworkId);
+                       @Param("status") String status, @Param("done") Boolean done,
+                       @Param("version") Integer version);
+    int deleteHomework(@Param("teacherId") long teacherId, @Param("homeworkId") long homeworkId, @Param("version") int version);
     Map<String,Object> analytics(@Param("studentId") long studentId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
     List<Map<String,Object>> areaAnalytics(@Param("studentId") long studentId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
     List<Map<String,Object>> findStudentAnalyses(@Param("studentId") long studentId, @Param("reviewStatus") String reviewStatus,
@@ -47,6 +51,7 @@ public interface TeacherMapper {
     long countStudentAnalyses(@Param("studentId") long studentId, @Param("reviewStatus") String reviewStatus);
     Map<String,Object> findAnalysisForTeacher(@Param("teacherId") long teacherId, @Param("analysisId") String analysisId);
     int reviewAnalysis(@Param("teacherId") long teacherId, @Param("analysisId") String analysisId,
-                       @Param("judgement") String judgement, @Param("note") String note);
+                       @Param("judgement") String judgement, @Param("note") String note,
+                       @Param("confirmedJson") String confirmedJson);
     List<Map<String,Object>> scoreTrend(@Param("studentId") long studentId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

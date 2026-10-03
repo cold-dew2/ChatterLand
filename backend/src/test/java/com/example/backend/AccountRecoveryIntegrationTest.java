@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -128,6 +129,54 @@ class AccountRecoveryIntegrationTest {
                 .andExpect(status().isOk());
         mvc.perform(post("/api/v1/auth/refresh").contentType(MediaType.APPLICATION_JSON).content(json("refreshToken", oldRefresh)))
                 .andExpect(status().isUnauthorized());
+    }
+
+    /** 비밀번호 재설정 뒤에는 이미 발급된 access token(모든 기기)도 만료 시각과 관계없이 즉시 거절된다. */
+    @Test
+    void passwordResetImmediatelyInvalidatesAccessTokensOnEveryDevice() throws Exception {
+        String email = signupTeacher("토큰 무효화 치료사");
+        JsonNode phone = objectMapper.readTree(mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+                .content(json("email", email, "password", "Chatterland!234"))).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        JsonNode laptop = objectMapper.readTree(mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+                .content(json("email", email, "password", "Chatterland!234"))).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        // 노트북은 재설정 전에 한 번 갱신해 둔다(갱신으로 받은 토큰도 함께 무효화되어야 한다).
+        JsonNode refreshed = objectMapper.readTree(mvc.perform(post("/api/v1/auth/refresh").contentType(MediaType.APPLICATION_JSON)
+                .content(json("refreshToken", laptop.path("refreshToken").asText()))).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        long userId = jdbc.queryForObject("SELECT user_id FROM users WHERE email=?", Long.class, email);
+        // 이 기능 배포 전에 발급된 토큰(버전 클레임 없음)은 버전 0으로 보고 계속 받아들인다.
+        String legacy = io.jsonwebtoken.Jwts.builder().subject(Long.toString(userId)).claim("role", "TEACHER")
+                .issuedAt(new java.util.Date()).expiration(new java.util.Date(System.currentTimeMillis() + 3_600_000))
+                .signWith(io.jsonwebtoken.security.Keys.hmacShaKeyFor("test-only-signing-key-must-be-at-least-32-bytes".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                .compact();
+        for (String token : java.util.List.of(phone.path("accessToken").asText(), refreshed.path("accessToken").asText(), legacy))
+            mvc.perform(get("/api/v1/auth/me").header("Authorization", "Bearer " + token)).andExpect(status().isOk());
+
+        mvc.perform(post("/api/v1/auth/password-reset/request").contentType(MediaType.APPLICATION_JSON).content(json("email", email)))
+                .andExpect(status().isAccepted());
+        String verify = mvc.perform(post("/api/v1/auth/password-reset/verify").contentType(MediaType.APPLICATION_JSON).content(json("email", email, "code", latestCode())))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        mvc.perform(post("/api/v1/auth/password-reset/confirm").contentType(MediaType.APPLICATION_JSON)
+                        .content(json("resetToken", objectMapper.readTree(verify).path("resetToken").asText(), "newPassword", "NewPassword!9", "newPasswordConfirm", "NewPassword!9")))
+                .andExpect(status().isNoContent());
+        assertEquals(1, jdbc.queryForObject("SELECT token_version FROM users WHERE user_id=?", Integer.class, userId));
+
+        // 기존 access token은 모두 401(아직 만료 전이어도), 기존 refresh token으로 새 access token을 받을 수도 없다.
+        for (String token : java.util.List.of(phone.path("accessToken").asText(), refreshed.path("accessToken").asText(), legacy)) {
+            mvc.perform(get("/api/v1/auth/me").header("Authorization", "Bearer " + token))
+                    .andExpect(status().isUnauthorized()).andExpect(jsonPath("$.code").value("UNAUTHORIZED"));
+            mvc.perform(get("/api/v1/teachers/me/students").header("Authorization", "Bearer " + token)).andExpect(status().isUnauthorized());
+        }
+        for (String refresh : java.util.List.of(phone.path("refreshToken").asText(), refreshed.path("refreshToken").asText()))
+            mvc.perform(post("/api/v1/auth/refresh").contentType(MediaType.APPLICATION_JSON).content(json("refreshToken", refresh)))
+                    .andExpect(status().isUnauthorized());
+        // 무효화된 토큰이 붙어 있어도 공개 API(로그인)는 막히지 않는다. 새 비밀번호로 다시 로그인한 세션은 정상 동작한다.
+        JsonNode again = objectMapper.readTree(mvc.perform(post("/api/v1/auth/login").header("Authorization", "Bearer " + legacy)
+                .contentType(MediaType.APPLICATION_JSON).content(json("email", email, "password", "NewPassword!9")))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        mvc.perform(get("/api/v1/auth/me").header("Authorization", "Bearer " + again.path("accessToken").asText())).andExpect(status().isOk());
+        JsonNode rotated = objectMapper.readTree(mvc.perform(post("/api/v1/auth/refresh").contentType(MediaType.APPLICATION_JSON)
+                .content(json("refreshToken", again.path("refreshToken").asText()))).andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        mvc.perform(get("/api/v1/auth/me").header("Authorization", "Bearer " + rotated.path("accessToken").asText())).andExpect(status().isOk());
     }
 
     @Test

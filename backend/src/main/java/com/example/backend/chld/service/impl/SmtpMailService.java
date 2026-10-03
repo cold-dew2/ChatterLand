@@ -1,18 +1,19 @@
 package com.example.backend.chld.service.impl;
 
+import com.example.backend.chld.exception.MailUnavailableException;
 import com.example.backend.chld.service.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
- * SMTP 메일 발송. MAIL_HOST가 없으면 JavaMailSender가 만들어지지 않으며, 이때 성공한 것처럼 처리하지 않고 503을 반환한다.
+ * SMTP 메일 발송. MAIL_HOST나 MAIL_FROM이 비어 있으면(서버는 정상 기동) 성공한 것처럼 처리하지 않고 503 MAIL_NOT_CONFIGURED를 반환한다.
+ * MAIL_HOST가 빈 값이어도 Spring Boot는 JavaMailSender를 만들므로, 발송기 존재 여부가 아니라 설정값으로 판단한다.
+ * SMTP 연결·발송 실패는 503 MAIL_DELIVERY_FAILED.
  * 인증 코드는 로그에 남기지 않는다.
  */
 @Slf4j
@@ -20,15 +21,17 @@ import org.springframework.web.server.ResponseStatusException;
 public class SmtpMailService implements MailService {
     private final ObjectProvider<JavaMailSender> senderProvider;
     private final String from;
+    private final String host;
 
-    public SmtpMailService(ObjectProvider<JavaMailSender> senderProvider, @Value("${app.mail.from:}") String from) {
-        this.senderProvider = senderProvider; this.from = from;
+    public SmtpMailService(ObjectProvider<JavaMailSender> senderProvider, @Value("${app.mail.from:}") String from,
+                           @Value("${spring.mail.host:}") String host) {
+        this.senderProvider = senderProvider; this.from = from; this.host = host;
     }
 
     @Override
     public void requireAvailable() {
-        if (senderProvider.getIfAvailable() == null || from == null || from.isBlank())
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "메일 발송 설정(MAIL_HOST, MAIL_FROM)이 필요합니다. 센터 관리자에게 문의해 주세요.");
+        if (host == null || host.isBlank() || from == null || from.isBlank() || senderProvider.getIfAvailable() == null)
+            throw new MailUnavailableException(MailUnavailableException.NOT_CONFIGURED, "메일 발송 설정(MAIL_HOST, MAIL_FROM)이 필요합니다. 센터 관리자에게 문의해 주세요.");
     }
 
     @Override
@@ -50,7 +53,7 @@ public class SmtpMailService implements MailService {
             senderProvider.getObject().send(message);
         } catch (MailException e) {
             log.warn("Password reset mail delivery failed: {}", e.getClass().getSimpleName());
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "인증 메일을 보내지 못했어요. 잠시 뒤 다시 시도해 주세요.");
+            throw new MailUnavailableException(MailUnavailableException.DELIVERY_FAILED, "인증 메일을 보내지 못했어요. 잠시 뒤 다시 시도해 주세요.");
         }
     }
 }

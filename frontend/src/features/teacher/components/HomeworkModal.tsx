@@ -19,11 +19,14 @@ function defaultDueDate() {
   return localDateInput(date);
 }
 
-export default function HomeworkModal({ students, preStudentId, initialHomework, onClose, onAssign, onUpdate }: {
-  students: Student[]; preStudentId: number; initialHomework?: Homework | null; onClose: () => void;
+/** 숙제 등록·수정 모달. 저장 실패 시 서버 오류(error)를 모달 안에 보여주고 닫지 않는다. */
+export default function HomeworkModal({ students, preStudentId, initialHomework, error, onClose, onAssign, onUpdate }: {
+  students: Student[]; preStudentId: number; initialHomework?: Homework | null; error?: string; onClose: () => void;
   onAssign: (hw: Omit<Homework, "id" | "done">) => Promise<boolean>; onUpdate: (id: number, body: Record<string, unknown>) => Promise<boolean>;
 }) {
-  const [studentId, setStudentId] = useState(String(initialHomework?.studentId ?? preStudentId));
+  const initialStudentId = initialHomework?.studentId ?? preStudentId;
+  // 목록에 없는 학생(예: 담당 해제됨)이 미리 선택되지 않도록 빈 값(선택 안내)으로 시작한다.
+  const [studentId, setStudentId] = useState(students.some((student) => student.id === initialStudentId) ? String(initialStudentId) : "");
   const [hwType, setHwType] = useState(initialHomework?.type ?? "말하기 연습");
   const [content, setContent] = useState(initialHomework?.title ?? "");
   const [minutes, setMinutes] = useState(String(initialHomework?.targetMinutes ?? 10));
@@ -57,11 +60,15 @@ export default function HomeworkModal({ students, preStudentId, initialHomework,
     <Modal title={initialHomework ? "숙제 수정" : "숙제 등록"} onClose={onClose} closeDisabled={submitting}
       footer={<>
         {students.length === 0 && <Notice tone="warning" className="mb-3">먼저 학생을 등록해 주세요.</Notice>}
-        <Button size="lg" fullWidth loading={submitting} loadingLabel="저장 중…" disabled={students.length === 0} onClick={() => void submit()}>
-          {initialHomework ? "수정 저장" : "숙제 등록"}
-        </Button>
+        {error && !submitting && <Notice tone="error" className="mb-3">{error}</Notice>}
+        <div className="flex gap-2">
+          <Button variant="neutral" size="lg" fullWidth disabled={submitting} onClick={onClose}>취소</Button>
+          <Button size="lg" fullWidth loading={submitting} loadingLabel="저장 중…" disabled={students.length === 0} onClick={() => void submit()}>
+            {initialHomework ? "수정 저장" : "숙제 등록"}
+          </Button>
+        </div>
       </>}>
-      <Select label="제자 선택" required disabled={Boolean(initialHomework)} value={studentId}
+      <Select label="제자 선택" required disabled={Boolean(initialHomework)} value={studentId} placeholder="학생을 선택하세요"
         onChange={(event) => { setStudentId(event.target.value); setErrors((current) => ({ ...current, studentId: undefined })); }}
         options={students.map((student) => ({ value: String(student.id), label: student.name }))} error={errors.studentId}
         hint={initialHomework ? "배정된 학생은 수정할 수 없어요." : undefined} />

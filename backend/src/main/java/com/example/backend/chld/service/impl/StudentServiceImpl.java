@@ -9,6 +9,7 @@ import com.example.backend.chld.service.ConsentPolicy;
 import com.example.backend.chld.service.ConsentService;
 import com.example.backend.chld.service.SpeechAnalysisService;
 import com.example.backend.chld.service.SpeechRecognitionService;
+import com.example.backend.chld.service.SpeechFeedbackService;
 import com.example.backend.chld.service.StudentService;
 import com.example.backend.global.jwt.TokenPrincipal;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ import java.util.*;
 
 @Service
 public class StudentServiceImpl implements StudentService {
+    private final SpeechFeedbackService speechFeedback;
     private final StudentMapper mapper;
     private final UserMapper users;
     private final ExternalProviderService providers;
@@ -36,7 +38,9 @@ public class StudentServiceImpl implements StudentService {
 
     public StudentServiceImpl(StudentMapper mapper, UserMapper users, ExternalProviderService providers, AudioStorageService audioStorage,
                               ConversationPersistenceService conversationPersistence, SpeechAnalysisService speechAnalysis,
-                              SpeechRecognitionService recognizer, ConsentService consents, @Value("${app.speech.engine:local}") String engine) {
+                              SpeechRecognitionService recognizer, ConsentService consents, SpeechFeedbackService speechFeedback,
+                              @Value("${app.speech.engine:local}") String engine) {
+        this.speechFeedback=speechFeedback;
         this.mapper=mapper; this.users=users; this.providers=providers; this.audioStorage=audioStorage; this.conversationPersistence=conversationPersistence;
         this.speechAnalysis=speechAnalysis; this.recognizer=recognizer; this.consents=consents;
         this.localSpeech=!"external".equalsIgnoreCase(engine==null?"":engine.trim());
@@ -79,7 +83,8 @@ public class StudentServiceImpl implements StudentService {
         return PageResponse.of(rows,mapper.countHomeworks(studentId),window);
     }
 
-    @Override @Transactional public Map<String,Object> completeHomework(TokenPrincipal principal,long homeworkId) {
+    /** 쓰기는 조건부 UPDATE 한 문장이다. 선생님의 동시 수정과 겹쳐도 MariaDB 스냅샷 충돌(오류 1020)이 나지 않도록 트랜잭션으로 묶지 않는다. */
+    @Override public Map<String,Object> completeHomework(TokenPrincipal principal,long homeworkId) {
         long studentId=studentId(principal);
         Map<String,Object> homework=mapper.findHomework(studentId,homeworkId);
         if(homework==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"숙제를 찾을 수 없습니다.");
@@ -129,17 +134,27 @@ public class StudentServiceImpl implements StudentService {
         return saved;
     }
 
-    @Override public Map<String,Object> analyzeSpeech(TokenPrincipal principal,MultipartFile audio,String exerciseId,String itemId) {
+    @Override public Map<String,Object> analyzeSpeech(TokenPrincipal principal,MultipartFile audio,String exerciseId,String itemId,String requestKey) {
         requireStudent(principal);
         consents.requireConsent(principal.userId(),ConsentPolicy.VOICE);
         Map<String,Object> profile=profileFor(principal.userId());
         long studentId=((Number)profile.get("studentId")).longValue();
         long id=parseId(exerciseId);
-        if(mapper.findExercise(id)==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"연습 문제를 찾을 수 없습니다.");
+        Map<String,Object> exercise=mapper.findExercise(id);
+        if(exercise==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"연습 문제를 찾을 수 없습니다.");
         long parsedItemId=parseId(itemId);
         Map<String,Object> item=mapper.findExerciseItem(id,parsedItemId);
         if(item==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"연습 문항이 해당 연습 문제에 포함되어 있지 않습니다.");
-        return speechAnalysis.analyze(studentId,String.valueOf(profile.get("learnerType")),id,parsedItemId,String.valueOf(item.get("text")),audio);
+        return speechAnalysis.analyze(studentId,String.valueOf(profile.get("learnerType")),id,parsedItemId,String.valueOf(item.get("text")),
+                (String)exercise.get("targetPhonemes"),audio,requestKey);
+    }
+
+    @Override public Map<String,Object> speechFeedback(TokenPrincipal principal,String analysisId) {
+        return speechFeedback.feedback(principal.userId(),speechAnalysis.findAnalysis(studentId(principal),analysisId));
+    }
+
+    @Override public Map<String,Object> generateSpeechFeedback(TokenPrincipal principal,String analysisId) {
+        return speechFeedback.generate(principal.userId(),speechAnalysis.findAnalysis(studentId(principal),analysisId));
     }
 
     @Override public Map<String,Object> speechAnalysis(TokenPrincipal principal,String analysisId) {

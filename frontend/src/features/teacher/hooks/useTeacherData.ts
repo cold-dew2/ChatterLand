@@ -1,11 +1,15 @@
 "use client"
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { authApi } from '@/features/auth/api/authApi'
 import { teacherApi } from '@/features/teacher/api/teacherApi'
 import type { Homework, Student, StudentFormValues } from '@/features/teacher/types'
 import { mapHomework, mapStudent } from '@/features/teacher/utils/mappers'
-import { errorMessage } from '@/shared/api/client'
+import { ApiError, errorMessage } from '@/shared/api/client'
+import { newIdempotencyKey } from '@/shared/api/idempotencyKey'
+
+const VERSION_CONFLICT_MESSAGE = '다른 곳에서 먼저 바뀐 숙제예요. 최신 내용을 불러왔으니 확인한 뒤 다시 저장해 주세요.'
+const isVersionConflict = (error: unknown) => error instanceof ApiError && error.status === 409 && error.code === 'VERSION_CONFLICT'
 
 /**
  * 선생님 화면의 담당 학생·숙제 데이터와 등록·수정·삭제 요청.
@@ -20,6 +24,8 @@ export function useTeacherData() {
   const [centerName, setCenterName] = useState('')
   const [mutationError, setMutationError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+  // 숙제 등록 요청 키: 같은 내용을 다시 보내면(응답 유실 후 재시도) 같은 키를 써서 서버가 중복으로 만들지 않게 한다.
+  const pendingCreate = useRef<{ payload: string; key: string } | null>(null)
 
   useEffect(() => {
     let active = true
@@ -73,10 +79,21 @@ export function useTeacherData() {
     }
   }
 
-  const addHomework = async (homework: Omit<Homework, 'id' | 'done'>) => {
+  /** 숙제 목록만 다시 불러온다(수정 충돌 뒤 최신 버전으로 맞추기). 실패하면 기존 목록을 유지한다. */
+  const refreshHomeworks = async () => {
     try {
-      const saved = await teacherApi.addHomework(homework) as Record<string, unknown>
-      setHomeworks((current) => [...current, mapHomework(saved)])
+      const page = await teacherApi.homeworks(undefined, undefined, 0, 100) as { content?: Record<string, unknown>[] }
+      setHomeworks((page.content ?? []).map(mapHomework))
+    } catch { /* 충돌 안내는 그대로 두고, 목록은 다음 새로고침에서 다시 불러온다 */ }
+  }
+
+  const addHomework = async (homework: Omit<Homework, 'id' | 'done'>) => {
+    const payload = JSON.stringify(homework)
+    if (pendingCreate.current?.payload !== payload) pendingCreate.current = { payload, key: newIdempotencyKey() }
+    try {
+      const saved = mapHomework(await teacherApi.addHomework(homework, pendingCreate.current.key) as Record<string, unknown>)
+      pendingCreate.current = null
+      setHomeworks((current) => current.some((item) => item.id === saved.id) ? current : [...current, saved])
       succeed('숙제를 등록했어요.')
       return true
     } catch (error) {
@@ -86,12 +103,20 @@ export function useTeacherData() {
   }
 
   const updateHomework = async (id: number, body: Record<string, unknown>) => {
+    // version은 서버에서 필수다(없으면 400). 목록이 내려준 값을 그대로 보낸다.
+    const version = homeworks.find((item) => item.id === id)?.version
     try {
-      const saved = await teacherApi.updateHomework(id, body) as Record<string, unknown>
-      setHomeworks((current) => current.map((item) => item.id === id ? { ...mapHomework(saved), id } : item))
+      const saved = await teacherApi.updateHomework(id, { ...body, version }) as Record<string, unknown>
+      setHomeworks((current) => current.map((item) => item.id === id ? { ...item, ...mapHomework(saved), id, studentId: item.studentId } : item))
       succeed('숙제를 수정했어요.')
       return true
     } catch (error) {
+      if (isVersionConflict(error)) {
+        await refreshHomeworks()
+        setSuccessMessage('')
+        setMutationError(VERSION_CONFLICT_MESSAGE)
+        return false
+      }
       fail(error, '숙제를 수정하지 못했어요.')
       return false
     }
@@ -101,21 +126,35 @@ export function useTeacherData() {
     const homework = homeworks.find((item) => item.id === id)
     if (!homework) return
     try {
-      await teacherApi.updateHomework(id, { done: !homework.done })
-      setHomeworks((current) => current.map((item) => item.id === id ? { ...item, done: !item.done } : item))
+      const saved = mapHomework(await teacherApi.updateHomework(id, { done: !homework.done, version: homework.version }) as Record<string, unknown>)
+      setHomeworks((current) => current.map((item) => item.id === id ? { ...item, done: saved.done, version: saved.version } : item))
       succeed(homework.done ? '숙제를 미완료로 바꿨어요.' : '숙제를 완료로 바꿨어요.')
     } catch (error) {
+      if (isVersionConflict(error)) {
+        await refreshHomeworks()
+        setSuccessMessage('')
+        setMutationError('다른 곳에서 먼저 바뀐 숙제예요. 최신 상태를 불러왔으니 다시 확인해 주세요.')
+        return
+      }
       fail(error, '숙제 상태를 변경하지 못했어요.')
     }
   }
 
+  /** 반환값이 true면 삭제 확인 창을 닫는다. 버전 충돌이면 지우지 않고 최신 목록을 보여주기 위해 창을 닫는다. */
   const deleteHomework = async (id: number) => {
+    const version = homeworks.find((item) => item.id === id)?.version ?? 0
     try {
-      await teacherApi.deleteHomework(id)
+      await teacherApi.deleteHomework(id, version)
       setHomeworks((current) => current.filter((item) => item.id !== id))
       succeed('숙제를 삭제했어요.')
       return true
     } catch (error) {
+      if (isVersionConflict(error)) {
+        await refreshHomeworks()
+        setSuccessMessage('')
+        setMutationError('다른 곳에서 먼저 바뀐 숙제라 삭제하지 않았어요. 최신 내용을 확인한 뒤 다시 삭제해 주세요.')
+        return true
+      }
       fail(error, '숙제를 삭제하지 못했어요.')
       return false
     }

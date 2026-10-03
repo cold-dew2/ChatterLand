@@ -19,7 +19,7 @@ public class AudioRetentionScheduler {
             retention.purgeExpired();
         } catch (RuntimeException e) {
             // 실패한 항목은 삭제 시도 횟수와 함께 남아 다음 실행에서 다시 처리된다.
-            log.error("Audio retention purge failed", e);
+            log.error("Audio retention purge failed: {}", com.example.backend.global.exception.LogMasking.describe(e));
         }
     }
 }

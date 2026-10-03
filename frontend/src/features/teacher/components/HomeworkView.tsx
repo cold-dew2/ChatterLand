@@ -48,9 +48,9 @@ export default function HomeworkView({ students, homeworks, loadState, onRetry, 
         {loadState === "loading" && <LoadingState label="숙제를 불러오고 있어요…" />}
         {loadState === "error" && <ErrorState message="숙제 목록을 불러오지 못했어요." onRetry={onRetry} />}
         {loadState === "ready" && filtered.length === 0 && (
-          <EmptyState title="숙제가 없어요" variant="plain"
+          <EmptyState title={filter === "all" ? "숙제가 없어요" : "이 학생에게 배정한 숙제가 없어요"} variant="plain"
             icon={<ClipboardList size={32} className="text-gray-200 mx-auto mb-2" aria-hidden="true" />}
-            action={<Button onClick={onAssignHw}>첫 숙제 등록</Button>} />
+            action={<Button onClick={onAssignHw}>{filter === "all" ? "첫 숙제 등록" : "숙제 등록"}</Button>} />
         )}
         {loadState === "ready" && filtered.map((hw) => {
           const student = students.find((s) => s.id === hw.studentId);

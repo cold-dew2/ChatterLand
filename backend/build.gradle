@@ -75,6 +75,62 @@ dependencies {
     testImplementation 'com.icegreen:greenmail-junit5:2.1.3'
 }
 
-tasks.named('test') {
+// ── 테스트 실행 구성 ──────────────────────────────────────────────
+// unitTest: DB 없이 실행(서비스·검증·분석 로직). integrationTest: 테스트 전용 DB(scripts/test-db.sh)가 반드시 필요.
+// test: 전체(단위+통합). 통합 테스트는 개발용 .env DB로 절대 실행하지 않는다(테스트 DB가 없으면 원인을 표시하고 실패).
+// REQUIRE_SPEECH_MODEL=true / REQUIRE_MAILPIT=true 이면 whisper 모델·Mailpit 누락을 SKIPPED가 아니라 FAIL로 처리한다(CI).
+def integrationPatterns = ['**/*IntegrationTest.class', '**/BackendApplicationTests.class']
+def testDbEnv = [:]
+def testDbEnvFile = file("${layout.buildDirectory.get().asFile}/test-db/env")
+if (testDbEnvFile.exists()) testDbEnvFile.eachLine { line -> def i = line.indexOf('='); if (i > 0) testDbEnv[line.substring(0, i)] = line.substring(i + 1) }
+['TEST_DB_URL', 'TEST_DB_USERNAME', 'TEST_DB_PASSWORD'].each { key -> if (System.getenv(key)) testDbEnv[key] = System.getenv(key) }
+
+def useTestDatabase = { Test task ->
+    if (!testDbEnv.TEST_DB_URL) {
+        task.doFirst { throw new GradleException('테스트 DB 설정이 없습니다. scripts/test-db.sh start 를 실행하거나 TEST_DB_URL/TEST_DB_USERNAME/TEST_DB_PASSWORD 를 지정하세요. (개발 DB로는 통합 테스트를 실행하지 않습니다)') }
+        return
+    }
+    task.systemProperty 'spring.datasource.url', testDbEnv.TEST_DB_URL
+    task.systemProperty 'spring.datasource.username', testDbEnv.TEST_DB_USERNAME
+    task.systemProperty 'spring.datasource.password', testDbEnv.TEST_DB_PASSWORD
+    task.doFirst {
+        def matcher = testDbEnv.TEST_DB_URL =~ /jdbc:\w+:\/\/([^:\/]+):?(\d+)?\//
+        if (matcher.find()) {
+            def host = matcher.group(1), port = (matcher.group(2) ?: '3306') as int
+            try { new Socket().withCloseable { it.connect(new InetSocketAddress(host, port), 3000) } }
+            catch (IOException ignored) { throw new GradleException("테스트 DB(${host}:${port})에 연결할 수 없습니다. scripts/test-db.sh start 로 실행했는지 확인하세요.") }
+        }
+    }
+}
+
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
+    // 백엔드는 .env를 읽는다(spring.config.import). 테스트가 개발자의 실제 AI 키로 외부 API를 호출하지 않도록 AI 설정을 비운다.
+    // 실제 호출 검증은 LIVE_AI_TEST=1 로 실행할 때만 한다(LiveAiIntegrationTest).
+    if (System.getenv('LIVE_AI_TEST') != '1') {
+        systemProperty 'app.ai.endpoint', ''
+        systemProperty 'app.ai.api-key', ''
+    }
+    environment 'LIVE_AI_TEST', System.getenv('LIVE_AI_TEST') ?: ''
+}
+
+tasks.named('test') { useTestDatabase(it) }
+
+tasks.register('unitTest', Test) {
+    description = 'DB가 필요 없는 단위 테스트'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    exclude integrationPatterns
+}
+
+tasks.register('integrationTest', Test) {
+    description = '테스트 전용 DB를 사용하는 통합 테스트(API·DB·권한·음성)'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    include integrationPatterns
+    // 실제 외부 AI 호출 검증은 LIVE_AI_TEST=1 일 때만 포함한다(비용·외부 의존).
+    if (System.getenv('LIVE_AI_TEST') != '1') exclude '**/LiveAiIntegrationTest.class'
+    useTestDatabase(it)
 }

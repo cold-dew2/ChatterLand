@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
   age TINYINT UNSIGNED NULL,
   terms_agreed BOOLEAN NOT NULL DEFAULT FALSE,
   status ENUM('ACTIVE','INACTIVE') NOT NULL DEFAULT 'ACTIVE',
+  token_version INT NOT NULL DEFAULT 0,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uq_users_email (email),
@@ -57,6 +58,7 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
   token_hash CHAR(64) NOT NULL,
   expires_at DATETIME NOT NULL,
   revoked_at DATETIME NULL,
+  session_id CHAR(36) NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uq_refresh_hash (token_hash),
   KEY idx_refresh_user (user_id),
@@ -78,6 +80,7 @@ CREATE TABLE IF NOT EXISTS exercises (
   title VARCHAR(120) NOT NULL,
   instruction VARCHAR(500) NOT NULL,
   input_type ENUM('mic','read','speak') NOT NULL DEFAULT 'mic',
+  target_phonemes VARCHAR(40) NULL,
   sort_order SMALLINT NOT NULL DEFAULT 0,
   active BOOLEAN NOT NULL DEFAULT TRUE,
   KEY idx_exercise_category (category_id, active, sort_order),
@@ -139,10 +142,17 @@ CREATE TABLE IF NOT EXISTS speech_analyses (
   recognition_confidence DECIMAL(5,4) NULL,
   engine_name VARCHAR(80) NULL,
   model_name VARCHAR(160) NULL,
+  analysis_type VARCHAR(20) NULL,
+  assessment_status VARCHAR(30) NULL,
+  assessment_json TEXT NULL,
+  analysis_version VARCHAR(40) NULL,
+  request_key VARCHAR(64) NULL,
+  request_hash CHAR(64) NULL,
   pronunciation_status VARCHAR(30) NULL,
   review_status VARCHAR(30) NULL,
   teacher_judgement VARCHAR(30) NULL,
   teacher_note VARCHAR(1000) NULL,
+  teacher_confirmed_json TEXT NULL,
   reviewed_by BIGINT NULL,
   reviewed_at DATETIME NULL,
   audio_deleted_at DATETIME NULL,
@@ -207,6 +217,9 @@ CREATE TABLE IF NOT EXISTS homeworks (
   target_minutes SMALLINT UNSIGNED NOT NULL DEFAULT 10,
   due_date DATE NOT NULL,
   status ENUM('PENDING','IN_PROGRESS','COMPLETED') NOT NULL DEFAULT 'PENDING',
+  version INT NOT NULL DEFAULT 0,
+  request_key VARCHAR(64) NULL,
+  request_hash CHAR(64) NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY idx_homework_teacher_due (teacher_id, due_date),
@@ -335,3 +348,83 @@ INSERT IGNORE INTO exercise_items (exercise_id, text_value, emoji, sort_order) V
 (3,'사과','🍎',1),(3,'바나나','🍌',2),(3,'포도','🍇',3),
 (4,'오늘은 날씨가 좋아요.',NULL,1),(4,'천천히 또박또박 말해요.',NULL,2),
 (5,'토끼가 숲속을 걸어가요.',NULL,1),(5,'거북이가 친구를 만났어요.',NULL,2);
+
+-- ── 단어·문장 평가 구조(자동 분석 근거·판정 보류·교사 확정 결과 분리) ──────────────
+-- 모두 NULL 허용 컬럼 추가이며 기존 데이터와 API 필드는 그대로 둔다.
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='speech_analyses' AND COLUMN_NAME='analysis_type')=0, 'ALTER TABLE speech_analyses ADD COLUMN analysis_type VARCHAR(20) NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='speech_analyses' AND COLUMN_NAME='assessment_status')=0, 'ALTER TABLE speech_analyses ADD COLUMN assessment_status VARCHAR(30) NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='speech_analyses' AND COLUMN_NAME='assessment_json')=0, 'ALTER TABLE speech_analyses ADD COLUMN assessment_json TEXT NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='speech_analyses' AND COLUMN_NAME='analysis_version')=0, 'ALTER TABLE speech_analyses ADD COLUMN analysis_version VARCHAR(40) NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='speech_analyses' AND COLUMN_NAME='teacher_confirmed_json')=0, 'ALTER TABLE speech_analyses ADD COLUMN teacher_confirmed_json TEXT NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='exercises' AND COLUMN_NAME='target_phonemes')=0, 'ALTER TABLE exercises ADD COLUMN target_phonemes VARCHAR(40) NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+-- 기본 연습 문제의 목표 음소(선생님이 지정하지 않은 경우에만 채운다)
+UPDATE exercises SET target_phonemes='ㄹ' WHERE exercise_id=1 AND target_phonemes IS NULL;
+UPDATE exercises SET target_phonemes='ㅂ,ㅍ' WHERE exercise_id=2 AND target_phonemes IS NULL;
+
+-- ── 중복 음성 분석 방지(멱등성 키) ──────────────
+-- 화면이 녹음마다 만든 Idempotency-Key를 학생별로 한 번만 처리한다. 실패한 분석은 키를 비워 다시 시도할 수 있다.
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='speech_analyses' AND COLUMN_NAME='request_key')=0, 'ALTER TABLE speech_analyses ADD COLUMN request_key VARCHAR(64) NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='speech_analyses' AND COLUMN_NAME='request_hash')=0, 'ALTER TABLE speech_analyses ADD COLUMN request_hash CHAR(64) NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='speech_analyses' AND INDEX_NAME='uq_analysis_request_key')=0, 'ALTER TABLE speech_analyses ADD UNIQUE KEY uq_analysis_request_key (student_id, request_key)', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+
+-- ── 숙제 중복 생성 방지(멱등성 키)·동시 수정 충돌 방지(버전) ──────────────
+-- 선생님별로 같은 Idempotency-Key의 숙제 생성은 한 번만 저장한다. version은 수정할 때마다 1씩 늘어난다(기존 행은 0).
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='homeworks' AND COLUMN_NAME='request_key')=0, 'ALTER TABLE homeworks ADD COLUMN request_key VARCHAR(64) NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='homeworks' AND COLUMN_NAME='request_hash')=0, 'ALTER TABLE homeworks ADD COLUMN request_hash CHAR(64) NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='homeworks' AND INDEX_NAME='uq_homework_request_key')=0, 'ALTER TABLE homeworks ADD UNIQUE KEY uq_homework_request_key (teacher_id, request_key)', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='homeworks' AND COLUMN_NAME='version')=0, 'ALTER TABLE homeworks ADD COLUMN version INT NOT NULL DEFAULT 0', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+
+-- ── 비밀번호 재설정 후 기존 access token 무효화 ──────────────
+-- access token에 발급 당시 token_version을 담고, 요청마다 현재 값과 비교한다. 비밀번호를 재설정하면 1 늘어난다(기존 행은 0).
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='users' AND COLUMN_NAME='token_version')=0, 'ALTER TABLE users ADD COLUMN token_version INT NOT NULL DEFAULT 0', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+
+-- ── 로그아웃 시 access token 즉시 무효화(로그인 세션 ID) ──────────────
+-- 로그인 1회(기기)마다 세션 ID를 만들고 refresh token 회전 시 이어받는다. access token의 sid와 비교해, 로그아웃한 세션의 토큰을 거절한다.
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='refresh_tokens' AND COLUMN_NAME='session_id')=0, 'ALTER TABLE refresh_tokens ADD COLUMN session_id CHAR(36) NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='refresh_tokens' AND INDEX_NAME='idx_refresh_session')=0, 'ALTER TABLE refresh_tokens ADD KEY idx_refresh_session (session_id)', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+
+-- ── 로그인 상태 비밀번호 변경 시도 제한 ──────────────
+-- 현재 비밀번호를 틀린 시각만 남긴다(비밀번호 값은 저장하지 않음). 성공하면 지우고, 오래된 기록은 정리 작업이 지운다.
+CREATE TABLE IF NOT EXISTS password_change_failures (
+  failure_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id BIGINT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_pw_change_failure_user (user_id, created_at),
+  CONSTRAINT fk_pw_change_failure_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ── 오래된 refresh token 정리용 인덱스 ──────────────
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='refresh_tokens' AND INDEX_NAME='idx_refresh_expires')=0, 'ALTER TABLE refresh_tokens ADD KEY idx_refresh_expires (expires_at)', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='refresh_tokens' AND INDEX_NAME='idx_refresh_revoked')=0, 'ALTER TABLE refresh_tokens ADD KEY idx_refresh_revoked (revoked_at)', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+
+
+-- ── AI 학습 피드백(자동 분석·교사 확정 결과와 분리 보관) ──────────────
+-- 점수가 아니라 AI가 분석 근거를 쉽게 풀어 쓴 설명만 저장한다. evidence_hash가 달라지면(교사 재검토 등) 이전 설명은 쓰지 않는다.
+CREATE TABLE IF NOT EXISTS speech_ai_feedback (
+  analysis_id CHAR(36) PRIMARY KEY,
+  feedback_text VARCHAR(1000) NOT NULL,
+  evidence_hash CHAR(64) NOT NULL,
+  model_name VARCHAR(120) NULL,
+  prompt_version VARCHAR(40) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_ai_feedback_analysis FOREIGN KEY (analysis_id) REFERENCES speech_analyses(analysis_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

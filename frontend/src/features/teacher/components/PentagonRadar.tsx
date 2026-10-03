@@ -8,7 +8,7 @@ export default function PentagonRadar({ data }: { data: { metric: string; value:
   const outerPts = data.map((_, i) => pt(i, r));
   const dataPts = data.map((d, i) => pt(i, r * (d.value / 100)));
   return (
-    <svg width={160} height={160} viewBox="0 0 160 160" role="img" aria-label={`영역별 문장 일치도: ${data.map((d) => `${d.metric} ${d.value}%`).join(", ")}`}>
+    <svg width={160} height={160} viewBox="0 0 160 160" role="img" aria-label={`영역별 텍스트 일치율: ${data.map((d) => `${d.metric} ${d.value}%`).join(", ")}`}>
       {gridLevels.map((lvl) => <path key={lvl} d={toPath(data.map((_, i) => pt(i, r * lvl)))} fill="none" stroke="#e5e7eb" strokeWidth="1" />)}
       {outerPts.map((p, i) => <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="#e5e7eb" strokeWidth="1" />)}
       <path d={toPath(dataPts)} fill="var(--brand-primary)" fillOpacity={0.18} stroke="var(--brand-primary)" strokeWidth="1.8" />

@@ -19,9 +19,11 @@ public interface TeacherService {
     Map<String,Object> student(TokenPrincipal principal,long studentId);
     PageResponse<Map<String,Object>> sessions(TokenPrincipal principal,long studentId,int page,int size);
     PageResponse<Map<String,Object>> homeworks(TokenPrincipal principal,Long studentId,String status,int page,int size);
-    Map<String,Object> addHomework(TokenPrincipal principal,HomeworkCreateRequest request);
+    /** idempotencyKey: 화면이 등록 의도마다 만든 키(없으면 null). 같은 키·같은 내용은 처음 만든 숙제를 돌려준다. */
+    Map<String,Object> addHomework(TokenPrincipal principal,HomeworkCreateRequest request,String idempotencyKey);
     Map<String,Object> updateHomework(TokenPrincipal principal,long homeworkId,HomeworkUpdateRequest request);
-    void deleteHomework(TokenPrincipal principal,long homeworkId);
+    /** version: 화면이 조회한 숙제 버전. 그 사이 바뀌었으면 409(VERSION_CONFLICT)로 지우지 않는다. */
+    void deleteHomework(TokenPrincipal principal,long homeworkId,int version);
     Map<String,Object> analytics(TokenPrincipal principal,long studentId,LocalDate startDate,LocalDate endDate);
     Map<String,Object> report(TokenPrincipal principal,long studentId,LocalDate startDate,LocalDate endDate);
     PageResponse<Map<String,Object>> speechAnalyses(TokenPrincipal principal,long studentId,String reviewStatus,int page,int size);

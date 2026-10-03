@@ -2,6 +2,7 @@ package com.example.backend.chld.controller;
 
 import com.example.backend.chld.dto.request.FindIdRequest;
 import com.example.backend.chld.dto.request.LoginRequest;
+import com.example.backend.chld.dto.request.PasswordChangeRequest;
 import com.example.backend.chld.dto.request.PasswordResetConfirmRequest;
 import com.example.backend.chld.dto.request.PasswordResetRequest;
 import com.example.backend.chld.dto.request.PasswordResetVerifyRequest;
@@ -34,7 +35,8 @@ public class AuthController {
     @PostMapping("/login") public AuthResponse login(@Valid @RequestBody LoginRequest request) { return authService.login(request); }
     @PostMapping("/refresh") public TokenResponse refresh(@Valid @RequestBody RefreshRequest request) { return authService.refresh(request); }
     @PostMapping("/logout") @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(@RequestBody(required = false) Map<String, String> body) { authService.logout(body == null ? null : body.get("refreshToken")); }
+    public void logout(@RequestBody(required = false) Map<String, String> body, @AuthenticationPrincipal TokenPrincipal principal) {
+        authService.logout(body == null ? null : body.get("refreshToken"), principal == null ? null : principal.sessionId()); }
     @PostMapping("/find-id") public FindIdResponse findId(@Valid @RequestBody FindIdRequest request) { return recovery.findId(request); }
     @PostMapping("/password-reset/request") @ResponseStatus(HttpStatus.ACCEPTED)
     public Map<String, String> requestPasswordReset(@Valid @RequestBody PasswordResetRequest request) {
@@ -44,5 +46,10 @@ public class AuthController {
     @PostMapping("/password-reset/verify") public PasswordResetTokenResponse verifyResetCode(@Valid @RequestBody PasswordResetVerifyRequest request) { return recovery.verifyResetCode(request); }
     @PostMapping("/password-reset/confirm") @ResponseStatus(HttpStatus.NO_CONTENT)
     public void confirmPasswordReset(@Valid @RequestBody PasswordResetConfirmRequest request) { recovery.confirmPasswordReset(request); }
+    /** 로그인 상태 비밀번호 변경. 다른 기기는 로그아웃되고, 이 기기에는 새 access·refresh token을 돌려준다. */
+    @PatchMapping("/me/password") public TokenResponse changePassword(@AuthenticationPrincipal TokenPrincipal principal,
+                                                                     @Valid @RequestBody PasswordChangeRequest request) {
+        return authService.changePassword(principal, request);
+    }
     @GetMapping("/me") public UserResponse me(@AuthenticationPrincipal TokenPrincipal principal) { return authService.currentUser(principal.userId()); }
 }

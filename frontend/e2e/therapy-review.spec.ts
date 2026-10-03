@@ -1,0 +1,57 @@
+import { expect, test } from '@playwright/test'
+import { api, createStudent, createTeacher, loginUi, mic, openPractice, recordAndAnalyze } from './helpers'
+
+test.use({ launchOptions: { args: mic('mic-dadio.wav') }, permissions: ['microphone'] })
+
+test('E2E-06 언어재활 녹음 → 자동 오류 후보 → 선생님 확정 → 새로고침 후 유지', async ({ browser }) => {
+  const student = await createStudent('therapy', '재활학생')
+  const teacher = await createTeacher('therapy-t', '재활선생님')
+  await api('POST', '/api/v1/teachers/me/students', { studentId: student.studentId, name: student.name }, teacher.token)
+  await api('PUT', `/api/v1/teachers/me/students/${student.studentId}`, { name: student.name, age: 8, learnerType: 'THERAPY' }, teacher.token)
+
+  const studentPage = await (await browser.newContext({ permissions: ['microphone'] })).newPage()
+  await loginUi(studentPage, student.email)
+  await openPractice(studentPage, /발음/, /ㄹ 발음/)
+  await recordAndAnalyze(studentPage, 2500)
+  await expect(studentPage.getByText('선생님 확인 대기')).toBeVisible({ timeout: 90_000 })
+  await expect(studentPage.getByText('텍스트 일치율')).toHaveCount(0)
+
+  const page = await (await browser.newContext()).newPage()
+  await loginUi(page, teacher.email, 'teacher')
+  await page.goto(`/teacher/students/${student.studentId}`)
+  await page.getByRole('tab', { name: '음성 검토' }).click()
+  const card = page.locator('article').first()
+  await expect(card.getByText('자동 오류 후보 있음')).toBeVisible()
+  await expect(card.getByText('오류 후보 (자동 · 미확정)')).toBeVisible()
+  await expect(card.getByText(/라디오 1번째 음절 '라' 어두 초성/)).toBeVisible()
+  await card.getByRole('checkbox', { name: /ㄹ →/ }).check()
+  await card.getByLabel('음소').fill('ㄹ')
+  await card.getByRole('button', { name: '추가' }).click()
+  await card.getByRole('combobox', { name: /선생님 검토 결과/ }).selectOption('NEEDS_PRACTICE')
+  await card.getByRole('button', { name: '검토 완료' }).click()
+  await expect(page.getByText('검토 결과를 저장했어요.')).toBeVisible()
+
+  await page.reload()
+  await page.getByRole('tab', { name: '음성 검토' }).click()
+  await page.getByRole('tab', { name: '전체' }).click()
+  const saved = page.locator('article').first()
+  await expect(saved.getByText('선생님 확정 오류', { exact: true })).toBeVisible()
+  await expect(saved.getByRole('listitem').filter({ hasText: /ㄹ 대치 →/ })).toHaveCount(1)
+  await expect(saved.getByRole('listitem').filter({ hasText: /ㄹ 왜곡/ })).toHaveCount(1)
+  await expect(saved.getByText('자동 오류 후보 있음')).toBeVisible()
+  await expect(saved.getByText(/선생님 판단: 연습 필요/)).toBeVisible()
+})
+
+test('E2E-07 담당이 아닌 선생님은 다른 선생님의 학생 결과에 접근할 수 없다', async ({ page }) => {
+  const student = await createStudent('outsider-s', '남의학생')
+  const owner = await createTeacher('owner-t', '담당선생님')
+  const outsider = await createTeacher('outsider-t', '다른선생님')
+  await api('POST', '/api/v1/teachers/me/students', { studentId: student.studentId, name: student.name }, owner.token)
+  await loginUi(page, outsider.email, 'teacher')
+  await page.goto(`/teacher/students/${student.studentId}`)
+  await expect(page.getByText('담당 학생 정보에 접근할 수 없습니다.')).toBeVisible()
+  await expect(page.getByText('제자 상세 정보')).toHaveCount(0)
+  await expect(page.getByText('남의학생')).toHaveCount(0)
+  const response = await fetch(`http://localhost:8080/api/v1/teachers/me/students/${student.studentId}/speech-analyses`, { headers: { Authorization: `Bearer ${outsider.token}` } })
+  expect(response.status).toBe(403)
+})

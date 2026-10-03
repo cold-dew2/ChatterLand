@@ -85,7 +85,7 @@
   <select id="findHomeworks" resultType="map">
     SELECT h.homework_id AS homeworkId,h.homework_id AS id,h.student_id AS studentId,sp.name AS studentName,
       h.title,h.type,h.description,h.target_minutes AS targetMinutes,DATE_FORMAT(h.due_date,'%Y-%m-%d') AS dueDate,
-      h.status,(h.status='COMPLETED') AS done,DATE_FORMAT(h.created_at,'%Y-%m-%dT%H:%i:%s') AS createdAt
+      h.status,(h.status='COMPLETED') AS done,h.version,DATE_FORMAT(h.created_at,'%Y-%m-%dT%H:%i:%s') AS createdAt
     FROM homeworks h JOIN student_profiles sp ON sp.student_id=h.student_id
     WHERE h.teacher_id=#{teacherId}
     <if test="studentId != null">AND h.student_id=#{studentId}</if>
@@ -98,20 +98,27 @@
     <if test="status != null and status != ''">AND status=#{status}</if>
   </select>
   <insert id="insertHomework">
-    INSERT INTO homeworks(teacher_id,student_id,title,type,description,target_minutes,due_date)
-    VALUES(#{teacherId},#{studentId},#{title},#{type},#{description},#{targetMinutes},#{dueDate})
+    INSERT INTO homeworks(teacher_id,student_id,title,type,description,target_minutes,due_date,request_key,request_hash)
+    VALUES(#{teacherId},#{studentId},#{title},#{type},#{description},#{targetMinutes},#{dueDate},#{requestKey},#{requestHash})
   </insert>
+  <select id="findHomeworkByRequestKey" resultType="map">
+    SELECT h.homework_id AS homeworkId,h.homework_id AS id,h.student_id AS studentId,sp.name AS studentName,
+      h.title,h.type,h.description,h.target_minutes AS targetMinutes,DATE_FORMAT(h.due_date,'%Y-%m-%d') AS dueDate,
+      h.status,(h.status='COMPLETED') AS done,h.version,h.request_hash AS requestHash
+    FROM homeworks h JOIN student_profiles sp ON sp.student_id=h.student_id
+    WHERE h.teacher_id=#{teacherId} AND h.request_key=#{requestKey}
+  </select>
   <select id="findLatestHomework" resultType="map">
     SELECT h.homework_id AS homeworkId,h.homework_id AS id,h.student_id AS studentId,sp.name AS studentName,
       h.title,h.type,h.description,h.target_minutes AS targetMinutes,DATE_FORMAT(h.due_date,'%Y-%m-%d') AS dueDate,
-      h.status,(h.status='COMPLETED') AS done
+      h.status,(h.status='COMPLETED') AS done,h.version
     FROM homeworks h JOIN student_profiles sp ON sp.student_id=h.student_id
     WHERE h.teacher_id=#{teacherId} AND h.student_id=#{studentId} AND h.title=#{title}
     ORDER BY h.homework_id DESC LIMIT 1
   </select>
   <select id="findHomework" resultType="map">
     SELECT homework_id AS homeworkId,student_id AS studentId,title,type,description,target_minutes AS targetMinutes,
-      due_date AS dueDate,status,(status='COMPLETED') AS done FROM homeworks
+      due_date AS dueDate,status,(status='COMPLETED') AS done,version FROM homeworks
     WHERE teacher_id=#{teacherId} AND homework_id=#{homeworkId}
   </select>
   <update id="updateHomework">
@@ -124,10 +131,14 @@
         <if test="dueDate != null">due_date=#{dueDate},</if>
         <if test="status != null">status=#{status},</if>
         <if test="done != null">status=CASE WHEN #{done}=TRUE THEN 'COMPLETED' ELSE 'PENDING' END,</if>
+        version=version+1,
       </trim>
     WHERE teacher_id=#{teacherId} AND homework_id=#{homeworkId}
+    <!-- 낙관적 잠금: 화면이 조회한 버전과 같을 때만 바꾼다(version은 필수). -->
+    AND version=#{version}
   </update>
-  <delete id="deleteHomework">DELETE FROM homeworks WHERE teacher_id=#{teacherId} AND homework_id=#{homeworkId}</delete>
+  <!-- 조회한 버전과 같을 때만 지운다(그 사이 수정·완료된 숙제를 확인 없이 지우지 않음). -->
+  <delete id="deleteHomework">DELETE FROM homeworks WHERE teacher_id=#{teacherId} AND homework_id=#{homeworkId} AND version=#{version}</delete>
   <select id="analytics" resultType="map">
     SELECT pa.overallScore,pa.averageMatchRate,COALESCE(pa.totalAttempts,0) AS totalAttempts,
       COALESCE(pa.scoredAttempts,0) AS scoredAttempts,COALESCE(pa.matchedAttempts,0) AS matchedAttempts,
@@ -171,7 +182,9 @@
       sa.speech_rate_score AS speechRateScore,sa.fluency_score AS fluencyScore,sa.overall_score AS overallScore,
       sa.review_status AS reviewStatus,sa.teacher_judgement AS teacherJudgement,sa.teacher_note AS teacherNote,
       DATE_FORMAT(sa.reviewed_at,'%Y-%m-%d %H:%i') AS reviewedAt,(sa.audio_path IS NOT NULL) AS hasAudio,
-      sa.error_code AS errorCode,DATE_FORMAT(sa.created_at,'%Y-%m-%d %H:%i') AS createdAt
+      sa.error_code AS errorCode,DATE_FORMAT(sa.created_at,'%Y-%m-%d %H:%i') AS createdAt,
+      sa.analysis_type AS analysisType,sa.assessment_status AS assessmentStatus,sa.assessment_json AS assessmentJson,
+      sa.analysis_version AS analysisVersion,sa.teacher_confirmed_json AS teacherConfirmedJson
   </sql>
   <select id="findStudentAnalyses" resultType="map">
     SELECT <include refid="analysisColumns"/>
@@ -200,7 +213,7 @@
   <update id="reviewAnalysis">
     UPDATE speech_analyses sa
     JOIN teacher_students r ON r.student_id=sa.student_id AND r.teacher_id=#{teacherId} AND r.status='ACTIVE'
-    SET sa.teacher_judgement=#{judgement},sa.teacher_note=#{note},sa.review_status='REVIEWED',
+    SET sa.teacher_judgement=#{judgement},sa.teacher_note=#{note},sa.teacher_confirmed_json=#{confirmedJson},sa.review_status='REVIEWED',
       sa.reviewed_by=#{teacherId},sa.reviewed_at=CURRENT_TIMESTAMP
     WHERE sa.analysis_id=#{analysisId} AND sa.status='COMPLETED'
   </update>

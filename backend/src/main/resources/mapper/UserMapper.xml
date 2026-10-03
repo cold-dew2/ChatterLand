@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.backend.chld.mapper.UserMapper">
   <select id="findByEmail" resultType="map">
-    SELECT u.user_id AS userId, u.role, u.center_id AS centerId, c.name AS centerName, u.name, u.email, u.password_hash AS passwordHash, u.status
+    SELECT u.user_id AS userId, u.role, u.center_id AS centerId, c.name AS centerName, u.name, u.email, u.password_hash AS passwordHash, u.status, u.token_version AS tokenVersion
     FROM users u JOIN centers c ON c.center_id=u.center_id WHERE u.email = LOWER(#{email}) AND u.status = 'ACTIVE' LIMIT 1
   </select>
   <select id="findById" resultType="map">
@@ -23,21 +23,67 @@
     VALUES(#{userId}, #{centerId}, #{name}, #{age})
   </insert>
   <insert id="insertRefreshToken">
-    INSERT INTO refresh_tokens(user_id, token_hash, expires_at) VALUES(#{userId}, #{hash}, #{expiresAt})
+    INSERT INTO refresh_tokens(user_id, token_hash, expires_at, session_id) VALUES(#{userId}, #{hash}, #{expiresAt}, #{sessionId})
   </insert>
   <select id="findActiveRefreshToken" resultType="map">
-    SELECT r.user_id AS userId, u.role FROM refresh_tokens r JOIN users u ON u.user_id = r.user_id
+    SELECT r.user_id AS userId, u.role, u.token_version AS tokenVersion, r.session_id AS sessionId FROM refresh_tokens r JOIN users u ON u.user_id = r.user_id
     WHERE r.token_hash = #{hash} AND r.revoked_at IS NULL AND r.expires_at > CURRENT_TIMESTAMP AND u.status = 'ACTIVE'
   </select>
   <update id="revokeRefreshToken">
     UPDATE refresh_tokens SET revoked_at = CURRENT_TIMESTAMP WHERE token_hash = #{hash} AND revoked_at IS NULL
   </update>
+  <select id="findRefreshSessionId" resultType="string">
+    SELECT session_id FROM refresh_tokens WHERE token_hash = #{hash}
+  </select>
+  <update id="revokeRefreshSession">
+    UPDATE refresh_tokens SET revoked_at = CURRENT_TIMESTAMP WHERE session_id = #{sessionId} AND revoked_at IS NULL
+  </update>
+  <!-- JWT 필터가 요청마다 호출한다(기본 키 + session_id 인덱스). 세션 ID가 없는 이전 토큰은 버전만 확인한다. -->
+  <select id="accessTokenState" resultType="java.lang.Integer">
+    SELECT CASE WHEN u.token_version = #{tokenVersion}
+      <if test="sessionId != null">
+        AND EXISTS (SELECT 1 FROM refresh_tokens r WHERE r.session_id = #{sessionId} AND r.user_id = u.user_id
+                    AND r.revoked_at IS NULL AND r.expires_at > CURRENT_TIMESTAMP)
+      </if>
+      THEN 1 ELSE 0 END
+    FROM users u WHERE u.user_id = #{userId} AND u.status = 'ACTIVE'
+  </select>
+  <select id="findPasswordHash" resultType="string">
+    SELECT password_hash FROM users WHERE user_id = #{userId} AND status = 'ACTIVE'
+  </select>
+  <select id="lockUserForUpdate" resultType="long">
+    SELECT user_id FROM users WHERE user_id = #{userId} FOR UPDATE
+  </select>
+  <select id="countPasswordChangeFailuresSince" resultType="int">
+    SELECT COUNT(*) FROM password_change_failures
+    WHERE user_id = #{userId} AND created_at &gt; DATE_SUB(CURRENT_TIMESTAMP, INTERVAL #{windowSeconds} SECOND)
+  </select>
+  <select id="secondsUntilPasswordChangeRetry" resultType="long">
+    SELECT GREATEST(1, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, DATE_ADD(MIN(created_at), INTERVAL #{windowSeconds} SECOND)))
+    FROM password_change_failures
+    WHERE user_id = #{userId} AND created_at &gt; DATE_SUB(CURRENT_TIMESTAMP, INTERVAL #{windowSeconds} SECOND)
+  </select>
+  <insert id="insertPasswordChangeFailure">INSERT INTO password_change_failures(user_id) VALUES(#{userId})</insert>
+  <delete id="deletePasswordChangeFailures">DELETE FROM password_change_failures WHERE user_id = #{userId}</delete>
+  <!-- 정리 작업: 한 번에 limit건씩 지워 잠금을 짧게 유지한다. 폐기·만료되지 않은 행(현재 로그인 세션)은 대상이 아니다. -->
+  <delete id="deleteExpiredRefreshTokens">
+    DELETE FROM refresh_tokens WHERE expires_at &lt; CURRENT_TIMESTAMP LIMIT #{limit}
+  </delete>
+  <delete id="deleteRevokedRefreshTokens">
+    DELETE FROM refresh_tokens WHERE revoked_at &lt; DATE_SUB(CURRENT_TIMESTAMP, INTERVAL #{retentionSeconds} SECOND) LIMIT #{limit}
+  </delete>
+  <delete id="deleteOldPasswordChangeFailures">
+    DELETE FROM password_change_failures WHERE created_at &lt; DATE_SUB(CURRENT_TIMESTAMP, INTERVAL #{olderThanSeconds} SECOND) LIMIT #{limit}
+  </delete>
   <select id="findEmailsByNameCenterRole" resultType="string">
     SELECT email FROM users WHERE name=#{name} AND center_id=#{centerId} AND role=#{role} AND status='ACTIVE' ORDER BY user_id LIMIT 5
   </select>
   <update id="updatePassword">
-    UPDATE users SET password_hash=#{passwordHash} WHERE user_id=#{userId} AND status='ACTIVE'
+    UPDATE users SET password_hash=#{passwordHash}, token_version=token_version+1 WHERE user_id=#{userId} AND status='ACTIVE'
   </update>
+  <select id="findTokenVersion" resultType="java.lang.Integer">
+    SELECT token_version FROM users WHERE user_id=#{userId} AND status='ACTIVE'
+  </select>
   <update id="revokeAllRefreshTokens">
     UPDATE refresh_tokens SET revoked_at=CURRENT_TIMESTAMP WHERE user_id=#{userId} AND revoked_at IS NULL
   </update>

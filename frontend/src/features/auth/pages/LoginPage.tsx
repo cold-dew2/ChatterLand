@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, ArrowRight, GraduationCap, BookOpen } from "lucide-react";
@@ -12,6 +12,7 @@ import Input from "@/shared/components/input/Input";
 import Notice from "@/shared/components/feedback/Notice";
 import Tabs from "@/shared/components/tabs/Tabs";
 import { PageTitle } from "@/shared/components/pageHeader/PageHeader";
+import { safeReturnPath } from "@/features/auth/utils/returnPath";
 import { validateEmail } from "@/features/auth/utils/validation";
 
 type Role = "teacher" | "student";
@@ -23,7 +24,13 @@ const roleTabs = [
   { value: "teacher" as Role, label: <><GraduationCap size={14} aria-hidden="true" /> 선생님</> },
 ];
 
-export default function LoginPage({ initialStep = "splash", sessionExpired = false }: { initialStep?: Step; sessionExpired?: boolean }) {
+/** 로그인 후 이동할 곳: 검증된 복귀 경로가 있으면 그곳, 아니면 역할별 홈 */
+function destinationFor(userRole: string, returnTo?: string) {
+  const role = userRole === "TEACHER" ? "TEACHER" : "STUDENT";
+  return safeReturnPath(returnTo, role) ?? (role === "TEACHER" ? paths.teacher.home : paths.student.home);
+}
+
+export default function LoginPage({ initialStep = "splash", sessionExpired = false, returnTo }: { initialStep?: Step; sessionExpired?: boolean; returnTo?: string }) {
   const router = useRouter();
   const [step, setStep] = useState<Step>(initialStep);
   const [role, setRole] = useState<Role>("student");
@@ -33,6 +40,14 @@ export default function LoginPage({ initialStep = "splash", sessionExpired = fal
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+
+  // 이미 로그인한 사용자가 로그인 화면에 오면 확인 후 원래 화면(또는 역할 홈)으로 보낸다. 토큰이 없으면 아무 요청도 하지 않는다.
+  useEffect(() => {
+    if (step !== "login" || !window.sessionStorage.getItem("chatterland.accessToken")) return;
+    let active = true;
+    authApi.me().then((user) => { if (active) router.replace(destinationFor(user.role, returnTo)); }).catch(() => undefined);
+    return () => { active = false; };
+  }, [step, returnTo, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +66,7 @@ export default function LoginPage({ initialStep = "splash", sessionExpired = fal
         return;
       }
       saveAuthTokens(result.accessToken, result.refreshToken);
-      router.push(result.user.role === "TEACHER" ? paths.teacher.home : paths.student.home);
+      router.push(destinationFor(result.user.role, returnTo));
     } catch (cause) {
       setError(errorMessage(cause, "로그인에 실패했어요. 다시 시도해 주세요."));
     } finally {

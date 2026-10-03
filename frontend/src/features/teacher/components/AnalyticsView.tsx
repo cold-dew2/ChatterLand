@@ -80,11 +80,13 @@ export default function AnalyticsView({ students, onBack, initialStudentId, init
   const homeworkCompleted = Number(analysis?.homeworkCompleted ?? 0);
   const previousHomeworkTotal = Number((analysis?.previousPeriod as Record<string, unknown> | undefined)?.homeworkTotal ?? 0);
   const previousHomeworkCompleted = Number((analysis?.previousPeriod as Record<string, unknown> | undefined)?.homeworkCompleted ?? 0);
-  const homeworkRate = homeworkTotal > 0 ? Math.round((homeworkCompleted / homeworkTotal) * 100) : null;
-  const previousHomeworkRate = previousHomeworkTotal > 0 ? Math.round((previousHomeworkCompleted / previousHomeworkTotal) * 100) : null;
+  // 비교값은 서버(comparison)가 같은 기준으로 계산한다. 기록 없는 기간은 null(0%로 표시하지 않음). 이전 응답 형식과도 호환한다.
+  const comparison = analysis?.comparison as Record<string, unknown> | undefined;
+  const homeworkRate = comparison ? numberOrNull(comparison.homeworkCompletionRate) : homeworkTotal > 0 ? Math.round((homeworkCompleted / homeworkTotal) * 100) : null;
+  const previousHomeworkRate = comparison ? numberOrNull(comparison.previousHomeworkCompletionRate) : previousHomeworkTotal > 0 ? Math.round((previousHomeworkCompleted / previousHomeworkTotal) * 100) : null;
   const previousPeriod = analysis?.previousPeriod as Record<string, unknown> | undefined;
   const previousRate = numberOrNull(previousPeriod?.averageMatchRate);
-  const rateChange = averageMatchRate !== null && previousRate !== null ? averageMatchRate - previousRate : null;
+  const rateChange = comparison ? numberOrNull(comparison.averageMatchRateChange) : averageMatchRate !== null && previousRate !== null ? averageMatchRate - previousRate : null;
   const period = `${startDate} ~ ${endDate}`;
 
   return (
@@ -112,7 +114,7 @@ export default function AnalyticsView({ students, onBack, initialStudentId, init
             <Card padding="none" className="overflow-hidden">
               <div className="flex items-center">
                 <div className="flex-1 p-4 border-r border-gray-100">
-                  <p className="text-xs text-gray-400 mb-1">평균 문장 일치도</p>
+                  <p className="text-xs text-gray-400 mb-1">평균 텍스트 일치율</p>
                   <p className="text-5xl font-black text-gray-900 leading-none">{averageMatchRate ?? "N/A"}{averageMatchRate !== null && <span className="ml-1 text-base font-normal text-gray-400">%</span>}</p>
                   <p className="text-xs mt-2 text-gray-400">조회 기간 기록 {totalAttempts}건</p>
                   {rateChange !== null && <p className={`mt-1 text-xs font-semibold ${rateChange > 0 ? "text-green-600" : rateChange < 0 ? "text-red-500" : "text-gray-400"}`}>
@@ -141,28 +143,28 @@ export default function AnalyticsView({ students, onBack, initialStudentId, init
             </Card>
 
             <Card>
-              <p className="text-sm font-bold text-gray-700 mb-3">문장 일치도 추이</p>
+              <p className="text-sm font-bold text-gray-700 mb-3">텍스트 일치율 추이</p>
               {trend.length ? <ResponsiveContainer width="100%" height={110}>
                 <LineChart data={trend}>
                   <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
                   <YAxis domain={[0, 100]} ticks={[0, 20, 40, 60, 80, 100]} tick={{ fontSize: 9, fill: "#d1d5db" }} axisLine={false} tickLine={false} width={24} />
-                  <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid #e5e7eb" }} formatter={(v: number) => [`${v}%`, "문장 일치도"]} />
+                  <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid #e5e7eb" }} formatter={(v: number) => [`${v}%`, "텍스트 일치율"]} />
                   <Line dataKey="matchRate" stroke="var(--brand-primary)" strokeWidth={2} dot={{ r: 3, fill: "var(--brand-primary)", strokeWidth: 0 }} activeDot={{ r: 5, fill: "var(--brand-primary)" }} />
                 </LineChart>
-              </ResponsiveContainer> : <p className="py-6 text-center text-xs text-gray-400">선택 기간에 문장 일치도 기록이 없어요.</p>}
+              </ResponsiveContainer> : <p className="py-6 text-center text-xs text-gray-400">선택 기간에 텍스트 일치율 기록이 없어요.</p>}
             </Card>
-            <p className="text-xs leading-relaxed text-gray-400">문장 일치도는 음성 인식 결과와 목표 문장의 글자 일치 정도이며 발음 정확도 점수가 아니에요. 언어재활 학습자의 녹음은 일치도를 계산하지 않고 선생님 검토로 관리해요.</p>
+            <p className="text-xs leading-relaxed text-gray-400">텍스트 일치율은 음성 인식 결과와 목표 문장의 글자 일치 정도이며 발음 정확도 점수가 아니에요. 언어재활 학습자의 녹음은 일치도를 계산하지 않고 선생님 검토로 관리해요.</p>
           </>)}
 
           {activeTab === "영역별 분석" && (
             <Card className="space-y-3">
-              <p className="text-sm font-bold text-gray-700">영역별 문장 일치도</p>
+              <p className="text-sm font-bold text-gray-700">영역별 텍스트 일치율</p>
               {areas.map((area) => (
                 <div key={area.metric} className="flex items-center gap-3">
                   <span className="text-xs text-gray-500 w-16 shrink-0">{area.metric}</span>
                   {area.matchRate !== null
-                    ? <><ProgressBar value={area.matchRate} label={`${area.metric} 문장 일치도 ${area.matchRate}%`} size="md" color="var(--brand-primary)" /><span className="text-sm font-bold text-gray-700 w-10 text-right">{area.matchRate}%</span></>
-                    : <span className="flex-1 text-xs text-gray-400">{area.attempts > 0 ? `연습 ${area.attempts}회 · 일치도 미계산` : "기록 없음"}</span>}
+                    ? <><ProgressBar value={area.matchRate} label={`${area.metric} 텍스트 일치율 ${area.matchRate}%`} size="md" color="var(--brand-primary)" /><span className="text-sm font-bold text-gray-700 w-10 text-right">{area.matchRate}%</span></>
+                    : <span className="flex-1 text-xs text-gray-400">{area.attempts > 0 ? `연습 ${area.attempts}회 · 텍스트 일치율 미계산` : "기록 없음"}</span>}
                 </div>
               ))}
               {areas.length === 0 && <p className="py-6 text-center text-xs text-gray-400">영역별 기록이 없어요.</p>}
@@ -176,7 +178,7 @@ export default function AnalyticsView({ students, onBack, initialStudentId, init
               <dl>
                 {[
                   { label: "연습 기록", value: `${totalAttempts}건` },
-                  { label: "평균 문장 일치도", value: averageMatchRate === null ? "기록 없음" : `${averageMatchRate}%` },
+                  { label: "평균 텍스트 일치율", value: averageMatchRate === null ? "기록 없음" : `${averageMatchRate}%` },
                   { label: "발음 평가 점수", value: externalScore === null ? "미평가" : `${externalScore}점 (외부 제공자)` },
                   { label: "음성 검토 대기", value: `${pendingReviews}건` },
                   { label: "숙제 수행", value: homeworkTotal ? `${homeworkCompleted}/${homeworkTotal}건 완료` : "마감 숙제 없음" },

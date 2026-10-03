@@ -48,10 +48,10 @@ function HistoryItemIcon({ type }: { type: HistoryItem["type"] }) {
   );
 }
 
-/** 저장된 실제 값만 표시한다: 외부 분석 점수 > 문장 일치도 > 미평가 */
+/** 저장된 실제 값만 표시한다: 외부 분석 점수 > 텍스트 일치율 > 미평가 */
 function HistoryResult({ item }: { item: HistoryItem }) {
   if (item.score !== null) return <span className="text-sm font-bold text-gray-700">{item.score}점</span>;
-  if (item.matchRate !== null) return <span className="text-sm font-bold text-gray-700">일치도 {Math.round(item.matchRate)}%</span>;
+  if (item.matchRate !== null) return <span className="text-sm font-bold text-gray-700">텍스트 일치율 {Math.round(item.matchRate)}%</span>;
   if (item.type === "word") return <Badge tone="neutral">미평가</Badge>;
   return null;
 }
@@ -113,7 +113,9 @@ export default function StudentHistoryScreen() {
         ))}
 
         {!loading && !error && visibleHistory.length === 0 && (
-          <EmptyState title="기록이 없어요" description="연습하거나 숙제를 하면 기록이 쌓여요." variant="plain" />
+          filter === "전체"
+            ? <EmptyState title="기록이 없어요" description="연습하거나 숙제를 하면 기록이 쌓여요." variant="plain" />
+            : <EmptyState title={`${filter} 기록이 없어요`} description="다른 종류를 고르거나 '전체'에서 모든 기록을 확인해 보세요." variant="plain" />
         )}
       </div>
 

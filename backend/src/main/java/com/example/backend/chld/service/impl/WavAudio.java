@@ -60,6 +60,14 @@ final class WavAudio {
         return Math.min(peak, 32767);
     }
 
+    /** 최대치 근처(±32000 이상)로 잘린 샘플 비율(0~1). 마이크 입력이 너무 커서 소리가 찌그러졌는지 확인한다. */
+    double clippedRatio() {
+        ByteBuffer buffer = ByteBuffer.wrap(pcm).order(ByteOrder.LITTLE_ENDIAN);
+        int samples = pcm.length / 2, clipped = 0;
+        for (int i = 0; i + 1 < pcm.length; i += 2) if (Math.abs((int) buffer.getShort(i)) >= 32000) clipped++;
+        return samples == 0 ? 0d : (double) clipped / samples;
+    }
+
     void writePadded(Path destination, long paddingMs) throws IOException {
         int padBytes = (int) (paddingMs * sampleRate / 1000L) * channels * 2;
         int dataSize = pcm.length + padBytes * 2;
