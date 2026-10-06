@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import type { PracticeContent } from "@/features/student/types";
+import PracticeContentPicker from "@/features/teacher/components/PracticeContentPicker";
 import type { Homework, Student } from "@/features/teacher/types";
 import { localDateInput } from "@/features/teacher/utils/mappers";
 import Button from "@/shared/components/button/Button";
@@ -28,10 +30,11 @@ export default function HomeworkModal({ students, preStudentId, initialHomework,
   // 목록에 없는 학생(예: 담당 해제됨)이 미리 선택되지 않도록 빈 값(선택 안내)으로 시작한다.
   const [studentId, setStudentId] = useState(students.some((student) => student.id === initialStudentId) ? String(initialStudentId) : "");
   const [hwType, setHwType] = useState(initialHomework?.type ?? "말하기 연습");
-  const [content, setContent] = useState(initialHomework?.title ?? "");
+  const [contentText, setContent] = useState(initialHomework?.title ?? "");
   const [minutes, setMinutes] = useState(String(initialHomework?.targetMinutes ?? 10));
   const [dueDate, setDueDate] = useState(initialHomework?.dueDate ?? defaultDueDate());
   const [submitting, setSubmitting] = useState(false);
+  const [content, setContentChoice] = useState<PracticeContent | null>(null);
   const [errors, setErrors] = useState<HomeworkErrors>({});
   const today = localDateInput(new Date());
 
@@ -40,18 +43,18 @@ export default function HomeworkModal({ students, preStudentId, initialHomework,
     const minuteValue = Number(minutes);
     const nextErrors: HomeworkErrors = {
       studentId: students.some((student) => student.id === Number(studentId)) ? undefined : "숙제를 배정할 학생을 선택해 주세요.",
-      title: content.trim().length > 160 ? "숙제 내용은 160자 이하로 입력해 주세요." : undefined,
+      title: contentText.trim().length > 160 ? "숙제 내용은 160자 이하로 입력해 주세요." : undefined,
       minutes: Number.isInteger(minuteValue) && minuteValue >= 1 && minuteValue <= 120 ? undefined : "목표 시간은 1~120분 사이로 입력해 주세요.",
       dueDate: !dueDate ? "마감일을 선택해 주세요." : dueDate < today ? "마감일은 오늘 이후로 설정해 주세요." : undefined,
     };
     setErrors(nextErrors);
     if (Object.values(nextErrors).some(Boolean)) return;
     setSubmitting(true);
-    const title = content.trim() || `${hwType} 숙제`;
+    const title = contentText.trim() || (content ? content.label : `${hwType} 숙제`);
     const description = `${hwType} · 목표 ${minuteValue}분`;
     const saved = initialHomework
       ? await onUpdate(initialHomework.id, { title, type: hwType, dueDate, targetMinutes: minuteValue, description })
-      : await onAssign({ studentId: Number(studentId), title, type: hwType, dueDate, description, targetMinutes: minuteValue });
+      : await onAssign({ studentId: Number(studentId), title, type: hwType, dueDate, description, targetMinutes: minuteValue, ...(content ? { exerciseId: Number(content.id) } : {}) });
     setSubmitting(false);
     if (saved) onClose();
   };
@@ -86,7 +89,10 @@ export default function HomeworkModal({ students, preStudentId, initialHomework,
         </div>
       </fieldset>
 
-      <Input label="숙제 내용" value={content} maxLength={160} onChange={(event) => { setContent(event.target.value); setErrors((current) => ({ ...current, title: undefined })); }}
+      {!initialHomework && <PracticeContentPicker selected={content} onSelect={setContentChoice} />}
+      {initialHomework?.exerciseTitle && <p className="text-xs text-gray-500">연습 콘텐츠: <b>{initialHomework.exerciseTitle}</b> (수정할 수 없어요)</p>}
+
+      <Input label="숙제 내용" value={contentText} maxLength={160} onChange={(event) => { setContent(event.target.value); setErrors((current) => ({ ...current, title: undefined })); }}
         placeholder="ㄹ 말 연습하기" hint="비워 두면 숙제 유형으로 제목을 만들어요." error={errors.title} />
       <Input label="목표 시간 (분)" type="number" inputMode="numeric" min={1} max={120} step={5} required value={minutes}
         onChange={(event) => { setMinutes(event.target.value); setErrors((current) => ({ ...current, minutes: undefined })); }} error={errors.minutes} />

@@ -3,13 +3,13 @@
 <mapper namespace="com.example.backend.chld.mapper.SpeechFeedbackMapper">
   <select id="findFeedback" resultType="map">
     SELECT analysis_id AS analysisId, feedback_text AS text, evidence_hash AS evidenceHash, model_name AS modelName,
-           prompt_version AS promptVersion, DATE_FORMAT(updated_at,'%Y-%m-%dT%H:%i:%s') AS generatedAt
+           prompt_version AS promptVersion, sources_json AS sourcesJson, DATE_FORMAT(updated_at,'%Y-%m-%dT%H:%i:%s') AS generatedAt
     FROM speech_ai_feedback WHERE analysis_id = #{analysisId}
   </select>
   <insert id="upsertFeedback">
-    INSERT INTO speech_ai_feedback(analysis_id, feedback_text, evidence_hash, model_name, prompt_version)
-    VALUES(#{analysisId}, #{text}, #{evidenceHash}, #{modelName}, #{promptVersion})
+    INSERT INTO speech_ai_feedback(analysis_id, feedback_text, evidence_hash, model_name, prompt_version, sources_json)
+    VALUES(#{analysisId}, #{text}, #{evidenceHash}, #{modelName}, #{promptVersion}, #{sourcesJson})
     ON DUPLICATE KEY UPDATE feedback_text = VALUES(feedback_text), evidence_hash = VALUES(evidence_hash),
-      model_name = VALUES(model_name), prompt_version = VALUES(prompt_version)
+      model_name = VALUES(model_name), prompt_version = VALUES(prompt_version), sources_json = VALUES(sources_json)
   </insert>
 </mapper>

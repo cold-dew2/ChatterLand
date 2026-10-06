@@ -1,5 +1,8 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
+const practiceContents = vi.fn()
+vi.mock('@/features/teacher/api/teacherApi', () => ({ teacherApi: { practiceContents: (...a: unknown[]) => practiceContents(...a) } }))
+
 import HomeworkModal from '@/features/teacher/components/HomeworkModal'
 import type { Student } from '@/features/teacher/types'
 import { localDateInput } from '@/features/teacher/utils/mappers'
@@ -69,4 +72,25 @@ describe('HomeworkModal (교사 숙제 배정)', () => {
     await act(async () => { fireEvent.click(screen.getByRole('button', { name: '수정 저장' })) })
     expect(onUpdate).toHaveBeenCalledWith(3, expect.objectContaining({ title: '수정된 숙제', type: '단어 말하기', targetMinutes: 15, dueDate: due }))
   })
+
+  it('연습 콘텐츠를 골라 숙제를 만들면 콘텐츠 ID를 함께 보내고, 제목을 비우면 콘텐츠 이름을 쓴다', async () => {
+    practiceContents.mockResolvedValue({ content: [{ exerciseId: 1205, title: '연음 낱말 1', instruction: '따라 말해요', inputType: 'mic', pronunciationRule: 'LIAISON', difficulty: 'INTERMEDIATE',
+      items: [{ itemId: 1, word: '옷이' }, { itemId: 2, word: '꽃을' }] }], totalElements: 1 })
+    const { onAssign } = setup()
+    fireEvent.change(screen.getByLabelText('콘텐츠 검색'), { target: { value: '옷' } })
+    fireEvent.click(screen.getByRole('button', { name: '콘텐츠 찾기' }))
+    fireEvent.click(await screen.findByRole('button', { name: '연음 낱말 1 선택' }))
+    expect(screen.getByText('옷이 · 꽃을')).toBeTruthy()
+    expect(practiceContents).toHaveBeenCalledWith(expect.objectContaining({ keyword: '옷' }))
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: '숙제 등록' })) })
+    expect(onAssign).toHaveBeenCalledWith(expect.objectContaining({ studentId: 7, title: '연음 낱말 1', exerciseId: 1205 }))
+  })
+
+  it('수정할 때는 콘텐츠를 바꿀 수 없고 지정된 콘텐츠만 보여 준다', () => {
+    setup({ initialHomework: { id: 3, studentId: 7, title: '받침 숙제', type: '말하기 연습', dueDate: localDateInput(new Date()), done: false, description: '', targetMinutes: 10, version: 0,
+      exerciseId: 1205, exerciseTitle: '연음 낱말 1' } })
+    expect(screen.getByText('연음 낱말 1')).toBeTruthy()
+    expect(screen.queryByRole('button', { name: '콘텐츠 찾기' })).toBeNull()
+  })
 })
+

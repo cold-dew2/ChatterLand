@@ -85,7 +85,7 @@
   <select id="findHomeworks" resultType="map">
     SELECT h.homework_id AS homeworkId,h.homework_id AS id,h.student_id AS studentId,sp.name AS studentName,
       h.title,h.type,h.description,h.target_minutes AS targetMinutes,DATE_FORMAT(h.due_date,'%Y-%m-%d') AS dueDate,
-      h.status,(h.status='COMPLETED') AS done,h.version,DATE_FORMAT(h.created_at,'%Y-%m-%dT%H:%i:%s') AS createdAt
+      h.status,(h.status='COMPLETED') AS done,h.exercise_id AS exerciseId,(SELECT ex.title FROM exercises ex WHERE ex.exercise_id=h.exercise_id) AS exerciseTitle,h.version,DATE_FORMAT(h.created_at,'%Y-%m-%dT%H:%i:%s') AS createdAt
     FROM homeworks h JOIN student_profiles sp ON sp.student_id=h.student_id
     WHERE h.teacher_id=#{teacherId}
     <if test="studentId != null">AND h.student_id=#{studentId}</if>
@@ -98,27 +98,27 @@
     <if test="status != null and status != ''">AND status=#{status}</if>
   </select>
   <insert id="insertHomework">
-    INSERT INTO homeworks(teacher_id,student_id,title,type,description,target_minutes,due_date,request_key,request_hash)
-    VALUES(#{teacherId},#{studentId},#{title},#{type},#{description},#{targetMinutes},#{dueDate},#{requestKey},#{requestHash})
+    INSERT INTO homeworks(teacher_id,student_id,title,type,description,target_minutes,due_date,request_key,request_hash,exercise_id)
+    VALUES(#{teacherId},#{studentId},#{title},#{type},#{description},#{targetMinutes},#{dueDate},#{requestKey},#{requestHash},#{exerciseId})
   </insert>
   <select id="findHomeworkByRequestKey" resultType="map">
     SELECT h.homework_id AS homeworkId,h.homework_id AS id,h.student_id AS studentId,sp.name AS studentName,
       h.title,h.type,h.description,h.target_minutes AS targetMinutes,DATE_FORMAT(h.due_date,'%Y-%m-%d') AS dueDate,
-      h.status,(h.status='COMPLETED') AS done,h.version,h.request_hash AS requestHash
+      h.status,(h.status='COMPLETED') AS done,h.exercise_id AS exerciseId,(SELECT ex.title FROM exercises ex WHERE ex.exercise_id=h.exercise_id) AS exerciseTitle,h.version,h.request_hash AS requestHash
     FROM homeworks h JOIN student_profiles sp ON sp.student_id=h.student_id
     WHERE h.teacher_id=#{teacherId} AND h.request_key=#{requestKey}
   </select>
   <select id="findLatestHomework" resultType="map">
     SELECT h.homework_id AS homeworkId,h.homework_id AS id,h.student_id AS studentId,sp.name AS studentName,
       h.title,h.type,h.description,h.target_minutes AS targetMinutes,DATE_FORMAT(h.due_date,'%Y-%m-%d') AS dueDate,
-      h.status,(h.status='COMPLETED') AS done,h.version
+      h.status,(h.status='COMPLETED') AS done,h.exercise_id AS exerciseId,(SELECT ex.title FROM exercises ex WHERE ex.exercise_id=h.exercise_id) AS exerciseTitle,h.version
     FROM homeworks h JOIN student_profiles sp ON sp.student_id=h.student_id
     WHERE h.teacher_id=#{teacherId} AND h.student_id=#{studentId} AND h.title=#{title}
     ORDER BY h.homework_id DESC LIMIT 1
   </select>
   <select id="findHomework" resultType="map">
     SELECT homework_id AS homeworkId,student_id AS studentId,title,type,description,target_minutes AS targetMinutes,
-      due_date AS dueDate,status,(status='COMPLETED') AS done,version FROM homeworks
+      due_date AS dueDate,status,(status='COMPLETED') AS done,version,exercise_id AS exerciseId FROM homeworks
     WHERE teacher_id=#{teacherId} AND homework_id=#{homeworkId}
   </select>
   <update id="updateHomework">
@@ -138,6 +138,30 @@
     AND version=#{version}
   </update>
   <!-- 조회한 버전과 같을 때만 지운다(그 사이 수정·완료된 숙제를 확인 없이 지우지 않음). -->
+  <select id="findStudentAttempts" resultType="map">
+    SELECT pa.attempt_id AS attemptId,pa.attempt_type AS attemptType,pa.homework_id AS homeworkId,h.title AS homeworkTitle,
+      pa.exercise_id AS exerciseId,e.title AS exerciseTitle,e.pronunciation_rule AS pronunciationRule,e.content_type AS contentType,
+      pa.analysis_id AS analysisId,sa.status AS analysisStatus,sa.assessment_status AS assessmentStatus,sa.evaluation_mode AS evaluationMode,
+      sa.target_text AS targetText,sa.transcript,pa.match_rate AS textMatchRate,sa.review_status AS reviewStatus,
+      DATE_FORMAT(pa.created_at,'%Y-%m-%d %H:%i') AS createdAt
+    FROM practice_attempts pa JOIN exercises e ON e.exercise_id=pa.exercise_id
+      LEFT JOIN homeworks h ON h.homework_id=pa.homework_id
+      LEFT JOIN speech_analyses sa ON sa.analysis_id=pa.analysis_id
+    WHERE pa.student_id=#{studentId} AND pa.attempt_type IN ('PRACTICE','SELF','LESSON','HOMEWORK')
+    <if test="type != null">AND pa.attempt_type=#{type}</if>
+    ORDER BY pa.created_at DESC,pa.attempt_id DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="countStudentAttempts" resultType="long">
+    SELECT COUNT(*) FROM practice_attempts WHERE student_id=#{studentId} AND attempt_type IN ('PRACTICE','SELF','LESSON','HOMEWORK')
+    <if test="type != null">AND attempt_type=#{type}</if>
+  </select>
+  <select id="attemptSummary" resultType="map">
+    <!-- practiceCount: 숙제가 아닌 연습 전체(기존 계약 유지). selfCount·lessonCount: 새 기록, unclassifiedCount: 유형 구분 전 기존 기록(PRACTICE) -->
+    SELECT COUNT(*) AS totalCount,COALESCE(SUM(attempt_type&lt;&gt;'HOMEWORK'),0) AS practiceCount,COALESCE(SUM(attempt_type='HOMEWORK'),0) AS homeworkCount,
+      COALESCE(SUM(attempt_type='SELF'),0) AS selfCount,COALESCE(SUM(attempt_type='LESSON'),0) AS lessonCount,COALESCE(SUM(attempt_type='PRACTICE'),0) AS unclassifiedCount,
+      COUNT(DISTINCT exercise_id) AS exerciseCount,DATE_FORMAT(MAX(created_at),'%Y-%m-%d %H:%i') AS lastPracticedAt
+    FROM practice_attempts WHERE student_id=#{studentId} AND attempt_type IN ('PRACTICE','SELF','LESSON','HOMEWORK')
+  </select>
   <delete id="deleteHomework">DELETE FROM homeworks WHERE teacher_id=#{teacherId} AND homework_id=#{homeworkId} AND version=#{version}</delete>
   <select id="analytics" resultType="map">
     SELECT pa.overallScore,pa.averageMatchRate,COALESCE(pa.totalAttempts,0) AS totalAttempts,

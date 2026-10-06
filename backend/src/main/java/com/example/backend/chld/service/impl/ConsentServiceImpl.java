@@ -50,6 +50,8 @@ public class ConsentServiceImpl implements ConsentService {
         if ("STUDENT".equals(role)) {
             consents.upsertConsent(userId, VOICE, Boolean.TRUE.equals(request.voice()), CURRENT_VERSION, guardianName, relation);
             consents.upsertConsent(userId, AI_CHAT, Boolean.TRUE.equals(request.aiChat()), CURRENT_VERSION, guardianName, relation);
+            // AI 학습 피드백은 가입 화면에서 받지 않는다(미동의로 기록, 마이페이지에서 별도 동의).
+            consents.upsertConsent(userId, AI_FEEDBACK, false, CURRENT_VERSION, guardianName, relation);
         }
     }
 
@@ -98,6 +100,7 @@ public class ConsentServiceImpl implements ConsentService {
             String message = switch (type) {
                 case VOICE -> "음성 녹음과 음성 인식을 이용하려면 마이페이지에서 '아동 음성 수집·이용'에 동의해 주세요.";
                 case AI_CHAT -> "AI 대화를 이용하려면 마이페이지에서 'AI 대화 외부 전송'에 동의해 주세요.";
+                case AI_FEEDBACK -> "AI 설명을 보려면 마이페이지에서 'AI 학습 피드백 외부 전송'에 동의해 주세요.";
                 default -> "필요한 동의가 없어 이용할 수 없습니다.";
             };
             throw new ConsentRequiredException(type, message);

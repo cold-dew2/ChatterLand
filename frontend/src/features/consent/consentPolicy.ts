@@ -8,7 +8,7 @@ export const CONSENT_POLICY_VERSION = '2026-10-01'
 export const GUARDIAN_REQUIRED_UNDER_AGE = 14
 export const AUDIO_RETENTION_MONTHS = 6
 
-export type ConsentType = 'PRIVACY' | 'GUARDIAN' | 'VOICE' | 'AI_CHAT'
+export type ConsentType = 'PRIVACY' | 'GUARDIAN' | 'VOICE' | 'AI_CHAT' | 'AI_FEEDBACK'
 
 export type ConsentSection = { heading: string; items: string[] }
 
@@ -50,6 +50,18 @@ export const consentDocuments: Record<ConsentType, { title: string; summary: str
       { heading: '철회', items: ['마이페이지의 동의 관리에서 철회하면 AI 대화를 사용할 수 없어요.'] },
     ],
   },
+  AI_FEEDBACK: {
+    title: 'AI 학습 피드백 외부 전송 동의 (선택)',
+    summary: '연습 결과 아래의 \'AI 설명\'은 외부 AI 서비스를 이용해 만들어요. AI 대화 동의와는 별개예요.',
+    sections: [
+      { heading: '이용 목적', items: ['말하기 연습 결과를 아이가 이해하기 쉬운 설명과 연습 방법으로 풀어 쓰기 위해서예요.', 'AI 설명은 발음 점수나 진단이 아니에요. 발음 정확도는 평가하지 않아요.'] },
+      { heading: '전송 항목', items: ['목표 문장, 컴퓨터가 알아들은 문장(글자), 자동으로 찾은 오류 후보 또는 선생님이 확정한 결과', '설명의 근거로 쓰는 한국어 발음 교육 자료 문단'] },
+      { heading: '보내지 않는 것', items: ['이름, 이메일, 계정 정보, 음성 파일, 선생님 메모, 점수·수치'] },
+      { heading: '받는 곳', items: ['센터가 설정한 외부 AI 서비스(제공자와 보관 정책은 센터에 문의해 주세요).'] },
+      { heading: '보관과 열람', items: ['만들어진 설명은 학습 기록과 함께 채터랜드에 보관하고, 본인과 담당 선생님이 볼 수 있어요.'] },
+      { heading: '철회', items: ['마이페이지의 동의 관리에서 언제든 철회할 수 있어요. 철회하면 새 AI 설명을 만들지 않아요(외부 전송 없음).', '이미 만들어진 설명은 학습 기록으로 남아요. 삭제를 원하면 소속 센터에 요청해 주세요.'] },
+    ],
+  },
 }
 
 export const consentLabels: Record<ConsentType, string> = {
@@ -57,6 +69,7 @@ export const consentLabels: Record<ConsentType, string> = {
   GUARDIAN: '[필수] 법정대리인(보호자) 동의',
   VOICE: '[선택] 아동 음성 수집·이용',
   AI_CHAT: '[선택] AI 대화 외부 전송',
+  AI_FEEDBACK: '[선택] AI 학습 피드백 외부 전송',
 }
 
 export function guardianRequired(role: 'student' | 'teacher', age: number | null) {

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.chld.mapper.PracticeContentMapper">
+  <sql id="columns">
+    e.exercise_id AS exerciseId,e.exercise_id AS id,e.title,e.title AS label,e.instruction,e.input_type AS inputType,
+    e.category_id AS categoryId,c.name AS categoryName,c.color,e.difficulty,e.content_type AS contentType,
+    e.pronunciation_rule AS pronunciationRule,e.target_phonemes AS targetPhonemes,
+    (SELECT COUNT(*) FROM exercise_items i WHERE i.exercise_id=e.exercise_id) AS itemCount
+  </sql>
+  <sql id="filters">
+    WHERE e.active=TRUE AND c.active=TRUE
+    <if test="categoryId != null">AND e.category_id=#{categoryId}</if>
+    <if test="difficulty != null">AND e.difficulty=#{difficulty}</if>
+    <if test="rule != null">AND e.pronunciation_rule=#{rule}</if>
+    <if test="contentType != null">AND e.content_type=#{contentType}</if>
+    <!-- 검색어: 세트 이름 또는 문항(낱말·문장) 글자. 파라미터 바인딩만 쓴다. -->
+    <if test="keyword != null">AND (e.title LIKE CONCAT('%',#{keyword},'%')
+      OR EXISTS (SELECT 1 FROM exercise_items k WHERE k.exercise_id=e.exercise_id AND k.text_value LIKE CONCAT('%',#{keyword},'%')))</if>
+  </sql>
+  <select id="searchExercises" resultType="map">
+    SELECT <include refid="columns"/>
+    FROM exercises e JOIN practice_categories c ON c.category_id=e.category_id
+    <include refid="filters"/>
+    ORDER BY c.sort_order,e.sort_order,e.exercise_id LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="countExercises" resultType="long">
+    SELECT COUNT(*) FROM exercises e JOIN practice_categories c ON c.category_id=e.category_id
+    <include refid="filters"/>
+  </select>
+  <select id="findActiveExercise" resultType="map">
+    SELECT <include refid="columns"/>
+    FROM exercises e JOIN practice_categories c ON c.category_id=e.category_id
+    WHERE e.exercise_id=#{exerciseId} AND e.active=TRUE
+  </select>
+  <select id="findItems" resultType="map">
+    SELECT exercise_id AS exerciseId,item_id AS itemId,text_value AS word,text_value AS text,image_url AS imageUrl,emoji
+    FROM exercise_items WHERE exercise_id IN <foreach collection="exerciseIds" item="id" open="(" separator="," close=")">#{id}</foreach>
+    ORDER BY exercise_id,sort_order
+  </select>
+</mapper>

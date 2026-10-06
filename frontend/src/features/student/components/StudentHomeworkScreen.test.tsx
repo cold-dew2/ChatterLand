@@ -4,17 +4,19 @@ import { ApiError } from '@/shared/api/client'
 
 const homeworks = vi.fn()
 const completeHomework = vi.fn()
+const practiceContent = vi.fn()
 vi.mock('@/features/student/api/studentApi', () => ({
-  studentApi: { homeworks: (...a: unknown[]) => homeworks(...a), completeHomework: (...a: unknown[]) => completeHomework(...a) },
+  studentApi: { homeworks: (...a: unknown[]) => homeworks(...a), completeHomework: (...a: unknown[]) => completeHomework(...a),
+    practiceContent: (...a: unknown[]) => practiceContent(...a) },
 }))
 
 import StudentHomeworkScreen from '@/features/student/components/StudentHomeworkScreen'
 
 const hw = (id: number, title: string, done = false) => ({ homeworkId: id, title, type: '발음', dueDate: '2099-12-31', done, targetMinutes: 10 })
 const page = (items: unknown[]) => ({ content: items })
-const renderScreen = (onCompleteHomework = vi.fn()) => render(<StudentHomeworkScreen onBack={vi.fn()} onStartPractice={vi.fn()} onCompleteHomework={onCompleteHomework} />)
+const renderScreen = (onCompleteHomework = vi.fn(), onStartPractice = vi.fn()) => render(<StudentHomeworkScreen onBack={vi.fn()} onStartPractice={onStartPractice} onCompleteHomework={onCompleteHomework} />)
 
-beforeEach(() => { homeworks.mockReset(); completeHomework.mockReset() })
+beforeEach(() => { homeworks.mockReset(); completeHomework.mockReset(); practiceContent.mockReset() })
 
 describe('StudentHomeworkScreen', () => {
   it('shows the empty state when there is no homework', async () => {
@@ -72,4 +74,20 @@ describe('StudentHomeworkScreen', () => {
     await waitFor(() => expect(homeworks).toHaveBeenCalledTimes(2))
     expect(await screen.findByText('다시 불러온 숙제')).toBeTruthy()
   })
+
+  it('starts the assigned practice set as homework, or the practice menu for a free homework', async () => {
+    homeworks.mockResolvedValue(page([{ ...hw(1, '연음 숙제'), exerciseId: 1205, exerciseTitle: '연음 낱말 1', attemptCount: 2 }, hw(2, '자유 숙제')]))
+    practiceContent.mockResolvedValue({ exerciseId: 1205, title: '연음 낱말 1', instruction: '따라 말해요', inputType: 'mic', items: [{ itemId: 1, word: '옷이' }] })
+    const onStart = vi.fn()
+    renderScreen(vi.fn(), onStart)
+    expect(await screen.findByText(/연음 낱말 1/)).toBeTruthy()
+    expect(screen.getByText(/2번 연습함/)).toBeTruthy()
+    const buttons = screen.getAllByRole('button', { name: /연습하러 가기/ })
+    fireEvent.click(buttons[0])
+    await waitFor(() => expect(onStart).toHaveBeenCalledWith(expect.objectContaining({ id: 1, exerciseId: 1205 }), expect.objectContaining({ id: '1205', label: '연음 낱말 1' })))
+    fireEvent.click(buttons[1])
+    expect(onStart).toHaveBeenLastCalledWith(expect.objectContaining({ id: 2 }))
+    expect(practiceContent).toHaveBeenCalledTimes(1)
+  })
 })
+

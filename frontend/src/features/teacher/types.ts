@@ -15,6 +15,9 @@ export type Homework = {
   dueDate: string; done: boolean; description: string; targetMinutes: number
   /** 서버의 숙제 버전(수정할 때마다 1 증가). 수정 요청에 함께 보내 동시 수정 충돌을 막는다. */
   version?: number
+  /** 숙제로 낸 연습 세트(없으면 자유 숙제) */
+  exerciseId?: number | null
+  exerciseTitle?: string | null
 }
 
 export type StudentFormValues = {

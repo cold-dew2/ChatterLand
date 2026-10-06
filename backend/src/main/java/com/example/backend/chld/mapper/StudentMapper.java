@@ -29,7 +29,8 @@ public interface StudentMapper {
     Map<String,Object> findExerciseItem(@Param("exerciseId") long exerciseId, @Param("itemId") long itemId);
     int insertAttempt(@Param("studentId") long studentId, @Param("exerciseId") long exerciseId,
                       @Param("itemId") String itemId, @Param("analysisId") String analysisId,
-                      @Param("score") BigDecimal score, @Param("matchRate") BigDecimal matchRate, @Param("type") String type);
+                      @Param("score") BigDecimal score, @Param("matchRate") BigDecimal matchRate, @Param("type") String type,
+                      @Param("homeworkId") Long homeworkId);
     List<Map<String,Object>> findHistory(@Param("studentId") long studentId, @Param("type") String type,
                                          @Param("limit") int limit, @Param("offset") int offset);
     long countHistory(@Param("studentId") long studentId, @Param("type") String type);

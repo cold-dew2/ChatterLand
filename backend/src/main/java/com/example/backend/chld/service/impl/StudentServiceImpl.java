@@ -94,6 +94,39 @@ public class StudentServiceImpl implements StudentService {
         return updated;
     }
 
+    /**
+     * 숙제 자동 완료: 숙제가 연습 세트를 지정했고 실제 수행한 세트와 같으며, 음성 분석이 정상 완료(COMPLETED)되고 판정 보류(HOLD)가 아닐 때만.
+     * (PROCESSING·FAILED·분석 없음은 위 검사에서 이미 저장되지 않는다.) 이미 완료된 숙제는 조건부 UPDATE가 0건이라 상태가 다시 바뀌지 않는다.
+     * 숙제 상태 변경이 실패해도(동시 수정 등) 연습 기록 저장은 유지하고, 학생은 기존처럼 직접 완료할 수 있다.
+     */
+    /**
+     * 숙제가 아닌 연습 기록의 유형. SELF: 학생이 직접 고른 자율 연습, LESSON: 수업(세션) 연습 — 본인 수업이고 그 수업에 든 연습 세트인지 서버에서 확인한다.
+     * 유형을 보내지 않는 기존 클라이언트는 PRACTICE(구분 없음)로 저장한다.
+     */
+    private String practiceType(long studentId,long exerciseId,AttemptRequest request) {
+        String type=request.practiceType()==null||request.practiceType().isBlank()?null:request.practiceType().trim().toUpperCase(Locale.ROOT);
+        if(type==null) return "PRACTICE";
+        if(type.equals("SELF")) return "SELF";
+        if(!type.equals("LESSON")) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"연습 유형은 SELF 또는 LESSON입니다.");
+        if(request.sessionId()==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"수업 연습에는 수업 ID가 필요합니다.");
+        if(mapper.findSession(studentId,request.sessionId())==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"수업을 찾을 수 없습니다.");
+        boolean inLesson=mapper.findSessionExercises(request.sessionId()).stream().anyMatch(e->((Number)e.get("exerciseId")).longValue()==exerciseId);
+        if(!inLesson) throw new ResponseStatusException(HttpStatus.CONFLICT,"이 수업에 포함된 연습이 아니에요.");
+        return "LESSON";
+    }
+
+    private boolean autoCompleteHomework(long studentId,long homeworkId,Map<String,Object> homework,long exerciseId,Map<String,Object> analysis) {
+        if(!(homework.get("exerciseId") instanceof Number assigned)||assigned.longValue()!=exerciseId) return false;
+        if(!"COMPLETED".equals(String.valueOf(analysis.get("status")))||"HOLD".equals(analysis.get("assessmentStatus"))) return false;
+        if("COMPLETED".equals(String.valueOf(homework.get("status")))) return true;
+        try {
+            mapper.completeHomework(studentId,homeworkId);
+            return true;
+        } catch(org.springframework.dao.DataAccessException e) {
+            return false;
+        }
+    }
+
     @Override public Map<String,Object> session(TokenPrincipal principal,long sessionId) {
         long studentId=studentId(principal); Map<String,Object> session=mapper.findSession(studentId,sessionId);
         if(session==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"세션을 찾을 수 없습니다.");
@@ -125,12 +158,24 @@ public class StudentServiceImpl implements StudentService {
         BigDecimal matchRate=(BigDecimal)analysis.get("matchRate");
         if(request.score()!=null&&(score==null||Math.round(score.doubleValue())!=Math.round(request.score())))
             throw new ResponseStatusException(HttpStatus.CONFLICT,"요청 점수가 저장된 음성 분석 결과와 일치하지 않습니다.");
-        mapper.insertAttempt(studentId,exerciseId,Long.toString(itemId),analysisId,score,matchRate,"PRACTICE");
+        // 숙제로 수행한 연습: 본인 숙제인지(다른 학생 숙제 ID면 404), 숙제가 연습 세트를 지정했으면 같은 세트인지 확인한다.
+        Long homeworkId=request.homeworkId();
+        Map<String,Object> homework=null;
+        if(homeworkId!=null){
+            homework=mapper.findHomework(studentId,homeworkId);
+            if(homework==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"숙제를 찾을 수 없습니다.");
+            if(homework.get("exerciseId") instanceof Number assigned && assigned.longValue()!=exerciseId)
+                throw new ResponseStatusException(HttpStatus.CONFLICT,"숙제에 지정된 연습이 아니에요.");
+        }
+        mapper.insertAttempt(studentId,exerciseId,Long.toString(itemId),analysisId,score,matchRate,
+                homeworkId==null?practiceType(studentId,exerciseId,request):"HOMEWORK",homeworkId);
         Map<String,Object> attempt=mapper.findAttemptByAnalysis(studentId,analysisId);
         if(attempt==null) throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"연습 기록을 저장하지 못했습니다.");
         Map<String,Object> saved=new LinkedHashMap<>();
         saved.put("saved",true); saved.put("attemptId",attempt.get("attemptId")); saved.put("studentId",studentId); saved.put("exerciseId",exerciseId);
         saved.put("itemId",String.valueOf(attempt.get("itemId"))); saved.put("score",attempt.get("score")); saved.put("matchRate",attempt.get("matchRate"));
+        saved.put("attemptType",attempt.get("attemptType")); saved.put("homeworkId",attempt.get("homeworkId"));
+        saved.put("homeworkCompleted",homework!=null&&autoCompleteHomework(studentId,homeworkId,homework,exerciseId,analysis));
         return saved;
     }
 

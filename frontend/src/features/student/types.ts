@@ -11,7 +11,9 @@ export type Exercise = {
 
 export type Session = { id: string; title: string; date: string; done: boolean; exercises: Exercise[] }
 
-export type Homework = { id: number; title: string; type: string; description: string; dueDate: string; done: boolean; targetMinutes: number }
+export type Homework = { id: number; title: string; type: string; description: string; dueDate: string; done: boolean; targetMinutes: number
+  /** 선생님이 지정한 연습 세트(없으면 자유 숙제) */
+  exerciseId?: number | null; exerciseTitle?: string | null; attemptCount?: number }
 
 export type PracticeCategory = { id: string; label: string; color: string; desc: string; exercises: Exercise[] }
 
@@ -95,11 +97,32 @@ export type SpeechAnalysis = {
 
 /**
  * AI 학습 피드백(GET/POST /speech/analyses/{id}/feedback). 점수가 아니라 확인된 분석 근거를 쉽게 풀어 쓴 설명이다.
- * NOT_GENERATED: 아직 만들지 않음 / READY: 설명 있음 / NOT_EVALUABLE: 근거가 부족해 설명할 수 없음(reason)
+ * NOT_GENERATED: 아직 만들지 않음 / READY: 설명 있음 / NOT_EVALUABLE: 분석 결과가 부족해 설명할 수 없음(reason)
+ * INSUFFICIENT_SOURCES: 이 결과를 설명할 검수된 교육 자료가 없음(reason, AI를 부르지 않음)
  */
+export type AiFeedbackSource = {
+  marker: string
+  cited?: boolean
+  chunkId: string
+  documentId?: string
+  title: string
+  location: string
+  citation?: string
+  url?: string | null
+  version?: number
+  reviewStatus?: string
+  excerpt?: string
+  /** 출처 ID(= documentId) */
+  sourceId?: string
+  /** ARTICULATION_PLACE / ARTICULATION_MANNER / CONSONANT / VOWEL / CODA / PRONUNCIATION_RULE / TEACHER_EXAMPLE */
+  category?: string | null
+  sourceVersion?: string | null
+  license?: string | null
+}
+
 export type AiFeedback = {
   analysisId: string
-  status: 'NOT_GENERATED' | 'READY' | 'NOT_EVALUABLE'
+  status: 'NOT_GENERATED' | 'READY' | 'NOT_EVALUABLE' | 'INSUFFICIENT_SOURCES'
   source: 'AI'
   text?: string | null
   reason?: string | null
@@ -111,6 +134,10 @@ export type AiFeedback = {
   available?: boolean | null
   /** AI 외부 전송 동의가 필요한지(NOT_GENERATED일 때) */
   consentRequired?: boolean | null
+  /** 설명의 근거로 쓴 교육 자료(READY일 때). cited=true가 설명에서 [S1]처럼 인용한 자료 */
+  sources?: AiFeedbackSource[] | null
+  /** 선생님 화면: 학생이 본 뒤 선생님 판정·자료가 바뀌어 이전 근거로 만든 설명인지 */
+  outdated?: boolean | null
 }
 
 /** 한 문항의 분석 결과 요약 */
@@ -133,6 +160,20 @@ export type HistoryItem = {
   time: string
   score: number | null
   matchRate: number | null
+  /** 연습 기록: SELF(자율)·LESSON(수업)·HOMEWORK(숙제)·PRACTICE(유형 구분 전 기존 기록) */
+  attemptType?: 'SELF' | 'LESSON' | 'HOMEWORK' | 'PRACTICE' | null
+}
+
+/** 연습 콘텐츠 분류(GET /practice-contents) */
+export type PronunciationRule = 'BASIC_CONSONANT' | 'BASIC_VOWEL' | 'CODA' | 'LIAISON' | 'NASALIZATION' | 'TENSIFICATION'
+  | 'PALATALIZATION' | 'ASPIRATION' | 'CONSONANT_ASSIMILATION' | 'COMPREHENSIVE'
+export type Difficulty = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED'
+export type ContentType = 'WORD' | 'SHORT_SENTENCE' | 'LONG_SENTENCE'
+export type PracticeContent = Exercise & {
+  categoryName?: string
+  difficulty?: Difficulty | null
+  contentType?: ContentType | null
+  pronunciationRule?: PronunciationRule | null
 }
 
 export type LoadState = 'loading' | 'ready' | 'error'
@@ -143,7 +184,9 @@ export type AppScreen =
   | { kind: "practice-type" }
   | { kind: "practice-list" }
   | { kind: "practice-cat"; category: PracticeCategory }
-  | { kind: "practice-activity"; category: PracticeCategory; exIdx: number; results: ExerciseResult[] }
+  /** origin: 전체 연습 찾기(browse)·숙제(homework)에서 시작했으면 뒤로 가기가 그 화면으로 간다. homeworkId가 있으면 숙제 연습으로 저장 */
+  | { kind: "practice-activity"; category: PracticeCategory; exIdx: number; results: ExerciseResult[]; origin?: "browse" | "homework"; homeworkId?: number }
+  | { kind: "practice-browse" }
   | { kind: "practice-result"; category: PracticeCategory; results: ExerciseResult[] }
   | { kind: "session-list" }
   | { kind: "homework-list" }

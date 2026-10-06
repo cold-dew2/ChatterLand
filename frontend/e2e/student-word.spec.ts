@@ -99,17 +99,33 @@ test('E2E-11 분석은 끝났지만 응답이 유실됨 → 다시 분석하기 
   expect(history.content).toHaveLength(1)
 })
 
-test('E2E-23 분석 결과 아래 AI 설명: 요청할 때만 생성, AI 오류 후 다시 시도, 측정값과 분리 표시', async ({ page }) => {
-  const student = await createStudent('ai-feedback', 'AI설명학생', { consents: { privacy: true, voice: true, aiChat: true, policyVersion: '2026-10-01', guardianConfirmed: true, guardianName: '보호자', guardianRelation: '부모' } })
+test('E2E-23 실제 서버: 검수된 교육 자료가 없는 결과는 AI를 부르지 않고 근거 자료 부족으로 안내', async ({ page }) => {
+  const student = await createStudent('ai-feedback-real', 'AI근거학생')
   await loginUi(page, student.email)
-  // 외부 AI 응답만 대신한다(실제 Gemini 호출 검증은 백엔드 LiveAiIntegrationTest). 상태 조회(GET)는 실제 서버로 보낸다.
+  let posts = 0
+  page.on('request', (request) => { if (request.method() === 'POST' && request.url().includes('/feedback')) posts++ })
+  await openPractice(page, /발음/, /ㄹ 발음/)
+  await recordAndAnalyze(page, 2500)
+  await expect(page.getByText('텍스트 일치율').first()).toBeVisible({ timeout: 90_000 })
+  // '라디오'에는 표준 발음법 조항이 적용될 받침이 없고, 기본 자료는 검수 전(DRAFT)이다.
+  await expect(page.getByText(/근거 자료 부족/)).toBeVisible()
+  await expect(page.getByRole('button', { name: 'AI 설명 보기' })).toHaveCount(0)
+  expect(posts).toBe(0)
+})
+
+test('E2E-24 AI 설명 화면 흐름: 요청할 때만 생성, AI 오류 후 다시 시도, 출처·점수 아님 표시, 측정값 분리', async ({ page }) => {
+  const student = await createStudent('ai-feedback', 'AI설명학생')
+  await loginUi(page, student.email)
+  // 검수된 자료가 있는 상황의 화면 흐름: 피드백 API 응답만 대신한다(검색·근거 검증은 백엔드 통합 테스트, 실제 Gemini는 LiveAiIntegrationTest).
   let posts = 0
   await page.route('**/api/v1/speech/analyses/*/feedback', async (route) => {
-    if (route.request().method() !== 'POST') return route.continue()
+    const analysisId = route.request().url().split('/analyses/')[1].split('/')[0]
+    if (route.request().method() === 'GET')
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ analysisId, status: 'NOT_GENERATED', source: 'AI', available: true, consentRequired: false, basedOn: ['AUTO_ANALYSIS'] }) })
     posts++
     if (posts === 1) return route.fulfill({ status: 504, contentType: 'application/json', body: JSON.stringify({ success: false, code: 'AI_TIMEOUT', message: 'AI 서비스 응답 시간이 초과되었어요. 잠시 뒤 다시 시도해 주세요.' }) })
-    const analysisId = route.request().url().split('/analyses/')[1].split('/')[0]
-    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ analysisId, status: 'READY', source: 'AI', text: '라디오를 끝까지 또박또박 말했어요! 다음에는 첫소리를 천천히 말해 봐요.', basedOn: ['AUTO_ANALYSIS'], modelName: 'gemini-flash-latest' }) })
+    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ analysisId, status: 'READY', source: 'AI', text: '끝까지 또박또박 말했어요! 받침 소리를 천천히 말해 봐요 [S1].', basedOn: ['AUTO_ANALYSIS'],
+      sources: [{ marker: 'S1', cited: true, chunkId: 'std-pron-08', title: '표준 발음법(표준어 규정 제2부)', location: '제4장 제8항', url: 'https://korean.go.kr/kornorms/' }] }) })
   })
   await openPractice(page, /발음/, /ㄹ 발음/)
   await recordAndAnalyze(page, 2500)
@@ -122,8 +138,9 @@ test('E2E-23 분석 결과 아래 AI 설명: 요청할 때만 생성, AI 오류 
   await expect(panel.getByText(/응답 시간이 초과/)).toBeVisible()
   await expect(page.getByText('텍스트 일치율').first()).toBeVisible() // AI 오류여도 분석 결과는 그대로
   await panel.getByRole('button', { name: '다시 시도' }).click()
-  await expect(panel.getByText('라디오를 끝까지 또박또박 말했어요! 다음에는 첫소리를 천천히 말해 봐요.')).toBeVisible()
+  await expect(panel.getByText('끝까지 또박또박 말했어요! 받침 소리를 천천히 말해 봐요 [S1].')).toBeVisible()
   await expect(panel.getByText('점수 아님')).toBeVisible()
-  await expect(panel.getByText(/자동 분석/)).toBeVisible()
-  await expect(page.getByText('미평가')).toHaveCount(3) // 측정값(발음·속도·유창성)은 AI 설명과 관계없이 미평가 그대로
+  await expect(panel.getByText(/제4장 제8항/)).toBeVisible()
+  await expect(panel.getByText(/발음 정확도는 평가하지 않았어요/)).toBeVisible()
+  await expect(page.getByText('미평가')).toHaveCount(3) // 측정값(발음·속도·유창성)은 미평가 그대로
 })

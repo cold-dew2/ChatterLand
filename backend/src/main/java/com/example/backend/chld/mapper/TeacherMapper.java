@@ -31,7 +31,12 @@ public interface TeacherMapper {
     int insertHomework(@Param("teacherId") long teacherId, @Param("studentId") long studentId, @Param("title") String title,
                        @Param("type") String type, @Param("description") String description,
                        @Param("targetMinutes") int targetMinutes, @Param("dueDate") LocalDate dueDate,
-                       @Param("requestKey") String requestKey, @Param("requestHash") String requestHash);
+                       @Param("requestKey") String requestKey, @Param("requestHash") String requestHash, @Param("exerciseId") Long exerciseId);
+    /** 담당 학생의 연습 기록(자율 PRACTICE·숙제 HOMEWORK). type이 null이면 둘 다 */
+    List<Map<String,Object>> findStudentAttempts(@Param("studentId") long studentId, @Param("type") String type,
+                                                 @Param("limit") int limit, @Param("offset") int offset);
+    long countStudentAttempts(@Param("studentId") long studentId, @Param("type") String type);
+    Map<String,Object> attemptSummary(@Param("studentId") long studentId);
     /** 같은 선생님이 같은 Idempotency-Key로 만든 숙제(요청 지문 requestHash 포함) */
     Map<String,Object> findHomeworkByRequestKey(@Param("teacherId") long teacherId, @Param("requestKey") String requestKey);
     Map<String,Object> findLatestHomework(@Param("teacherId") long teacherId,@Param("studentId") long studentId,@Param("title") String title);

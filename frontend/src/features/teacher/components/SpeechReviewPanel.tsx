@@ -5,6 +5,7 @@ import type { ConfirmedError, PhonemeCandidate } from "@/features/student/types"
 import { candidateText, errorTypeLabel, textMatchRate } from "@/features/student/utils/speechAssessment";
 import { teacherApi } from "@/features/teacher/api/teacherApi";
 import SpeechAssessmentDetails from "@/features/teacher/components/SpeechAssessmentDetails";
+import TeacherAiFeedback from "@/features/teacher/components/TeacherAiFeedback";
 import type { SpeechJudgement, TeacherSpeechAnalysis } from "@/features/teacher/types";
 import { errorMessage } from "@/shared/api/client";
 import Badge, { type BadgeTone } from "@/shared/components/badge/Badge";
@@ -201,6 +202,7 @@ export default function SpeechReviewPanel({ studentId }: { studentId: number }) 
               <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">발음 평가</dt><dd>{typeof analysis.pronunciationScore === "number" ? `${analysis.pronunciationScore}점 (외부 제공자)` : <Badge tone="neutral">미평가</Badge>}</dd></div>
             </dl>
             <SpeechAssessmentDetails analysis={analysis} />
+            {analysis.status === "COMPLETED" && <TeacherAiFeedback analysisId={analysis.analysisId} />}
             {analysis.reviewStatus === "REVIEWED" && analysis.teacherJudgement && (
               <p className="text-xs text-gray-600">선생님 판단: <b>{judgementLabel[analysis.teacherJudgement] ?? analysis.teacherJudgement}</b>{analysis.teacherNote ? ` · ${analysis.teacherNote}` : ""}</p>
             )}

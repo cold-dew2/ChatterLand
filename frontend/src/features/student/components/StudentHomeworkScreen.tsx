@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { CheckCircle, ClipboardList, Mic } from "lucide-react";
 import { studentApi } from "@/features/student/api/studentApi";
-import type { Homework } from "@/features/student/types";
-import { isOverdue, mapHomework } from "@/features/student/utils/mappers";
+import type { Homework, PracticeContent } from "@/features/student/types";
+import { isOverdue, mapHomework, mapPracticeContent } from "@/features/student/utils/mappers";
 import { ApiError, errorMessage } from "@/shared/api/client";
 import Badge from "@/shared/components/badge/Badge";
 import Button from "@/shared/components/button/Button";
@@ -16,7 +16,9 @@ import Notice from "@/shared/components/feedback/Notice";
 import PageHeader from "@/shared/components/pageHeader/PageHeader";
 
 export default function StudentHomeworkScreen({ onBack, onCompleteHomework, onStartPractice }: {
-  onBack: () => void; onCompleteHomework: (id: number) => void; onStartPractice: () => void;
+  onBack: () => void; onCompleteHomework: (id: number) => void;
+  /** content: 선생님이 지정한 연습 세트(있으면 바로 그 연습을 숙제로 시작). 없으면 연습 유형 선택으로 */
+  onStartPractice: (homework: Homework, content?: PracticeContent) => void;
 }) {
   const [homeworks, setHomeworks] = useState<Homework[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,6 +64,20 @@ export default function StudentHomeworkScreen({ onBack, onCompleteHomework, onSt
     setError("");
     setRevision((value) => value + 1);
   };
+  const [startingId, setStartingId] = useState<number | null>(null);
+  const startPractice = async (homework: Homework) => {
+    if (!homework.exerciseId) { onStartPractice(homework); return; }
+    if (startingId !== null) return;
+    setStartingId(homework.id);
+    setActionError("");
+    try {
+      onStartPractice(homework, mapPracticeContent(await studentApi.practiceContent(homework.exerciseId)));
+    } catch (cause) {
+      setActionError(errorMessage(cause, "숙제 연습을 불러오지 못했어요. 다시 시도해 주세요."));
+    } finally {
+      setStartingId(null);
+    }
+  };
   const pending = homeworks.filter((homework) => !homework.done);
   const completed = homeworks.filter((homework) => homework.done);
 
@@ -85,11 +101,13 @@ export default function StudentHomeworkScreen({ onBack, onCompleteHomework, onSt
                   <h3 className="text-sm font-bold text-gray-900">{homework.title}</h3>
                   <p className="mt-1 text-xs text-gray-500">{homework.type}{homework.targetMinutes > 0 ? ` · ${homework.targetMinutes}분` : ""}</p>
                   {homework.description && <p className="mt-2 text-sm leading-relaxed text-gray-600">{homework.description}</p>}
+                  {homework.exerciseTitle && <p className="mt-2 text-xs text-gray-600">연습: <b>{homework.exerciseTitle}</b>{homework.attemptCount ? ` · ${homework.attemptCount}번 연습함` : ""}</p>}
                   <p className={`mt-2 text-xs font-medium ${overdue ? "text-red-500" : "text-gray-400"}`}>마감 {homework.dueDate || "미정"}{overdue ? " · 기한 지남" : ""}</p>
                 </div>
               </div>
               <div className="mt-3 flex gap-2">
-                <Button size="sm" variant="secondary" fullWidth onClick={onStartPractice}><Mic size={14} aria-hidden="true" />연습하러 가기</Button>
+                <Button size="sm" variant="secondary" fullWidth loading={startingId === homework.id} loadingLabel="불러오는 중…"
+                  onClick={() => void startPractice(homework)}><Mic size={14} aria-hidden="true" />연습하러 가기</Button>
                 <Button size="sm" fullWidth disabled={busyId !== null} loading={busyId === homework.id} loadingLabel="저장 중…"
                   onClick={() => void completeHomework(homework.id)}>완료</Button>
               </div>

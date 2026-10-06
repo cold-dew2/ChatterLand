@@ -1,4 +1,4 @@
-import type { Exercise, Homework, HistoryItem, Session } from '@/features/student/types'
+import type { Exercise, Homework, HistoryItem, Session, PracticeContent } from '@/features/student/types'
 
 type Row = Record<string, unknown>
 
@@ -40,6 +40,9 @@ export function mapHomework(item: Row): Homework {
     dueDate: String(item.dueDate ?? ''),
     done: Boolean(item.done),
     targetMinutes: Number(item.targetMinutes ?? 0),
+    exerciseId: item.exerciseId == null ? null : Number(item.exerciseId),
+    exerciseTitle: item.exerciseTitle == null ? null : String(item.exerciseTitle),
+    attemptCount: Number(item.attemptCount ?? 0),
   }
 }
 
@@ -52,6 +55,18 @@ export function mapHistoryItem(item: Row): HistoryItem {
     date, time,
     score: toNumberOrNull(item.score),
     matchRate: toNumberOrNull(item.matchRate),
+    attemptType: item.attemptType === 'SELF' || item.attemptType === 'LESSON' || item.attemptType === 'HOMEWORK' || item.attemptType === 'PRACTICE' ? item.attemptType : null,
+  }
+}
+
+/** GET /practice-contents 항목 → 연습 콘텐츠(기존 Exercise 형식 + 분류) */
+export function mapPracticeContent(item: Row): PracticeContent {
+  return {
+    ...mapExercise(item),
+    categoryName: item.categoryName == null ? undefined : String(item.categoryName),
+    difficulty: (item.difficulty as PracticeContent['difficulty']) ?? null,
+    contentType: (item.contentType as PracticeContent['contentType']) ?? null,
+    pronunciationRule: (item.pronunciationRule as PracticeContent['pronunciationRule']) ?? null,
   }
 }
 

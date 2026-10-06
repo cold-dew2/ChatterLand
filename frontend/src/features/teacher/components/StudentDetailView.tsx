@@ -16,6 +16,7 @@ import LoadingState from "@/shared/components/feedback/LoadingState";
 import PageHeader from "@/shared/components/pageHeader/PageHeader";
 import ProgressBar from "@/shared/components/progressBar/ProgressBar";
 import Tabs from "@/shared/components/tabs/Tabs";
+import StudentPracticePanel from "@/features/teacher/components/StudentPracticePanel";
 
 function ActivityIcon({ type }: { type: string }) {
   const map: Record<string, React.ReactNode> = {
@@ -121,6 +122,7 @@ export default function StudentDetailView({ student, onBack, onEdit, onDelete, o
 
         {detailTab === "learning" && (
           <div className="px-5 py-4 space-y-4">
+            <StudentPracticePanel studentId={student.id} />
             <Card tone="muted" className="flex items-center gap-4">
               <div>
                 <p className="text-xs text-gray-400">외부 분석 점수</p>

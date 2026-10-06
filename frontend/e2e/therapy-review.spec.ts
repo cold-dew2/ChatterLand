@@ -40,6 +40,10 @@ test('E2E-06 언어재활 녹음 → 자동 오류 후보 → 선생님 확정 �
   await expect(saved.getByRole('listitem').filter({ hasText: /ㄹ 왜곡/ })).toHaveCount(1)
   await expect(saved.getByText('자동 오류 후보 있음')).toBeVisible()
   await expect(saved.getByText(/선생님 판단: 연습 필요/)).toBeVisible()
+  // 선생님은 학생이 본 AI 설명을 같은 저장 결과로 조회만 한다. '라디오'는 적용 조항·검수 자료가 없어 근거 자료 부족으로 안내된다.
+  await saved.getByRole('button', { name: /학생이 본 AI 설명 보기/ }).click()
+  await expect(saved.getByLabel('학생이 본 AI 설명').getByText(/근거 자료 부족/)).toBeVisible()
+  await expect(saved.getByText('점수·진단 아님')).toBeVisible()
 })
 
 test('E2E-07 담당이 아닌 선생님은 다른 선생님의 학생 결과에 접근할 수 없다', async ({ page }) => {

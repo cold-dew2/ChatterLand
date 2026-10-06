@@ -188,5 +188,44 @@
 | AI-02 | 단위(mock) | 401·403·400(API_KEY_INVALID)·429·400·404·500·시간 초과·차단·빈 응답·설정 없음 | 코드별 구분(AUTH_FAILED/RATE_LIMITED/REQUEST_REJECTED/PROVIDER_ERROR/TIMEOUT/BLOCKED/BAD_RESPONSE/NOT_CONFIGURED), 키·응답 본문이 메시지·로그에 없음 | PASS | AiTextClientTest; ExternalProviderServiceTest |
 | AI-03 | 단위(mock) / 통합 | 근거 구성·평가 불가·동의·저장·재사용·규칙 위반 응답 | 확인된 근거만 전송(이름·ID·교사 메모·일치율 숫자 제외, 발음 미평가 명시), HOLD·미완료·검토 전 언어재활은 AI 호출 없이 NOT_EVALUABLE, 동의 없으면 403, 점수·진단 표현 응답은 저장 안 함, 같은 근거는 재호출 안 함, 분석 결과·점수 불변 | PASS | SpeechFeedbackServiceImplTest (6건); SpeechFeedbackIntegrationTest (3건) |
 | AI-04 | 기능 / E2E | 결과 화면 AI 설명 | 자동 호출 없음, 버튼으로 생성, 만드는 중·설명·평가 불가·동의 필요·미설정·오류 재시도 구분, '점수 아님'·근거 출처 표시, 측정값 미평가 유지 | PASS | AiFeedbackPanel.test (5건); student-word.spec › E2E-23 |
-| AI-05 | 실제 호출 | 설정된 Gemini 키로 대화·피드백 생성 | 실제 응답 | BLOCKED | LiveAiIntegrationTest: Gemini 403 PERMISSION_DENIED(프로젝트 접근 차단). 잘못된 키·시간 초과 처리는 실제 호출로 PASS |
+| AI-05 | 실제 호출 | 설정된 Gemini 키로 대화·피드백 생성 | 실제 응답 | PASS(2026-10-06, 표본 9건) | 2026-10-03에는 403으로 BLOCKED였다. 2026-10-06에 해소되어 RAG-06에서 실측했다 |
 
+## AI 2차: 동의 분리·선생님 공유·RAG (2026-10-06)
+
+| ID | 계층 | 단계 | 기대 결과 | 상태 | 자동화 |
+|---|---|---|---|---|---|
+| RAG-01 | 통합 / 기능 | AI_FEEDBACK 동의 없음·철회 | 생성 요청은 외부 호출 없이 403 CONSENT_REQUIRED, 저장된 설명은 계속 조회, 가입 시 미동의 기록, 동의 항목 5개, AI_CHAT과 별개 | PASS | SpeechFeedbackIntegrationTest; SpeechFeedbackServiceImplTest#consentIsChecked…; ConsentAndCenterIntegrationTest; AiFeedbackPanel.test |
+| RAG-02 | 통합 / 기능 / E2E | 담당 선생님 조회, 담당 아닌 선생님·다른 학생(IDOR)·학생 토큰 | 학생과 같은 본문·출처, 재조회 시 AI 재호출 없음, 404/404/403, 재판정 후 outdated 표시, 교사 판정 불변 | PASS | SpeechFeedbackIntegrationTest#theAssignedTeacher…; SpeechFeedbackServiceImplTest#teacherView…; TeacherAiFeedback.test (3건); therapy-review.spec › E2E-06 |
+| RAG-03 | 단위 | 목표 문장 조항 감지·검색 | 신라→20항, 국물→18항, 국밥→23항, 같이→17항, 강릉→19항, 옷을→13항, 부엌→9항, 라디오→없음, 어절 경계 넘지 않음 / 조항이 맞는 승인 청크만(자모만 같은 청크 제외), 학생 결과와 겹치면 우선 / DB 오류 RAG_UNAVAILABLE | PASS | KnowledgeRetrieverTest (3건) |
+| RAG-04 | 단위 / 통합 / E2E | 관련 자료 없음, 검수 전(DRAFT) 자료만 있음 | AI·동의 확인 없이 INSUFFICIENT_SOURCES, 화면 '근거 자료 부족'·생성 버튼 없음 | PASS | SpeechFeedbackServiceImplTest; SpeechFeedbackIntegrationTest#unapprovedDraftSources…; student-word.spec › E2E-23 |
+| RAG-05 | 단위(mock) | 출처 없음·없는 번호·근거 밖 자모·자동 후보 단정·'근거 부족' 응답·자료 속 지시문·점수/진단 | AI_UNGROUNDED / INSUFFICIENT_SOURCES / AI_BAD_RESPONSE, 저장 안 함, 구분자 탈출 불가 | PASS | SpeechFeedbackServiceImplTest (10건) |
+| RAG-06 | 실제 호출 | Gemini RAG 피드백(합성 10건 × 4회 실행)·대화·잘못된 키·시간 초과·일시 오류·하루 한도 | READY 9건(근거 검증 9/9 통과) · 대화 3회 성공 · 401→AI_AUTH_FAILED · AI_TIMEOUT · 503 재시도 · 429 하루 한도 안내 | PASS(표본 부족) | LiveAiIntegrationTest; AiTextClientTest(재시도·하루 한도). 무료 등급 하루 20회 한도로 표본 9건 |
+| RAG-07 | 사람 검수 | 실제 답변 품질(교사 검수 예시 기준) | 근거 정확성·일치성·유용성·쉬운 표현·근거 없는 주장 평가 | NOT RUN | 교사 검수 예시 없음. 개발자 예비 관찰만(ai-feedback.md 9.7) |
+
+## 학습 서비스 확장 (2026-10-06)
+
+설계: `docs/design/learning-service.md`.
+
+| ID | 계층 | 단계 | 기대 결과 | 상태 | 자동화 |
+|---|---|---|---|---|---|
+| LRN-01 | 통합 / 기능 | 연습 콘텐츠 목록·검색어·카테고리·난이도·발음 유형·콘텐츠 유형·페이지·잘못된 필터·미인증·없는 ID | 학생·교사 조회, 필터 결과 일치, 페이지 겹침 없음, 400/400/401/404 | PASS | LearningServiceIntegrationTest; PracticeBrowseScreen.test (3건) |
+| LRN-02 | 통합 / E2E | 숙제 없이 콘텐츠 선택 → 녹음 → Whisper → 분석 → 저장 → 조회 | PRACTICE로 저장, 히스토리 '자율 연습' 표시 | PASS | LearningServiceIntegrationTest; learning.spec › E2E-25 |
+| LRN-03 | 통합 / 기능 / E2E | 교사가 콘텐츠를 골라 담당 학생에게 숙제 → 학생이 숙제에서 바로 연습 | 숙제에 exerciseId·exerciseTitle, 학생 숙제에 연습 이름·연습 횟수, HOMEWORK로 저장 / 다른 세트 409 / 다른 학생 숙제 ID 404 / 담당 아닌 학생 403 / 없는 콘텐츠 400 / 자유 숙제 그대로 | PASS | LearningServiceIntegrationTest (2건); HomeworkModal.test (2건); StudentHomeworkScreen.test; E2E-25 |
+| LRN-04 | 통합 / 기능 / E2E | 교사 학습 현황: 자율·숙제 연습 기록과 요약 | 종류 구분·필터, 횟수 요약, 분석 상태, 텍스트 일치율 '발음 점수 아님'·발음 '미평가', 기존 AI 설명 조회 / 다른 선생님·다른 학생 ID 403/404·학생 토큰 403·잘못된 종류 400 | PASS | LearningServiceIntegrationTest; StudentPracticePanel.test (2건); E2E-25 |
+| LRN-05 | 통합 | 대량 콘텐츠(1,115개) | 1,000개 이상, 모든 발음·난이도·유형 존재, 빈 문항·세트 내 중복 없음, 음운 규칙 콘텐츠 전부 백엔드 감지기로 재확인, 전체 목록 페이지 응답 | PASS | PracticeContentSeedIntegrationTest (3건) |
+| LRN-06 | 단계 확장 | 22 → 102 → 500 → 1,115개 | 각 단계 학습 통합 테스트 통과, 테스트 DB 개수 일치 | PASS | build_seed.py --limit + LearningServiceIntegrationTest |
+| LRN-07 | 단위(mock) / 실제 호출 | AI 품질 보강(v3): 듣지 않은 발음 칭찬, 자모 이름, 자료 기반 연습 | 칭찬·근거 밖 자모 이름은 AI_UNGROUNDED, 근거 있는 자모 이름은 통과 / 실제 Gemini 10건 근거 검증 10/10 | PASS(교사 품질 검수 NOT RUN) | SpeechFeedbackServiceImplTest (11건); LiveAiIntegrationTest |
+| LRN-08 | — | RAG 지식자료 확장 | — | NOT RUN | 이번 범위에서 제외(지시 14절) |
+
+
+## RAG 자료 확장: 출처·사용 권한 (2026-10-06)
+
+| ID | 계층 | 단계 | 기대 결과 | 상태 | 자동화 |
+|---|---|---|---|---|---|
+| RAG-08 | 단위 / 통합 | 출처·권한 미확인(PENDING·REJECTED), 검수 전(DRAFT), 사용 중지(RETIRED) 자료 | 검색에서 제외. 승인 상태여도 PENDING이면 쓰지 않음(개발자 요약 자료 포함), AI 호출 없이 INSUFFICIENT_SOURCES | PASS | KnowledgeRetrieverTest#onlyVerifiedAndApproved…; SpeechFeedbackIntegrationTest#approvedButUnverifiedOrPending…, #unapprovedDraftSources… |
+| RAG-09 | 단위 / 통합 | source_id·제목·원문 위치·분류·판본·권한 보존 | 검색 결과와 저장된 sources_json, 응답 sources[]에 sourceId·title·location·category·sourceVersion·license·url·발췌 유지 | PASS | KnowledgeRetrieverTest; SpeechFeedbackServiceImplTest#officialSourcesAreLinked…; SpeechFeedbackIntegrationTest#theStoredExplanationLinks… |
+| RAG-10 | 통합 | 원문 seed 메타데이터 | nikl-pron-* 7개 문서 모두 VERIFIED·URL·판본·권한·확인 시각·분류·발행 기관 있음, DRAFT·승인자 없음, 교사 예시 0건 | PASS | SpeechFeedbackIntegrationTest#seededOfficialSources… |
+| RAG-11 | 단위 / 통합 | 안내 자료(조음 위치·방법 등) 검색 | 적용 조항 없는 낱말(라디오 ㄹ→ㄴ)에 승인된 조음 위치 자료 사용, 자모가 겹치지 않는 자료·분류 없는 무태그 자료 제외, 점수는 조항 자료보다 낮음, 구체적인 자료 우선 | PASS | KnowledgeRetrieverTest#guideSources…; SpeechFeedbackIntegrationTest#approvedGuideSources… |
+| RAG-12 | 단위 / 통합 | 교사 설명 예시(TEACHER_EXAMPLE) | 승인자(reviewed_by) 없거나 PENDING이면 제외, 승인자가 있으면 별도 분류로 사용·화면에 '선생님 승인 설명 예시' 표시 | PASS | KnowledgeRetrieverTest#teacherExamples…; SpeechFeedbackIntegrationTest#teacherExamples…, #approvedTeacherExamples…; AiFeedbackPanel.test |
+| RAG-13 | 단위 | 안내 자료가 있을 때의 근거 검증 | 인용 없음·없는 번호·인용 자료/분석 근거에 없는 자모·자동 후보 단정 → AI_UNGROUNDED, 점수·진단·등급 → AI_BAD_RESPONSE, 인용 자료에 있는 내용은 통과 | PASS | SpeechFeedbackServiceImplTest#groundingRulesStillApply… |
+| RAG-14 | 단위 / 통합 | 기존 조항 검색 회귀 | 조항 감지·조항 태그 일치·학생 결과 우선·DB 오류 구분 그대로, 신라 피드백 READY(제5장 제20항) | PASS | KnowledgeRetrieverTest (기존 3건); SpeechFeedbackIntegrationTest (기존 6건) |

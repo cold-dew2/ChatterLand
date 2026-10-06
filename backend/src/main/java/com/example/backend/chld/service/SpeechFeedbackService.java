@@ -11,4 +11,6 @@ public interface SpeechFeedbackService {
     Map<String,Object> feedback(long userId, Map<String,Object> analysis);
     /** 근거가 충분하면 피드백을 만든다(같은 근거로 이미 만든 피드백이 있으면 그대로 돌려준다). */
     Map<String,Object> generate(long userId, Map<String,Object> analysis);
+    /** 선생님 화면: 학생과 같은 저장 결과를 보여 준다(AI 호출 없음). analysis는 담당 학생의 분석 응답. */
+    Map<String,Object> teacherView(Map<String,Object> analysis);
 }

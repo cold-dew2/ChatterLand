@@ -23,6 +23,12 @@ public interface TeacherService {
     Map<String,Object> addHomework(TokenPrincipal principal,HomeworkCreateRequest request,String idempotencyKey);
     Map<String,Object> updateHomework(TokenPrincipal principal,long homeworkId,HomeworkUpdateRequest request);
     /** version: 화면이 조회한 숙제 버전. 그 사이 바뀌었으면 409(VERSION_CONFLICT)로 지우지 않는다. */
+    /** 담당 학생의 연습 기록(type: SELF 자율·LESSON 수업·HOMEWORK 숙제·PRACTICE 유형 구분 전 기록, 없으면 전체) */
+    PageResponse<Map<String,Object>> studentAttempts(TokenPrincipal principal,long studentId,String type,int page,int size);
+    /** 담당 학생의 연습 횟수 요약(전체·자율·숙제·연습한 세트 수·최근 연습 시각) */
+    Map<String,Object> studentAttemptSummary(TokenPrincipal principal,long studentId);
+    /** 담당 학생 분석의 AI 학습 피드백(학생과 같은 저장 결과, AI 호출 없음). 담당이 아니면 404. */
+    Map<String,Object> speechFeedback(TokenPrincipal principal,String analysisId);
     void deleteHomework(TokenPrincipal principal,long homeworkId,int version);
     Map<String,Object> analytics(TokenPrincipal principal,long studentId,LocalDate startDate,LocalDate endDate);
     Map<String,Object> report(TokenPrincipal principal,long studentId,LocalDate startDate,LocalDate endDate);

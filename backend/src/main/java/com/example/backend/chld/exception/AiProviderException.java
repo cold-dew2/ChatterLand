@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
  * - AI_PROVIDER_ERROR(502): 제공자 서버 오류(5xx)
  * - AI_BLOCKED(502): 안전 정책으로 응답 차단
  * - AI_BAD_RESPONSE(502): 응답이 비었거나 형식·내용 규칙에 맞지 않음
+ * - RAG_UNAVAILABLE(503): 근거 자료 검색 실패(지식베이스 조회 오류). 외부 AI 호출 실패와 구분한다.
+ * - AI_UNGROUNDED(502): 응답이 근거 자료를 인용하지 않았거나 근거에 없는 자모·오류를 단정함
  */
 public class AiProviderException extends RuntimeException {
     public static final String NOT_CONFIGURED = "AI_NOT_CONFIGURED";
@@ -22,6 +24,8 @@ public class AiProviderException extends RuntimeException {
     public static final String PROVIDER_ERROR = "AI_PROVIDER_ERROR";
     public static final String BLOCKED = "AI_BLOCKED";
     public static final String BAD_RESPONSE = "AI_BAD_RESPONSE";
+    public static final String RAG_UNAVAILABLE = "RAG_UNAVAILABLE";
+    public static final String UNGROUNDED = "AI_UNGROUNDED";
 
     private final String code;
     private final HttpStatus status;

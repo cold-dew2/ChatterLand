@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.chld.mapper.KnowledgeMapper">
+  <!-- 출처·사용 권한이 확인되고(VERIFIED) 검수 상태가 허용된 문서만. 교사 설명 예시는 승인자(reviewed_by)까지 있어야 한다. -->
+  <select id="findSearchableChunks" resultType="map">
+    SELECT c.chunk_id AS chunkId, c.document_id AS documentId, c.chunk_order AS chunkOrder, c.location, c.content, c.tags,
+           d.title, d.source_citation AS citation, d.source_url AS sourceUrl, d.version, d.review_status AS reviewStatus, d.scope,
+           d.category, d.source_version AS sourceVersion, d.verification_status AS verificationStatus, d.license_note AS licenseNote,
+           d.publisher, d.reviewed_by AS reviewedBy
+    FROM knowledge_chunks c JOIN knowledge_documents d ON d.document_id = c.document_id
+    WHERE d.review_status IN <foreach collection="statuses" item="status" open="(" separator="," close=")">#{status}</foreach>
+      AND d.verification_status = 'VERIFIED'
+      AND (d.category IS NULL OR d.category &lt;&gt; 'TEACHER_EXAMPLE' OR d.reviewed_by IS NOT NULL)
+    ORDER BY c.document_id, c.chunk_order
+  </select>
+</mapper>

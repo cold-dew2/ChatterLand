@@ -10,5 +10,6 @@ import java.util.Map;
 public interface SpeechFeedbackMapper {
     Map<String,Object> findFeedback(@Param("analysisId") String analysisId);
     int upsertFeedback(@Param("analysisId") String analysisId, @Param("text") String text, @Param("evidenceHash") String evidenceHash,
-                       @Param("modelName") String modelName, @Param("promptVersion") String promptVersion);
+                       @Param("modelName") String modelName, @Param("promptVersion") String promptVersion,
+                       @Param("sourcesJson") String sourcesJson);
 }

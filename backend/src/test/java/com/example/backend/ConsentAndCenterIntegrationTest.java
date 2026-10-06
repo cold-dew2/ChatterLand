@@ -91,12 +91,12 @@ class ConsentAndCenterIntegrationTest {
         String consents = mvc.perform(get("/api/v1/consents/me").header("Authorization", token)).andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         JsonNode list = objectMapper.readTree(consents);
-        assertEquals(4, list.size());
+        assertEquals(5, list.size());
         for (JsonNode consent : list) {
             assertEquals(VERSION, consent.path("policyVersion").asText());
             switch (consent.path("type").asText()) {
                 case "PRIVACY", "GUARDIAN", "VOICE" -> { assertTrue(consent.path("agreed").asBoolean()); assertFalse(consent.path("agreedAt").isNull()); }
-                case "AI_CHAT" -> assertFalse(consent.path("agreed").asBoolean());
+                case "AI_CHAT", "AI_FEEDBACK" -> assertFalse(consent.path("agreed").asBoolean());
                 default -> fail("알 수 없는 동의 항목");
             }
         }

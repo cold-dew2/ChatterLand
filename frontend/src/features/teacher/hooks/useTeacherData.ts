@@ -91,7 +91,9 @@ export function useTeacherData() {
     const payload = JSON.stringify(homework)
     if (pendingCreate.current?.payload !== payload) pendingCreate.current = { payload, key: newIdempotencyKey() }
     try {
-      const saved = mapHomework(await teacherApi.addHomework(homework, pendingCreate.current.key) as Record<string, unknown>)
+      const { exerciseTitle: _ignored, ...body } = homework
+      void _ignored
+      const saved = mapHomework(await teacherApi.addHomework(body, pendingCreate.current.key) as Record<string, unknown>)
       pendingCreate.current = null
       setHomeworks((current) => current.some((item) => item.id === saved.id) ? current : [...current, saved])
       succeed('숙제를 등록했어요.')

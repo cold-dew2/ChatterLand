@@ -10,7 +10,8 @@ export const studentApi = {
   categories: () => apiClient.get<Record<string, unknown>[]>('/api/v1/practice/categories'),
   exercises: (categoryId: string, page = 0, size = 10) => apiClient.get<Record<string, unknown>>(`/api/v1/practice/${encodeURIComponent(categoryId)}/exercises${queryString({ page, size })}`),
   /** score는 서버가 실제로 측정한 점수가 있을 때만 보낸다. */
-  saveAttempt: (body: { exerciseId: string; itemId: string; audioId: string; score?: number }) => apiClient.post<{ saved: boolean; attemptId: number; score?: number | null; matchRate?: number | null }>('/api/v1/practice/attempts', body),
+  /** homeworkId: 숙제 연습. 숙제가 아니면 practiceType SELF(자율) 또는 LESSON(수업, sessionId 필요) */
+  saveAttempt: (body: { exerciseId: string; itemId: string; audioId: string; score?: number; homeworkId?: number; practiceType?: 'SELF' | 'LESSON'; sessionId?: number }) => apiClient.post<{ saved: boolean; attemptId: number; score?: number | null; matchRate?: number | null }>('/api/v1/practice/attempts', body),
   /** requestKey: 녹음마다 만든 Idempotency-Key. 같은 녹음을 다시 보내면 서버가 같은 분석을 돌려준다(중복 분석 방지). */
   analyzeSpeech: (audio: Blob, exerciseId: string, itemId: string, requestKey?: string) => {
     const extension = audio.type.includes('wav') ? 'wav' : audio.type.includes('mp4') ? 'm4a' : audio.type.includes('ogg') ? 'ogg' : 'webm'
@@ -18,6 +19,10 @@ export const studentApi = {
     return apiClient.upload<{ analysisId: string; status: string; reused?: boolean }>('/api/v1/speech/analyze', body,
       requestKey ? { 'Idempotency-Key': requestKey } : undefined)
   },
+  /** 연습 콘텐츠 검색(자율 연습). 검색어·카테고리·난이도·발음 유형·콘텐츠 유형 필터, 페이지 */
+  practiceContents: (params: { keyword?: string; categoryId?: string; difficulty?: string; rule?: string; contentType?: string; page?: number; size?: number }) =>
+    apiClient.get<{ content: Record<string, unknown>[]; totalElements: number; totalPages: number; page: number }>(`/api/v1/practice-contents${queryString({ ...params })}`),
+  practiceContent: (exerciseId: number) => apiClient.get<Record<string, unknown>>(`/api/v1/practice-contents/${exerciseId}`),
   speechAnalysis: (id: string) => apiClient.get<SpeechAnalysis>(`/api/v1/speech/analyses/${encodeURIComponent(id)}`),
   /** AI 학습 피드백 상태(AI를 부르지 않음) */
   speechFeedback: (id: string) => apiClient.get<AiFeedback>(`/api/v1/speech/analyses/${encodeURIComponent(id)}/feedback`),

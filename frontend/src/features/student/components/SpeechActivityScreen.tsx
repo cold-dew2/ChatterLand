@@ -42,8 +42,12 @@ export function averageMatchRate(items: ItemResult[]) {
   return rates.length ? Math.round(rates.reduce((sum, rate) => sum + rate, 0) / rates.length) : null;
 }
 
-export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onBack, onOpenConsent }: {
+export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onBack, onOpenConsent, homeworkId, lessonSessionId }: {
   exercises: Exercise[]; exIdx: number; onComplete: (result: ExerciseResult) => void; onBack: () => void; onOpenConsent: () => void;
+  /** 숙제로 하는 연습이면 숙제 ID(기록이 숙제 연습으로 저장된다). 없으면 자율 연습 */
+  homeworkId?: number;
+  /** 수업(세션)에서 하는 연습이면 수업 ID(수업 연습 LESSON으로 저장). 숙제도 수업도 아니면 자율 연습 SELF */
+  lessonSessionId?: string;
 }) {
   const exercise = exercises[exIdx];
   const recorder = useAudioRecorder();
@@ -78,6 +82,7 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
       await studentApi.saveAttempt({
         exerciseId: exercise.id, itemId: item.id, audioId: result.analysisId,
         ...(typeof result.overallScore === "number" ? { score: result.overallScore } : {}),
+        ...(homeworkId ? { homeworkId } : lessonSessionId ? { practiceType: "LESSON" as const, sessionId: Number(lessonSessionId) } : { practiceType: "SELF" as const }),
       });
       setSaveState("saved");
     } catch {

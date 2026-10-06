@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Sparkles } from "lucide-react";
+import AiFeedbackBody from "@/features/aiFeedback/components/AiFeedbackBody";
 import { studentApi } from "@/features/student/api/studentApi";
 import type { AiFeedback } from "@/features/student/types";
 import { isConsentRequired } from "@/features/student/utils/speechErrors";
@@ -11,8 +12,6 @@ import Button from "@/shared/components/button/Button";
 import Card from "@/shared/components/card/Card";
 import Notice from "@/shared/components/feedback/Notice";
 import Spinner from "@/shared/components/spinner/Spinner";
-
-const sourceLabel = { AUTO_ANALYSIS: "자동 분석", TEACHER_CONFIRMED: "선생님 확인 결과" } as const;
 
 type PanelState =
   | { kind: "loading" }
@@ -46,6 +45,7 @@ export default function AiFeedbackPanel({ analysisId }: { analysisId: string }) 
     try {
       const feedback = await studentApi.generateSpeechFeedback(analysisId);
       setState({ kind: "feedback", feedback });
+      setConsentNeeded(false);
     } catch (cause) {
       if (isConsentRequired(cause)) setConsentNeeded(true);
       else setGenerateError(cause instanceof ApiError && cause.code === "AI_NOT_CONFIGURED"
@@ -68,6 +68,9 @@ export default function AiFeedbackPanel({ analysisId }: { analysisId: string }) 
   if (feedback.status === "NOT_EVALUABLE") return (
     <Notice tone="info"><b>AI 설명</b> · {feedback.reason ?? "이 녹음은 설명할 수 없어요."}</Notice>
   );
+  if (feedback.status === "INSUFFICIENT_SOURCES") return (
+    <Notice tone="info"><b>AI 설명 · 근거 자료 부족</b> · {feedback.reason ?? "이 결과를 설명할 검수된 교육 자료가 없어요."}</Notice>
+  );
 
   return (
     <Card padding="lg" className="space-y-3" aria-label="AI 설명">
@@ -76,14 +79,9 @@ export default function AiFeedbackPanel({ analysisId }: { analysisId: string }) 
         <Badge tone="neutral">점수 아님</Badge>
       </div>
       {feedback.status === "READY" ? (
-        <>
-          <p className="text-sm leading-relaxed text-gray-800">{feedback.text}</p>
-          <p className="text-xs leading-relaxed text-gray-400">
-            {(feedback.basedOn ?? []).map((source) => sourceLabel[source]).join(" · ") || "분석 결과"}를 바탕으로 AI가 쉽게 풀어 쓴 설명이에요. 점수나 진단이 아니에요.
-          </p>
-        </>
+        <AiFeedbackBody feedback={feedback} />
       ) : consentNeeded ? (
-        <Notice tone="info">AI 설명을 보려면 마이페이지의 동의 관리에서 &apos;AI 대화 외부 전송&apos;에 동의해 주세요. 분석 결과(글자)만 보내고 목소리는 보내지 않아요.</Notice>
+        <Notice tone="info">AI 설명을 보려면 마이페이지의 동의 관리에서 &apos;AI 학습 피드백 외부 전송&apos;에 동의해 주세요. 분석 결과(글자)만 보내고 목소리·이름은 보내지 않아요.</Notice>
       ) : feedback.available === false ? (
         <Notice tone="info">지금은 AI 설명을 쓸 수 없어요.</Notice>
       ) : generating ? (

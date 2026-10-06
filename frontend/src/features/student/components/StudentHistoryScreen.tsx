@@ -6,6 +6,7 @@ import { studentApi } from "@/features/student/api/studentApi";
 import type { HistoryItem } from "@/features/student/types";
 import { mapHistoryItem } from "@/features/student/utils/mappers";
 import { errorMessage } from "@/shared/api/client";
+import { attemptTypeLabel } from "@/features/student/utils/practiceLabels";
 import Badge from "@/shared/components/badge/Badge";
 import Button from "@/shared/components/button/Button";
 import Card from "@/shared/components/card/Card";
@@ -106,6 +107,7 @@ export default function StudentHistoryScreen() {
             <HistoryItemIcon type={item.type} />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-gray-900 truncate">{item.title}</p>
+              {item.attemptType && <p className="mt-0.5"><Badge tone={item.attemptType === "HOMEWORK" ? "info" : "neutral"}>{attemptTypeLabel[item.attemptType]}</Badge></p>}
               <p className="text-xs text-gray-400 mt-0.5">{item.date}{item.time ? ` · ${item.time}` : ""}</p>
             </div>
             <div className="shrink-0 text-right"><HistoryResult item={item} /></div>

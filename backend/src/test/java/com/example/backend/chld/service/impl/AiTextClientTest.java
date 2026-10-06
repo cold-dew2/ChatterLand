@@ -25,7 +25,7 @@ class AiTextClientTest {
     private static final String KEY = "secret-test-key-123";
     private final RestClient.Builder builder = RestClient.builder();
     private final MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
-    private final AiTextClient client = new AiTextClient(builder.build(), GEMINI, KEY, "gpt-4o-mini");
+    private final AiTextClient client = new AiTextClient(builder.build(), GEMINI, KEY, "gpt-4o-mini", new long[0]);
 
     private String generate() { return client.generate("시스템 지시", List.of(new AiTextClient.Turn("user", "안녕"), new AiTextClient.Turn("assistant", "반가워"), new AiTextClient.Turn("user", "또 만나")), 0.3, 512); }
 
@@ -56,6 +56,39 @@ class AiTextClientTest {
         assertCode(HttpStatus.INTERNAL_SERVER_ERROR, "AI_PROVIDER_ERROR", HttpStatus.BAD_GATEWAY);
         assertFalse(output.getOut().contains(KEY), "키를 로그에 남기지 않는다");
         assertFalse(output.getOut().contains("provider-detail-with-prompt"), "제공자 응답 본문(요청 내용 포함 가능)을 로그에 남기지 않는다");
+    }
+
+    @Test
+    void temporaryProviderErrorsAreRetriedButQuotaAndAuthErrorsAreNot() {
+        AiTextClient retrying = new AiTextClient(builder.build(), GEMINI, KEY, "m", new long[]{0, 0});
+        String ok = "{\"candidates\":[{\"content\":{\"parts\":[{\"text\":\"좋아요\"}]}}]}";
+        server.reset();
+        server.expect(requestTo(GEMINI)).andRespond(withStatus(HttpStatus.SERVICE_UNAVAILABLE));
+        server.expect(requestTo(GEMINI)).andRespond(withStatus(HttpStatus.SERVICE_UNAVAILABLE));
+        server.expect(requestTo(GEMINI)).andRespond(withSuccess(ok, MediaType.APPLICATION_JSON));
+        assertEquals("좋아요", retrying.generate("s", List.of(new AiTextClient.Turn("user", "안녕")), 0.3, 64));
+        server.verify();
+
+        server.reset();
+        for (int i = 0; i < 3; i++) server.expect(requestTo(GEMINI)).andRespond(withStatus(HttpStatus.SERVICE_UNAVAILABLE));
+        assertEquals("AI_PROVIDER_ERROR", assertThrows(AiProviderException.class, () -> retrying.generate("s", List.of(new AiTextClient.Turn("user", "안녕")), 0.3, 64)).getCode());
+        server.verify(); // 처음 1회 + 재시도 2회
+
+        for (HttpStatus noRetry : List.of(HttpStatus.TOO_MANY_REQUESTS, HttpStatus.UNAUTHORIZED, HttpStatus.BAD_REQUEST)) {
+            server.reset();
+            server.expect(org.springframework.test.web.client.ExpectedCount.once(), requestTo(GEMINI)).andRespond(withStatus(noRetry));
+            assertThrows(AiProviderException.class, () -> retrying.generate("s", List.of(new AiTextClient.Turn("user", "안녕")), 0.3, 64));
+            server.verify();
+        }
+    }
+
+    @Test
+    void aUsedUpDailyQuotaSaysTomorrowNotInAMoment() {
+        server.expect(requestTo(GEMINI)).andRespond(withStatus(HttpStatus.TOO_MANY_REQUESTS).contentType(MediaType.APPLICATION_JSON)
+                .body("{\"error\":{\"status\":\"RESOURCE_EXHAUSTED\",\"details\":[{\"violations\":[{\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"}]}]}}"));
+        AiProviderException error = assertThrows(AiProviderException.class, this::generate);
+        assertEquals("AI_RATE_LIMITED", error.getCode());
+        assertTrue(error.getMessage().contains("내일 다시"));
     }
 
     @Test

@@ -38,6 +38,14 @@ public class TeacherController {
     @GetMapping("/students/{studentId}") public Map<String,Object> student(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable long studentId) { return teachers.student(principal,studentId); }
     @GetMapping("/students/{studentId}/sessions") public PageResponse<Map<String,Object>> sessions(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable long studentId,
             @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size) { return teachers.sessions(principal,studentId,page,size); }
+    /** 담당 학생의 연습 기록: 자율 연습(PRACTICE)·숙제 연습(HOMEWORK). 학생이 따로 제출하지 않아도 저장된 기록을 본다. */
+    @GetMapping("/students/{studentId}/practice-attempts") public PageResponse<Map<String,Object>> studentAttempts(@AuthenticationPrincipal TokenPrincipal principal,
+            @PathVariable long studentId,@RequestParam(required=false) String type,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") int size) {
+        return teachers.studentAttempts(principal,studentId,type,page,size);
+    }
+    @GetMapping("/students/{studentId}/practice-summary") public Map<String,Object> studentAttemptSummary(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable long studentId) {
+        return teachers.studentAttemptSummary(principal,studentId);
+    }
     @GetMapping("/homeworks") public PageResponse<Map<String,Object>> homeworks(@AuthenticationPrincipal TokenPrincipal principal,@RequestParam(required=false) Long studentId,
             @RequestParam(required=false) String status,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size) { return teachers.homeworks(principal,studentId,status,page,size); }
     /** 처음 만들면 201, 같은 Idempotency-Key·같은 내용의 재전송이면 처음 만든 숙제를 200으로 돌려준다(reused=true). */
@@ -64,6 +72,10 @@ public class TeacherController {
         TeacherService.SpeechAudio audio=teachers.speechAnalysisAudio(principal,analysisId);
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(audio.mimeType()))
                 .header(HttpHeaders.CACHE_CONTROL,"no-store").body(audio.content());
+    }
+    /** 담당 학생이 만든 AI 학습 피드백(학생 화면과 같은 저장 결과). 선생님은 조회만 하고 AI를 부르지 않는다. */
+    @GetMapping("/speech-analyses/{analysisId}/feedback") public Map<String,Object> speechFeedback(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable String analysisId) {
+        return teachers.speechFeedback(principal,analysisId);
     }
     @PatchMapping("/speech-analyses/{analysisId}/review") public Map<String,Object> reviewSpeechAnalysis(@AuthenticationPrincipal TokenPrincipal principal,
             @PathVariable String analysisId,@Valid @RequestBody SpeechReviewRequest request) { return teachers.reviewSpeechAnalysis(principal,analysisId,request); }

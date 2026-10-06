@@ -73,4 +73,25 @@ describe('SpeechActivityScreen 중복 분석 방지', () => {
     await waitFor(() => expect(analyzeSpeech).toHaveBeenCalledTimes(2))
     expect(analyzeSpeech.mock.calls[1][3]).not.toBe(analyzeSpeech.mock.calls[0][3])
   })
+
+  it('저장할 때 연습 유형을 보낸다: 자율 SELF, 수업 LESSON(수업 ID), 숙제는 homeworkId', async () => {
+    analyzeSpeech.mockResolvedValue({ analysisId: 'an-1', status: 'COMPLETED' })
+    speechAnalysis.mockResolvedValue(completed)
+    const cases: [Record<string, unknown>, Record<string, unknown>][] = [
+      [{}, { practiceType: 'SELF' }],
+      [{ lessonSessionId: '31' }, { practiceType: 'LESSON', sessionId: 31 }],
+      [{ homeworkId: 9 }, { homeworkId: 9 }],
+    ]
+    for (const [props, expected] of cases) {
+      saveAttempt.mockClear()
+      const view = render(<SpeechActivityScreen exercises={exercises} exIdx={0} onComplete={vi.fn()} onBack={vi.fn()} onOpenConsent={vi.fn()} {...props} />)
+      fireEvent.click(screen.getByRole('button', { name: '분석하기' }))
+      await waitFor(() => expect(saveAttempt).toHaveBeenCalledTimes(1))
+      expect(saveAttempt).toHaveBeenCalledWith(expect.objectContaining(expected))
+      if (!('homeworkId' in expected)) expect(saveAttempt.mock.calls[0][0]).not.toHaveProperty('homeworkId')
+      if ('homeworkId' in expected) expect(saveAttempt.mock.calls[0][0]).not.toHaveProperty('practiceType')
+      view.unmount()
+    }
+  })
 })
+

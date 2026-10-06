@@ -6,11 +6,13 @@ import com.example.backend.chld.dto.request.SpeechReviewRequest;
 import com.example.backend.chld.dto.request.StudentCreateRequest;
 import com.example.backend.chld.dto.response.PageResponse;
 import com.example.backend.chld.exception.ConflictException;
+import com.example.backend.chld.mapper.PracticeContentMapper;
 import com.example.backend.chld.mapper.StudentMapper;
 import com.example.backend.chld.mapper.StudentProfileCommand;
 import com.example.backend.chld.mapper.TeacherMapper;
 import com.example.backend.chld.mapper.UserMapper;
 import com.example.backend.chld.service.SpeechAnalysisService;
+import com.example.backend.chld.service.SpeechFeedbackService;
 import com.example.backend.chld.service.TeacherService;
 import com.example.backend.global.jwt.TokenPrincipal;
 import org.springframework.dao.DuplicateKeyException;
@@ -31,8 +33,12 @@ public class TeacherServiceImpl implements TeacherService {
     private final SpeechAnalysisService speechAnalysis;
     private final AudioStorageService audioStorage;
     private final ReportPdfGenerator pdfGenerator;
+    private final SpeechFeedbackService speechFeedback;
+    private final PracticeContentMapper contents;
     public TeacherServiceImpl(TeacherMapper teachers, StudentMapper students, UserMapper users,
-                              SpeechAnalysisService speechAnalysis, AudioStorageService audioStorage, ReportPdfGenerator pdfGenerator) {
+                              SpeechAnalysisService speechAnalysis, AudioStorageService audioStorage, ReportPdfGenerator pdfGenerator,
+                              SpeechFeedbackService speechFeedback, PracticeContentMapper contents) {
+        this.speechFeedback=speechFeedback; this.contents=contents;
         this.teachers=teachers; this.students=students; this.users=users; this.speechAnalysis=speechAnalysis; this.audioStorage=audioStorage; this.pdfGenerator=pdfGenerator;
     }
 
@@ -112,18 +118,23 @@ public class TeacherServiceImpl implements TeacherService {
     @Override public Map<String,Object> addHomework(TokenPrincipal principal,HomeworkCreateRequest request,String idempotencyKey) {
         long teacherId=requireTeacher(principal); assignedStudent(teacherId,request.studentId());
         String title=request.title().trim(), description=blankToNull(request.description());
+        // 숙제로 낼 연습 세트: 운영 중인(active) 콘텐츠만. 담당 학생 확인은 위 assignedStudent가 서버에서 한다.
+        Long exerciseId=request.exerciseId();
+        if(exerciseId!=null&&contents.findActiveExercise(exerciseId)==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"숙제로 낼 연습 콘텐츠를 찾을 수 없습니다.");
         String key=IdempotencyKeys.normalize(idempotencyKey);
         if(key==null) {
-            teachers.insertHomework(teacherId,request.studentId(),title,request.type(),description,request.targetMinutes(),request.dueDate(),null,null);
+            teachers.insertHomework(teacherId,request.studentId(),title,request.type(),description,request.targetMinutes(),request.dueDate(),null,null,exerciseId);
             Map<String,Object> latest=teachers.findLatestHomework(teacherId,request.studentId(),title);
             if(latest==null) throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"숙제를 저장하지 못했습니다.");
             return latest;
         }
-        String hash=IdempotencyKeys.fingerprint(request.studentId(),title,request.type(),description,request.targetMinutes(),request.dueDate());
+        // 연습 세트를 지정한 경우에만 지문에 넣는다(기존 키의 지문은 그대로 유지).
+        String hash=exerciseId==null?IdempotencyKeys.fingerprint(request.studentId(),title,request.type(),description,request.targetMinutes(),request.dueDate())
+                :IdempotencyKeys.fingerprint(request.studentId(),title,request.type(),description,request.targetMinutes(),request.dueDate(),exerciseId);
         Map<String,Object> existing=teachers.findHomeworkByRequestKey(teacherId,key);
         if(existing!=null) return replayHomework(existing,hash);
         try {
-            teachers.insertHomework(teacherId,request.studentId(),title,request.type(),description,request.targetMinutes(),request.dueDate(),key,hash);
+            teachers.insertHomework(teacherId,request.studentId(),title,request.type(),description,request.targetMinutes(),request.dueDate(),key,hash,exerciseId);
         } catch(DuplicateKeyException concurrent) {
             // 같은 키의 요청이 동시에 도착해 다른 요청이 먼저 저장했다.
             existing=teachers.findHomeworkByRequestKey(teacherId,key);
@@ -257,6 +268,28 @@ public class TeacherServiceImpl implements TeacherService {
         Map<String,Object> updated=new LinkedHashMap<>(speechAnalysis.toResponse(teacherAnalysis(teacherId,analysisId)));
         updated.remove("audioPath");
         return updated;
+    }
+
+    /**
+     * 담당 학생의 연습 기록(자율 연습·숙제 연습). 담당 여부는 서버에서 확인한다(담당이 아니면 403/404, 기존 학생 상세와 같은 검사).
+     * textMatchRate는 음성 인식 글자 일치율이며 발음 정확도가 아니다.
+     */
+    @Override public PageResponse<Map<String,Object>> studentAttempts(TokenPrincipal principal,long studentId,String type,int page,int size) {
+        long teacherId=requireTeacher(principal); assignedStudent(teacherId,studentId);
+        String t=type==null||type.isBlank()?null:type.trim().toUpperCase(Locale.ROOT);
+        if(t!=null&&!Set.of("PRACTICE","SELF","LESSON","HOMEWORK").contains(t)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"연습 종류는 SELF·LESSON·HOMEWORK·PRACTICE(구분 전 기록)입니다.");
+        PageResponse.Window p=PageResponse.window(page,size);
+        return PageResponse.of(teachers.findStudentAttempts(studentId,t,p.size(),p.offset()),teachers.countStudentAttempts(studentId,t),p);
+    }
+
+    @Override public Map<String,Object> studentAttemptSummary(TokenPrincipal principal,long studentId) {
+        long teacherId=requireTeacher(principal); assignedStudent(teacherId,studentId);
+        return teachers.attemptSummary(studentId);
+    }
+
+    @Override public Map<String,Object> speechFeedback(TokenPrincipal principal,String analysisId) {
+        // 담당 여부는 서버에서 분석 ID로 확인한다(클라이언트가 보낸 학생 ID를 믿지 않음). 담당이 아니면 404.
+        return speechFeedback.teacherView(speechAnalysis.toResponse(teacherAnalysis(requireTeacher(principal),analysisId)));
     }
 
     private Map<String,Object> teacherAnalysis(long teacherId,String analysisId) {

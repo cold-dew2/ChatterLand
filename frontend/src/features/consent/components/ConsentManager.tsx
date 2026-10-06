@@ -59,7 +59,8 @@ export default function ConsentManager() {
       <h3 id="consent-manager-title" className="text-sm font-bold text-gray-700">동의 관리</h3>
       {detail && <ConsentDocumentModal type={detail} onClose={() => setDetail(null)} />}
       {withdrawTarget && <ConfirmDialog title="동의를 철회할까요?" confirmLabel="철회" pending={pending}
-        description={withdrawTarget === "VOICE" ? "보관 중인 녹음이 즉시 삭제되고, 말하기 연습과 음성 대화를 사용할 수 없어요." : "AI 대화를 사용할 수 없어요."}
+        description={withdrawTarget === "VOICE" ? "보관 중인 녹음이 즉시 삭제되고, 말하기 연습과 음성 대화를 사용할 수 없어요."
+          : withdrawTarget === "AI_FEEDBACK" ? "새 AI 설명을 만들 수 없어요. 이미 만들어진 설명은 학습 기록으로 남아요." : "AI 대화를 사용할 수 없어요."}
         onCancel={() => setWithdrawTarget(null)} onConfirm={() => update(withdrawTarget, false)} />}
       {agreeTarget && (
         <Modal title={`${consentLabels[agreeTarget]} 동의`} onClose={() => setAgreeTarget(null)} closeDisabled={pending}

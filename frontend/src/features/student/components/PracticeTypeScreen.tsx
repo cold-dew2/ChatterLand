@@ -1,10 +1,10 @@
-import { Bot, ChevronLeft } from "lucide-react";
+import { Bot, ChevronLeft, Search } from "lucide-react";
 import Button from "@/shared/components/button/Button";
 import { cardClassName } from "@/shared/components/card/Card";
 import { PageTitle } from "@/shared/components/pageHeader/PageHeader";
 
 export default function PracticeTypeScreen({ onSelect, onBack }: {
-  onSelect: (type: "ai" | "word") => void;
+  onSelect: (type: "ai" | "word" | "browse") => void;
   onBack: () => void;
 }) {
   return (
@@ -19,6 +19,16 @@ export default function PracticeTypeScreen({ onSelect, onBack }: {
       <PageTitle title="연습 유형 선택" description="어떤 연습을 할까요?" className="px-5 mb-6" />
 
       <div className="px-5 space-y-3">
+        <button type="button" onClick={() => onSelect("browse")} className={cardClassName({ interactive: true, className: "flex items-center gap-4" })}>
+          <div className="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center shrink-0" aria-hidden="true">
+            <Search size={30} className="text-[var(--brand-primary)]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-base font-bold text-gray-900 mb-0.5">전체 연습 찾기</p>
+            <p className="text-sm text-gray-400 leading-snug">발음 유형·난이도로 골라서 스스로 연습해요</p>
+          </div>
+        </button>
+
         <button type="button" onClick={() => onSelect("ai")} className={cardClassName({ interactive: true, className: "flex items-center gap-4" })}>
           <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center shrink-0" aria-hidden="true">
             <Bot size={32} className="text-[var(--brand-primary)]" />

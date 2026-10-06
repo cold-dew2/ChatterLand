@@ -18,8 +18,13 @@ public final class ConsentPolicy {
     public static final String VOICE = "VOICE";
     /** AI 대화 내용(텍스트)을 외부 AI 서비스로 전송 (선택, AI 대화에 필요) */
     public static final String AI_CHAT = "AI_CHAT";
+    /**
+     * AI 학습 피드백: 음성 분석 결과(목표 문장·인식 문장·자동 오류 후보 또는 선생님 확정 결과, 글자)를 외부 AI 서비스로 전송 (선택).
+     * AI_CHAT 안내문은 '대화 내용'만 명시하므로 목적·전송 항목이 다른 학습 피드백은 별도 항목으로 받는다. 회원가입 때가 아니라 마이페이지에서 동의한다.
+     */
+    public static final String AI_FEEDBACK = "AI_FEEDBACK";
 
-    public static final List<String> TYPES = List.of(PRIVACY, GUARDIAN, VOICE, AI_CHAT);
+    public static final List<String> TYPES = List.of(PRIVACY, GUARDIAN, VOICE, AI_CHAT, AI_FEEDBACK);
 
     private ConsentPolicy() { }
 

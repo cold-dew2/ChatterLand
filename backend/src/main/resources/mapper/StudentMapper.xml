@@ -32,9 +32,10 @@
     <if test="status != null and status != ''">AND status=#{status}</if>
   </select>
   <select id="findHomeworks" resultType="map">
-    SELECT homework_id AS homeworkId,homework_id AS id,title,type,description,target_minutes AS targetMinutes,
-      DATE_FORMAT(due_date,'%Y-%m-%d') AS dueDate,status,(status='COMPLETED') AS done
-    FROM homeworks WHERE student_id=#{studentId}
+    SELECT h.homework_id AS homeworkId,h.homework_id AS id,h.title,h.type,h.description,h.target_minutes AS targetMinutes,
+      DATE_FORMAT(h.due_date,'%Y-%m-%d') AS dueDate,h.status,(h.status='COMPLETED') AS done,h.exercise_id AS exerciseId,e.title AS exerciseTitle,
+      (SELECT COUNT(*) FROM practice_attempts pa WHERE pa.homework_id=h.homework_id) AS attemptCount
+    FROM homeworks h LEFT JOIN exercises e ON e.exercise_id=h.exercise_id WHERE h.student_id=#{studentId}
     ORDER BY CASE WHEN status='COMPLETED' THEN 1 ELSE 0 END,due_date,homework_id DESC
     LIMIT #{limit} OFFSET #{offset}
   </select>
@@ -47,7 +48,7 @@
   </update>
   <select id="findHomework" resultType="map">
     SELECT homework_id AS homeworkId,homework_id AS id,title,type,description,target_minutes AS targetMinutes,
-      DATE_FORMAT(due_date,'%Y-%m-%d') AS dueDate,status,(status='COMPLETED') AS done
+      DATE_FORMAT(due_date,'%Y-%m-%d') AS dueDate,status,(status='COMPLETED') AS done,exercise_id AS exerciseId
     FROM homeworks WHERE student_id=#{studentId} AND homework_id=#{homeworkId}
   </select>
   <select id="findSession" resultType="map">
@@ -82,26 +83,27 @@
     SELECT item_id AS itemId,text_value AS text FROM exercise_items WHERE exercise_id=#{exerciseId} AND item_id=#{itemId}
   </select>
   <insert id="insertAttempt">
-    INSERT INTO practice_attempts(student_id,exercise_id,item_id,analysis_id,score,match_rate,attempt_type)
-    VALUES(#{studentId},#{exerciseId},#{itemId},#{analysisId},#{score},#{matchRate},#{type})
+    INSERT INTO practice_attempts(student_id,exercise_id,item_id,analysis_id,score,match_rate,attempt_type,homework_id)
+    VALUES(#{studentId},#{exerciseId},#{itemId},#{analysisId},#{score},#{matchRate},#{type},#{homeworkId})
     ON DUPLICATE KEY UPDATE analysis_id=VALUES(analysis_id)
   </insert>
   <select id="findAttemptByAnalysis" resultType="map">
-    SELECT attempt_id AS attemptId,exercise_id AS exerciseId,item_id AS itemId,score,match_rate AS matchRate,created_at AS createdAt
+    SELECT attempt_id AS attemptId,exercise_id AS exerciseId,item_id AS itemId,score,match_rate AS matchRate,created_at AS createdAt,
+      attempt_type AS attemptType,homework_id AS homeworkId
     FROM practice_attempts WHERE student_id=#{studentId} AND analysis_id=#{analysisId}
   </select>
   <select id="findHistory" resultType="map">
     SELECT * FROM (
       SELECT pa.attempt_id AS id,'word' AS type,e.title AS title,pa.score AS score,pa.match_rate AS matchRate,
-        DATE_FORMAT(pa.created_at,'%Y-%m-%d %H:%i') AS date,pa.created_at AS sortDate
+        DATE_FORMAT(pa.created_at,'%Y-%m-%d %H:%i') AS date,pa.created_at AS sortDate,pa.attempt_type AS attemptType,pa.analysis_id AS analysisId,pa.exercise_id AS exerciseId
       FROM practice_attempts pa JOIN exercises e ON e.exercise_id=pa.exercise_id WHERE pa.student_id=#{studentId}
       UNION ALL
       SELECT h.homework_id AS id,'hw' AS type,h.title AS title,NULL AS score,NULL AS matchRate,
-        DATE_FORMAT(h.due_date,'%Y-%m-%d') AS date,h.created_at AS sortDate
+        DATE_FORMAT(h.due_date,'%Y-%m-%d') AS date,h.created_at AS sortDate,NULL AS attemptType,NULL AS analysisId,h.exercise_id AS exerciseId
       FROM homeworks h WHERE h.student_id=#{studentId}
       UNION ALL
       SELECT c.conversation_id AS id,'ai' AS type,CONCAT(c.topic,' 대화') AS title,NULL AS score,NULL AS matchRate,
-        DATE_FORMAT(c.updated_at,'%Y-%m-%d %H:%i') AS date,c.updated_at AS sortDate
+        DATE_FORMAT(c.updated_at,'%Y-%m-%d %H:%i') AS date,c.updated_at AS sortDate,NULL AS attemptType,NULL AS analysisId,NULL AS exerciseId
       FROM conversations c WHERE c.student_id=#{studentId}
     ) h
     <if test="type == 'ai'">WHERE type='ai'</if>

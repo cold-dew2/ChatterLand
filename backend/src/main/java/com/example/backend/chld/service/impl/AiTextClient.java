@@ -37,6 +37,8 @@ public class AiTextClient {
 
     private final RestClient restClient;
     private final String url, key, configuredModel;
+    /** 제공자 일시 오류(500·502·503·504) 재시도 간격. 사용량 제한(429)·인증·요청 오류는 재시도하지 않는다. */
+    private final long[] retryDelaysMs;
 
     @Autowired
     public AiTextClient(RestClient.Builder builder,
@@ -57,6 +59,11 @@ public class AiTextClient {
 
     /** 테스트용: 요청을 가로채는 RestClient를 그대로 쓴다. */
     AiTextClient(RestClient restClient, String url, String key, String configuredModel) {
+        this(restClient, url, key, configuredModel, new long[]{1000, 2000});
+    }
+
+    AiTextClient(RestClient restClient, String url, String key, String configuredModel, long[] retryDelaysMs) {
+        this.retryDelaysMs = retryDelaysMs;
         this.restClient = restClient;
         this.url = url == null ? "" : url.trim();
         this.key = key == null ? "" : key.trim();
@@ -81,6 +88,20 @@ public class AiTextClient {
 
     public String generate(String systemInstruction, List<Turn> turns, double temperature, int maxOutputTokens) {
         requireConfigured();
+        for (int attempt = 0; ; attempt++) {
+            try {
+                return generateOnce(systemInstruction, turns, temperature, maxOutputTokens);
+            } catch (AiProviderException e) {
+                // 제공자 쪽 일시 오류(과부하 503 등)만 짧게 기다렸다가 다시 시도한다.
+                if (!AiProviderException.PROVIDER_ERROR.equals(e.getCode()) || attempt >= retryDelaysMs.length) throw e;
+                log.info("AI provider temporary error, retry {}/{}", attempt + 1, retryDelaysMs.length);
+                try { Thread.sleep(retryDelaysMs[attempt]); }
+                catch (InterruptedException interrupted) { Thread.currentThread().interrupt(); throw e; }
+            }
+        }
+    }
+
+    private String generateOnce(String systemInstruction, List<Turn> turns, double temperature, int maxOutputTokens) {
         try {
             return isGemini() ? callGemini(systemInstruction, turns, temperature, maxOutputTokens)
                     : callOpenAi(systemInstruction, turns, temperature, maxOutputTokens);
@@ -95,8 +116,12 @@ public class AiTextClient {
             AiProviderException mapped = switch (status) {
                 case 401, 403 -> new AiProviderException(AiProviderException.AUTH_FAILED, HttpStatus.SERVICE_UNAVAILABLE,
                         "AI 서비스가 서버의 API 키를 거부했어요. 관리자가 AI_API_KEY 설정을 확인해야 해요.");
-                case 429 -> new AiProviderException(AiProviderException.RATE_LIMITED, HttpStatus.TOO_MANY_REQUESTS,
-                        "AI 서비스 사용량이 많아요. 잠시 뒤 다시 시도해 주세요.");
+                // 하루 한도(예: 무료 등급 PerDay 할당량)는 '잠시 뒤'가 아니므로 따로 안내한다. 본문은 판별에만 쓰고 기록하지 않는다.
+                case 429 -> e.getResponseBodyAsString().contains("PerDay")
+                        ? new AiProviderException(AiProviderException.RATE_LIMITED, HttpStatus.TOO_MANY_REQUESTS,
+                                "오늘 쓸 수 있는 AI 사용량을 모두 썼어요. 내일 다시 시도해 주세요.")
+                        : new AiProviderException(AiProviderException.RATE_LIMITED, HttpStatus.TOO_MANY_REQUESTS,
+                                "AI 서비스 사용량이 많아요. 잠시 뒤 다시 시도해 주세요.");
                 case 400, 404 -> new AiProviderException(AiProviderException.REQUEST_REJECTED, HttpStatus.BAD_GATEWAY,
                         "AI 서비스가 요청을 거부했어요. 관리자가 AI_API_URL·모델 설정을 확인해야 해요.");
                 default -> new AiProviderException(AiProviderException.PROVIDER_ERROR, HttpStatus.BAD_GATEWAY,
