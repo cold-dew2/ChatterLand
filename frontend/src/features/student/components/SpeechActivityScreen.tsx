@@ -1,13 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { CheckCircle, Mic, RotateCcw, Square } from "lucide-react";
+import { CheckCircle, RotateCcw } from "lucide-react";
 import { studentApi } from "@/features/student/api/studentApi";
 import { useAudioRecorder } from "@/features/student/hooks/useAudioRecorder";
 import { isConsentRequired } from "@/features/student/utils/speechErrors";
 import { textMatchRate } from "@/features/student/utils/speechAssessment";
 import { toWav16k } from "@/features/student/utils/wavEncoder";
 import AiFeedbackPanel from "@/features/student/components/AiFeedbackPanel";
+import RecordButton from "@/features/student/components/RecordButton";
 import SpeechAnalysisResult from "@/features/student/components/SpeechAnalysisResult";
 import type { EvaluationMode, Exercise, ExerciseResult, ItemResult, SpeechAnalysis } from "@/features/student/types";
 import { errorMessage } from "@/shared/api/client";
@@ -17,6 +18,7 @@ import Button from "@/shared/components/button/Button";
 import Card from "@/shared/components/card/Card";
 import EmptyState from "@/shared/components/feedback/EmptyState";
 import Notice from "@/shared/components/feedback/Notice";
+import Mascot from "@/shared/components/mascot/Mascot";
 import PageHeader from "@/shared/components/pageHeader/PageHeader";
 import ProgressBar from "@/shared/components/progressBar/ProgressBar";
 import Spinner from "@/shared/components/spinner/Spinner";
@@ -65,9 +67,9 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
 
   if (!exercise || exercise.items.length === 0) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen">
         <PageHeader title={exercise?.label ?? "말하기 연습"} onBack={onBack} />
-        <div className="px-5 py-6"><EmptyState title="연습할 문항이 없어요" description="선생님이 문항을 등록하면 연습할 수 있어요." /></div>
+        <div className="px-5 py-6"><EmptyState title="연습할 문항이 없어요" description="선생님이 문항을 등록하면 연습할 수 있어요." icon={<Mascot size={64} />} /></div>
       </div>
     );
   }
@@ -142,28 +144,31 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
     const pendingReview = itemResults.filter((result) => result.mode === "PRONUNCIATION_REVIEW").length;
     const unsaved = itemResults.filter((result) => !result.saved).length;
     return (
-      <div className="flex min-h-screen flex-col bg-white">
+      <div className="flex min-h-screen flex-col">
         <PageHeader title={exercise.label} subtitle={`활동 ${exIdx + 1}/${exercises.length}`} onBack={onBack} />
-        <div className="flex flex-1 flex-col items-center justify-center gap-5 px-5">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full border border-green-100 bg-green-50">
-            <CheckCircle size={40} className="text-green-500" />
-          </div>
+        <div className="flex flex-1 flex-col items-center justify-center gap-5 px-5 py-6">
+          <span className="flex h-[84px] w-[84px] items-center justify-center rounded-full bg-[var(--meadow-100)]" aria-hidden="true">
+            <CheckCircle size={40} className="text-[var(--meadow-700)]" />
+          </span>
           <div className="text-center">
-            <h3 className="mb-1 text-2xl font-black text-gray-900">활동 완료</h3>
-            <p className="text-sm text-gray-400">&quot;{exercise.label}&quot;를 마쳤어요</p>
+            <h3 className="font-display text-[26px] leading-tight text-[var(--ink-900)]">활동 완료</h3>
+            <p className="mt-1 text-sm text-[var(--ink-600)]">&quot;{exercise.label}&quot;를 마쳤어요</p>
           </div>
-          <Card padding="lg" className="w-full text-center">
+          <Card tone="raised" padding="lg" className="w-full text-center">
             {average !== null ? <>
-              <p className="mb-1 text-sm text-gray-400">평균 텍스트 일치율</p>
-              <p className="text-5xl font-black text-gray-900">{average}<span className="ml-1 text-xl font-bold text-gray-400">%</span></p>
-              <p className="mt-3 text-xs text-gray-500">음성 인식 결과와 목표 문장을 비교한 값이에요. 발음 점수가 아니에요.</p>
+              <p className="text-[13px] text-[var(--ink-600)]">평균 텍스트 일치율</p>
+              {/* 글자 비교 값이라 점수처럼 강조색을 쓰지 않는다 */}
+              <p className="mt-1.5 font-number text-[60px] font-black leading-none text-[var(--ink-900)]">{average}<span className="ml-0.5 text-2xl text-[var(--ink-400)]">%</span></p>
+              <p className="mt-3 text-xs leading-relaxed text-[var(--ink-500)]">음성 인식 결과와 목표 문장을 비교한 값이에요. 발음 점수가 아니에요.</p>
             </> : <>
-              <p className="text-sm font-semibold text-gray-700">{itemResults.length}개 문항을 녹음했어요</p>
-              <p className="mt-2 text-xs text-gray-500">{pendingReview > 0 ? "선생님이 녹음을 듣고 발음을 확인해 줄 거예요." : "이번 활동에는 계산된 텍스트 일치율이 없어요."}</p>
+              <p className="text-[15px] font-semibold text-[var(--ink-800)]">{itemResults.length}개 문항을 녹음했어요</p>
+              <p className="mt-2 text-xs leading-relaxed text-[var(--ink-500)]">{pendingReview > 0 ? "선생님이 녹음을 듣고 발음을 확인해 줄 거예요." : "이번 활동에는 계산된 텍스트 일치율이 없어요."}</p>
             </>}
             {pendingReview > 0 && <div className="mt-3 flex justify-center"><Badge tone="info">선생님 확인 대기 {pendingReview}개</Badge></div>}
           </Card>
           {unsaved > 0 && <Notice tone="warning" className="w-full">{unsaved}개 문항의 학습 기록을 저장하지 못했어요.</Notice>}
+        </div>
+        <div className="shrink-0 px-5 pt-3 pb-8">
           <Button size="lg" fullWidth onClick={() => onComplete({ exerciseId: exercise.id, label: exercise.label, items: itemResults })}>
             {exIdx < exercises.length - 1 ? "다음 활동" : "결과 보기"}
           </Button>
@@ -173,29 +178,31 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
   }
 
   const recording = recorder.status === "recording";
+  const compact = recorder.status === "recorded" || phase === "done";
+  const longText = item.word.length > 6;
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col">
       <PageHeader title={exercise.label} subtitle={`활동 ${exIdx + 1}/${exercises.length}`} onBack={onBack}
-        action={<Badge tone="neutral">{itemIdx + 1}/{total}</Badge>} />
-      <ProgressBar value={(itemIdx / total) * 100} label={`문항 진행률 ${itemIdx}/${total}`} className="rounded-none" />
+        action={<Badge tone="neutral" className="px-3 py-1 text-[13px] font-bold">{itemIdx + 1}/{total}</Badge>} />
+      <div className="px-5"><ProgressBar value={(itemIdx / total) * 100} label={`문항 진행률 ${itemIdx}/${total}`} size="md" /></div>
 
-      <div className="flex flex-1 flex-col items-center gap-5 px-5 py-6">
-        <p className="text-center text-sm text-gray-400">{exercise.instruction}</p>
-        <Card tone="muted" padding="none" className="w-full p-8 text-center">
-          {item.emoji && <div className="mb-3 text-6xl" aria-hidden="true">{item.emoji}</div>}
-          <p className="text-3xl font-black text-gray-900">{item.word}</p>
-        </Card>
+      <div className="flex flex-1 flex-col items-center gap-4 px-5 pt-5 pb-8">
+        <p className="text-center text-[15px] leading-relaxed text-[var(--ink-600)]">{exercise.instruction}</p>
+        {/* 문항 그림과 목표 낱말·문장 */}
+        <div className={`flex w-full flex-col items-center gap-3 rounded-[var(--radius-sheet)] border border-[var(--line-soft)] bg-white text-center shadow-[var(--shadow-card-lg)] ${compact ? "px-5 py-5" : "px-5 pt-6 pb-7"}`}>
+          {item.emoji && (
+            <div className={`flex items-center justify-center rounded-[var(--radius-card-lg)] bg-[repeating-linear-gradient(135deg,var(--butter-50)_0_10px,var(--butter-100)_10px_20px)] ${compact ? "h-[110px] w-[110px] text-6xl" : "h-[150px] w-[150px] text-7xl"}`} aria-hidden="true">{item.emoji}</div>
+          )}
+          <p className={`break-keep font-display leading-[1.15] tracking-[-0.02em] text-[var(--ink-900)] ${longText ? "text-[30px]" : compact ? "text-[44px]" : "text-[52px]"}`}>{item.word}</p>
+        </div>
 
-        <div className="mt-auto flex w-full flex-col items-center gap-3">
+        <div className="mt-auto flex w-full flex-col items-center gap-3 pt-2">
           {(phase === "none" || phase === "failed") && recorder.status !== "recorded" && (
             <>
-              <button type="button" onClick={() => void (recording ? recorder.stop() : recorder.start())}
-                disabled={recorder.status === "requesting"} aria-pressed={recording}
-                aria-label={recording ? "녹음 중지" : "녹음 시작"}
-                className={`flex h-24 w-24 select-none items-center justify-center rounded-full shadow-lg transition-all disabled:opacity-60 ${recording ? "scale-110 bg-red-400" : "bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)]"}`}>
-                {recording ? <Square size={28} color="white" fill="white" /> : recorder.status === "requesting" ? <Spinner size="md" className="text-white" /> : <Mic size={28} color="white" />}
-              </button>
-              <p className="text-xs text-gray-500" aria-live="polite">
+              <RecordButton state={recording ? "recording" : recorder.status === "requesting" ? "requesting" : "idle"}
+                onClick={() => void (recording ? recorder.stop() : recorder.start())}
+                disabled={recorder.status === "requesting"} startLabel="녹음 시작" />
+              <p className={`max-w-[290px] text-center text-[13px] leading-relaxed ${recording ? "font-semibold text-[var(--coral-700)]" : "text-[var(--ink-600)]"}`} aria-live="polite">
                 {recording ? `녹음 중… ${recorder.elapsed}초 (최대 ${recorder.maxSeconds}초) · 다 말했으면 버튼을 눌러 멈춰요`
                   : recorder.status === "requesting" ? "마이크 권한을 확인하고 있어요…" : "버튼을 누르고 말해보세요"}
               </p>
@@ -203,17 +210,17 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
           )}
 
           {recorder.status === "recorded" && phase !== "done" && (
-            <Card padding="md" className="w-full space-y-3">
-              <p className="text-sm font-semibold text-gray-700">내 녹음 들어보기</p>
-              {recorder.previewUrl && <audio controls src={recorder.previewUrl} className="w-full" aria-label="내 녹음 재생" />}
+            <Card tone="raised" padding="md" className="w-full space-y-3 rounded-[26px]">
+              <p className="text-sm font-bold text-[var(--ink-900)]">내 녹음 들어보기</p>
+              {recorder.previewUrl && <audio controls src={recorder.previewUrl} className="h-11 w-full" aria-label="내 녹음 재생" />}
               {phase === "converting" || phase === "analyzing" ? (
-                <div role="status" className="flex items-center justify-center gap-2 py-2 text-sm font-semibold text-gray-700">
-                  <Spinner className="text-[var(--brand-primary)]" />{phase === "converting" ? "녹음을 준비하고 있어요…" : "음성을 인식하고 있어요…"}
+                <div role="status" className="flex items-center justify-center gap-2.5 rounded-[var(--radius-lg)] bg-[var(--meadow-50)] py-3 text-sm font-semibold text-[var(--meadow-900)]">
+                  <Spinner size="md" className="text-[var(--meadow-700)]" />{phase === "converting" ? "녹음을 준비하고 있어요…" : "음성을 인식하고 있어요…"}
                 </div>
               ) : (
-                <div className="flex gap-2">
-                  <Button variant="neutral" fullWidth onClick={resetItem} disabled={busy}><RotateCcw size={16} aria-hidden="true" />다시 녹음</Button>
-                  <Button fullWidth onClick={() => void analyze()} disabled={busy}>{phase === "failed" ? "다시 분석하기" : "분석하기"}</Button>
+                <div className="grid grid-cols-[1fr_1.4fr] gap-2.5">
+                  <Button variant="line" size="lg" onClick={resetItem} disabled={busy}><RotateCcw size={16} aria-hidden="true" />다시 녹음</Button>
+                  <Button size="lg" onClick={() => void analyze()} disabled={busy}>{phase === "failed" ? "다시 분석하기" : "분석하기"}</Button>
                 </div>
               )}
             </Card>
@@ -224,16 +231,16 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
               <SpeechAnalysisResult analysis={analysis} />
               <AiFeedbackPanel analysisId={analysis.analysisId} />
               {saveState === "saving" && <Notice tone="info">학습 기록을 저장하고 있어요…</Notice>}
-              {saveState === "saved" && <Notice tone="success">학습 기록에 저장했어요.</Notice>}
+              {saveState === "saved" && <p role="status" className="flex items-center gap-1.5 px-1 text-[13px] font-semibold text-[var(--meadow-700)]"><CheckCircle size={16} aria-hidden="true" />학습 기록에 저장했어요.</p>}
               {saveState === "failed" && (
                 <div className="flex items-center gap-2">
                   <Notice tone="error" className="flex-1">학습 기록을 저장하지 못했어요.</Notice>
                   <Button size="sm" variant="line" onClick={() => void saveAttempt(analysis)}>다시 저장</Button>
                 </div>
               )}
-              <div className="flex gap-2">
-                <Button variant="neutral" size="lg" fullWidth onClick={resetItem} disabled={busy}><RotateCcw size={16} aria-hidden="true" />다시 녹음</Button>
-                <Button size="lg" fullWidth onClick={handleNext} disabled={busy}>{itemIdx < total - 1 ? "다음" : "활동 완료"}</Button>
+              <div className="grid grid-cols-[1fr_1.4fr] gap-2.5 pt-1">
+                <Button variant="line" size="lg" onClick={resetItem} disabled={busy}><RotateCcw size={16} aria-hidden="true" />다시 녹음</Button>
+                <Button size="lg" onClick={handleNext} disabled={busy}>{itemIdx < total - 1 ? "다음" : "활동 완료"}</Button>
               </div>
             </div>
           )}

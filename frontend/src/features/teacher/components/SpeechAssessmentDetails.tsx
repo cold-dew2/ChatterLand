@@ -24,9 +24,9 @@ export default function SpeechAssessmentDetails({ analysis }: { analysis: Teache
   const confirmed = analysis.teacherConfirmedErrors ?? [];
 
   return (
-    <div className="space-y-2.5 rounded-xl border border-gray-100 p-3 text-xs text-gray-600">
+    <div className="space-y-2.5 rounded-[var(--radius-xl)] border border-[var(--line-soft)] bg-white p-3.5 text-xs leading-relaxed text-[var(--ink-700)]">
       <div className="flex flex-wrap items-center gap-1.5">
-        <span className="font-semibold text-gray-700">자동 분석</span>
+        <span className="font-bold text-[var(--ink-900)]">자동 분석</span>
         {analysis.analysisType && <Badge tone="neutral">{analysisTypeLabel[analysis.analysisType]}</Badge>}
         <Badge tone={status.tone}>{status.label}</Badge>
         {analysis.analysisVersion && <span className="text-gray-400">{analysis.analysisVersion} · {analysis.modelName ?? "-"}</span>}

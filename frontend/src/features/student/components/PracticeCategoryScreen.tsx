@@ -32,7 +32,7 @@ export default function PracticeCategoryScreen({ category, onSelect, onBack }: {
   return (
     <div>
       <PageHeader title={category.label} onBack={onBack} />
-      <div className="px-5 py-5 space-y-3">
+      <div className="space-y-3 px-5 pt-2 pb-8">
         {state === "loading" && <LoadingState label="연습 문제를 불러오고 있어요…" />}
         {state === "error" && <ErrorState message={error} onRetry={() => { setState("loading"); setRetryKey((value) => value + 1); }} />}
         {state === "ready" && exercises.length === 0 && <EmptyState title="이 영역에는 아직 연습 문제가 없어요" />}

@@ -31,7 +31,7 @@ export default function PracticeListScreen({ onSelect, onBack }: { onSelect: (c:
   return (
     <div>
       <PageHeader title="연습하기" onBack={onBack} />
-      <div className="px-5 py-5 space-y-3">
+      <div className="space-y-3 px-5 pt-2 pb-8">
         {state === "loading" && <LoadingState label="연습 목록을 불러오고 있어요…" />}
         {state === "error" && <ErrorState message={error} onRetry={() => { setState("loading"); setRetryKey((value) => value + 1); }} />}
         {state === "ready" && categories.length === 0 && <EmptyState title="준비된 연습이 없어요" />}

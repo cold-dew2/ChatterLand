@@ -77,15 +77,15 @@ export default function StudentDetailView({ student, onBack, onEdit, onDelete, o
           if (removed) { setConfirmDelete(false); onBack(); }
         }}
       />}
-      <PageHeader title="제자 상세 정보" onBack={onBack} backLabel="제자 목록으로" />
+      <PageHeader tone="bar" title="제자 상세 정보" onBack={onBack} backLabel="제자 목록으로" />
 
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
-        <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-[var(--brand-blue)]" aria-hidden="true">
-          <span className="text-lg font-bold text-white">{student.name[0]}</span>
+      <div className="flex items-center gap-3 bg-white px-4 py-4 sm:px-6">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--sky-200)]" aria-hidden="true">
+          <span className="text-lg font-extrabold text-[var(--ink-900)]">{student.name[0]}</span>
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-base font-bold text-gray-900">{student.name}<span className="text-sm font-normal text-gray-400 ml-2">({student.age}세)</span></p>
-          <p className="text-xs text-gray-400">{learnerTypeLabel[student.learnerType]}</p>
+          <p className="text-lg font-bold text-[var(--ink-900)]">{student.name}<span className="ml-2 text-sm font-normal text-[var(--ink-500)]">({student.age}세)</span></p>
+          <p className="text-xs text-[var(--ink-500)]">{learnerTypeLabel[student.learnerType]}</p>
         </div>
         <Badge tone={statusTone[student.status] ?? "neutral"}>{student.status}</Badge>
       </div>
@@ -95,8 +95,8 @@ export default function StudentDetailView({ student, onBack, onEdit, onDelete, o
 
       <div className="flex-1 overflow-y-auto [scrollbar-width:none]">
         {detailTab === "info" && (
-          <div className="px-5 py-4">
-            <dl>
+          <div className="px-4 py-4 sm:px-6">
+            <dl className="rounded-[var(--radius-card)] border border-[var(--line-soft)] bg-white px-4">
               {[
                 { label: "언어재활센터", value: student.centerName || "미등록" },
                 { label: "보호자 연락처", value: student.parentPhone || "미등록" },
@@ -105,34 +105,34 @@ export default function StudentDetailView({ student, onBack, onEdit, onDelete, o
                 { label: "치료 영역", value: student.tags.join(", ") || "미등록" },
                 { label: "최근 방문일", value: student.lastSession },
               ].map((row, i) => (
-                <div key={row.label} className={`flex items-center py-4 ${i > 0 ? "border-t border-gray-100" : ""}`}>
-                  <dt className="text-sm text-gray-400 w-28 shrink-0">{row.label}</dt>
-                  <dd className="text-sm font-medium text-gray-800">{row.value}</dd>
+                <div key={row.label} className={`flex items-center gap-2 py-3.5 ${i > 0 ? "border-t border-[var(--ink-100)]" : ""}`}>
+                  <dt className="w-28 shrink-0 text-sm text-[var(--ink-500)]">{row.label}</dt>
+                  <dd className="min-w-0 break-words text-sm font-semibold text-[var(--ink-900)]">{row.value}</dd>
                 </div>
               ))}
             </dl>
             {student.memo && (
-              <Card tone="muted" padding="sm" className="mt-3">
-                <p className="text-xs text-gray-400 mb-1">메모</p>
-                <p className="text-sm text-gray-600">{student.memo}</p>
+              <Card tone="butter" padding="md" className="mt-3">
+                <p className="mb-1 text-xs font-semibold text-[var(--butter-800)]">메모</p>
+                <p className="whitespace-pre-line text-sm leading-relaxed text-[var(--ink-800)]">{student.memo}</p>
               </Card>
             )}
           </div>
         )}
 
         {detailTab === "learning" && (
-          <div className="px-5 py-4 space-y-4">
+          <div className="space-y-4 px-4 py-4 sm:px-6">
             <StudentPracticePanel studentId={student.id} />
-            <Card tone="muted" className="flex items-center gap-4">
+            <Card className="flex items-center gap-4">
               <div>
-                <p className="text-xs text-gray-400">외부 분석 점수</p>
+                <p className="text-xs font-medium text-[var(--ink-500)]">외부 분석 점수</p>
                 {student.score !== null
-                  ? <p className="text-3xl font-black text-gray-900">{student.score}<span className="text-base font-normal text-gray-400 ml-1">점</span></p>
+                  ? <p className="font-number text-3xl font-black text-[var(--ink-900)]">{student.score}<span className="ml-1 text-base text-[var(--ink-400)]">점</span></p>
                   : <p className="pt-1"><Badge tone="neutral">미평가</Badge></p>}
               </div>
               <div className="flex-1">
                 <ProgressBar value={student.sessionsTotal ? (student.sessionsDone / student.sessionsTotal) * 100 : 0} label={`세션 진행 ${student.sessionsDone}/${student.sessionsTotal}회`} />
-                <p className="text-xs text-gray-400 mt-1">세션 {student.sessionsDone}/{student.sessionsTotal}회</p>
+                <p className="mt-1 text-xs text-[var(--ink-500)]">세션 {student.sessionsDone}/{student.sessionsTotal}회</p>
               </div>
             </Card>
 
@@ -153,8 +153,8 @@ export default function StudentDetailView({ student, onBack, onEdit, onDelete, o
                   {session.activities.length === 0 && <p className="text-xs text-gray-400">등록된 활동이 없어요.</p>}
                   <ul className="space-y-2">
                     {session.activities.map((act, i) => (
-                      <li key={i} className={`flex items-center gap-3 p-2.5 rounded-xl ${act.done ? "bg-gray-50" : "opacity-50"}`}>
-                        <div className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center shrink-0" aria-hidden="true"><ActivityIcon type={act.icon} /></div>
+                      <li key={i} className={`flex items-center gap-3 rounded-[var(--radius-md)] p-2.5 ${act.done ? "bg-[var(--surface-sunken)]" : "opacity-60"}`}>
+                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[var(--line-control)] bg-white" aria-hidden="true"><ActivityIcon type={act.icon} /></div>
                         <span className="flex-1 text-sm text-gray-700">{act.title}</span>
                         {act.done
                           ? <span className="flex items-center gap-1.5">{act.score !== null && <span className="text-sm font-bold text-gray-700">{act.score}점</span>}<CheckCircle size={14} className="text-green-500" aria-label="완료" /></span>
@@ -164,9 +164,9 @@ export default function StudentDetailView({ student, onBack, onEdit, onDelete, o
                   </ul>
                 </Card>
                 {session.notes && (
-                  <Card padding="md" className="border-amber-100 bg-amber-50 shadow-none">
-                    <p className="text-xs font-semibold text-amber-700 mb-1.5">치료사 노트</p>
-                    <p className="text-sm text-amber-800 leading-relaxed">{session.notes}</p>
+                  <Card tone="butter" padding="md">
+                    <p className="mb-1.5 text-xs font-semibold text-[var(--butter-800)]">치료사 노트</p>
+                    <p className="text-sm leading-relaxed text-[var(--ink-800)]">{session.notes}</p>
                   </Card>
                 )}
               </>
@@ -174,13 +174,13 @@ export default function StudentDetailView({ student, onBack, onEdit, onDelete, o
           </div>
         )}
 
-        {detailTab === "speech" && <div className="px-5 py-4"><SpeechReviewPanel studentId={student.id} /></div>}
+        {detailTab === "speech" && <div className="px-4 py-4 sm:px-6"><SpeechReviewPanel studentId={student.id} /></div>}
       </div>
 
-      <div className="px-4 pb-6 pt-3 border-t border-gray-100 flex gap-2">
-        <Button variant="secondary" fullWidth onClick={() => onAssignHw(student.id)} className="rounded-2xl">숙제 배정</Button>
-        <Button variant="outline" fullWidth onClick={() => onEdit(student)} className="rounded-2xl">정보 수정</Button>
-        <Button variant="danger" fullWidth onClick={() => setConfirmDelete(true)} className="rounded-2xl">제자 삭제</Button>
+      <div className="grid grid-cols-3 gap-2 border-t border-[var(--line-soft)] bg-white px-4 pt-3 pb-6 sm:px-6">
+        <Button variant="secondary" onClick={() => onAssignHw(student.id)}>숙제 배정</Button>
+        <Button variant="line" onClick={() => onEdit(student)}>정보 수정</Button>
+        <Button variant="dangerLine" onClick={() => setConfirmDelete(true)}>제자 삭제</Button>
       </div>
     </div>
   );

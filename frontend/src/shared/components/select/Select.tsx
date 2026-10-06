@@ -32,12 +32,12 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
       <div className="relative">
         <select ref={ref} id={selectId} required={required} value={value} aria-invalid={Boolean(error) || undefined}
           aria-describedby={errorId ?? hintId}
-          className={controlClassName(size, Boolean(error), `appearance-none pr-10 ${placeholder && empty ? 'text-gray-300' : ''} ${className}`)} {...props}>
+          className={controlClassName(size, Boolean(error), `cursor-pointer appearance-none pr-10 ${placeholder && empty ? 'text-[var(--ink-400)]' : ''} ${className}`)} {...props}>
           {placeholder && <option value="" disabled>{placeholder}</option>}
           {options?.map((option) => <option key={option.value} value={option.value} disabled={option.disabled}>{option.label}</option>)}
           {children}
         </select>
-        <ChevronDown size={16} aria-hidden="true" className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+        <ChevronDown size={16} aria-hidden="true" className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[var(--ink-500)]" />
       </div>
     </FormField>
   )

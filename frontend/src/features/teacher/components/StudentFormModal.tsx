@@ -102,7 +102,7 @@ export default function StudentFormModal({ initialStudent, onClose, onSave }: {
                 setSelectedExisting(student);
                 setErrors({});
                 setForm((current) => ({ ...current, name: String(student.name ?? ""), age: String(student.age ?? ""), phone: String(student.parentPhone ?? ""), tags: String(student.focusAreas ?? "").split(",").filter(Boolean), memo: String(student.memo ?? ""), sessionsTotal: String(student.sessionsTotal ?? 20) }));
-              }} className={cardClassName({ padding: "sm", className: `w-full text-left ${selected ? "border-[var(--brand-primary)] bg-blue-50" : ""}` })}>
+              }} className={cardClassName({ padding: "sm", className: `w-full text-left ${selected ? "border-[1.5px] border-[var(--meadow-700)] bg-[var(--meadow-50)]" : ""}` })}>
                 <span className="block text-sm font-semibold text-gray-800">{String(student.name ?? "학생")} · {String(student.age ?? "")}세</span>
                 <span className="mt-1 block text-xs text-gray-500">{String(student.centerName ?? "센터 미상")} · 기존 학생 계정</span>
               </button>
@@ -122,11 +122,11 @@ export default function StudentFormModal({ initialStudent, onClose, onSave }: {
         <Select label="학습자 유형" value={form.learnerType} onChange={update("learnerType")} options={LEARNER_OPTIONS}
           hint={form.learnerType === "THERAPY" ? "녹음은 발음 점수 없이 선생님 검토 대기로 저장돼요." : "음성 인식 결과와 목표 문장의 일치도를 보여줘요."} />
         <fieldset>
-          <legend className="mb-2 block text-sm font-semibold text-gray-700">치료 영역</legend>
+          <legend className="mb-2 block text-[13px] font-semibold text-[var(--ink-900)]">치료 영역</legend>
           <div className="flex flex-wrap gap-2">
             {TAG_OPTIONS.map((tag) => (
               <button type="button" key={tag} onClick={() => toggleTag(tag)} aria-pressed={form.tags.includes(tag)}
-                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${form.tags.includes(tag) ? "border-gray-700 bg-gray-700 text-white" : "border-gray-200 text-gray-500 hover:border-gray-400"}`}>{tag}</button>
+                className={`min-h-9 rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition-colors ${form.tags.includes(tag) ? "border-[var(--meadow-700)] bg-[var(--meadow-700)] text-white" : "border-[var(--line-control)] bg-white text-[var(--ink-700)] hover:border-[var(--meadow-300)]"}`}>{tag}</button>
             ))}
           </div>
         </fieldset>

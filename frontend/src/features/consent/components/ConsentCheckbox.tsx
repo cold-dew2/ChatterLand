@@ -17,14 +17,14 @@ export default function ConsentCheckbox({ label, checked, onChange, onDetail, er
   const errorId = `${id}-error`;
   return (
     <div>
-      <div className="flex items-start gap-2.5 py-1">
+      <div className="flex min-h-9 items-start gap-3 py-1.5">
         <input type="checkbox" id={id} checked={checked} onChange={(event) => onChange(event.target.checked)}
           aria-invalid={Boolean(error) || undefined} aria-describedby={error ? errorId : undefined}
-          className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded accent-[var(--brand-primary)]" />
-        <label htmlFor={id} className={`flex-1 cursor-pointer text-xs leading-relaxed ${bold ? "font-bold text-gray-800" : "text-gray-600"}`}>{label}</label>
-        {onDetail && <button type="button" onClick={onDetail} className="shrink-0 text-xs font-semibold text-[var(--brand-primary)] underline-offset-2 hover:underline">자세히</button>}
+          className="mt-px h-5 w-5 shrink-0 cursor-pointer rounded-md accent-[var(--brand-primary)]" />
+        <label htmlFor={id} className={`flex-1 cursor-pointer leading-relaxed ${bold ? "text-[15px] font-bold text-[var(--ink-900)]" : "text-sm text-[var(--ink-700)]"}`}>{label}</label>
+        {onDetail && <button type="button" onClick={onDetail} className="shrink-0 rounded-md px-1 text-[13px] font-semibold text-[var(--ink-500)] underline underline-offset-2 hover:text-[var(--brand-primary)]">자세히</button>}
       </div>
-      {error && <p id={errorId} role="alert" className="ml-6 text-xs text-red-600">{error}</p>}
+      {error && <p id={errorId} role="alert" className="ml-8 text-xs font-medium text-[var(--coral-600)]">{error}</p>}
     </div>
   );
 }

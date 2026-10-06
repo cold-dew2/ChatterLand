@@ -51,13 +51,13 @@ export default function FindIdPage() {
     <AuthPageShell title="아이디 찾기" description="가입할 때 입력한 이름과 센터로 로그인 이메일을 찾아요." backHref={paths.login}>
       {result ? (
         <div className="space-y-4">
-          <Card tone="muted" className="space-y-2">
-            <p className="text-sm font-semibold text-gray-700">가입된 이메일</p>
-            <ul className="space-y-1">{result.map((email) => <li key={email} className="text-base font-bold text-gray-900">{email}</li>)}</ul>
-            <p className="text-xs text-gray-500">개인정보 보호를 위해 일부만 보여드려요.</p>
+          <Card tone="raised" padding="lg" className="space-y-2">
+            <p className="text-[13px] font-semibold text-[var(--meadow-700)]">가입된 이메일</p>
+            <ul className="space-y-1">{result.map((email) => <li key={email} className="break-all text-lg font-bold text-[var(--ink-900)]">{email}</li>)}</ul>
+            <p className="text-xs text-[var(--ink-500)]">개인정보 보호를 위해 일부만 보여드려요.</p>
           </Card>
           <Link href={paths.login} className={buttonClassName({ size: "lg", fullWidth: true })}>로그인하러 가기</Link>
-          <Link href={paths.resetPassword} className={buttonClassName({ variant: "outline", size: "lg", fullWidth: true })}>비밀번호 재설정</Link>
+          <Link href={paths.resetPassword} className={buttonClassName({ variant: "line", size: "lg", fullWidth: true })}>비밀번호 재설정</Link>
         </div>
       ) : (
         <form onSubmit={(event) => void submit(event)} className="space-y-4" noValidate>

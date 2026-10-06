@@ -11,13 +11,13 @@ export default function ConsentDocumentModal({ type, onClose }: { type: ConsentT
       footer={<Button fullWidth onClick={onClose}>확인</Button>}>
       {document.sections.map((section) => (
         <section key={section.heading}>
-          <h3 className="mb-1.5 text-sm font-bold text-gray-800">{section.heading}</h3>
-          <ul className="list-disc space-y-1 pl-5 text-sm leading-relaxed text-gray-600">
+          <h3 className="mb-1.5 text-[15px] font-bold text-[var(--ink-900)]">{section.heading}</h3>
+          <ul className="list-disc space-y-1 pl-5 text-sm leading-relaxed text-[var(--ink-700)] marker:text-[var(--meadow-400)]">
             {section.items.map((item) => <li key={item}>{item}</li>)}
           </ul>
         </section>
       ))}
-      <p className="text-xs text-gray-400">안내문 버전 {CONSENT_POLICY_VERSION}</p>
+      <p className="text-xs text-[var(--ink-500)]">안내문 버전 {CONSENT_POLICY_VERSION}</p>
     </Modal>
   );
 }

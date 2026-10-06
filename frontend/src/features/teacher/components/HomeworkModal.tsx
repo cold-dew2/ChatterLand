@@ -77,20 +77,20 @@ export default function HomeworkModal({ students, preStudentId, initialHomework,
         hint={initialHomework ? "배정된 학생은 수정할 수 없어요." : undefined} />
 
       <fieldset>
-        <legend className="mb-2 block text-sm font-semibold text-gray-700">숙제 유형</legend>
-        <div className="space-y-2.5">
+        <legend className="mb-2 block text-[13px] font-semibold text-[var(--ink-900)]">숙제 유형</legend>
+        <div className="grid grid-cols-2 gap-2">
           {HW_RADIO_TYPES.map((type) => (
-            <label key={type} className="flex cursor-pointer items-center gap-3">
+            <label key={type} className="flex min-h-12 cursor-pointer items-center gap-2.5 rounded-[var(--radius-lg)] border border-[var(--line-control)] bg-white px-3 transition-colors has-[:checked]:border-[1.5px] has-[:checked]:border-[var(--meadow-700)] has-[:checked]:bg-[var(--meadow-50)] has-[:focus-visible]:shadow-[var(--focus-ring)]">
               <input type="radio" name="homework-type" value={type} checked={hwType === type} onChange={() => setHwType(type)}
-                className="h-5 w-5 accent-[var(--brand-primary)]" />
-              <span className="text-sm text-gray-700">{type}</span>
+                className="h-5 w-5 shrink-0 accent-[var(--brand-primary)]" />
+              <span className="text-sm font-medium text-[var(--ink-800)]">{type}</span>
             </label>
           ))}
         </div>
       </fieldset>
 
       {!initialHomework && <PracticeContentPicker selected={content} onSelect={setContentChoice} />}
-      {initialHomework?.exerciseTitle && <p className="text-xs text-gray-500">연습 콘텐츠: <b>{initialHomework.exerciseTitle}</b> (수정할 수 없어요)</p>}
+      {initialHomework?.exerciseTitle && <p className="rounded-[var(--radius-lg)] bg-[var(--surface-sunken)] px-3.5 py-2.5 text-xs text-[var(--ink-600)]">연습 콘텐츠: <b>{initialHomework.exerciseTitle}</b> (수정할 수 없어요)</p>}
 
       <Input label="숙제 내용" value={contentText} maxLength={160} onChange={(event) => { setContent(event.target.value); setErrors((current) => ({ ...current, title: undefined })); }}
         placeholder="ㄹ 말 연습하기" hint="비워 두면 숙제 유형으로 제목을 만들어요." error={errors.title} />

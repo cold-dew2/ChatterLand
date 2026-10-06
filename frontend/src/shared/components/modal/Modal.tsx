@@ -52,23 +52,24 @@ export default function Modal({ title, description, onClose, children, footer, v
 
   const sheet = variant === 'sheet'
   return (
-    <div className={`fixed inset-0 z-50 flex justify-center ${sheet ? 'items-end' : 'items-center px-5'}`}>
-      <div className="absolute inset-0 bg-black/40" aria-hidden="true" onClick={() => { if (!closeDisabled) onClose() }} />
+    <div className={`fixed inset-0 z-50 flex justify-center ${sheet ? 'items-end sm:items-center sm:px-5' : 'items-center px-5'}`}>
+      <div className="absolute inset-0 bg-[var(--ink-950)]/45" aria-hidden="true" onClick={() => { if (!closeDisabled) onClose() }} />
       <section ref={panelRef} tabIndex={-1} role={role} aria-modal="true" aria-labelledby={titleId}
         aria-describedby={description ? descriptionId : undefined}
-        className={`relative w-full bg-white shadow-2xl focus:outline-none ${sheet ? 'max-w-md overflow-hidden rounded-t-3xl' : 'max-w-sm rounded-2xl p-5'}`}>
+        className={`relative w-full bg-[var(--ink-25)] shadow-[var(--shadow-sheet)] focus:outline-none ${sheet ? 'flex max-h-[92vh] max-w-md flex-col overflow-hidden rounded-t-[var(--radius-sheet)] sm:max-h-[88vh] sm:rounded-[var(--radius-sheet)]' : 'max-w-sm rounded-[var(--radius-card-lg)] p-6'}`}>
         {sheet ? (
-          <header className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
-            <h2 id={titleId} className="text-base font-bold text-gray-900">{title}</h2>
+          <header className="relative flex shrink-0 items-start justify-between gap-3 px-6 pt-6 pb-1">
+            <span className="absolute left-1/2 top-2.5 h-1 w-10 -translate-x-1/2 rounded-full bg-[var(--ink-200)] sm:hidden" aria-hidden="true" />
+            <h2 id={titleId} className="font-display text-[22px] leading-snug text-[var(--ink-900)]">{title}</h2>
             <button type="button" onClick={onClose} disabled={closeDisabled} aria-label="닫기"
-              className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 disabled:opacity-40"><X size={18} /></button>
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--ink-100)] text-[var(--ink-700)] hover:bg-[var(--ink-150)] disabled:opacity-40"><X size={18} /></button>
           </header>
         ) : (
-          <h2 id={titleId} className="text-base font-bold text-gray-900">{title}</h2>
+          <h2 id={titleId} className="font-display text-xl leading-snug text-[var(--ink-900)]">{title}</h2>
         )}
-        {description && <p id={descriptionId} className={`text-sm leading-relaxed text-gray-500 ${sheet ? 'px-5 pt-4' : 'mt-2'}`}>{description}</p>}
-        {children && <div className={sheet ? 'max-h-[70vh] space-y-4 overflow-y-auto px-5 py-5' : ''}>{children}</div>}
-        {footer && <footer className={sheet ? 'border-t border-gray-100 px-5 py-4' : 'mt-5'}>{footer}</footer>}
+        {description && <p id={descriptionId} className={`text-sm leading-relaxed text-[var(--ink-600)] ${sheet ? 'shrink-0 px-6' : 'mt-2'}`}>{description}</p>}
+        {children && <div className={sheet ? 'min-h-0 flex-1 space-y-4 overflow-y-auto px-6 py-5' : 'mt-4 space-y-3'}>{children}</div>}
+        {footer && <footer className={sheet ? 'shrink-0 border-t border-[var(--line-soft)] bg-[var(--ink-25)] px-6 pt-4 pb-6' : 'mt-6'}>{footer}</footer>}
       </section>
     </div>
   )

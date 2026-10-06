@@ -9,23 +9,23 @@ const basisLabel = { AUTO_ANALYSIS: "자동 분석 결과(확정 아님)", TEACH
 export default function AiFeedbackBody({ feedback }: { feedback: AiFeedback }) {
   const cited = (feedback.sources ?? []).filter((source) => source.cited !== false);
   return (
-    <div className="space-y-2">
-      <p className="text-sm leading-relaxed text-gray-800">{feedback.text}</p>
+    <div className="space-y-3">
+      <p className="text-sm leading-[1.65] text-[var(--ink-900)]">{feedback.text}</p>
       {cited.length > 0 && (
-        <div className="rounded-xl bg-gray-50 p-3">
-          <p className="mb-1 text-xs font-semibold text-gray-500">참고한 교육 자료</p>
+        <div className="rounded-[var(--radius-lg)] bg-[var(--surface-sunken)] px-3.5 py-3">
+          <p className="mb-1.5 text-xs font-bold text-[var(--ink-600)]">참고한 교육 자료</p>
           <ul className="space-y-1">
             {cited.map((source) => (
-              <li key={source.chunkId} className="text-xs leading-relaxed text-gray-600">
-                <span className="font-semibold">[{source.marker}]</span> {source.title} {source.location}
+              <li key={source.chunkId} className="text-xs leading-relaxed text-[var(--ink-700)]">
+                <span className="font-bold">[{source.marker}]</span> {source.title} {source.location}
                 {source.category === "TEACHER_EXAMPLE" && <> · 선생님 승인 설명 예시</>}
-                {source.url && <> · <a href={source.url} target="_blank" rel="noreferrer" className="underline">원문</a></>}
+                {source.url && <> · <a href={source.url} target="_blank" rel="noreferrer" className="font-semibold text-[var(--meadow-800)] underline underline-offset-2">원문</a></>}
               </li>
             ))}
           </ul>
         </div>
       )}
-      <p className="text-xs leading-relaxed text-gray-400">
+      <p className="text-[11px] leading-relaxed text-[var(--ink-500)]">
         {(feedback.basedOn ?? []).map((basis) => basisLabel[basis]).join(" · ") || "분석 결과"}와 교육 자료를 바탕으로 AI가 쓴 설명이에요.
         발음 점수나 진단이 아니고, 발음 정확도는 평가하지 않았어요.
       </p>

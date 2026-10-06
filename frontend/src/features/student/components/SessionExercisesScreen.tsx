@@ -10,7 +10,7 @@ export default function SessionExercisesScreen({ session, onSelect, onBack }: {
   return (
     <div>
       <PageHeader title={session.title} subtitle={session.date} onBack={onBack} />
-      <div className="px-5 py-5 space-y-3">
+      <div className="space-y-3 px-5 pt-2 pb-8">
         {session.exercises.length === 0 && <EmptyState title="이 세션에 등록된 활동이 없어요" />}
         {session.exercises.map((ex, i) => (
           <MenuCard key={ex.id} icon={Mic} color={ex.color} title={ex.label}

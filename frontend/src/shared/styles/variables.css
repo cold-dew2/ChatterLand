@@ -1,53 +1,97 @@
+/*
+ * 채터랜드 디자인 토큰 · 초원 그림책
+ * 일러스트의 수채 톤(초원 그린 · 버터 옐로 · 볼터치 코랄 · 하늘색)에서 뽑은 팔레트.
+ * 화면에서는 이 토큰(또는 아래 @theme로 연결된 Tailwind 색 이름)만 쓰고 색상값을 직접 적지 않는다.
+ */
 :root {
-  /* Purple */
-  --purple-100: #eef0fe;
-  --purple-200: #e7e8f7;
-  --purple-300: #dadcf0;
-  --purple-500: #5b4fe8;
-  --purple-600: #4b3fe4;
-  --purple-700: #3a2fc0;
+  /* Meadow · 초원 그린 (주 색) */
+  --meadow-50: #f3f8ef;
+  --meadow-100: #e3f0dc;
+  --meadow-200: #c5ddb8;
+  --meadow-300: #a9cf98;
+  --meadow-400: #8cc27a;
+  --meadow-500: #5fa35f;
+  --meadow-600: #3f8a49;
+  --meadow-700: #3e7a47;
+  --meadow-800: #2c6534;
+  --meadow-900: #2c5c34;
+  --meadow-950: #1f4426;
 
-  /* Gray */
-  --gray-100: #eeeff6;
-  --gray-200: #e4e5f1;
-  --gray-300: #dadceb;
-  --gray-400: #9496b5;
-  --gray-500: #8a8ca8;
-  --gray-600: #6b6d89;
-  --gray-700: #5a5c78;
-  --gray-900: #1b1d29;
-  --black: #000;
+  /* Butter · 버터 옐로 (강조 · 주의) */
+  --butter-50: #fff9ea;
+  --butter-100: #fff3d3;
+  --butter-200: #ffe7a6;
+  --butter-300: #fbd877;
+  --butter-400: #f6c64e;
+  --butter-500: #e5ac2b;
+  --butter-600: #b9851a;
+  --butter-700: #8a6a12;
+  --butter-800: #7a5a0c;
+  --butter-900: #5c4409;
 
-  /* Background */
-  --white: #fff;
-  --white-100: #f8f8fc;
-  --white-200: #f7f7fb;
-  --white-300: #f1f1fa;
+  /* Coral · 볼터치 코랄 (오류 · 마감 지남) */
+  --coral-50: #fdf2ee;
+  --coral-100: #fde6df;
+  --coral-200: #fbd7cc;
+  --coral-300: #f2b3a2;
+  --coral-400: #f08c72;
+  --coral-500: #e06a4e;
+  --coral-600: #c24a30;
+  --coral-700: #a93a22;
+  --coral-800: #8a2f1c;
+  --coral-900: #6b2416;
 
-  /* Red */
-  --red-300: #FFF4F4;
-  --red-400: #F3B8B8;
-  --red-500: #ff5a5a;
-  --red-600: #e5484d;
-  --red-700: #d93b3b;
+  /* Sky · 하늘색 (안내 · 정보) */
+  --sky-50: #eaf3f8;
+  --sky-100: #dcebf2;
+  --sky-200: #c4dfec;
+  --sky-300: #a3cbe0;
+  --sky-400: #7fb2cf;
+  --sky-500: #5b95b5;
+  --sky-600: #437a99;
+  --sky-700: #36627a;
+  --sky-800: #2f4a57;
+  --sky-900: #243943;
 
-  /* Yellow */
-  --yellow-100: #fff4e3;
-  --yellow-200: #ffe7c2;
-  --yellow-300: #FFFBEB;
-  --yellow-400: #FDE68A;
-  --yellow-500: #ffb020;
-  --yellow-600: #92400E;
+  /* Lilac (보조 아바타 색) */
+  --lilac-100: #e9e3f5;
+  --lilac-500: #8c80c4;
 
-  /* Green */
-  --green-100: #eaf6ec;
-  --green-200: #d6eeda;
-  --green-500: #2ecc71;
+  /* Ink · 따뜻한 무채색 (글자 · 선 · 바탕). 순수 검정 대신 부드러운 짙은 녹회색 */
+  --ink-0: #ffffff;
+  --ink-25: #fbf8f1;
+  --ink-50: #f7f5ef;
+  --ink-100: #f0ece2;
+  --ink-150: #ece7dc;
+  --ink-200: #dcd6c8;
+  --ink-300: #c9c3b6;
+  --ink-400: #78827c;
+  --ink-500: #66706a;
+  --ink-600: #5e6a62;
+  --ink-700: #3e4a43;
+  --ink-800: #2f3b35;
+  --ink-900: #2a3530;
+  --ink-950: #24302a;
 
-  /* Blue */
-  --blue-100: #e3f0ff;
-  --blue-200: #cfe6ff;
-  --blue-300: #B0B2C9;
+  /* 바탕 */
+  --surface-canvas: #eeebe3;      /* 데스크톱에서 앱 열 바깥 */
+  --surface-student: var(--ink-25);
+  --surface-teacher: var(--ink-50);
+  --surface-card: var(--ink-0);
+  --surface-sunken: #f7f4ec;      /* 카드 안 목표/인식 결과 같은 보조 영역 */
+  --paper-dot-student: #efe5d2;
+  --paper-dot-teacher: #ece5d6;
+
+  /* 선 */
+  --line-soft: var(--ink-150);
+  --line-control: var(--ink-200);
+  --line-puffy: #eee5d5;          /* 말랑한 강조 카드 테두리 */
+  --line-puffy-shadow: #f0e8d9;
+
+  /* Font Family */
+  --font-body-stack: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --font-display-stack: var(--font-jua, 'Pretendard'), 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  --font-number-stack: var(--font-nunito, 'Pretendard'), 'Pretendard', sans-serif;
 
   /* Font Size */
   --fs-2xs: 11px;
@@ -76,7 +120,7 @@
   --lh-md: 1.5;
   --lh-lg: 1.7;
 
-  /* border-radius */
+  /* border-radius: 둥근 모서리 중심 */
   --radius-xs: 8px;
   --radius-sm: 10px;
   --radius-md: 12px;
@@ -86,6 +130,13 @@
   --radius-pill: 22px;
   --radius-tablet: 32px;
   --radius-full: 50%;
+  --radius-control: 18px;         /* 입력창 */
+  --radius-control-sm: 14px;
+  --radius-button: 16px;
+  --radius-button-lg: 20px;
+  --radius-card: 22px;
+  --radius-card-lg: 28px;
+  --radius-sheet: 32px;
 
   /* Spacing */
   --space-2xs: 4px;
@@ -100,14 +151,20 @@
   --space-5xl: 28px;
   --space-6xl: 32px;
   --space-7xl: 40px;
-  --space-8xl: 48px; 
+  --space-8xl: 48px;
 
-  /* Shadow */
-  --shadow-card: 0 4px 18px 0 rgba(30, 20, 80, 0.06);
-  --shadow-card-lg: 0 6px 20px rgba(30, 20, 80, 0.16);
-  --shadow-button: 0 8px 20px rgba(75, 63, 228, 0.35);
-  --shadow-frame: 0 30px 80px rgba(30, 20, 80, 0.18);
-  --shadow-frame-inner: 0 4px 16px rgba(30, 20, 80, 0.08);
+  /* Shadow: 강한 그림자 대신 부드러운 그림자와 말랑한 바닥 그림자 */
+  --shadow-card: 0 1px 2px rgba(36, 48, 42, 0.04);
+  --shadow-card-lg: 0 8px 24px rgba(36, 48, 42, 0.06);
+  --shadow-puffy: 0 4px 0 var(--line-puffy-shadow);
+  --shadow-button: 0 4px 0 var(--meadow-800);
+  --shadow-button-sm: 0 3px 0 var(--meadow-800);
+  --shadow-button-danger: 0 4px 0 var(--coral-800);
+  --shadow-frame: 0 24px 60px rgba(36, 48, 42, 0.14);
+  --shadow-frame-inner: 0 1px 3px rgba(36, 48, 42, 0.12);
+  --shadow-sheet: 0 -12px 40px rgba(36, 48, 42, 0.16);
+  --focus-ring: 0 0 0 4px rgba(62, 122, 71, 0.16);
+  --focus-ring-danger: 0 0 0 4px rgba(194, 74, 48, 0.14);
 
   /* transition */
   --transition-fast: 0.15s ease;
@@ -123,23 +180,26 @@
 @custom-variant dark (&:is(.dark *));
 :root {
   --font-size: 16px;
-  --background: #ffffff; --foreground: #1b1d29;
-  --card: #ffffff; --card-foreground: #1b1d29;
-  --popover: #ffffff; --popover-foreground: #1b1d29;
-  --primary: #274cc4; --primary-foreground: #ffffff;
-  --secondary: #e8edfb; --secondary-foreground: #1a3494;
-  --muted: #f0f3fd; --muted-foreground: #6b7280;
-  --accent: #3a5fd4; --accent-foreground: #ffffff;
-  --destructive: #d4183d; --destructive-foreground: #ffffff;
-  --border: rgba(0, 0, 0, 0.1); --input: transparent; --input-background: #f3f3f5;
-  --switch-background: #cbced4; --font-weight-medium: 500; --font-weight-normal: 400; --ring: #9ca3af;
-  --chart-1: #274cc4; --chart-2: #5ba08e; --chart-3: #7b72c8; --chart-4: #e8875a; --chart-5: #f59e0b;
-  --radius: 0.75rem; --sidebar: #f8f9ff; --sidebar-foreground: #1b1d29;
-  --sidebar-primary: #274cc4; --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e8edfb; --sidebar-accent-foreground: #1a3494;
-  --sidebar-border: #e5e7eb; --sidebar-ring: #9ca3af;
-  --brand-primary: #274cc4; --brand-primary-hover: #1f3f9f; --brand-surface: #f0f3fd;
-  --brand-success: #5ba08e; --brand-warning: #e8875a; --brand-danger: #e05252; --brand-blue: #5b8bc8; --brand-teal: #5ba08e; --brand-purple: #7b72c8; --brand-slate: #4a6281; --brand-coral: #e8875a;
+  --background: var(--ink-25); --foreground: var(--ink-900);
+  --card: var(--ink-0); --card-foreground: var(--ink-900);
+  --popover: var(--ink-0); --popover-foreground: var(--ink-900);
+  --primary: var(--meadow-700); --primary-foreground: #ffffff;
+  --secondary: var(--meadow-100); --secondary-foreground: var(--meadow-900);
+  --muted: var(--ink-100); --muted-foreground: var(--ink-600);
+  --accent: var(--meadow-600); --accent-foreground: #ffffff;
+  --destructive: var(--coral-600); --destructive-foreground: #ffffff;
+  --border: var(--ink-150); --input: transparent; --input-background: var(--ink-0);
+  --switch-background: var(--ink-300); --font-weight-medium: 500; --font-weight-normal: 400; --ring: var(--meadow-700);
+  --chart-1: var(--meadow-700); --chart-2: var(--sky-500); --chart-3: var(--butter-500); --chart-4: var(--coral-500); --chart-5: var(--lilac-500);
+  --radius: 0.75rem; --sidebar: var(--ink-50); --sidebar-foreground: var(--ink-900);
+  --sidebar-primary: var(--meadow-700); --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--meadow-100); --sidebar-accent-foreground: var(--meadow-900);
+  --sidebar-border: var(--ink-150); --sidebar-ring: var(--meadow-700);
+  /* 화면에서 쓰는 의미 색. 브랜드 = 초원 그린 */
+  --brand-primary: var(--meadow-700); --brand-primary-hover: var(--meadow-800); --brand-surface: var(--meadow-100);
+  --brand-success: var(--meadow-600); --brand-warning: var(--butter-600); --brand-danger: var(--coral-600);
+  --brand-blue: var(--sky-500); --brand-teal: var(--meadow-500); --brand-purple: var(--lilac-500); --brand-slate: var(--sky-700);
+  --brand-coral: var(--coral-500); --brand-butter: var(--butter-400);
 }
 .dark { --background: #141725; --foreground: #f8f9ff; --card: #1b1d29; --card-foreground: #f8f9ff; --primary: #8097ed; --primary-foreground: #111827; --secondary: #282f49; --secondary-foreground: #e8edfb; --muted: #282f49; --muted-foreground: #b8bfd3; --border: #34394c; --input: #34394c; --sidebar: #1b1d29; --sidebar-foreground: #f8f9ff; }
 @theme inline {
@@ -158,6 +218,115 @@
   --color-sidebar-accent: var(--sidebar-accent); --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border); --color-sidebar-ring: var(--sidebar-ring);
   --radius-sm: calc(var(--radius) - 4px); --radius-md: calc(var(--radius) - 2px); --radius-lg: var(--radius); --radius-xl: calc(var(--radius) + 4px);
+
+  /* 서체: 제목(Jua) · 숫자(Nunito). 귀여움은 마스코트 · 둥근 모서리 · 숫자 서체에만 둔다 */
+  --font-body: var(--font-body-stack);
+  --font-display: var(--font-display-stack);
+  --font-number: var(--font-number-stack);
+
+  /*
+   * Tailwind 기본 색 이름을 팔레트에 연결한다. 기존 화면의 gray/green/blue/amber/red 클래스가
+   * 그대로 초원 그림책 톤을 쓰도록 하기 위함이다(페이지마다 색을 다시 선언하지 않는다).
+   */
+  --color-black: var(--ink-950);
+  --color-white: var(--ink-0);
+  --color-cream: var(--ink-25);
+  --color-gray-50: var(--ink-50);
+  --color-gray-100: var(--ink-100);
+  --color-gray-200: var(--ink-200);
+  --color-gray-300: var(--ink-300);
+  --color-gray-400: var(--ink-400);
+  --color-gray-500: var(--ink-500);
+  --color-gray-600: var(--ink-600);
+  --color-gray-700: var(--ink-700);
+  --color-gray-800: var(--ink-800);
+  --color-gray-900: var(--ink-900);
+  --color-gray-950: var(--ink-950);
+  --color-green-50: var(--meadow-50);
+  --color-green-100: var(--meadow-100);
+  --color-green-200: var(--meadow-200);
+  --color-green-300: var(--meadow-300);
+  --color-green-400: var(--meadow-400);
+  --color-green-500: var(--meadow-500);
+  --color-green-600: var(--meadow-600);
+  --color-green-700: var(--meadow-700);
+  --color-green-800: var(--meadow-800);
+  --color-green-900: var(--meadow-900);
+  --color-blue-50: var(--sky-50);
+  --color-blue-100: var(--sky-100);
+  --color-blue-200: var(--sky-200);
+  --color-blue-300: var(--sky-300);
+  --color-blue-400: var(--sky-400);
+  --color-blue-500: var(--sky-500);
+  --color-blue-600: var(--sky-600);
+  --color-blue-700: var(--sky-700);
+  --color-blue-800: var(--sky-800);
+  --color-blue-900: var(--sky-900);
+  --color-amber-50: var(--butter-50);
+  --color-amber-100: var(--butter-100);
+  --color-amber-200: var(--butter-200);
+  --color-amber-300: var(--butter-300);
+  --color-amber-400: var(--butter-400);
+  --color-amber-500: var(--butter-500);
+  --color-amber-600: var(--butter-600);
+  --color-amber-700: var(--butter-700);
+  --color-amber-800: var(--butter-800);
+  --color-amber-900: var(--butter-900);
+  --color-yellow-50: var(--butter-50);
+  --color-yellow-100: var(--butter-100);
+  --color-yellow-200: var(--butter-200);
+  --color-yellow-400: var(--butter-400);
+  --color-yellow-500: var(--butter-500);
+  --color-red-50: var(--coral-50);
+  --color-red-100: var(--coral-100);
+  --color-red-200: var(--coral-200);
+  --color-red-300: var(--coral-300);
+  --color-red-400: var(--coral-400);
+  --color-red-500: var(--coral-500);
+  --color-red-600: var(--coral-600);
+  --color-red-700: var(--coral-700);
+  --color-red-800: var(--coral-800);
+  --color-red-900: var(--coral-900);
+  --color-orange-50: var(--coral-50);
+  --color-orange-100: var(--coral-100);
+  --color-orange-500: var(--coral-500);
+
+  /* 팔레트 이름을 그대로 쓰는 색 (bg-meadow-100, text-coral-600 …) */
+  --color-meadow-50: var(--meadow-50);
+  --color-meadow-100: var(--meadow-100);
+  --color-meadow-200: var(--meadow-200);
+  --color-meadow-300: var(--meadow-300);
+  --color-meadow-400: var(--meadow-400);
+  --color-meadow-500: var(--meadow-500);
+  --color-meadow-600: var(--meadow-600);
+  --color-meadow-700: var(--meadow-700);
+  --color-meadow-800: var(--meadow-800);
+  --color-meadow-900: var(--meadow-900);
+  --color-butter-50: var(--butter-50);
+  --color-butter-100: var(--butter-100);
+  --color-butter-200: var(--butter-200);
+  --color-butter-400: var(--butter-400);
+  --color-butter-700: var(--butter-700);
+  --color-butter-800: var(--butter-800);
+  --color-coral-50: var(--coral-50);
+  --color-coral-100: var(--coral-100);
+  --color-coral-200: var(--coral-200);
+  --color-coral-300: var(--coral-300);
+  --color-coral-400: var(--coral-400);
+  --color-coral-500: var(--coral-500);
+  --color-coral-600: var(--coral-600);
+  --color-coral-700: var(--coral-700);
+  --color-sky-50: var(--sky-50);
+  --color-sky-100: var(--sky-100);
+  --color-sky-200: var(--sky-200);
+  --color-sky-700: var(--sky-700);
+  --color-sky-800: var(--sky-800);
+  --color-lilac-100: var(--lilac-100);
+  --color-lilac-500: var(--lilac-500);
+  --color-ink-25: var(--ink-25);
+  --color-ink-150: var(--ink-150);
+  --color-sunken: var(--surface-sunken);
+  --color-puffy: var(--line-puffy);
 }
 @layer base {
   * { @apply border-border outline-ring/50; }

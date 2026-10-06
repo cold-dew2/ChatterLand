@@ -40,20 +40,20 @@ export default function SessionListScreen({ onSelect, onBack }: { onSelect: (s: 
   return (
     <div>
       <PageHeader title="수업 일정" onBack={onBack} />
-      <div className="px-5 py-5 space-y-3">
+      <div className="space-y-3 px-5 pt-2 pb-8">
         {error && <ErrorState message={error} onRetry={() => { setLoading(true); setError(""); setRetryKey((current) => current + 1); }} />}
         {loading && sessionItems.length === 0 && <LoadingState label="수업 일정을 불러오고 있어요…" />}
         {!loading && !error && sessionItems.length === 0 && <EmptyState title="예정된 수업이 없어요" description="새 수업이 배정되면 이곳에 표시돼요." />}
-        {!error && upcoming.length > 0 && <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">예정된 수업</p>}
+        {!error && upcoming.length > 0 && <p className="text-xs font-bold text-[var(--ink-600)]">예정된 수업</p>}
         {upcoming.map((s) => (
           <MenuCard key={s.id} icon={ClipboardList} color="var(--brand-blue)" title={s.title}
             description={`${s.date} · 활동 ${s.exercises.length}개`} onClick={() => onSelect(s)} />
         ))}
         {completed.length > 0 && (
           <>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider pt-2">완료된 세션</p>
+            <p className="pt-3 text-xs font-bold text-[var(--ink-600)]">완료된 세션</p>
             {completed.map((s) => (
-              <MenuCard key={s.id} icon={CheckCircle} color="#d1d5db" title={s.title} description={s.date} muted onClick={() => onSelect(s)} />
+              <MenuCard key={s.id} icon={CheckCircle} color="var(--ink-400)" title={s.title} description={s.date} muted onClick={() => onSelect(s)} />
             ))}
           </>
         )}

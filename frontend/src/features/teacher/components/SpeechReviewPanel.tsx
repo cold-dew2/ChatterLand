@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Play } from "lucide-react";
 import type { ConfirmedError, PhonemeCandidate } from "@/features/student/types";
 import { candidateText, errorTypeLabel, textMatchRate } from "@/features/student/utils/speechAssessment";
 import { teacherApi } from "@/features/teacher/api/teacherApi";
@@ -69,7 +70,7 @@ function AudioPlayer({ analysisId }: { analysisId: string }) {
   if (url) return <audio controls autoPlay src={url} className="w-full" aria-label="학생 녹음 재생" />;
   return (
     <div className="space-y-2">
-      <Button size="sm" variant="secondary" loading={state === "loading"} loadingLabel="불러오는 중…" onClick={() => void load()}>녹음 듣기</Button>
+      <Button size="sm" variant="secondary" loading={state === "loading"} loadingLabel="불러오는 중…" onClick={() => void load()}><Play size={14} aria-hidden="true" />녹음 듣기</Button>
       {state === "error" && <Notice tone="error">{error}</Notice>}
     </div>
   );
@@ -108,23 +109,24 @@ function ReviewForm({ analysis, onSaved }: { analysis: TeacherSpeechAnalysis; on
     }
   };
   return (
-    <div className="space-y-3 border-t border-gray-100 pt-3">
+    <div className="space-y-3 rounded-[var(--radius-xl)] border border-[var(--meadow-200)] bg-[var(--meadow-50)] p-3.5">
+      <p className="text-[13px] font-bold text-[var(--meadow-900)]">선생님 검토</p>
       <Select label="선생님 검토 결과" size="sm" value={judgement} placeholder="결과를 선택하세요" options={judgementOptions}
         onChange={(event) => { setJudgement(event.target.value as SpeechJudgement); setError(""); }} error={error || undefined} />
       <fieldset className="space-y-1.5">
-        <legend className="text-xs font-medium text-gray-600">선생님 확정 오류 (직접 듣고 확인한 것만 선택)</legend>
+        <legend className="mb-1 text-[13px] font-semibold text-[var(--ink-900)]">선생님 확정 오류 <span className="font-normal text-[var(--ink-600)]">(직접 듣고 확인한 것만 선택)</span></legend>
         {candidates.map((candidate, index) => {
           const error = toConfirmed(candidate);
           return (
-            <label key={index} className="flex items-start gap-2 text-xs text-gray-600">
-              <input type="checkbox" className="mt-0.5 h-4 w-4 accent-[var(--brand-primary)]" checked={isChecked(error)} onChange={() => toggle(error)} />
+            <label key={index} className="flex min-h-8 cursor-pointer items-start gap-2.5 text-[13px] text-[var(--ink-800)]">
+              <input type="checkbox" className="mt-px h-[18px] w-[18px] shrink-0 accent-[var(--brand-primary)]" checked={isChecked(error)} onChange={() => toggle(error)} />
               <span>{candidateText(candidate)}</span>
             </label>
           );
         })}
         {confirmed.filter((error) => !candidates.some((candidate) => confirmedKey(toConfirmed(candidate)) === confirmedKey(error))).map((error) => (
-          <label key={confirmedKey(error)} className="flex items-start gap-2 text-xs text-gray-600">
-            <input type="checkbox" className="mt-0.5 h-4 w-4 accent-[var(--brand-primary)]" checked onChange={() => toggle(error)} />
+          <label key={confirmedKey(error)} className="flex min-h-8 cursor-pointer items-start gap-2.5 text-[13px] text-[var(--ink-800)]">
+            <input type="checkbox" className="mt-px h-[18px] w-[18px] shrink-0 accent-[var(--brand-primary)]" checked onChange={() => toggle(error)} />
             <span>{error.phoneme} {errorTypeLabel[error.errorType]}{error.produced ? ` → ${error.produced}` : ""} (직접 추가)</span>
           </label>
         ))}
@@ -174,7 +176,7 @@ export default function SpeechReviewPanel({ studentId }: { studentId: number }) 
   return (
     <section aria-labelledby="speech-review-title" className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 id="speech-review-title" className="text-sm font-bold text-gray-700">음성 연습 기록</h3>
+        <h3 id="speech-review-title" className="text-base font-bold text-[var(--ink-900)]">음성 연습 기록</h3>
       </div>
       <Tabs ariaLabel="검토 상태 필터" variant="chip" value={filter} onChange={changeFilter}
         items={[{ value: "PENDING", label: "검토 대기" }, { value: "ALL", label: "전체" }]} />
@@ -190,16 +192,16 @@ export default function SpeechReviewPanel({ studentId }: { studentId: number }) 
           <Card as="article" key={analysis.analysisId} className="space-y-3">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-gray-800">{analysis.exerciseTitle ?? "말하기 연습"}</p>
-                <p className="text-xs text-gray-400">{analysis.createdAt}</p>
+                <p className="text-[15px] font-bold text-[var(--ink-900)]">{analysis.exerciseTitle ?? "말하기 연습"}</p>
+                <p className="text-xs text-[var(--ink-500)]">{analysis.createdAt}</p>
               </div>
               <Badge tone={badge.tone}>{badge.label}</Badge>
             </div>
-            <dl className="space-y-1.5 rounded-xl bg-gray-50 p-3 text-sm">
-              <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">목표</dt><dd className="font-semibold text-gray-800">{analysis.targetText ?? "-"}</dd></div>
-              <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">AI 인식 결과</dt><dd className="font-semibold text-gray-800">{analysis.transcript || "인식 결과 없음"}</dd></div>
-              {textMatchRate(analysis) !== null && <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">텍스트 일치율</dt><dd className="font-semibold text-gray-800">{Math.round(textMatchRate(analysis) ?? 0)}%</dd></div>}
-              <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">발음 평가</dt><dd>{typeof analysis.pronunciationScore === "number" ? `${analysis.pronunciationScore}점 (외부 제공자)` : <Badge tone="neutral">미평가</Badge>}</dd></div>
+            <dl className="space-y-1.5 rounded-[var(--radius-xl)] bg-[var(--surface-sunken)] px-3.5 py-3 text-sm">
+              <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">목표</dt><dd className="font-semibold text-gray-800">{analysis.targetText ?? "-"}</dd></div>
+              <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">AI 인식 결과</dt><dd className="font-semibold text-gray-800">{analysis.transcript || "인식 결과 없음"}</dd></div>
+              {textMatchRate(analysis) !== null && <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">텍스트 일치율</dt><dd className="font-semibold text-gray-800">{Math.round(textMatchRate(analysis) ?? 0)}%</dd></div>}
+              <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">발음 평가</dt><dd>{typeof analysis.pronunciationScore === "number" ? `${analysis.pronunciationScore}점 (외부 제공자)` : <Badge tone="neutral">미평가</Badge>}</dd></div>
             </dl>
             <SpeechAssessmentDetails analysis={analysis} />
             {analysis.status === "COMPLETED" && <TeacherAiFeedback analysisId={analysis.analysisId} />}
@@ -211,7 +213,7 @@ export default function SpeechReviewPanel({ studentId }: { studentId: number }) 
           </Card>
         );
       })}
-      <p className="text-xs leading-relaxed text-gray-400">AI 인식 결과는 음성 인식 모델이 알아들은 글자이며 발음 정확도 평가가 아니에요. 오류 후보는 인식 글자를 표기 기준으로 비교한 자동 추정이라 틀린 발음을 놓치거나(모델이 고쳐 적음) 맞는 발음을 후보로 잡을 수 있어요. 발음 판단은 선생님 검토 결과를 기준으로 해 주세요.</p>
+      <p className="text-xs leading-relaxed text-[var(--ink-500)]">AI 인식 결과는 음성 인식 모델이 알아들은 글자이며 발음 정확도 평가가 아니에요. 오류 후보는 인식 글자를 표기 기준으로 비교한 자동 추정이라 틀린 발음을 놓치거나(모델이 고쳐 적음) 맞는 발음을 후보로 잡을 수 있어요. 발음 판단은 선생님 검토 결과를 기준으로 해 주세요.</p>
     </section>
   );
 }

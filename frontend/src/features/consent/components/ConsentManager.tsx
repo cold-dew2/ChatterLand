@@ -56,7 +56,7 @@ export default function ConsentManager() {
 
   return (
     <section aria-labelledby="consent-manager-title" className="space-y-3">
-      <h3 id="consent-manager-title" className="text-sm font-bold text-gray-700">동의 관리</h3>
+      <h3 id="consent-manager-title" className="text-base font-bold text-[var(--ink-900)]">동의 관리</h3>
       {detail && <ConsentDocumentModal type={detail} onClose={() => setDetail(null)} />}
       {withdrawTarget && <ConfirmDialog title="동의를 철회할까요?" confirmLabel="철회" pending={pending}
         description={withdrawTarget === "VOICE" ? "보관 중인 녹음이 즉시 삭제되고, 말하기 연습과 음성 대화를 사용할 수 없어요."
@@ -68,13 +68,13 @@ export default function ConsentManager() {
             disabled={needsGuardian && (!guardian.confirmed || !guardian.name.trim() || !guardian.relation.trim())}>동의하기</Button>}>
           <Button size="sm" variant="secondary" onClick={() => setDetail(agreeTarget)}>안내 내용 보기</Button>
           {needsGuardian && <>
-            <p className="text-xs text-gray-600">만 14세 미만 학생은 보호자가 직접 동의해야 해요.</p>
+            <Notice tone="warning">만 14세 미만 학생은 보호자가 직접 동의해야 해요.</Notice>
             <div className="grid grid-cols-2 gap-2">
               <Input label="보호자 이름" size="sm" value={guardian.name} onChange={(event) => setGuardian((current) => ({ ...current, name: event.target.value }))} />
               <Input label="아동과의 관계" size="sm" value={guardian.relation} onChange={(event) => setGuardian((current) => ({ ...current, relation: event.target.value }))} placeholder="예: 부모" />
             </div>
-            <label className="flex items-start gap-2 text-xs text-gray-600">
-              <input type="checkbox" checked={guardian.confirmed} onChange={(event) => setGuardian((current) => ({ ...current, confirmed: event.target.checked }))} className="mt-0.5 h-4 w-4 accent-[var(--brand-primary)]" />
+            <label className="flex min-h-9 cursor-pointer items-start gap-3 text-sm text-[var(--ink-700)]">
+              <input type="checkbox" checked={guardian.confirmed} onChange={(event) => setGuardian((current) => ({ ...current, confirmed: event.target.checked }))} className="mt-px h-5 w-5 shrink-0 accent-[var(--brand-primary)]" />
               보호자인 제가 안내를 확인하고 동의합니다.
             </label>
           </>}
@@ -85,19 +85,19 @@ export default function ConsentManager() {
       {state === "error" && <ErrorState message={error} onRetry={() => { setState("loading"); setRetryKey((value) => value + 1); }} />}
       {message && !agreeTarget && <Notice tone={message.tone}>{message.text}</Notice>}
       {state === "ready" && (
-        <Card padding="none" className="divide-y divide-gray-100">
+        <Card padding="none" className="divide-y divide-[var(--ink-100)] overflow-hidden">
           {consents.map((consent) => (
-            <div key={consent.type} className="flex items-center gap-3 px-4 py-3">
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-gray-800">{consentLabels[consent.type]}</p>
-                <p className="text-xs text-gray-400">
+            <div key={consent.type} className="flex min-h-16 flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
+              <div className="min-w-0 flex-1 basis-40">
+                <p className="text-sm font-semibold text-[var(--ink-900)]">{consentLabels[consent.type]}</p>
+                <p className="text-xs text-[var(--ink-500)]">
                   {consent.agreed ? `동의 ${consent.agreedAt ?? ""}` : consent.withdrawnAt ? `철회 ${consent.withdrawnAt}` : "동의하지 않음"}
                   {consent.agreed && !consent.currentVersion ? " · 안내문이 갱신되어 다시 동의가 필요해요" : ""}
                 </p>
               </div>
               <Badge tone={consent.agreed ? "success" : "neutral"}>{consent.agreed ? "동의" : "미동의"}</Badge>
               {consent.required
-                ? <button type="button" onClick={() => setDetail(consent.type)} className="text-xs font-semibold text-[var(--brand-primary)]">보기</button>
+                ? <button type="button" onClick={() => setDetail(consent.type)} className="min-h-10 rounded-md px-1.5 text-[13px] font-semibold text-[var(--brand-primary)] hover:underline">보기</button>
                 : consent.agreed && consent.currentVersion
                   ? <Button size="sm" variant="line" onClick={() => setWithdrawTarget(consent.type)}>철회</Button>
                   : <Button size="sm" onClick={() => { setMessage(null); setAgreeTarget(consent.type); }}>동의</Button>}
@@ -105,7 +105,7 @@ export default function ConsentManager() {
           ))}
         </Card>
       )}
-      <p className="text-xs leading-relaxed text-gray-400">필수 동의 철회(회원 탈퇴)와 개인정보 문의는 소속 언어재활센터에 요청해 주세요.</p>
+      <p className="text-xs leading-relaxed text-[var(--ink-500)]">필수 동의 철회(회원 탈퇴)와 개인정보 문의는 소속 언어재활센터에 요청해 주세요.</p>
     </section>
   );
 }

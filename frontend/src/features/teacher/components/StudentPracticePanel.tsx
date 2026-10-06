@@ -57,15 +57,15 @@ export default function StudentPracticePanel({ studentId }: { studentId: number 
 
   return (
     <section aria-label="연습 기록" className="space-y-3">
-      <h3 className="text-sm font-bold text-gray-800">연습 기록</h3>
+      <h3 className="text-base font-bold text-[var(--ink-900)]">연습 기록</h3>
       {summary && (
-        <dl className="grid grid-cols-4 gap-2 text-center">
+        <dl className="grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
           {[["전체", summary.totalCount], ["자율 연습", summary.selfCount ?? 0], ["수업 연습", summary.lessonCount ?? 0], ["숙제 연습", summary.homeworkCount]].map(([label, value]) => (
-            <Card key={label} tone="muted" padding="sm"><dt className="text-xs text-gray-400">{label}</dt><dd className="text-lg font-bold text-gray-900">{value}회</dd></Card>
+            <Card key={label} padding="sm"><dt className="text-xs font-medium text-[var(--ink-500)]">{label}</dt><dd className="mt-0.5 font-number text-xl font-black text-[var(--ink-900)]">{value}회</dd></Card>
           ))}
         </dl>
       )}
-      {summary?.lastPracticedAt && <p className="text-xs text-gray-400">최근 연습 {summary.lastPracticedAt} · 연습한 세트 {summary.exerciseCount}개
+      {summary?.lastPracticedAt && <p className="text-xs text-[var(--ink-500)]">최근 연습 {summary.lastPracticedAt} · 연습한 세트 {summary.exerciseCount}개
         {summary.unclassifiedCount ? ` · 이전 기록 ${summary.unclassifiedCount}회(유형 구분 전)` : ""}</p>}
       <Tabs ariaLabel="연습 기록 종류" variant="chip" value={filter} onChange={(value) => { setFilter(value); setState("loading"); }}
         items={[{ value: "ALL" as const, label: "전체" }, { value: "SELF" as const, label: "자율 연습" }, { value: "LESSON" as const, label: "수업 연습" },
@@ -83,12 +83,12 @@ export default function StudentPracticePanel({ studentId }: { studentId: number 
             {row.assessmentStatus === "HOLD" && <Badge tone="warning">판정 보류</Badge>}
             <span className="ml-auto text-xs text-gray-400">{row.createdAt}</span>
           </div>
-          <p className="text-sm font-semibold text-gray-800">{row.exerciseTitle}{row.homeworkTitle ? ` · 숙제 "${row.homeworkTitle}"` : ""}</p>
-          <dl className="space-y-1 rounded-xl bg-gray-50 p-3 text-sm">
-            <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">목표</dt><dd className="text-gray-800">{row.targetText ?? "-"}</dd></div>
-            <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">인식 결과</dt><dd className="text-gray-800">{row.transcript || "-"}</dd></div>
-            {typeof row.textMatchRate === "number" && <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">텍스트 일치율</dt><dd className="text-gray-800">{Math.round(row.textMatchRate)}% <span className="text-xs text-gray-400">(발음 점수 아님)</span></dd></div>}
-            <div className="flex gap-2"><dt className="w-20 shrink-0 text-xs text-gray-400">발음 평가</dt><dd><Badge tone="neutral">미평가</Badge></dd></div>
+          <p className="text-[15px] font-bold text-[var(--ink-900)]">{row.exerciseTitle}{row.homeworkTitle ? ` · 숙제 "${row.homeworkTitle}"` : ""}</p>
+          <dl className="space-y-1 rounded-[var(--radius-xl)] bg-[var(--surface-sunken)] px-3.5 py-3 text-sm">
+            <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">목표</dt><dd className="text-gray-800">{row.targetText ?? "-"}</dd></div>
+            <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">인식 결과</dt><dd className="text-gray-800">{row.transcript || "-"}</dd></div>
+            {typeof row.textMatchRate === "number" && <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">텍스트 일치율</dt><dd className="text-gray-800">{Math.round(row.textMatchRate)}% <span className="text-xs text-gray-400">(발음 점수 아님)</span></dd></div>}
+            <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">발음 평가</dt><dd><Badge tone="neutral">미평가</Badge></dd></div>
           </dl>
           {row.analysisId && row.analysisStatus === "COMPLETED" && <TeacherAiFeedback analysisId={row.analysisId} />}
         </Card>

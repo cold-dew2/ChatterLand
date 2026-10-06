@@ -81,14 +81,16 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
       { id: "mypage" as const, label: "마이페이지", icon: User },
     ];
     return (
-      <nav aria-label="학생 메뉴" className="flex border-t border-gray-100 bg-white">
+      <nav aria-label="학생 메뉴" className="grid grid-cols-3 border-t border-[var(--line-soft)] bg-white px-2 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
         {navTabs.map((t) => {
           const active = tab === t.id;
           return (
             <button type="button" key={t.id} onClick={() => setScreen({ kind: "tabs", tab: t.id })} aria-current={active ? "page" : undefined}
-              className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium transition-colors
-                ${active ? "text-blue-700" : "text-gray-400 hover:text-gray-600"}`}>
-              <t.icon size={20} aria-hidden="true" />
+              className={`flex min-h-[52px] flex-col items-center justify-center gap-0.5 rounded-[var(--radius-lg)] text-xs transition-colors
+                ${active ? "font-bold text-[var(--meadow-700)]" : "font-medium text-[var(--ink-500)] hover:text-[var(--ink-800)]"}`}>
+              <span className={`flex h-7 w-12 items-center justify-center rounded-full ${active ? "bg-[var(--meadow-100)]" : ""}`}>
+                <t.icon size={21} aria-hidden="true" strokeWidth={active ? 2.4 : 2} />
+              </span>
               {t.label}
             </button>
           );
@@ -170,7 +172,7 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
 
   const { tab } = screen;
   return (
-    <main className="flex-1 overflow-y-auto [scrollbar-width:none]">
+    <main className="flex-1 overflow-y-auto pb-4 [scrollbar-width:none]">
       {tab === "home" && (
         <StudentHomeScreen student={home.student} nextSession={home.nextSession} homeworks={home.homeworks} homeworkState={home.homeworkState}
           profileState={home.profileState} recent={home.recent} recentState={home.recentState} onRetry={home.reload} onNavigate={(target) => setScreen(target)} />

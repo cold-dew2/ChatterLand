@@ -6,6 +6,7 @@ import { authApi } from '@/features/auth/api/authApi'
 import { ApiError, clearAuth, SESSION_EXPIRED_EVENT } from '@/shared/api/client'
 import ErrorState from '@/shared/components/feedback/ErrorState'
 import LoadingState from '@/shared/components/feedback/LoadingState'
+import Mascot from '@/shared/components/mascot/Mascot'
 import { paths } from '@/routes/path/paths'
 
 /** 세션 만료 시 로그인 화면 주소. 돌아올 경로는 로그인 화면에서 다시 검증한다(safeReturnPath). */
@@ -47,7 +48,13 @@ export default function RoleLayout({ role, children }: { role: 'STUDENT' | 'TEAC
     return () => window.removeEventListener(SESSION_EXPIRED_EVENT, handleExpired)
   }, [router])
 
-  if (networkError) return <main className="flex min-h-screen items-center justify-center px-5"><div className="w-full max-w-sm"><ErrorState message="서버에 연결할 수 없어요. 네트워크 연결을 확인해 주세요." onRetry={() => { setNetworkError(false); setRetryKey((value) => value + 1) }} /></div></main>
-  if (!ready) return <main className="flex min-h-screen items-center justify-center"><LoadingState label="계정을 확인하고 있어요…" /></main>
+  const surface = role === 'TEACHER' ? 'surface-teacher' : 'surface-student'
+  if (networkError) return <main className={`flex min-h-screen items-center justify-center px-6 ${surface}`}><div className="w-full max-w-sm"><ErrorState message="서버에 연결할 수 없어요. 네트워크 연결을 확인해 주세요." onRetry={() => { setNetworkError(false); setRetryKey((value) => value + 1) }} /></div></main>
+  if (!ready) return (
+    <main className={`flex min-h-screen flex-col items-center justify-center ${surface}`}>
+      {role === 'STUDENT' && <Mascot size={88} />}
+      <LoadingState label="계정을 확인하고 있어요…" />
+    </main>
+  )
   return children
 }

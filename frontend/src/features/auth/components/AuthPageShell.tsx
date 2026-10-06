@@ -1,20 +1,30 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
-import { ChevronLeft } from "lucide-react";
+import BackButton from "@/shared/components/backButton/BackButton";
 import { PageTitle } from "@/shared/components/pageHeader/PageHeader";
 
-/** 로그인·회원가입·계정 찾기 화면의 공통 틀(뒤로 가기 + 가운데 정렬 본문) */
-export default function AuthPageShell({ title, description, backHref, children }: { title: string; description?: string; backHref: string; children: ReactNode }) {
+type AuthPageShellProps = {
+  title: string;
+  description?: string;
+  children: ReactNode;
+  /** 제목 위에 보여 줄 안내(예: 로그인 만료) */
+  notice?: ReactNode;
+  /** 화면 맨 아래(예: 회원가입 링크) */
+  footer?: ReactNode;
+  backLabel?: string;
+} & ({ backHref: string; onBack?: never } | { onBack: () => void; backHref?: never });
+
+/** 로그인·회원가입·계정 찾기 화면의 공통 틀(뒤로 가기 + 큰 제목 + 본문). 크림색 점무늬 바탕의 모바일 폭 */
+export default function AuthPageShell({ title, description, notice, footer, backLabel, children, ...back }: AuthPageShellProps) {
   return (
-    <div className="flex min-h-screen flex-col bg-white">
-      <div className="flex items-center gap-2 px-5 pt-5">
-        <Link href={backHref} aria-label="이전 화면으로" className="rounded-xl p-2 text-gray-400 hover:bg-gray-100"><ChevronLeft size={20} /></Link>
-      </div>
-      <main className="flex flex-1 items-center justify-center px-6 pb-8">
-        <div className="w-full max-w-sm">
-          <PageTitle title={title} description={description} size="lg" className="mb-6" />
-          {children}
-        </div>
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col surface-student px-6 pt-8 pb-8 shadow-[0_0_0_1px_var(--line-soft)]">
+      {back.backHref !== undefined
+        ? <BackButton href={back.backHref} label={backLabel ?? "이전 화면으로"} />
+        : <BackButton onClick={back.onBack} label={backLabel ?? "처음 화면으로"} icon="arrow" />}
+      <main className="mt-6 flex flex-1 flex-col">
+        <PageTitle title={title} description={description} size="lg" className="mb-6" />
+        {notice}
+        {children}
+        {footer && <div className="mt-auto pt-8">{footer}</div>}
       </main>
     </div>
   );

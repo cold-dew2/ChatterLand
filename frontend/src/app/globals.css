@@ -3,8 +3,33 @@
 
 * { box-sizing: border-box; }
 html, body { min-height: 100%; margin: 0; }
-body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
-button, input, select, textarea { font: inherit; }
+body { font-family: var(--font-body-stack); color: var(--ink-900); background: var(--surface-canvas); -webkit-font-smoothing: antialiased; }
+/* 폼 요소 기본 글꼴 상속. 레이어 밖에 두면 Tailwind 유틸리티(font-bold, text-*)보다 우선해 버튼 글자 굵기·크기가 무시되므로 base 레이어에 둔다. */
+@layer base {
+  button, input, select, textarea { font: inherit; }
+}
 button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
-button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #b9c9f4; outline-offset: 2px; }
-::selection { color: #142c78; background: #dfe7ff; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--meadow-700) 45%, transparent); outline-offset: 2px;
+}
+::selection { color: var(--meadow-950); background: var(--meadow-200); }
+
+/* 학생 화면 · 인증 화면 바탕: 크림색 종이에 옅은 점무늬 */
+@utility surface-student {
+  background-color: var(--surface-student);
+  background-image: radial-gradient(var(--paper-dot-student) 1.3px, transparent 1.6px);
+  background-size: 18px 18px;
+}
+
+/* 선생님 화면 바탕: 같은 색 체계, 장식 없이 정돈된 바탕 */
+@utility surface-teacher {
+  background-color: var(--surface-teacher);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+@media print {
+  body { background: #fff; }
+}

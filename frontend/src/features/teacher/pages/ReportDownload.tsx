@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { FileDown } from 'lucide-react'
 import { teacherApi } from '@/features/teacher/api/teacherApi'
 import { errorMessage } from '@/shared/api/client'
 import Button from '@/shared/components/button/Button'
@@ -32,11 +33,12 @@ export default function ReportDownload({ studentId, startDate, endDate }: { stud
     return () => { active = false }
   }, [studentId, startDate, endDate, retryKey])
 
-  return <main className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center gap-4 px-6 text-center">
-    <h1 className="text-xl font-bold text-gray-800">학생 리포트 다운로드</h1>
+  return <main className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center gap-4 surface-teacher px-6 text-center">
+    <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--meadow-100)] text-[var(--meadow-800)]" aria-hidden="true"><FileDown size={26} /></span>
+    <h1 className="font-display text-[22px] text-[var(--ink-900)]">학생 리포트 다운로드</h1>
     {state === 'loading' && <LoadingState label="학생 리포트를 준비하고 있어요…" />}
     {state === 'done' && <Notice tone="success">리포트 다운로드가 완료됐어요.</Notice>}
     {state === 'error' && <div className="w-full"><ErrorState message={error} onRetry={() => { setState('loading'); setRetryKey((value) => value + 1) }} /></div>}
-    <Button fullWidth onClick={() => router.replace(`/teacher/reports/${studentId}`)}>리포트로 돌아가기</Button>
+    <Button variant="line" fullWidth onClick={() => router.replace(`/teacher/reports/${studentId}`)}>리포트로 돌아가기</Button>
   </main>
 }

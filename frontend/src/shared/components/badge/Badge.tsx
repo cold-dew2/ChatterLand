@@ -2,15 +2,16 @@ import type { ReactNode } from 'react'
 
 export type BadgeTone = 'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info'
 
+// 상태는 색만으로 구분하지 않고 항상 글자와 함께 표시한다.
 const toneClassName: Record<BadgeTone, string> = {
-  neutral: 'border-gray-200 bg-gray-50 text-gray-500',
-  primary: 'border-blue-100 bg-[var(--brand-surface)] text-[var(--brand-primary)]',
-  success: 'border-green-100 bg-green-50 text-green-700',
-  warning: 'border-amber-100 bg-amber-50 text-amber-700',
-  danger: 'border-red-100 bg-red-50 text-red-600',
-  info: 'border-blue-100 bg-blue-50 text-blue-600',
+  neutral: 'bg-[var(--ink-100)] text-[var(--ink-700)]',
+  primary: 'bg-[var(--meadow-100)] text-[var(--meadow-900)]',
+  success: 'bg-[var(--meadow-100)] text-[var(--meadow-800)]',
+  warning: 'bg-[var(--butter-100)] text-[var(--butter-800)]',
+  danger: 'bg-[var(--coral-100)] text-[var(--coral-700)]',
+  info: 'bg-[var(--sky-100)] text-[var(--sky-800)]',
 }
 
 export default function Badge({ tone = 'neutral', className = '', children }: { tone?: BadgeTone; className?: string; children: ReactNode }) {
-  return <span className={`inline-flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium ${toneClassName[tone]} ${className}`.trim()}>{children}</span>
+  return <span className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-0.5 text-[11px] font-semibold leading-[18px] ${toneClassName[tone]} ${className}`.trim()}>{children}</span>
 }

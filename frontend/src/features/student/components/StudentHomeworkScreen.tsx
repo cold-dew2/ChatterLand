@@ -13,6 +13,7 @@ import EmptyState from "@/shared/components/feedback/EmptyState";
 import ErrorState from "@/shared/components/feedback/ErrorState";
 import LoadingState from "@/shared/components/feedback/LoadingState";
 import Notice from "@/shared/components/feedback/Notice";
+import Mascot from "@/shared/components/mascot/Mascot";
 import PageHeader from "@/shared/components/pageHeader/PageHeader";
 
 export default function StudentHomeworkScreen({ onBack, onCompleteHomework, onStartPractice }: {
@@ -84,39 +85,41 @@ export default function StudentHomeworkScreen({ onBack, onCompleteHomework, onSt
   return (
     <div>
       <PageHeader title="숙제하기" onBack={onBack} backLabel="홈으로 돌아가기" />
-      <div className="space-y-3 px-5 py-5">
+      <div className="space-y-3 px-5 pt-2 pb-8">
         {loading && <LoadingState label="숙제를 불러오고 있어요…" />}
         {error && <ErrorState message={error} onRetry={retry} />}
         {actionError && <Notice tone="error">{actionError}</Notice>}
-        {!loading && !error && homeworks.length === 0 && <EmptyState title="등록된 숙제가 없어요" description="선생님이 숙제를 내주면 이곳에서 확인할 수 있어요." />}
+        {!loading && !error && homeworks.length === 0 && <EmptyState title="등록된 숙제가 없어요" description="선생님이 숙제를 내주면 이곳에서 확인할 수 있어요." icon={<Mascot size={64} />} />}
         {!loading && !error && homeworks.length > 0 && <>
-          <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">진행 중 {pending.length}</p>
+          <p className="text-xs font-bold text-[var(--ink-600)]">진행 중 {pending.length}</p>
           {pending.length === 0 && <EmptyState title="남은 숙제가 없어요" description="모든 숙제를 완료했어요." variant="plain" />}
           {pending.map((homework) => {
             const overdue = isOverdue(homework.dueDate, homework.done);
-            return <Card as="article" key={homework.id}>
+            return <Card as="article" tone="raised" key={homework.id}>
               <div className="flex items-start gap-3">
-                <ClipboardList size={20} className="mt-0.5 shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
+                <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${overdue ? "bg-[var(--coral-100)] text-[var(--coral-700)]" : "bg-[var(--butter-100)] text-[var(--butter-800)]"}`} aria-hidden="true">
+                  <ClipboardList size={19} />
+                </span>
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-sm font-bold text-gray-900">{homework.title}</h3>
+                  <h3 className="text-base font-bold text-[var(--ink-900)]">{homework.title}</h3>
                   <p className="mt-1 text-xs text-gray-500">{homework.type}{homework.targetMinutes > 0 ? ` · ${homework.targetMinutes}분` : ""}</p>
                   {homework.description && <p className="mt-2 text-sm leading-relaxed text-gray-600">{homework.description}</p>}
                   {homework.exerciseTitle && <p className="mt-2 text-xs text-gray-600">연습: <b>{homework.exerciseTitle}</b>{homework.attemptCount ? ` · ${homework.attemptCount}번 연습함` : ""}</p>}
-                  <p className={`mt-2 text-xs font-medium ${overdue ? "text-red-500" : "text-gray-400"}`}>마감 {homework.dueDate || "미정"}{overdue ? " · 기한 지남" : ""}</p>
+                  <p className={`mt-2 text-xs font-semibold ${overdue ? "text-[var(--coral-600)]" : "text-[var(--ink-500)]"}`}>마감 {homework.dueDate || "미정"}{overdue ? " · 기한 지남" : ""}</p>
                 </div>
               </div>
-              <div className="mt-3 flex gap-2">
-                <Button size="sm" variant="secondary" fullWidth loading={startingId === homework.id} loadingLabel="불러오는 중…"
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <Button variant="secondary" fullWidth loading={startingId === homework.id} loadingLabel="불러오는 중…"
                   onClick={() => void startPractice(homework)}><Mic size={14} aria-hidden="true" />연습하러 가기</Button>
-                <Button size="sm" fullWidth disabled={busyId !== null} loading={busyId === homework.id} loadingLabel="저장 중…"
+                <Button fullWidth disabled={busyId !== null} loading={busyId === homework.id} loadingLabel="저장 중…"
                   onClick={() => void completeHomework(homework.id)}>완료</Button>
               </div>
             </Card>;
           })}
           {completed.length > 0 && <>
-            <p className="pt-3 text-xs font-semibold uppercase tracking-wider text-gray-400">완료 {completed.length}</p>
-            {completed.map((homework) => <Card key={homework.id} tone="muted" className="flex items-center gap-3 text-gray-400">
-              <CheckCircle size={20} className="shrink-0 text-green-500" aria-hidden="true" />
+            <p className="pt-3 text-xs font-bold text-[var(--ink-600)]">완료 {completed.length}</p>
+            {completed.map((homework) => <Card key={homework.id} tone="muted" className="flex items-center gap-3 text-[var(--ink-500)]">
+              <CheckCircle size={20} className="shrink-0 text-[var(--meadow-600)]" aria-hidden="true" />
               <span className="min-w-0 flex-1 truncate text-sm font-semibold line-through">{homework.title}</span>
               <Badge tone="success">완료</Badge>
             </Card>)}

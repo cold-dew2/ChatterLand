@@ -11,6 +11,7 @@ import Badge from "@/shared/components/badge/Badge";
 import Button from "@/shared/components/button/Button";
 import Card from "@/shared/components/card/Card";
 import Notice from "@/shared/components/feedback/Notice";
+import Mascot from "@/shared/components/mascot/Mascot";
 import Spinner from "@/shared/components/spinner/Spinner";
 
 type PanelState =
@@ -66,16 +67,19 @@ export default function AiFeedbackPanel({ analysisId }: { analysisId: string }) 
 
   const { feedback } = state;
   if (feedback.status === "NOT_EVALUABLE") return (
-    <Notice tone="info"><b>AI 설명</b> · {feedback.reason ?? "이 녹음은 설명할 수 없어요."}</Notice>
+    <Notice tone="neutral"><b>AI 설명</b> · {feedback.reason ?? "이 녹음은 설명할 수 없어요."}</Notice>
   );
   if (feedback.status === "INSUFFICIENT_SOURCES") return (
-    <Notice tone="info"><b>AI 설명 · 근거 자료 부족</b> · {feedback.reason ?? "이 결과를 설명할 검수된 교육 자료가 없어요."}</Notice>
+    <Notice tone="neutral"><b>AI 설명 · 근거 자료 부족</b> · {feedback.reason ?? "이 결과를 설명할 검수된 교육 자료가 없어요."}</Notice>
   );
 
   return (
-    <Card padding="lg" className="space-y-3" aria-label="AI 설명">
+    <Card tone="raised" padding="lg" className="space-y-3 rounded-[26px]" aria-label="AI 설명">
       <div className="flex items-center justify-between gap-2">
-        <p className="flex items-center gap-1.5 text-sm font-semibold text-gray-700"><Sparkles size={15} aria-hidden="true" className="text-[var(--brand-primary)]" />AI 설명</p>
+        <p className="flex items-center gap-2 text-sm font-bold text-[var(--ink-900)]">
+          <Mascot size={32} />
+          <span className="flex items-center gap-1"><Sparkles size={14} aria-hidden="true" className="text-[var(--butter-600)]" />AI 설명</span>
+        </p>
         <Badge tone="neutral">점수 아님</Badge>
       </div>
       {feedback.status === "READY" ? (
@@ -85,12 +89,12 @@ export default function AiFeedbackPanel({ analysisId }: { analysisId: string }) 
       ) : feedback.available === false ? (
         <Notice tone="info">지금은 AI 설명을 쓸 수 없어요.</Notice>
       ) : generating ? (
-        <p className="flex items-center gap-2 text-sm text-gray-500" role="status"><Spinner className="text-[var(--brand-primary)]" />AI가 설명을 쓰고 있어요…</p>
+        <p className="flex items-center gap-2.5 rounded-[var(--radius-xl)] border border-[var(--line-soft)] bg-white px-4 py-3.5 text-[13px] text-[var(--ink-600)]" role="status"><Spinner size="md" className="text-[var(--meadow-700)]" />AI가 설명을 쓰고 있어요…</p>
       ) : (
         <>
-          <p className="text-sm text-gray-500">컴퓨터가 알아들은 결과를 AI가 쉽게 설명해 줄 수 있어요.</p>
+          <p className="text-sm leading-relaxed text-[var(--ink-600)]">컴퓨터가 알아들은 결과를 AI가 쉽게 설명해 줄 수 있어요.</p>
           {generateError && <Notice tone="error">{generateError}</Notice>}
-          <Button variant="line" fullWidth onClick={() => void generate()}>{generateError ? "다시 시도" : "AI 설명 보기"}</Button>
+          <Button variant="secondary" fullWidth onClick={() => void generate()}><Sparkles size={16} aria-hidden="true" />{generateError ? "다시 시도" : "AI 설명 보기"}</Button>
         </>
       )}
     </Card>

@@ -50,7 +50,7 @@ export default function TeacherPage({ initialView = "home", initialStudentId = n
   };
 
   return (
-    <PageLayout>
+    <PageLayout variant="teacher">
       {showStudentForm && <StudentFormModal initialStudent={editingStudent} onClose={() => { setShowStudentForm(false); setEditingStudent(null); }}
         onSave={(values, existingStudentId) => data.saveStudent(values, editingStudent, existingStudentId)} />}
       {showHomework && <HomeworkModal key={latestEditing ? `${latestEditing.id}:${latestEditing.version ?? ""}` : "new"}
@@ -59,10 +59,11 @@ export default function TeacherPage({ initialView = "home", initialStudentId = n
 
       {showPassword && <Modal title="비밀번호 변경" onClose={() => setShowPassword(false)}><ChangePasswordForm /></Modal>}
 
-      <header className="flex items-center justify-between px-5 py-4 border-b border-gray-100 print:hidden">
+      <header className="flex items-center justify-between border-b border-[var(--line-soft)] bg-white px-4 py-2.5 sm:px-6 print:hidden">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-bold text-gray-800">체터랜드</p>
-          <Badge tone="neutral">선생님</Badge>
+          <span className="h-6 w-6 rounded-full bg-[var(--brand-primary)]" aria-hidden="true" />
+          <p className="text-base font-extrabold text-[var(--ink-900)]">체터랜드</p>
+          <Badge tone="primary" className="rounded-md">선생님</Badge>
         </div>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" onClick={() => setShowPassword(true)} aria-label="비밀번호 변경">
@@ -76,8 +77,8 @@ export default function TeacherPage({ initialView = "home", initialStudentId = n
 
       <main className="pb-8">
         <div aria-live="polite" className="print:hidden">
-          {data.mutationError && <Notice tone="error" className="mx-5 mt-4">{data.mutationError}</Notice>}
-          {data.successMessage && <Notice tone="success" className="mx-5 mt-4">{data.successMessage}</Notice>}
+          {data.mutationError && <Notice tone="error" className="mx-4 mt-4 sm:mx-6">{data.mutationError}</Notice>}
+          {data.successMessage && <Notice tone="success" className="mx-4 mt-4 sm:mx-6">{data.successMessage}</Notice>}
         </div>
         {view === "home" && <TeacherHomeView students={data.students} homeworks={data.homeworks} centerName={data.centerName} loadState={data.loadState}
           onRetry={data.reload} onNavigate={setView} />}

@@ -14,6 +14,7 @@ import EmptyState from "@/shared/components/feedback/EmptyState";
 import ErrorState from "@/shared/components/feedback/ErrorState";
 import LoadingState from "@/shared/components/feedback/LoadingState";
 import Input from "@/shared/components/input/Input";
+import Mascot from "@/shared/components/mascot/Mascot";
 import PageHeader from "@/shared/components/pageHeader/PageHeader";
 import Select from "@/shared/components/select/Select";
 
@@ -76,13 +77,13 @@ export default function PracticeBrowseScreen({ onBack, onStart }: { onBack: () =
   return (
     <div>
       <PageHeader title="전체 연습 찾기" onBack={onBack} />
-      <div className="space-y-4 px-5 py-5">
+      <div className="space-y-4 px-5 pt-2 pb-8">
         {recent.length > 0 && (
           <section aria-label="최근 연습" className="space-y-2">
-            <p className="text-xs font-semibold text-gray-400">최근 연습</p>
+            <p className="text-xs font-bold text-[var(--ink-600)]">최근 연습</p>
             {recent.map((item) => (
-              <Card key={item.id} padding="none" className="flex items-center gap-2 px-4 py-2.5">
-                <p className="min-w-0 flex-1 truncate text-sm text-gray-700">{item.title}</p>
+              <Card key={item.id} padding="none" className="flex min-h-12 items-center gap-2 px-4 py-2.5">
+                <p className="min-w-0 flex-1 truncate text-sm font-medium text-[var(--ink-800)]">{item.title}</p>
                 {item.attemptType === "HOMEWORK" && <Badge tone="info">숙제</Badge>}
                 <span className="text-xs text-gray-400">{item.date}</span>
               </Card>
@@ -94,7 +95,7 @@ export default function PracticeBrowseScreen({ onBack, onStart }: { onBack: () =
           <div className="flex items-end gap-2">
             <Input label="검색" hideLabel placeholder="낱말이나 문장으로 찾기 (예: 받침, 고구마)" value={draft.keyword} maxLength={50} fieldClassName="flex-1"
               onChange={(event) => setDraft({ ...draft, keyword: event.target.value })} />
-            <Button type="submit" variant="secondary" aria-label="검색하기"><Search size={16} aria-hidden="true" /></Button>
+            <Button type="submit" variant="secondary" aria-label="검색하기" className="h-[54px] w-[54px] shrink-0 rounded-[var(--radius-control)] px-0"><Search size={20} aria-hidden="true" /></Button>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <Select label="카테고리" size="sm" value={draft.categoryId} options={all(categories)} onChange={(event) => apply({ ...draft, categoryId: event.target.value })} />
@@ -108,17 +109,17 @@ export default function PracticeBrowseScreen({ onBack, onStart }: { onBack: () =
         {state === "error" && <ErrorState message={error} onRetry={() => { setState("loading"); setRetryKey((value) => value + 1); }} />}
         {state === "ready" && (
           <>
-            <p className="text-xs text-gray-400" aria-live="polite">연습 세트 {total}개</p>
-            {items.length === 0 && <EmptyState title="조건에 맞는 연습이 없어요" description="검색어를 바꾸거나 필터를 '전체'로 바꿔 보세요." variant="plain" />}
+            <p className="text-[13px] font-semibold text-[var(--ink-600)]" aria-live="polite">연습 세트 {total}개</p>
+            {items.length === 0 && <EmptyState title="조건에 맞는 연습이 없어요" description="검색어를 바꾸거나 필터를 '전체'로 바꿔 보세요." variant="plain" icon={<Mascot size={64} />} />}
             <ul className="space-y-2">
               {items.map((content) => (
                 <li key={content.id}>
-                  <Card padding="none" className="space-y-2 px-4 py-3">
+                  <Card tone="raised" padding="none" className="space-y-2.5 px-4 py-4">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="min-w-0 text-sm font-bold text-gray-900">{content.label}</p>
+                      <p className="min-w-0 pt-1 text-[15px] font-bold text-[var(--ink-900)]">{content.label}</p>
                       <Button size="sm" onClick={() => onStart(content)} aria-label={`${content.label} 연습 시작`}>연습 시작</Button>
                     </div>
-                    <p className="truncate text-xs text-gray-500">{content.items.map((item) => item.word).join(" · ")}</p>
+                    <p className="truncate text-[13px] text-[var(--ink-600)]">{content.items.map((item) => item.word).join(" · ")}</p>
                     <div className="flex flex-wrap gap-1">
                       {content.pronunciationRule && <Badge tone="info">{ruleLabel[content.pronunciationRule]}</Badge>}
                       {content.difficulty && <Badge tone="neutral">{difficultyLabel[content.difficulty]}</Badge>}

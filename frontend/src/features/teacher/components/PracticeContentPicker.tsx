@@ -33,8 +33,8 @@ export default function PracticeContentPicker({ selected, onSelect }: { selected
 
   if (selected) return (
     <div className="space-y-1">
-      <p className="text-sm font-semibold text-gray-700">연습 콘텐츠</p>
-      <div className="flex items-center gap-2 rounded-xl bg-gray-50 p-3">
+      <p className="text-[13px] font-semibold text-[var(--ink-900)]">연습 콘텐츠</p>
+      <div className="flex items-center gap-2 rounded-[var(--radius-lg)] border-[1.5px] border-[var(--meadow-700)] bg-[var(--meadow-50)] p-3">
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold text-gray-800">{selected.label}</p>
           <p className="truncate text-xs text-gray-500">{selected.items.map((item) => item.word).join(" · ")}</p>
@@ -46,8 +46,8 @@ export default function PracticeContentPicker({ selected, onSelect }: { selected
 
   return (
     <fieldset className="space-y-2">
-      <legend className="text-sm font-semibold text-gray-700">연습 콘텐츠 (선택)</legend>
-      <p className="text-xs text-gray-400">고르면 학생이 숙제에서 이 연습을 바로 시작하고, 기록이 숙제 연습으로 저장돼요.</p>
+      <legend className="text-[13px] font-semibold text-[var(--ink-900)]">연습 콘텐츠 (선택)</legend>
+      <p className="text-xs leading-relaxed text-[var(--ink-500)]">고르면 학생이 숙제에서 이 연습을 바로 시작하고, 기록이 숙제 연습으로 저장돼요.</p>
       <div className="grid grid-cols-2 gap-2">
         <Input label="콘텐츠 검색" hideLabel size="sm" placeholder="낱말·문장 검색" value={keyword} maxLength={50} onChange={(event) => setKeyword(event.target.value)} />
         <Select label="발음 유형" hideLabel size="sm" value={rule} options={[{ value: "", label: "발음 유형 전체" }, ...ruleOptions]} onChange={(event) => setRule(event.target.value)} />
@@ -58,7 +58,7 @@ export default function PracticeContentPicker({ selected, onSelect }: { selected
       {results.length > 0 && (
         <ul className="max-h-56 space-y-1.5 overflow-y-auto" aria-label="연습 콘텐츠 검색 결과">
           {results.map((content) => (
-            <li key={content.id} className="flex items-center gap-2 rounded-xl border border-gray-100 p-2">
+            <li key={content.id} className="flex items-center gap-2 rounded-[var(--radius-lg)] border border-[var(--line-soft)] bg-white p-2.5">
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm text-gray-800">{content.label}</p>
                 <p className="flex gap-1 pt-0.5">

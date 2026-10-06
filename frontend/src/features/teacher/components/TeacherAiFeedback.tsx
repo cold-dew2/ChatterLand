@@ -33,9 +33,9 @@ export default function TeacherAiFeedback({ analysisId }: { analysisId: string }
   );
 
   return (
-    <section aria-label="학생이 본 AI 설명" className="space-y-2 rounded-xl border border-gray-100 p-3">
+    <section aria-label="학생이 본 AI 설명" className="space-y-2.5 rounded-[var(--radius-xl)] border border-[var(--line-soft)] bg-white p-3.5">
       <div className="flex items-center justify-between gap-2">
-        <p className="text-xs font-semibold text-gray-600">학생이 본 AI 설명</p>
+        <p className="flex items-center gap-1.5 text-[13px] font-bold text-[var(--ink-900)]"><Sparkles size={14} aria-hidden="true" className="text-[var(--butter-600)]" />학생이 본 AI 설명</p>
         <Badge tone="neutral">점수·진단 아님</Badge>
       </div>
       {state.kind === "loading" && <p className="flex items-center gap-2 text-xs text-gray-500" role="status"><Spinner />불러오고 있어요…</p>}

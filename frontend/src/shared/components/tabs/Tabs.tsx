@@ -7,24 +7,24 @@ type TabsProps<T extends string | number> = {
   value: T
   onChange: (value: T) => void
   ariaLabel: string
-  /** pill: 채워진 필터 · outline: 역할 선택 · underline: 화면 탭 · chip: 가로 스크롤 필터 */
+  /** pill: 채워진 필터 · outline: 역할 선택(세그먼트) · underline: 화면 탭 · chip: 가로 스크롤 필터 */
   variant?: 'pill' | 'outline' | 'underline' | 'chip'
   className?: string
 }
 
 const containerClassName = {
-  pill: 'flex gap-1',
-  outline: 'flex gap-2',
-  underline: 'flex border-b border-gray-100',
-  chip: 'flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none]',
+  pill: 'flex gap-1.5',
+  outline: 'grid auto-cols-fr grid-flow-col gap-1 rounded-[var(--radius-xl)] bg-[var(--ink-100)] p-1',
+  underline: 'flex border-b border-[var(--line-soft)] bg-white',
+  chip: 'flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none]',
 }
 
 const itemClassName = {
-  pill: (active: boolean) => `flex-1 rounded-xl py-2 text-xs font-semibold transition-all ${active ? 'bg-[var(--brand-primary)] text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`,
-  outline: (active: boolean) => `flex flex-1 items-center justify-center gap-1.5 rounded-xl border-2 py-2 text-sm font-semibold transition-all ${active ? 'border-[var(--brand-primary)] bg-blue-50 text-blue-800' : 'border-gray-200 text-gray-400 hover:border-blue-200'}`,
-  underline: (active: boolean) => `flex-1 border-b-2 py-3 text-sm font-semibold transition-colors ${active ? 'border-[var(--brand-primary)] text-[var(--brand-primary)]' : 'border-transparent text-gray-400 hover:text-gray-600'}`,
+  pill: (active: boolean) => `flex min-h-10 flex-1 items-center justify-center rounded-full px-3 text-sm font-semibold transition-colors ${active ? 'bg-[var(--brand-primary)] text-white' : 'border border-[var(--line-soft)] bg-white text-[var(--ink-600)] hover:border-[var(--meadow-200)]'}`,
+  outline: (active: boolean) => `flex min-h-11 items-center justify-center gap-1.5 rounded-[var(--radius-md)] text-[15px] transition-all ${active ? 'bg-white font-bold text-[var(--ink-900)] shadow-[var(--shadow-frame-inner)]' : 'font-medium text-[var(--ink-600)] hover:text-[var(--ink-900)]'}`,
+  underline: (active: boolean) => `min-h-12 flex-1 border-b-2 px-2 text-sm transition-colors ${active ? 'border-[var(--brand-primary)] font-bold text-[var(--meadow-900)]' : 'border-transparent font-medium text-[var(--ink-500)] hover:text-[var(--ink-800)]'}`,
   // 긴 이름(예: 학생 이름 필터)도 칩 하나가 화면을 넘지 않도록 최대 폭을 두고 말줄임한다. 전체 이름은 title로 보인다.
-  chip: (active: boolean) => `max-w-[12rem] shrink-0 truncate rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${active ? 'border-gray-700 bg-gray-700 text-white' : 'border-gray-200 text-gray-500 hover:border-gray-400'}`,
+  chip: (active: boolean) => `max-w-[12rem] min-h-9 shrink-0 truncate rounded-full border px-3.5 py-1.5 text-[13px] transition-colors ${active ? 'border-[var(--ink-950)] bg-[var(--ink-950)] font-semibold text-white' : 'border-[var(--line-soft)] bg-white font-medium text-[var(--ink-700)] hover:border-[var(--ink-300)]'}`,
 }
 
 /** 선택형 탭/필터. 키보드 좌우 화살표로 이동할 수 있다. */

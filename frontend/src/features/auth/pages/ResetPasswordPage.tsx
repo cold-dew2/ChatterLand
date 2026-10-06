@@ -71,10 +71,10 @@ export default function ResetPasswordPage() {
 
   return (
     <AuthPageShell title="비밀번호 재설정" description={step === "done" ? undefined : "가입한 이메일로 인증 코드를 보내 본인을 확인해요."} backHref={paths.login}>
-      <ol className="mb-5 flex gap-1" aria-label="진행 단계">
+      <ol className="mb-6 flex gap-1.5" aria-label="진행 단계">
         {(["email", "code", "password"] as const).map((item, index) => {
           const reached = ["email", "code", "password", "done"].indexOf(step) >= index;
-          return <li key={item} aria-current={step === item ? "step" : undefined} className={`h-1.5 flex-1 rounded-full ${reached ? "bg-[var(--brand-primary)]" : "bg-gray-200"}`} />;
+          return <li key={item} aria-current={step === item ? "step" : undefined} className={`h-2 flex-1 rounded-full ${reached ? "bg-[var(--meadow-400)]" : "bg-[var(--ink-150)]"}`} />;
         })}
       </ol>
 
@@ -84,7 +84,7 @@ export default function ResetPasswordPage() {
             onChange={(event) => { setEmail(event.target.value); setFieldError({}); }} placeholder="이메일을 입력하세요" />
           {error && <Notice tone="error">{error}</Notice>}
           <Button type="submit" size="lg" fullWidth loading={loading} loadingLabel="보내는 중…">인증 코드 받기</Button>
-          <p className="text-center text-sm text-gray-400">이메일이 기억나지 않나요? <Link href={paths.findId} className="font-bold text-[var(--brand-primary)] hover:underline">아이디 찾기</Link></p>
+          <p className="text-center text-sm text-[var(--ink-600)]">이메일이 기억나지 않나요? <Link href={paths.findId} className="font-bold text-[var(--brand-primary)] hover:underline">아이디 찾기</Link></p>
         </form>
       )}
 
@@ -96,8 +96,8 @@ export default function ResetPasswordPage() {
           {error && <Notice tone="error">{error}</Notice>}
           <Button type="submit" size="lg" fullWidth loading={loading} loadingLabel="확인 중…">인증하기</Button>
           <div className="flex justify-between text-sm">
-            <button type="button" onClick={() => { setStep("email"); setCode(""); setError(""); }} className="text-gray-400 hover:underline">이메일 다시 입력</button>
-            <button type="button" disabled={loading} onClick={() => requestCode()} className="font-semibold text-[var(--brand-primary)] hover:underline disabled:opacity-50">코드 다시 받기</button>
+            <button type="button" onClick={() => { setStep("email"); setCode(""); setError(""); }} className="min-h-10 rounded-md px-1 text-[var(--ink-600)] hover:underline">이메일 다시 입력</button>
+            <button type="button" disabled={loading} onClick={() => requestCode()} className="min-h-10 rounded-md px-1 font-semibold text-[var(--brand-primary)] hover:underline disabled:opacity-50">코드 다시 받기</button>
           </div>
         </form>
       )}
@@ -114,10 +114,10 @@ export default function ResetPasswordPage() {
       )}
 
       {step === "done" && (
-        <div className="space-y-5 text-center">
-          <CheckCircle2 size={48} className="mx-auto text-green-500" aria-hidden="true" />
-          <p className="text-base font-bold text-gray-900">비밀번호를 변경했어요</p>
-          <p className="text-sm text-gray-500">보안을 위해 다른 기기의 로그인은 모두 해제됐어요. 새 비밀번호로 로그인해 주세요.</p>
+        <div className="space-y-5 pt-4 text-center">
+          <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--meadow-100)]" aria-hidden="true"><CheckCircle2 size={40} className="text-[var(--meadow-700)]" /></span>
+          <p className="font-display text-2xl text-[var(--ink-900)]">비밀번호를 변경했어요</p>
+          <p className="text-sm leading-relaxed text-[var(--ink-600)]">보안을 위해 다른 기기의 로그인은 모두 해제됐어요. 새 비밀번호로 로그인해 주세요.</p>
           <Link href={paths.login} className={buttonClassName({ size: "lg", fullWidth: true })}>로그인하러 가기</Link>
         </div>
       )}
