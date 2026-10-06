@@ -16,6 +16,8 @@ public interface StudentService {
     Map<String,Object> session(TokenPrincipal principal, long sessionId);
     Object categories(TokenPrincipal principal);
     PageResponse<Map<String,Object>> exercises(TokenPrincipal principal, String categoryId, int page, int size);
+    /** 다시 연습: 이 영역에서 연습한 적 있는 세트(최근 연습 순, 세트당 한 번) */
+    PageResponse<Map<String,Object>> practicedExercises(TokenPrincipal principal, String categoryId, int page, int size);
     Map<String,Object> saveAttempt(TokenPrincipal principal, AttemptRequest request);
     Map<String,Object> analyzeSpeech(TokenPrincipal principal, MultipartFile audio, String exerciseId, String itemId, String requestKey);
     Map<String,Object> speechAnalysis(TokenPrincipal principal, String analysisId);

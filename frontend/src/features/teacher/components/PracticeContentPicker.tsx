@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { PracticeContent } from "@/features/student/types";
 import { mapPracticeContent } from "@/features/student/utils/mappers";
-import { difficultyLabel, ruleLabel, ruleOptions } from "@/features/student/utils/practiceLabels";
+import { difficultyLabel, practiceCategoryOptions, ruleLabel, ruleOptions } from "@/features/student/utils/practiceLabels";
 import { teacherApi } from "@/features/teacher/api/teacherApi";
 import { errorMessage } from "@/shared/api/client";
 import Badge from "@/shared/components/badge/Badge";
@@ -12,11 +12,12 @@ import Notice from "@/shared/components/feedback/Notice";
 import Input from "@/shared/components/input/Input";
 import Select from "@/shared/components/select/Select";
 
-/** 숙제로 낼 연습 세트 고르기(선택 사항). 검색어·발음 유형으로 찾고 하나를 고른다. */
+/** 숙제로 낼 연습 세트 고르기(선택 사항). 학생 개인 연습과 같은 공통 콘텐츠에서 영역·검색어·발음 유형으로 찾고 하나를 고른다. */
 export default function PracticeContentPicker({ selected, onSelect }: { selected: PracticeContent | null; onSelect: (content: PracticeContent | null) => void }) {
   const [keyword, setKeyword] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [rule, setRule] = useState("");
-  const [query, setQuery] = useState({ keyword: "", rule: "" });
+  const [query, setQuery] = useState({ keyword: "", categoryId: "", rule: "" });
   const [results, setResults] = useState<PracticeContent[]>([]);
   const [total, setTotal] = useState(0);
   const [error, setError] = useState("");
@@ -26,7 +27,7 @@ export default function PracticeContentPicker({ selected, onSelect }: { selected
   useEffect(() => {
     if (!searched) return;
     const id = ++request.current;
-    teacherApi.practiceContents({ keyword: query.keyword.trim() || undefined, rule: query.rule || undefined, size: 8 })
+    teacherApi.practiceContents({ keyword: query.keyword.trim() || undefined, categoryId: query.categoryId || undefined, rule: query.rule || undefined, size: 8 })
       .then((page) => { if (id === request.current) { setResults(page.content.map(mapPracticeContent)); setTotal(page.totalElements); setError(""); } })
       .catch((cause) => { if (id === request.current) setError(errorMessage(cause, "연습 콘텐츠를 불러오지 못했어요.")); });
   }, [query, searched]);
@@ -36,7 +37,7 @@ export default function PracticeContentPicker({ selected, onSelect }: { selected
       <p className="text-[13px] font-semibold text-[var(--ink-900)]">연습 콘텐츠</p>
       <div className="flex items-center gap-2 rounded-[var(--radius-lg)] border-[1.5px] border-[var(--meadow-700)] bg-[var(--meadow-50)] p-3">
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-gray-800">{selected.label}</p>
+          <p className="truncate text-sm font-semibold text-gray-800">{selected.categoryName ? `${selected.categoryName} · ` : ""}{selected.label}</p>
           <p className="truncate text-xs text-gray-500">{selected.items.map((item) => item.word).join(" · ")}</p>
         </div>
         <Button size="sm" variant="line" onClick={() => onSelect(null)}>선택 해제</Button>
@@ -48,11 +49,14 @@ export default function PracticeContentPicker({ selected, onSelect }: { selected
     <fieldset className="space-y-2">
       <legend className="text-[13px] font-semibold text-[var(--ink-900)]">연습 콘텐츠 (선택)</legend>
       <p className="text-xs leading-relaxed text-[var(--ink-500)]">고르면 학생이 숙제에서 이 연습을 바로 시작하고, 기록이 숙제 연습으로 저장돼요.</p>
+      <Input label="콘텐츠 검색" hideLabel size="sm" placeholder="낱말·문장·세트 이름 검색" value={keyword} maxLength={50} onChange={(event) => setKeyword(event.target.value)} />
       <div className="grid grid-cols-2 gap-2">
-        <Input label="콘텐츠 검색" hideLabel size="sm" placeholder="낱말·문장 검색" value={keyword} maxLength={50} onChange={(event) => setKeyword(event.target.value)} />
-        <Select label="발음 유형" hideLabel size="sm" value={rule} options={[{ value: "", label: "발음 유형 전체" }, ...ruleOptions]} onChange={(event) => setRule(event.target.value)} />
+        <Select label="연습 영역" hideLabel size="sm" value={categoryId} options={[{ value: "", label: "영역 전체" }, ...practiceCategoryOptions]}
+          onChange={(event) => { setCategoryId(event.target.value); if (event.target.value !== "articulation") setRule(""); }} />
+        <Select label="발음 유형" hideLabel size="sm" value={rule} disabled={Boolean(categoryId) && categoryId !== "articulation"}
+          options={[{ value: "", label: "발음 유형 전체" }, ...ruleOptions]} onChange={(event) => setRule(event.target.value)} />
       </div>
-      <Button size="sm" variant="secondary" fullWidth onClick={() => { setSearched(true); setQuery({ keyword, rule }); }}>콘텐츠 찾기</Button>
+      <Button size="sm" variant="secondary" fullWidth onClick={() => { setSearched(true); setQuery({ keyword, categoryId, rule }); }}>콘텐츠 찾기</Button>
       {error && <Notice tone="error">{error}</Notice>}
       {searched && !error && results.length === 0 && <p className="text-xs text-gray-400">조건에 맞는 연습 콘텐츠가 없어요.</p>}
       {results.length > 0 && (
@@ -61,7 +65,8 @@ export default function PracticeContentPicker({ selected, onSelect }: { selected
             <li key={content.id} className="flex items-center gap-2 rounded-[var(--radius-lg)] border border-[var(--line-soft)] bg-white p-2.5">
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm text-gray-800">{content.label}</p>
-                <p className="flex gap-1 pt-0.5">
+                <p className="flex flex-wrap gap-1 pt-0.5">
+                  {content.categoryName && <Badge tone="primary">{content.categoryName}</Badge>}
                   {content.pronunciationRule && <Badge tone="info">{ruleLabel[content.pronunciationRule]}</Badge>}
                   {content.difficulty && <Badge tone="neutral">{difficultyLabel[content.difficulty]}</Badge>}
                 </p>

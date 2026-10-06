@@ -9,6 +9,8 @@ export const studentApi = {
   session: (id: string) => apiClient.get<Record<string, unknown>>(`/api/v1/sessions/${encodeURIComponent(id)}`),
   categories: () => apiClient.get<Record<string, unknown>[]>('/api/v1/practice/categories'),
   exercises: (categoryId: string, page = 0, size = 10) => apiClient.get<Record<string, unknown>>(`/api/v1/practice/${encodeURIComponent(categoryId)}/exercises${queryString({ page, size })}`),
+  /** 다시 연습: 이 영역에서 연습했던 세트(세트당 한 번, 최근 연습 순) */
+  practiced: (categoryId: string, page = 0, size = 20) => apiClient.get<Record<string, unknown>>(`/api/v1/practice/${encodeURIComponent(categoryId)}/practiced${queryString({ page, size })}`),
   /** score는 서버가 실제로 측정한 점수가 있을 때만 보낸다. */
   /** homeworkId: 숙제 연습. 숙제가 아니면 practiceType SELF(자율) 또는 LESSON(수업, sessionId 필요) */
   saveAttempt: (body: { exerciseId: string; itemId: string; audioId: string; score?: number; homeworkId?: number; practiceType?: 'SELF' | 'LESSON'; sessionId?: number }) => apiClient.post<{ saved: boolean; attemptId: number; score?: number | null; matchRate?: number | null }>('/api/v1/practice/attempts', body),

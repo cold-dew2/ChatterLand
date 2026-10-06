@@ -34,6 +34,8 @@ public class StudentController {
     @GetMapping("/practice/categories") public Object categories(@AuthenticationPrincipal TokenPrincipal principal) { return students.categories(principal); }
     @GetMapping("/practice/{categoryId}/exercises") public PageResponse<Map<String,Object>> exercises(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable String categoryId,
             @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size) { return students.exercises(principal,categoryId,page,size); }
+    @GetMapping("/practice/{categoryId}/practiced") public PageResponse<Map<String,Object>> practiced(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable String categoryId,
+            @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") int size) { return students.practicedExercises(principal,categoryId,page,size); }
     @PostMapping("/practice/attempts") public Map<String,Object> attempt(@AuthenticationPrincipal TokenPrincipal principal,@Valid @RequestBody AttemptRequest request) { return students.saveAttempt(principal,request); }
     @PostMapping(value="/speech/analyze",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
     public Map<String,Object> analyze(@AuthenticationPrincipal TokenPrincipal principal,@RequestPart("audio") MultipartFile audio,

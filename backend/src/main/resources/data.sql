@@ -1366,3 +1366,5592 @@ INSERT IGNORE INTO exercise_items (exercise_id,text_value,sort_order) VALUES
 (1245,'할아버지께서 옛날 신라 이야기를 들려주셨어요.',1),
 (1245,'목요일마다 박물관에서 열리는 수업에 참여해요.',2),
 (1245,'추운 겨울에는 따뜻한 국물이 생각나요.',3);
+
+-- 발음 추가 세트(음절·모음·비슷한 소리 구별)와 어휘력·유창성·표현력·이해력 세트. 영역별 고정 ID(2001~/3001~/4001~/5001~/6001~).
+-- INSERT IGNORE: 이미 있는 행은 덮어쓰지 않고, 여러 번 실행해도 중복되지 않는다.
+INSERT IGNORE INTO exercises (exercise_id,category_id,title,instruction,input_type,target_phonemes,sort_order,difficulty,content_type,pronunciation_rule) VALUES
+(2001,'articulation','ㄱ 기본 모음 음절 · 가 거 고 구 그','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄱ',400,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2002,'articulation','ㄲ 기본 모음 음절 · 까 꺼 꼬 꾸 끄','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄲ',401,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2003,'articulation','ㄴ 기본 모음 음절 · 나 너 노 누 느','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄴ',402,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2004,'articulation','ㄷ 기본 모음 음절 · 다 더 도 두 드','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄷ',403,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2005,'articulation','ㄸ 기본 모음 음절 · 따 떠 또 뚜 뜨','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄸ',404,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2006,'articulation','ㄹ 기본 모음 음절 · 라 러 로 루 르','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄹ',405,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2007,'articulation','ㅁ 기본 모음 음절 · 마 머 모 무 므','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅁ',406,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2008,'articulation','ㅂ 기본 모음 음절 · 바 버 보 부 브','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅂ',407,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2009,'articulation','ㅃ 기본 모음 음절 · 빠 뻐 뽀 뿌 쁘','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅃ',408,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2010,'articulation','ㅅ 기본 모음 음절 · 사 서 소 수 스','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅅ',409,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2011,'articulation','ㅆ 기본 모음 음절 · 싸 써 쏘 쑤 쓰','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅆ',410,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2012,'articulation','ㅈ 기본 모음 음절 · 자 저 조 주 즈','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅈ',411,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2013,'articulation','ㅉ 기본 모음 음절 · 짜 쩌 쪼 쭈 쯔','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅉ',412,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2014,'articulation','ㅊ 기본 모음 음절 · 차 처 초 추 츠','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅊ',413,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2015,'articulation','ㅋ 기본 모음 음절 · 카 커 코 쿠 크','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅋ',414,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2016,'articulation','ㅌ 기본 모음 음절 · 타 터 토 투 트','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅌ',415,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2017,'articulation','ㅍ 기본 모음 음절 · 파 퍼 포 푸 프','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅍ',416,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2018,'articulation','ㅎ 기본 모음 음절 · 하 허 호 후 흐','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅎ',417,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2019,'articulation','ㄱ ㅣ 모음 음절 · 기 개 게 괴 귀','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄱ',418,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2020,'articulation','ㄲ ㅣ 모음 음절 · 끼 깨 께 꾀 뀌','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄲ',419,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2021,'articulation','ㄴ ㅣ 모음 음절 · 니 내 네 뇌 뉘','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄴ',420,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2022,'articulation','ㄷ ㅣ 모음 음절 · 디 대 데 되 뒤','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄷ',421,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2023,'articulation','ㄸ ㅣ 모음 음절 · 띠 때 떼 뙤 뛰','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄸ',422,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2024,'articulation','ㄹ ㅣ 모음 음절 · 리 래 레 뢰 뤼','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄹ',423,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2025,'articulation','ㅁ ㅣ 모음 음절 · 미 매 메 뫼 뮈','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅁ',424,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2026,'articulation','ㅂ ㅣ 모음 음절 · 비 배 베 뵈 뷔','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅂ',425,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2027,'articulation','ㅃ ㅣ 모음 음절 · 삐 빼 뻬 뾔 쀠','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅃ',426,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2028,'articulation','ㅅ ㅣ 모음 음절 · 시 새 세 쇠 쉬','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅅ',427,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2029,'articulation','ㅆ ㅣ 모음 음절 · 씨 쌔 쎄 쐬 쒸','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅆ',428,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2030,'articulation','ㅈ ㅣ 모음 음절 · 지 재 제 죄 쥐','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅈ',429,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2031,'articulation','ㅉ ㅣ 모음 음절 · 찌 째 쩨 쬐 쮜','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅉ',430,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2032,'articulation','ㅊ ㅣ 모음 음절 · 치 채 체 최 취','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅊ',431,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2033,'articulation','ㅋ ㅣ 모음 음절 · 키 캐 케 쾨 퀴','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅋ',432,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2034,'articulation','ㅌ ㅣ 모음 음절 · 티 태 테 퇴 튀','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅌ',433,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2035,'articulation','ㅍ ㅣ 모음 음절 · 피 패 페 푀 퓌','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅍ',434,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2036,'articulation','ㅎ ㅣ 모음 음절 · 히 해 헤 회 휘','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅎ',435,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2037,'articulation','ㄱ 이중 모음 음절 · 갸 겨 교 규 과','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄱ',436,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2038,'articulation','ㄲ 이중 모음 음절 · 꺄 껴 꾜 뀨 꽈','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄲ',437,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2039,'articulation','ㄴ 이중 모음 음절 · 냐 녀 뇨 뉴 놔','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄴ',438,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2040,'articulation','ㄷ 이중 모음 음절 · 댜 뎌 됴 듀 돠','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄷ',439,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2041,'articulation','ㄸ 이중 모음 음절 · 땨 뗘 뚀 뜌 똬','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄸ',440,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2042,'articulation','ㄹ 이중 모음 음절 · 랴 려 료 류 롸','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄹ',441,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2043,'articulation','ㅁ 이중 모음 음절 · 먀 며 묘 뮤 뫄','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅁ',442,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2044,'articulation','ㅂ 이중 모음 음절 · 뱌 벼 뵤 뷰 봐','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅂ',443,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2045,'articulation','ㅃ 이중 모음 음절 · 뺘 뼈 뾰 쀼 뽜','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅃ',444,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2046,'articulation','ㅅ 이중 모음 음절 · 샤 셔 쇼 슈 솨','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅅ',445,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2047,'articulation','ㅆ 이중 모음 음절 · 쌰 쎠 쑈 쓔 쏴','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅆ',446,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2048,'articulation','ㅈ 이중 모음 음절 · 쟈 져 죠 쥬 좌','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅈ',447,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2049,'articulation','ㅉ 이중 모음 음절 · 쨔 쪄 쬬 쮸 쫘','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅉ',448,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2050,'articulation','ㅊ 이중 모음 음절 · 챠 쳐 쵸 츄 촤','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅊ',449,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2051,'articulation','ㅋ 이중 모음 음절 · 캬 켜 쿄 큐 콰','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅋ',450,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2052,'articulation','ㅌ 이중 모음 음절 · 탸 텨 툐 튜 톼','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅌ',451,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2053,'articulation','ㅍ 이중 모음 음절 · 퍄 펴 표 퓨 퐈','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅍ',452,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2054,'articulation','ㅎ 이중 모음 음절 · 햐 혀 효 휴 화','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅎ',453,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2055,'articulation','ㄱ 받침 음절 · 각 간 갈 감 강','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄱ',454,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2056,'articulation','ㄲ 받침 음절 · 깍 깐 깔 깜 깡','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄲ',455,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2057,'articulation','ㄴ 받침 음절 · 낙 난 날 남 낭','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄴ',456,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2058,'articulation','ㄷ 받침 음절 · 닥 단 달 담 당','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄷ',457,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2059,'articulation','ㄸ 받침 음절 · 딱 딴 딸 땀 땅','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄸ',458,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2060,'articulation','ㄹ 받침 음절 · 락 란 랄 람 랑','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㄹ',459,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2061,'articulation','ㅁ 받침 음절 · 막 만 말 맘 망','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅁ',460,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2062,'articulation','ㅂ 받침 음절 · 박 반 발 밤 방','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅂ',461,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2063,'articulation','ㅃ 받침 음절 · 빡 빤 빨 빰 빵','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅃ',462,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2064,'articulation','ㅅ 받침 음절 · 삭 산 살 삼 상','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅅ',463,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2065,'articulation','ㅆ 받침 음절 · 싹 싼 쌀 쌈 쌍','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅆ',464,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2066,'articulation','ㅈ 받침 음절 · 작 잔 잘 잠 장','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅈ',465,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2067,'articulation','ㅉ 받침 음절 · 짝 짠 짤 짬 짱','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅉ',466,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2068,'articulation','ㅊ 받침 음절 · 착 찬 찰 참 창','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅊ',467,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2069,'articulation','ㅋ 받침 음절 · 칵 칸 칼 캄 캉','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅋ',468,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2070,'articulation','ㅌ 받침 음절 · 탁 탄 탈 탐 탕','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅌ',469,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2071,'articulation','ㅍ 받침 음절 · 팍 판 팔 팜 팡','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅍ',470,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2072,'articulation','ㅎ 받침 음절 · 학 한 할 함 항','음절을 하나씩 또박또박 따라 말해 보세요.','mic','ㅎ',471,'BEGINNER','WORD','BASIC_CONSONANT'),
+(2073,'articulation','ㅏ 모음 음절 · 아 가 나 마 바','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,472,'BEGINNER','WORD','BASIC_VOWEL'),
+(2074,'articulation','ㅓ 모음 음절 · 어 거 너 머 버','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,473,'BEGINNER','WORD','BASIC_VOWEL'),
+(2075,'articulation','ㅗ 모음 음절 · 오 고 노 모 보','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,474,'BEGINNER','WORD','BASIC_VOWEL'),
+(2076,'articulation','ㅜ 모음 음절 · 우 구 누 무 부','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,475,'BEGINNER','WORD','BASIC_VOWEL'),
+(2077,'articulation','ㅡ 모음 음절 · 으 그 느 므 브','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,476,'BEGINNER','WORD','BASIC_VOWEL'),
+(2078,'articulation','ㅣ 모음 음절 · 이 기 니 미 비','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,477,'BEGINNER','WORD','BASIC_VOWEL'),
+(2079,'articulation','ㅐ 모음 음절 · 애 개 내 매 배','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,478,'BEGINNER','WORD','BASIC_VOWEL'),
+(2080,'articulation','ㅔ 모음 음절 · 에 게 네 메 베','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,479,'BEGINNER','WORD','BASIC_VOWEL'),
+(2081,'articulation','ㅑ 모음 음절 · 야 갸 냐 먀 뱌','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,480,'BEGINNER','WORD','BASIC_VOWEL'),
+(2082,'articulation','ㅕ 모음 음절 · 여 겨 녀 며 벼','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,481,'BEGINNER','WORD','BASIC_VOWEL'),
+(2083,'articulation','ㅛ 모음 음절 · 요 교 뇨 묘 뵤','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,482,'BEGINNER','WORD','BASIC_VOWEL'),
+(2084,'articulation','ㅠ 모음 음절 · 유 규 뉴 뮤 뷰','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,483,'BEGINNER','WORD','BASIC_VOWEL'),
+(2085,'articulation','ㅘ 모음 음절 · 와 과 놔 뫄 봐','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,484,'BEGINNER','WORD','BASIC_VOWEL'),
+(2086,'articulation','ㅝ 모음 음절 · 워 궈 눠 뭐 붜','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,485,'BEGINNER','WORD','BASIC_VOWEL'),
+(2087,'articulation','ㅚ 모음 음절 · 외 괴 뇌 뫼 뵈','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,486,'BEGINNER','WORD','BASIC_VOWEL'),
+(2088,'articulation','ㅟ 모음 음절 · 위 귀 뉘 뮈 뷔','입 모양에 집중하며 음절을 하나씩 따라 말해 보세요.','mic',NULL,487,'BEGINNER','WORD','BASIC_VOWEL'),
+(2089,'articulation','ㅂ·ㅃ·ㅍ 구별 · 불 뿔 풀 발 팔','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㅂ',488,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2090,'articulation','ㄷ·ㄸ·ㅌ 구별 · 달 딸 탈 담 땀','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㄷ',489,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2091,'articulation','ㄱ·ㄲ·ㅋ 구별 · 굴 꿀 공 콩 개','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㄱ',490,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2092,'articulation','ㅈ·ㅉ·ㅊ 구별 · 자다 짜다 차다 종 총','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㅈ',491,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2093,'articulation','ㅅ·ㅆ 구별 · 살 쌀 사다 싸다 시','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㅅ',492,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2094,'articulation','ㄹ·ㄴ 구별 · 라면 나무 레몬 네모 로봇','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㄹ',493,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2095,'articulation','ㅁ·ㅂ 구별 · 말 발 물 불 목','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㅁ',494,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2096,'articulation','ㅎ·ㄱ 구별 · 해 개 호수 고추 하마','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㅎ',495,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2097,'articulation','ㄲ·ㄱ 낱말 구별 · 꿈 굼벵이 꼬리 고리 깨','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㄲ',496,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2098,'articulation','ㄸ·ㄷ 낱말 구별 · 떡 덕 뜰 들 똑','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㄸ',497,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2099,'articulation','ㅃ·ㅂ 낱말 구별 · 빵 방 뼈 벼 뿌리','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㅃ',498,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2100,'articulation','ㅆ·ㅅ 낱말 구별 · 쓰다 서다 씨 시소 쑥','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㅆ',499,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2101,'articulation','ㅉ·ㅈ 낱말 구별 · 짝 작다 찌개 지게 쪽','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㅉ',500,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2102,'articulation','ㅊ·ㅈ 낱말 구별 · 차 자 춤 줌 침','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㅊ',501,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2103,'articulation','ㅋ·ㄱ 낱말 구별 · 키 기 컵 겁 칼','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㅋ',502,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2104,'articulation','ㅌ·ㄷ 낱말 구별 · 탑 답 통 동 털','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㅌ',503,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2105,'articulation','ㅍ·ㅂ 낱말 구별 · 파 바 포도 보도 피','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㅍ',504,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2106,'articulation','ㄴ·ㄷ 낱말 구별 · 나리 다리 누나 두부 노래','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㄴ',505,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2107,'articulation','ㄹ·ㄷ 낱말 구별 · 라디오 다리미 로켓 도토리 리본','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㄹ',506,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(2108,'articulation','ㅅ·ㅈ 낱말 구별 · 사과 자두 소 조개 수박','비슷한 소리를 구별하며 낱말을 또박또박 말해 보세요.','mic','ㅅ',507,'INTERMEDIATE','WORD','BASIC_CONSONANT'),
+(3001,'vocabulary','가족 · 엄마','뜻: 나를 낳고 길러 주시는 여자 어른이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,10,'BEGINNER','WORD',NULL),
+(3002,'vocabulary','가족 · 아빠','뜻: 나를 낳고 길러 주시는 남자 어른이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,11,'BEGINNER','WORD',NULL),
+(3003,'vocabulary','가족 · 할머니','뜻: 아빠나 엄마의 어머니예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,12,'BEGINNER','WORD',NULL),
+(3004,'vocabulary','가족 · 할아버지','뜻: 아빠나 엄마의 아버지예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,13,'BEGINNER','WORD',NULL),
+(3005,'vocabulary','가족 · 형','뜻: 남자가 나이 많은 남자 형제를 부르는 말이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,14,'BEGINNER','WORD',NULL),
+(3006,'vocabulary','가족 · 누나','뜻: 남자가 나이 많은 여자 형제를 부르는 말이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,15,'BEGINNER','WORD',NULL),
+(3007,'vocabulary','가족 · 오빠','뜻: 여자가 나이 많은 남자 형제를 부르는 말이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,16,'BEGINNER','WORD',NULL),
+(3008,'vocabulary','가족 · 언니','뜻: 여자가 나이 많은 여자 형제를 부르는 말이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,17,'BEGINNER','WORD',NULL),
+(3009,'vocabulary','가족 · 동생','뜻: 나보다 나이가 어린 형제예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,18,'BEGINNER','WORD',NULL),
+(3010,'vocabulary','가족 · 아기','뜻: 태어난 지 얼마 안 된 어린아이예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,19,'BEGINNER','WORD',NULL),
+(3011,'vocabulary','가족 · 삼촌','뜻: 아빠의 남자 형제를 부르는 말이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,20,'BEGINNER','WORD',NULL),
+(3012,'vocabulary','가족 · 이모','뜻: 엄마의 여자 형제예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,21,'BEGINNER','WORD',NULL),
+(3013,'vocabulary','가족 · 고모','뜻: 아빠의 여자 형제예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,22,'BEGINNER','WORD',NULL),
+(3014,'vocabulary','가족 · 사촌','뜻: 삼촌이나 이모의 아이예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,23,'BEGINNER','WORD',NULL),
+(3015,'vocabulary','가족 · 가족사진','뜻: 가족이 함께 찍은 사진이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,24,'BEGINNER','WORD',NULL),
+(3016,'vocabulary','가족 · 부모님','뜻: 아버지와 어머니를 함께 이르는 말이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,25,'BEGINNER','WORD',NULL),
+(3017,'vocabulary','가족 · 쌍둥이','뜻: 한 번에 함께 태어난 두 아이예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,26,'BEGINNER','WORD',NULL),
+(3018,'vocabulary','가족 · 손자','뜻: 아들이나 딸의 아들이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,27,'BEGINNER','WORD',NULL),
+(3019,'vocabulary','가족 · 명절','뜻: 설날이나 추석처럼 가족이 모이는 날이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,28,'BEGINNER','WORD',NULL),
+(3020,'vocabulary','가족 · 생일','뜻: 태어난 날이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,29,'BEGINNER','WORD',NULL),
+(3021,'vocabulary','학교 · 교실','뜻: 학생들이 모여 공부하는 방이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,30,'BEGINNER','WORD',NULL),
+(3022,'vocabulary','학교 · 선생님','뜻: 학생들을 가르치는 분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,31,'BEGINNER','WORD',NULL),
+(3023,'vocabulary','학교 · 칠판','뜻: 선생님이 글씨를 쓰는 넓은 판이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,32,'BEGINNER','WORD',NULL),
+(3024,'vocabulary','학교 · 공책','뜻: 글씨를 쓰는 종이 묶음이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,33,'BEGINNER','WORD',NULL),
+(3025,'vocabulary','학교 · 연필','뜻: 글씨를 쓰는 나무 막대예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,34,'BEGINNER','WORD',NULL),
+(3026,'vocabulary','학교 · 지우개','뜻: 잘못 쓴 글씨를 지우는 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,35,'BEGINNER','WORD',NULL),
+(3027,'vocabulary','학교 · 필통','뜻: 연필과 지우개를 넣는 통이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,36,'BEGINNER','WORD',NULL),
+(3028,'vocabulary','학교 · 가방','뜻: 물건을 넣어 메고 다니는 주머니예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,37,'BEGINNER','WORD',NULL),
+(3029,'vocabulary','학교 · 급식','뜻: 학교에서 다 같이 먹는 점심이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,38,'BEGINNER','WORD',NULL),
+(3030,'vocabulary','학교 · 운동장','뜻: 학교에서 뛰어노는 넓은 마당이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,39,'BEGINNER','WORD',NULL),
+(3031,'vocabulary','학교 · 도서실','뜻: 책을 읽고 빌리는 방이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,40,'BEGINNER','WORD',NULL),
+(3032,'vocabulary','학교 · 숙제','뜻: 집에서 해 오는 공부예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,41,'BEGINNER','WORD',NULL),
+(3033,'vocabulary','학교 · 시간표','뜻: 요일마다 배우는 과목을 적은 표예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,42,'BEGINNER','WORD',NULL),
+(3034,'vocabulary','학교 · 짝꿍','뜻: 옆자리에 앉는 친구예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,43,'BEGINNER','WORD',NULL),
+(3035,'vocabulary','학교 · 쉬는 시간','뜻: 수업과 수업 사이에 쉬는 시간이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,44,'BEGINNER','WORD',NULL),
+(3036,'vocabulary','학교 · 받아쓰기','뜻: 불러 주는 말을 듣고 글로 쓰는 공부예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,45,'BEGINNER','WORD',NULL),
+(3037,'vocabulary','학교 · 교과서','뜻: 수업 시간에 배우는 책이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,46,'BEGINNER','WORD',NULL),
+(3038,'vocabulary','학교 · 실내화','뜻: 건물 안에서 신는 신발이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,47,'BEGINNER','WORD',NULL),
+(3039,'vocabulary','학교 · 방학','뜻: 학교에 가지 않고 쉬는 긴 기간이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,48,'BEGINNER','WORD',NULL),
+(3040,'vocabulary','학교 · 알림장','뜻: 선생님 말씀을 적어 오는 공책이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,49,'BEGINNER','WORD',NULL),
+(3041,'vocabulary','음식 · 밥','뜻: 쌀을 익혀서 만든 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,50,'BEGINNER','WORD',NULL),
+(3042,'vocabulary','음식 · 국','뜻: 국물이 많은 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,51,'BEGINNER','WORD',NULL),
+(3043,'vocabulary','음식 · 김치','뜻: 배추에 양념을 버무려 만든 반찬이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,52,'BEGINNER','WORD',NULL),
+(3044,'vocabulary','음식 · 라면','뜻: 꼬불꼬불한 면을 끓여 먹는 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,53,'BEGINNER','WORD',NULL),
+(3045,'vocabulary','음식 · 김밥','뜻: 김에 밥과 재료를 넣고 말아 만든 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,54,'BEGINNER','WORD',NULL),
+(3046,'vocabulary','음식 · 떡볶이','뜻: 떡을 빨간 양념에 볶은 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,55,'BEGINNER','WORD',NULL),
+(3047,'vocabulary','음식 · 만두','뜻: 밀가루 피에 소를 넣어 빚은 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,56,'BEGINNER','WORD',NULL),
+(3048,'vocabulary','음식 · 빵','뜻: 밀가루를 부풀려 구운 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,57,'BEGINNER','WORD',NULL),
+(3049,'vocabulary','음식 · 우유','뜻: 소에게서 짠 하얀 음료예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,58,'BEGINNER','WORD',NULL),
+(3050,'vocabulary','음식 · 달걀','뜻: 닭이 낳은 알이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,59,'BEGINNER','WORD',NULL),
+(3051,'vocabulary','음식 · 치킨','뜻: 닭고기를 튀긴 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,60,'BEGINNER','WORD',NULL),
+(3052,'vocabulary','음식 · 피자','뜻: 둥근 빵 위에 치즈를 올려 구운 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,61,'BEGINNER','WORD',NULL),
+(3053,'vocabulary','음식 · 국수','뜻: 가늘고 긴 면을 삶은 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,62,'BEGINNER','WORD',NULL),
+(3054,'vocabulary','음식 · 죽','뜻: 쌀을 오래 끓여 부드럽게 만든 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,63,'BEGINNER','WORD',NULL),
+(3055,'vocabulary','음식 · 반찬','뜻: 밥과 함께 먹는 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,64,'BEGINNER','WORD',NULL),
+(3056,'vocabulary','음식 · 간식','뜻: 식사 사이에 먹는 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,65,'BEGINNER','WORD',NULL),
+(3057,'vocabulary','음식 · 아이스크림','뜻: 얼려서 먹는 달콤한 간식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,66,'BEGINNER','WORD',NULL),
+(3058,'vocabulary','음식 · 주스','뜻: 과일을 짜서 만든 음료예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,67,'BEGINNER','WORD',NULL),
+(3059,'vocabulary','음식 · 도시락','뜻: 밖에서 먹으려고 담아 가는 밥이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,68,'BEGINNER','WORD',NULL),
+(3060,'vocabulary','음식 · 비빔밥','뜻: 밥에 나물과 고추장을 넣고 비빈 음식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,69,'BEGINNER','WORD',NULL),
+(3061,'vocabulary','과일과 채소 · 사과','뜻: 빨갛고 둥근 과일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,70,'BEGINNER','WORD',NULL),
+(3062,'vocabulary','과일과 채소 · 바나나','뜻: 길고 노란 껍질을 벗겨 먹는 과일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,71,'BEGINNER','WORD',NULL),
+(3063,'vocabulary','과일과 채소 · 포도','뜻: 작은 알이 송이로 달린 과일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,72,'BEGINNER','WORD',NULL),
+(3064,'vocabulary','과일과 채소 · 딸기','뜻: 빨갛고 씨가 겉에 박힌 과일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,73,'BEGINNER','WORD',NULL),
+(3065,'vocabulary','과일과 채소 · 수박','뜻: 겉은 초록색이고 속은 빨간 큰 과일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,74,'BEGINNER','WORD',NULL),
+(3066,'vocabulary','과일과 채소 · 귤','뜻: 껍질을 손으로 까는 주황색 과일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,75,'BEGINNER','WORD',NULL),
+(3067,'vocabulary','과일과 채소 · 배','뜻: 물이 많고 아삭한 둥근 과일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,76,'BEGINNER','WORD',NULL),
+(3068,'vocabulary','과일과 채소 · 복숭아','뜻: 껍질에 보송보송한 털이 있는 과일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,77,'BEGINNER','WORD',NULL),
+(3069,'vocabulary','과일과 채소 · 참외','뜻: 노란 껍질에 줄무늬가 있는 과일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,78,'BEGINNER','WORD',NULL),
+(3070,'vocabulary','과일과 채소 · 감','뜻: 가을에 열리는 주황색 과일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,79,'BEGINNER','WORD',NULL),
+(3071,'vocabulary','과일과 채소 · 당근','뜻: 주황색이고 땅속에서 자라는 채소예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,80,'BEGINNER','WORD',NULL),
+(3072,'vocabulary','과일과 채소 · 오이','뜻: 초록색이고 길쭉한 채소예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,81,'BEGINNER','WORD',NULL),
+(3073,'vocabulary','과일과 채소 · 감자','뜻: 땅속에서 자라는 둥근 채소예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,82,'BEGINNER','WORD',NULL),
+(3074,'vocabulary','과일과 채소 · 고구마','뜻: 껍질이 보라색이고 속이 노란 채소예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,83,'BEGINNER','WORD',NULL),
+(3075,'vocabulary','과일과 채소 · 양파','뜻: 썰면 눈물이 나는 채소예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,84,'BEGINNER','WORD',NULL),
+(3076,'vocabulary','과일과 채소 · 배추','뜻: 김치를 담그는 잎채소예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,85,'BEGINNER','WORD',NULL),
+(3077,'vocabulary','과일과 채소 · 토마토','뜻: 빨갛고 즙이 많은 채소예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,86,'BEGINNER','WORD',NULL),
+(3078,'vocabulary','과일과 채소 · 옥수수','뜻: 노란 알갱이가 줄지어 박힌 채소예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,87,'BEGINNER','WORD',NULL),
+(3079,'vocabulary','과일과 채소 · 버섯','뜻: 그늘에서 자라는 우산 모양 식물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,88,'BEGINNER','WORD',NULL),
+(3080,'vocabulary','과일과 채소 · 호박','뜻: 크고 둥근 노란 채소예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,89,'BEGINNER','WORD',NULL),
+(3081,'vocabulary','장소 · 집','뜻: 가족이 함께 사는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,90,'BEGINNER','WORD',NULL),
+(3082,'vocabulary','장소 · 병원','뜻: 아플 때 치료를 받는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,91,'BEGINNER','WORD',NULL),
+(3083,'vocabulary','장소 · 약국','뜻: 약을 파는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,92,'BEGINNER','WORD',NULL),
+(3084,'vocabulary','장소 · 시장','뜻: 여러 가지 물건을 사고파는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,93,'BEGINNER','WORD',NULL),
+(3085,'vocabulary','장소 · 마트','뜻: 음식과 물건을 한곳에서 파는 큰 가게예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,94,'BEGINNER','WORD',NULL),
+(3086,'vocabulary','장소 · 공원','뜻: 나무가 많고 산책하는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,95,'BEGINNER','WORD',NULL),
+(3087,'vocabulary','장소 · 놀이터','뜻: 미끄럼틀과 그네가 있는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,96,'BEGINNER','WORD',NULL),
+(3088,'vocabulary','장소 · 도서관','뜻: 책을 읽고 빌리는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,97,'BEGINNER','WORD',NULL),
+(3089,'vocabulary','장소 · 은행','뜻: 돈을 맡기거나 찾는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,98,'BEGINNER','WORD',NULL),
+(3090,'vocabulary','장소 · 우체국','뜻: 편지와 소포를 보내는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,99,'BEGINNER','WORD',NULL),
+(3091,'vocabulary','장소 · 경찰서','뜻: 경찰관이 일하는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,100,'BEGINNER','WORD',NULL),
+(3092,'vocabulary','장소 · 소방서','뜻: 소방관이 일하는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,101,'BEGINNER','WORD',NULL);
+INSERT IGNORE INTO exercises (exercise_id,category_id,title,instruction,input_type,target_phonemes,sort_order,difficulty,content_type,pronunciation_rule) VALUES
+(3093,'vocabulary','장소 · 수영장','뜻: 물에서 헤엄치는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,102,'BEGINNER','WORD',NULL),
+(3094,'vocabulary','장소 · 미용실','뜻: 머리를 자르는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,103,'BEGINNER','WORD',NULL),
+(3095,'vocabulary','장소 · 식당','뜻: 음식을 사 먹는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,104,'BEGINNER','WORD',NULL),
+(3096,'vocabulary','장소 · 동물원','뜻: 여러 동물을 구경하는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,105,'BEGINNER','WORD',NULL),
+(3097,'vocabulary','장소 · 박물관','뜻: 옛날 물건을 모아 보여 주는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,106,'BEGINNER','WORD',NULL),
+(3098,'vocabulary','장소 · 치과','뜻: 이를 치료하는 병원이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,107,'BEGINNER','WORD',NULL),
+(3099,'vocabulary','장소 · 빵집','뜻: 빵을 만들어 파는 가게예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,108,'BEGINNER','WORD',NULL),
+(3100,'vocabulary','장소 · 영화관','뜻: 큰 화면으로 영화를 보는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,109,'BEGINNER','WORD',NULL),
+(3101,'vocabulary','교통 · 버스','뜻: 많은 사람이 함께 타는 큰 차예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,110,'BEGINNER','WORD',NULL),
+(3102,'vocabulary','교통 · 지하철','뜻: 땅속으로 다니는 기차예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,111,'BEGINNER','WORD',NULL),
+(3103,'vocabulary','교통 · 기차','뜻: 선로 위를 달리는 긴 차예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,112,'BEGINNER','WORD',NULL),
+(3104,'vocabulary','교통 · 비행기','뜻: 하늘을 나는 탈것이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,113,'BEGINNER','WORD',NULL),
+(3105,'vocabulary','교통 · 배','뜻: 물 위를 다니는 탈것이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,114,'BEGINNER','WORD',NULL),
+(3106,'vocabulary','교통 · 자전거','뜻: 두 바퀴를 발로 굴려 타는 탈것이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,115,'BEGINNER','WORD',NULL),
+(3107,'vocabulary','교통 · 택시','뜻: 돈을 내고 원하는 곳까지 타는 차예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,116,'BEGINNER','WORD',NULL),
+(3108,'vocabulary','교통 · 트럭','뜻: 짐을 싣고 다니는 큰 차예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,117,'BEGINNER','WORD',NULL),
+(3109,'vocabulary','교통 · 구급차','뜻: 아픈 사람을 병원으로 옮기는 차예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,118,'BEGINNER','WORD',NULL),
+(3110,'vocabulary','교통 · 신호등','뜻: 길을 건널 때 보는 빛 신호예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,119,'BEGINNER','WORD',NULL),
+(3111,'vocabulary','교통 · 횡단보도','뜻: 사람이 길을 건너는 하얀 줄무늬 길이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,120,'BEGINNER','WORD',NULL),
+(3112,'vocabulary','교통 · 정류장','뜻: 버스를 타고 내리는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,121,'BEGINNER','WORD',NULL),
+(3113,'vocabulary','교통 · 헬리콥터','뜻: 날개가 위에서 빙빙 도는 탈것이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,122,'BEGINNER','WORD',NULL),
+(3114,'vocabulary','교통 · 오토바이','뜻: 두 바퀴에 엔진이 달린 탈것이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,123,'BEGINNER','WORD',NULL),
+(3115,'vocabulary','교통 · 킥보드','뜻: 한 발로 밀며 타는 탈것이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,124,'BEGINNER','WORD',NULL),
+(3116,'vocabulary','교통 · 안전벨트','뜻: 차에 탈 때 몸을 고정하는 띠예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,125,'BEGINNER','WORD',NULL),
+(3117,'vocabulary','교통 · 도로','뜻: 차가 다니는 길이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,126,'BEGINNER','WORD',NULL),
+(3118,'vocabulary','교통 · 다리','뜻: 강이나 물 위를 건너게 만든 길이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,127,'BEGINNER','WORD',NULL),
+(3119,'vocabulary','교통 · 터널','뜻: 산이나 땅속을 뚫어 만든 길이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,128,'BEGINNER','WORD',NULL),
+(3120,'vocabulary','교통 · 주차장','뜻: 차를 세워 두는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,129,'BEGINNER','WORD',NULL),
+(3121,'vocabulary','날씨 · 맑음','뜻: 구름 없이 해가 쨍한 날씨예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,130,'BEGINNER','WORD',NULL),
+(3122,'vocabulary','날씨 · 비','뜻: 하늘에서 떨어지는 물방울이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,131,'BEGINNER','WORD',NULL),
+(3123,'vocabulary','날씨 · 눈','뜻: 추운 날 하늘에서 내리는 하얀 얼음 알갱이예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,132,'BEGINNER','WORD',NULL),
+(3124,'vocabulary','날씨 · 바람','뜻: 공기가 움직이는 것이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,133,'BEGINNER','WORD',NULL),
+(3125,'vocabulary','날씨 · 구름','뜻: 하늘에 떠 있는 하얀 덩어리예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,134,'BEGINNER','WORD',NULL),
+(3126,'vocabulary','날씨 · 천둥','뜻: 비 오는 날 하늘에서 나는 큰 소리예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,135,'BEGINNER','WORD',NULL),
+(3127,'vocabulary','날씨 · 번개','뜻: 하늘에서 번쩍이는 빛이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,136,'BEGINNER','WORD',NULL),
+(3128,'vocabulary','날씨 · 무지개','뜻: 비가 그친 뒤 하늘에 뜨는 일곱 빛깔 띠예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,137,'BEGINNER','WORD',NULL),
+(3129,'vocabulary','날씨 · 안개','뜻: 땅 가까이 낀 뿌연 김이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,138,'BEGINNER','WORD',NULL),
+(3130,'vocabulary','날씨 · 태풍','뜻: 아주 센 바람과 비가 오는 날씨예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,139,'BEGINNER','WORD',NULL),
+(3131,'vocabulary','날씨 · 소나기','뜻: 갑자기 쏟아졌다 그치는 비예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,140,'BEGINNER','WORD',NULL),
+(3132,'vocabulary','날씨 · 더위','뜻: 날씨가 더운 것이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,141,'BEGINNER','WORD',NULL),
+(3133,'vocabulary','날씨 · 추위','뜻: 날씨가 추운 것이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,142,'BEGINNER','WORD',NULL),
+(3134,'vocabulary','날씨 · 일기 예보','뜻: 내일 날씨를 미리 알려 주는 방송이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,143,'BEGINNER','WORD',NULL),
+(3135,'vocabulary','날씨 · 기온','뜻: 공기가 따뜻하고 차가운 정도예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,144,'BEGINNER','WORD',NULL),
+(3136,'vocabulary','날씨 · 햇볕','뜻: 해가 비추는 따뜻한 빛이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,145,'BEGINNER','WORD',NULL),
+(3137,'vocabulary','날씨 · 우산','뜻: 비를 막으려고 펴서 쓰는 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,146,'BEGINNER','WORD',NULL),
+(3138,'vocabulary','날씨 · 장화','뜻: 비 오는 날 신는 긴 신발이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,147,'BEGINNER','WORD',NULL),
+(3139,'vocabulary','날씨 · 황사','뜻: 바람에 날려 오는 누런 먼지예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,148,'BEGINNER','WORD',NULL),
+(3140,'vocabulary','날씨 · 서리','뜻: 추운 아침 풀잎에 맺히는 하얀 얼음이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,149,'BEGINNER','WORD',NULL),
+(3141,'vocabulary','감정 · 기쁘다','뜻: 좋은 일이 있어 마음이 즐거워요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,150,'INTERMEDIATE','WORD',NULL),
+(3142,'vocabulary','감정 · 슬프다','뜻: 마음이 아프고 눈물이 나요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,151,'INTERMEDIATE','WORD',NULL),
+(3143,'vocabulary','감정 · 화나다','뜻: 마음에 들지 않아 화가 치밀어요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,152,'INTERMEDIATE','WORD',NULL),
+(3144,'vocabulary','감정 · 무섭다','뜻: 겁이 나서 떨려요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,153,'INTERMEDIATE','WORD',NULL),
+(3145,'vocabulary','감정 · 놀라다','뜻: 갑자기 일어난 일에 깜짝해요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,154,'INTERMEDIATE','WORD',NULL),
+(3146,'vocabulary','감정 · 부끄럽다','뜻: 남 앞에서 얼굴이 빨개져요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,155,'INTERMEDIATE','WORD',NULL),
+(3147,'vocabulary','감정 · 신나다','뜻: 흥이 나서 들떠요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,156,'INTERMEDIATE','WORD',NULL),
+(3148,'vocabulary','감정 · 걱정되다','뜻: 좋지 않은 일이 생길까 마음이 쓰여요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,157,'INTERMEDIATE','WORD',NULL),
+(3149,'vocabulary','감정 · 속상하다','뜻: 일이 잘 안 돼서 마음이 아파요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,158,'INTERMEDIATE','WORD',NULL),
+(3150,'vocabulary','감정 · 외롭다','뜻: 혼자라서 쓸쓸해요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,159,'INTERMEDIATE','WORD',NULL),
+(3151,'vocabulary','감정 · 뿌듯하다','뜻: 해낸 일이 자랑스러워요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,160,'INTERMEDIATE','WORD',NULL),
+(3152,'vocabulary','감정 · 심심하다','뜻: 할 일이 없어 지루해요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,161,'INTERMEDIATE','WORD',NULL),
+(3153,'vocabulary','감정 · 편안하다','뜻: 걱정 없이 마음이 놓여요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,162,'INTERMEDIATE','WORD',NULL),
+(3154,'vocabulary','감정 · 고맙다','뜻: 남이 베푼 도움이 감사해요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,163,'INTERMEDIATE','WORD',NULL),
+(3155,'vocabulary','감정 · 미안하다','뜻: 잘못해서 마음이 불편해요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,164,'INTERMEDIATE','WORD',NULL),
+(3156,'vocabulary','감정 · 설레다','뜻: 좋은 일을 앞두고 두근거려요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,165,'INTERMEDIATE','WORD',NULL),
+(3157,'vocabulary','감정 · 긴장되다','뜻: 마음이 조마조마해요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,166,'INTERMEDIATE','WORD',NULL),
+(3158,'vocabulary','감정 · 샘나다','뜻: 남이 가진 것이 부러워 시샘해요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,167,'INTERMEDIATE','WORD',NULL),
+(3159,'vocabulary','감정 · 억울하다','뜻: 잘못하지 않았는데 혼나서 답답해요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,168,'INTERMEDIATE','WORD',NULL),
+(3160,'vocabulary','감정 · 그립다','뜻: 보고 싶어서 마음이 애틋해요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,169,'INTERMEDIATE','WORD',NULL),
+(3161,'vocabulary','행동 · 먹다','뜻: 음식을 입에 넣고 삼켜요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,170,'INTERMEDIATE','WORD',NULL),
+(3162,'vocabulary','행동 · 마시다','뜻: 물 같은 것을 목으로 넘겨요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,171,'INTERMEDIATE','WORD',NULL),
+(3163,'vocabulary','행동 · 자다','뜻: 눈을 감고 잠을 자요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,172,'INTERMEDIATE','WORD',NULL),
+(3164,'vocabulary','행동 · 씻다','뜻: 물로 깨끗하게 닦아요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,173,'INTERMEDIATE','WORD',NULL),
+(3165,'vocabulary','행동 · 걷다','뜻: 발을 번갈아 내디디며 가요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,174,'INTERMEDIATE','WORD',NULL),
+(3166,'vocabulary','행동 · 달리다','뜻: 아주 빠르게 뛰어가요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,175,'INTERMEDIATE','WORD',NULL),
+(3167,'vocabulary','행동 · 앉다','뜻: 엉덩이를 바닥이나 의자에 붙여요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,176,'INTERMEDIATE','WORD',NULL),
+(3168,'vocabulary','행동 · 서다','뜻: 두 발로 몸을 곧게 세워요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,177,'INTERMEDIATE','WORD',NULL),
+(3169,'vocabulary','행동 · 읽다','뜻: 글을 보고 소리 내거나 뜻을 알아요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,178,'INTERMEDIATE','WORD',NULL),
+(3170,'vocabulary','행동 · 쓰다','뜻: 글씨를 적어요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,179,'INTERMEDIATE','WORD',NULL),
+(3171,'vocabulary','행동 · 그리다','뜻: 연필이나 물감으로 그림을 만들어요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,180,'INTERMEDIATE','WORD',NULL),
+(3172,'vocabulary','행동 · 노래하다','뜻: 노래를 소리 내어 불러요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,181,'INTERMEDIATE','WORD',NULL),
+(3173,'vocabulary','행동 · 웃다','뜻: 기쁘거나 재미있어서 소리를 내요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,182,'INTERMEDIATE','WORD',NULL),
+(3174,'vocabulary','행동 · 울다','뜻: 슬퍼서 눈물을 흘려요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,183,'INTERMEDIATE','WORD',NULL),
+(3175,'vocabulary','행동 · 던지다','뜻: 손으로 물건을 멀리 보내요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,184,'INTERMEDIATE','WORD',NULL),
+(3176,'vocabulary','행동 · 받다','뜻: 주는 것을 손으로 잡아요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,185,'INTERMEDIATE','WORD',NULL),
+(3177,'vocabulary','행동 · 열다','뜻: 닫힌 것을 젖혀요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,186,'INTERMEDIATE','WORD',NULL),
+(3178,'vocabulary','행동 · 닫다','뜻: 열린 것을 막아요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,187,'INTERMEDIATE','WORD',NULL),
+(3179,'vocabulary','행동 · 돕다','뜻: 남의 일을 거들어 줘요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,188,'INTERMEDIATE','WORD',NULL),
+(3180,'vocabulary','행동 · 기다리다','뜻: 올 때까지 머물러 있어요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,189,'INTERMEDIATE','WORD',NULL),
+(3181,'vocabulary','생활용품 · 칫솔','뜻: 이를 닦는 솔이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,190,'BEGINNER','WORD',NULL),
+(3182,'vocabulary','생활용품 · 치약','뜻: 이를 닦을 때 쓰는 크림이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,191,'BEGINNER','WORD',NULL),
+(3183,'vocabulary','생활용품 · 수건','뜻: 몸이나 손의 물기를 닦는 천이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,192,'BEGINNER','WORD',NULL),
+(3184,'vocabulary','생활용품 · 비누','뜻: 거품을 내어 씻는 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,193,'BEGINNER','WORD',NULL),
+(3185,'vocabulary','생활용품 · 빗','뜻: 머리카락을 정리하는 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,194,'BEGINNER','WORD',NULL),
+(3186,'vocabulary','생활용품 · 거울','뜻: 모습을 비추어 보는 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,195,'BEGINNER','WORD',NULL),
+(3187,'vocabulary','생활용품 · 휴지','뜻: 코를 풀거나 닦는 얇은 종이예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,196,'BEGINNER','WORD',NULL),
+(3188,'vocabulary','생활용품 · 컵','뜻: 물을 담아 마시는 그릇이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,197,'BEGINNER','WORD',NULL),
+(3189,'vocabulary','생활용품 · 숟가락','뜻: 밥이나 국을 떠먹는 도구예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,198,'BEGINNER','WORD',NULL),
+(3190,'vocabulary','생활용품 · 젓가락','뜻: 반찬을 집는 두 개의 막대예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,199,'BEGINNER','WORD',NULL),
+(3191,'vocabulary','생활용품 · 접시','뜻: 음식을 담는 납작한 그릇이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,200,'BEGINNER','WORD',NULL),
+(3192,'vocabulary','생활용품 · 냄비','뜻: 음식을 끓이는 그릇이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,201,'BEGINNER','WORD',NULL),
+(3193,'vocabulary','생활용품 · 베개','뜻: 잘 때 머리를 받치는 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,202,'BEGINNER','WORD',NULL),
+(3194,'vocabulary','생활용품 · 이불','뜻: 잘 때 덮는 두꺼운 천이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,203,'BEGINNER','WORD',NULL),
+(3195,'vocabulary','생활용품 · 시계','뜻: 시간을 알려 주는 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,204,'BEGINNER','WORD',NULL),
+(3196,'vocabulary','생활용품 · 가위','뜻: 종이나 천을 자르는 도구예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,205,'BEGINNER','WORD',NULL),
+(3197,'vocabulary','생활용품 · 풀','뜻: 종이를 붙이는 끈적한 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,206,'BEGINNER','WORD',NULL),
+(3198,'vocabulary','생활용품 · 우산꽂이','뜻: 젖은 우산을 꽂아 두는 통이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,207,'BEGINNER','WORD',NULL),
+(3199,'vocabulary','생활용품 · 쓰레기통','뜻: 쓰레기를 버리는 통이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,208,'BEGINNER','WORD',NULL),
+(3200,'vocabulary','생활용품 · 리모컨','뜻: 텔레비전을 멀리서 켜고 끄는 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,209,'BEGINNER','WORD',NULL),
+(3201,'vocabulary','시간 · 아침','뜻: 해가 뜨고 하루가 시작되는 때예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,210,'INTERMEDIATE','WORD',NULL),
+(3202,'vocabulary','시간 · 점심','뜻: 낮 열두 시 무렵이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,211,'INTERMEDIATE','WORD',NULL),
+(3203,'vocabulary','시간 · 저녁','뜻: 해가 지고 어두워지는 때예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,212,'INTERMEDIATE','WORD',NULL),
+(3204,'vocabulary','시간 · 밤','뜻: 해가 진 뒤 깜깜한 때예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,213,'INTERMEDIATE','WORD',NULL),
+(3205,'vocabulary','시간 · 새벽','뜻: 해가 뜨기 전 아주 이른 때예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,214,'INTERMEDIATE','WORD',NULL),
+(3206,'vocabulary','시간 · 오늘','뜻: 지금 지내고 있는 날이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,215,'INTERMEDIATE','WORD',NULL),
+(3207,'vocabulary','시간 · 어제','뜻: 오늘의 바로 전날이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,216,'INTERMEDIATE','WORD',NULL),
+(3208,'vocabulary','시간 · 내일','뜻: 오늘의 바로 다음 날이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,217,'INTERMEDIATE','WORD',NULL),
+(3209,'vocabulary','시간 · 주말','뜻: 토요일과 일요일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,218,'INTERMEDIATE','WORD',NULL),
+(3210,'vocabulary','시간 · 요일','뜻: 월요일부터 일요일까지 날의 이름이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,219,'INTERMEDIATE','WORD',NULL),
+(3211,'vocabulary','시간 · 달력','뜻: 날짜를 차례로 적어 놓은 표예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,220,'INTERMEDIATE','WORD',NULL),
+(3212,'vocabulary','시간 · 시각','뜻: 시계가 가리키는 때예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,221,'INTERMEDIATE','WORD',NULL),
+(3213,'vocabulary','시간 · 일찍','뜻: 정해진 때보다 이르게예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,222,'INTERMEDIATE','WORD',NULL),
+(3214,'vocabulary','시간 · 늦게','뜻: 정해진 때보다 지나서예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,223,'INTERMEDIATE','WORD',NULL),
+(3215,'vocabulary','시간 · 잠깐','뜻: 아주 짧은 동안이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,224,'INTERMEDIATE','WORD',NULL),
+(3216,'vocabulary','시간 · 하루','뜻: 아침부터 밤까지 한 날이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,225,'INTERMEDIATE','WORD',NULL),
+(3217,'vocabulary','시간 · 일주일','뜻: 칠 일 동안이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,226,'INTERMEDIATE','WORD',NULL),
+(3218,'vocabulary','시간 · 지금','뜻: 바로 이때예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,227,'INTERMEDIATE','WORD',NULL),
+(3219,'vocabulary','시간 · 나중','뜻: 시간이 지난 뒤예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,228,'INTERMEDIATE','WORD',NULL),
+(3220,'vocabulary','시간 · 옛날','뜻: 아주 오래전이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,229,'INTERMEDIATE','WORD',NULL),
+(3221,'vocabulary','계절 · 봄','뜻: 겨울 다음에 오는 따뜻한 계절이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,230,'BEGINNER','WORD',NULL),
+(3222,'vocabulary','계절 · 여름','뜻: 가장 더운 계절이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,231,'BEGINNER','WORD',NULL),
+(3223,'vocabulary','계절 · 가을','뜻: 단풍이 드는 시원한 계절이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,232,'BEGINNER','WORD',NULL),
+(3224,'vocabulary','계절 · 겨울','뜻: 눈이 오는 추운 계절이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,233,'BEGINNER','WORD',NULL),
+(3225,'vocabulary','계절 · 꽃샘추위','뜻: 봄에 꽃이 필 무렵 다시 오는 추위예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,234,'BEGINNER','WORD',NULL),
+(3226,'vocabulary','계절 · 장마','뜻: 여름에 비가 여러 날 계속 오는 때예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,235,'BEGINNER','WORD',NULL),
+(3227,'vocabulary','계절 · 단풍','뜻: 가을에 나뭇잎이 빨갛고 노랗게 물드는 것이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,236,'BEGINNER','WORD',NULL),
+(3228,'vocabulary','계절 · 낙엽','뜻: 떨어진 나뭇잎이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,237,'BEGINNER','WORD',NULL),
+(3229,'vocabulary','계절 · 눈사람','뜻: 눈을 뭉쳐 만든 사람 모양이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,238,'BEGINNER','WORD',NULL),
+(3230,'vocabulary','계절 · 썰매','뜻: 눈이나 얼음 위에서 타는 탈것이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,239,'BEGINNER','WORD',NULL),
+(3231,'vocabulary','계절 · 개나리','뜻: 봄에 피는 노란 꽃이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,240,'BEGINNER','WORD',NULL),
+(3232,'vocabulary','계절 · 진달래','뜻: 봄에 산에 피는 분홍 꽃이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,241,'BEGINNER','WORD',NULL),
+(3233,'vocabulary','계절 · 매미','뜻: 여름에 맴맴 우는 곤충이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,242,'BEGINNER','WORD',NULL),
+(3234,'vocabulary','계절 · 부채','뜻: 흔들어 바람을 일으키는 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,243,'BEGINNER','WORD',NULL),
+(3235,'vocabulary','계절 · 선풍기','뜻: 날개가 돌며 바람을 보내는 기계예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,244,'BEGINNER','WORD',NULL),
+(3236,'vocabulary','계절 · 장갑','뜻: 손을 따뜻하게 감싸는 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,245,'BEGINNER','WORD',NULL),
+(3237,'vocabulary','계절 · 목도리','뜻: 목에 두르는 길고 따뜻한 천이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,246,'BEGINNER','WORD',NULL),
+(3238,'vocabulary','계절 · 추수','뜻: 가을에 곡식을 거두는 일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,247,'BEGINNER','WORD',NULL),
+(3239,'vocabulary','계절 · 벚꽃','뜻: 봄에 피는 연분홍 꽃이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,248,'BEGINNER','WORD',NULL),
+(3240,'vocabulary','계절 · 팥빙수','뜻: 얼음을 갈아 팥을 올린 여름 간식이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,249,'BEGINNER','WORD',NULL),
+(3241,'vocabulary','취미 · 그림 그리기','뜻: 그림을 그리며 노는 일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,250,'INTERMEDIATE','WORD',NULL),
+(3242,'vocabulary','취미 · 피아노','뜻: 건반을 눌러 소리를 내는 악기예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,251,'INTERMEDIATE','WORD',NULL),
+(3243,'vocabulary','취미 · 종이접기','뜻: 종이를 접어 모양을 만드는 놀이예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,252,'INTERMEDIATE','WORD',NULL),
+(3244,'vocabulary','취미 · 축구','뜻: 공을 발로 차서 골을 넣는 운동이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,253,'INTERMEDIATE','WORD',NULL),
+(3245,'vocabulary','취미 · 수영','뜻: 물에서 팔다리를 저어 나아가는 운동이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,254,'INTERMEDIATE','WORD',NULL),
+(3246,'vocabulary','취미 · 줄넘기','뜻: 줄을 돌려 뛰어넘는 운동이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,255,'INTERMEDIATE','WORD',NULL),
+(3247,'vocabulary','취미 · 독서','뜻: 책을 읽는 일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,256,'INTERMEDIATE','WORD',NULL),
+(3248,'vocabulary','취미 · 블록 놀이','뜻: 블록을 쌓아 무언가를 만드는 놀이예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,257,'INTERMEDIATE','WORD',NULL),
+(3249,'vocabulary','취미 · 퍼즐','뜻: 조각을 맞추어 그림을 완성하는 놀이예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,258,'INTERMEDIATE','WORD',NULL),
+(3250,'vocabulary','취미 · 캠핑','뜻: 밖에서 텐트를 치고 지내는 일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,259,'INTERMEDIATE','WORD',NULL),
+(3251,'vocabulary','취미 · 요리','뜻: 음식을 만드는 일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,260,'INTERMEDIATE','WORD',NULL),
+(3252,'vocabulary','취미 · 노래방','뜻: 노래를 부르며 노는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,261,'INTERMEDIATE','WORD',NULL),
+(3253,'vocabulary','취미 · 보드게임','뜻: 판 위에서 말을 움직이는 놀이예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,262,'INTERMEDIATE','WORD',NULL),
+(3254,'vocabulary','취미 · 태권도','뜻: 손과 발로 겨루는 우리나라 무술이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,263,'INTERMEDIATE','WORD',NULL),
+(3255,'vocabulary','취미 · 자전거 타기','뜻: 자전거를 타고 다니는 일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,264,'INTERMEDIATE','WORD',NULL),
+(3256,'vocabulary','취미 · 낚시','뜻: 물고기를 낚는 일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,265,'INTERMEDIATE','WORD',NULL),
+(3257,'vocabulary','취미 · 사진 찍기','뜻: 카메라로 사진을 찍는 일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,266,'INTERMEDIATE','WORD',NULL),
+(3258,'vocabulary','취미 · 춤','뜻: 음악에 맞춰 몸을 움직이는 일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,267,'INTERMEDIATE','WORD',NULL),
+(3259,'vocabulary','취미 · 등산','뜻: 산에 오르는 일이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,268,'INTERMEDIATE','WORD',NULL),
+(3260,'vocabulary','취미 · 만들기','뜻: 재료로 물건을 만드는 활동이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,269,'INTERMEDIATE','WORD',NULL),
+(3261,'vocabulary','동물 · 강아지','뜻: 멍멍 짖는 귀여운 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,270,'BEGINNER','WORD',NULL),
+(3262,'vocabulary','동물 · 고양이','뜻: 야옹 하고 우는 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,271,'BEGINNER','WORD',NULL),
+(3263,'vocabulary','동물 · 토끼','뜻: 귀가 길고 깡충깡충 뛰는 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,272,'BEGINNER','WORD',NULL),
+(3264,'vocabulary','동물 · 코끼리','뜻: 코가 길고 몸집이 아주 큰 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,273,'BEGINNER','WORD',NULL),
+(3265,'vocabulary','동물 · 기린','뜻: 목이 아주 긴 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,274,'BEGINNER','WORD',NULL),
+(3266,'vocabulary','동물 · 사자','뜻: 갈기가 있는 동물의 왕이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,275,'BEGINNER','WORD',NULL),
+(3267,'vocabulary','동물 · 호랑이','뜻: 줄무늬가 있는 큰 고양잇과 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,276,'BEGINNER','WORD',NULL),
+(3268,'vocabulary','동물 · 원숭이','뜻: 나무를 잘 타는 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,277,'BEGINNER','WORD',NULL),
+(3269,'vocabulary','동물 · 곰','뜻: 몸집이 크고 꿀을 좋아하는 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,278,'BEGINNER','WORD',NULL),
+(3270,'vocabulary','동물 · 펭귄','뜻: 추운 곳에 사는 날지 못하는 새예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,279,'BEGINNER','WORD',NULL),
+(3271,'vocabulary','동물 · 돼지','뜻: 꿀꿀 우는 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,280,'BEGINNER','WORD',NULL),
+(3272,'vocabulary','동물 · 소','뜻: 음매 하고 우는 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,281,'BEGINNER','WORD',NULL),
+(3273,'vocabulary','동물 · 말','뜻: 히힝 하고 우는 빨리 달리는 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,282,'BEGINNER','WORD',NULL),
+(3274,'vocabulary','동물 · 닭','뜻: 꼬끼오 하고 우는 새예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,283,'BEGINNER','WORD',NULL),
+(3275,'vocabulary','동물 · 오리','뜻: 꽥꽥 하고 우는 물새예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,284,'BEGINNER','WORD',NULL),
+(3276,'vocabulary','동물 · 거북이','뜻: 등에 단단한 등딱지가 있는 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,285,'BEGINNER','WORD',NULL),
+(3277,'vocabulary','동물 · 개구리','뜻: 개굴개굴 우는 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,286,'BEGINNER','WORD',NULL),
+(3278,'vocabulary','동물 · 다람쥐','뜻: 도토리를 모으는 작은 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,287,'BEGINNER','WORD',NULL),
+(3279,'vocabulary','동물 · 나비','뜻: 날개가 알록달록한 곤충이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,288,'BEGINNER','WORD',NULL),
+(3280,'vocabulary','동물 · 물고기','뜻: 물속에서 헤엄치는 동물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,289,'BEGINNER','WORD',NULL),
+(3281,'vocabulary','자연 · 하늘','뜻: 머리 위로 펼쳐진 넓은 공간이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,290,'BEGINNER','WORD',NULL),
+(3282,'vocabulary','자연 · 바다','뜻: 넓고 짠물이 가득한 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,291,'BEGINNER','WORD',NULL),
+(3283,'vocabulary','자연 · 산','뜻: 땅이 높이 솟은 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,292,'BEGINNER','WORD',NULL),
+(3284,'vocabulary','자연 · 강','뜻: 물이 길게 흘러가는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,293,'BEGINNER','WORD',NULL),
+(3285,'vocabulary','자연 · 나무','뜻: 줄기와 가지가 있는 큰 식물이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,294,'BEGINNER','WORD',NULL),
+(3286,'vocabulary','자연 · 꽃','뜻: 예쁜 빛깔로 피는 식물의 부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,295,'BEGINNER','WORD',NULL),
+(3287,'vocabulary','자연 · 풀밭','뜻: 풀이 넓게 자란 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,296,'BEGINNER','WORD',NULL),
+(3288,'vocabulary','자연 · 돌','뜻: 단단하고 무거운 덩어리예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,297,'BEGINNER','WORD',NULL),
+(3289,'vocabulary','자연 · 모래','뜻: 아주 작은 돌 알갱이예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,298,'BEGINNER','WORD',NULL),
+(3290,'vocabulary','자연 · 해','뜻: 낮에 하늘에서 빛나는 별이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,299,'BEGINNER','WORD',NULL),
+(3291,'vocabulary','자연 · 달','뜻: 밤하늘에 떠서 빛나는 것이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,300,'BEGINNER','WORD',NULL),
+(3292,'vocabulary','자연 · 별','뜻: 밤하늘에 반짝이는 작은 빛이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,301,'BEGINNER','WORD',NULL);
+INSERT IGNORE INTO exercises (exercise_id,category_id,title,instruction,input_type,target_phonemes,sort_order,difficulty,content_type,pronunciation_rule) VALUES
+(3293,'vocabulary','자연 · 섬','뜻: 바다로 둘러싸인 땅이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,302,'BEGINNER','WORD',NULL),
+(3294,'vocabulary','자연 · 숲','뜻: 나무가 빽빽하게 자란 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,303,'BEGINNER','WORD',NULL),
+(3295,'vocabulary','자연 · 연못','뜻: 물이 고여 있는 작은 못이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,304,'BEGINNER','WORD',NULL),
+(3296,'vocabulary','자연 · 폭포','뜻: 물이 높은 곳에서 떨어지는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,305,'BEGINNER','WORD',NULL),
+(3297,'vocabulary','자연 · 들판','뜻: 넓고 평평한 땅이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,306,'BEGINNER','WORD',NULL),
+(3298,'vocabulary','자연 · 흙','뜻: 식물이 자라는 땅의 부드러운 부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,307,'BEGINNER','WORD',NULL),
+(3299,'vocabulary','자연 · 씨앗','뜻: 식물이 자라기 시작하는 작은 알맹이예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,308,'BEGINNER','WORD',NULL),
+(3300,'vocabulary','자연 · 바위','뜻: 아주 크고 단단한 돌이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,309,'BEGINNER','WORD',NULL),
+(3301,'vocabulary','신체 · 머리','뜻: 몸의 가장 위쪽 부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,310,'BEGINNER','WORD',NULL),
+(3302,'vocabulary','신체 · 얼굴','뜻: 눈, 코, 입이 있는 앞부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,311,'BEGINNER','WORD',NULL),
+(3303,'vocabulary','신체 · 눈','뜻: 앞을 보는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,312,'BEGINNER','WORD',NULL),
+(3304,'vocabulary','신체 · 코','뜻: 냄새를 맡는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,313,'BEGINNER','WORD',NULL),
+(3305,'vocabulary','신체 · 입','뜻: 먹고 말하는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,314,'BEGINNER','WORD',NULL),
+(3306,'vocabulary','신체 · 귀','뜻: 소리를 듣는 곳이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,315,'BEGINNER','WORD',NULL),
+(3307,'vocabulary','신체 · 이','뜻: 음식을 씹는 단단한 부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,316,'BEGINNER','WORD',NULL),
+(3308,'vocabulary','신체 · 혀','뜻: 맛을 느끼는 입속의 부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,317,'BEGINNER','WORD',NULL),
+(3309,'vocabulary','신체 · 목','뜻: 머리와 몸을 잇는 부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,318,'BEGINNER','WORD',NULL),
+(3310,'vocabulary','신체 · 어깨','뜻: 팔이 시작되는 윗부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,319,'BEGINNER','WORD',NULL),
+(3311,'vocabulary','신체 · 팔','뜻: 어깨에서 손까지의 부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,320,'BEGINNER','WORD',NULL),
+(3312,'vocabulary','신체 · 손','뜻: 물건을 잡는 몸의 끝부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,321,'BEGINNER','WORD',NULL),
+(3313,'vocabulary','신체 · 손가락','뜻: 손끝에 달린 다섯 개의 가지예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,322,'BEGINNER','WORD',NULL),
+(3314,'vocabulary','신체 · 배','뜻: 가슴 아래 몸의 가운데 부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,323,'BEGINNER','WORD',NULL),
+(3315,'vocabulary','신체 · 등','뜻: 몸의 뒤쪽 부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,324,'BEGINNER','WORD',NULL),
+(3316,'vocabulary','신체 · 무릎','뜻: 다리를 굽히는 가운데 마디예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,325,'BEGINNER','WORD',NULL),
+(3317,'vocabulary','신체 · 다리','뜻: 몸을 받치고 걷는 부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,326,'BEGINNER','WORD',NULL),
+(3318,'vocabulary','신체 · 발','뜻: 땅을 딛는 다리의 끝부분이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,327,'BEGINNER','WORD',NULL),
+(3319,'vocabulary','신체 · 발가락','뜻: 발끝에 달린 다섯 개의 가지예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,328,'BEGINNER','WORD',NULL),
+(3320,'vocabulary','신체 · 머리카락','뜻: 머리에 난 털이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,329,'BEGINNER','WORD',NULL),
+(3321,'vocabulary','직업 · 의사','뜻: 아픈 사람을 치료하는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,330,'INTERMEDIATE','WORD',NULL),
+(3322,'vocabulary','직업 · 간호사','뜻: 병원에서 환자를 돌보는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,331,'INTERMEDIATE','WORD',NULL),
+(3323,'vocabulary','직업 · 소방관','뜻: 불을 끄고 사람을 구하는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,332,'INTERMEDIATE','WORD',NULL),
+(3324,'vocabulary','직업 · 경찰관','뜻: 사람들의 안전을 지키는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,333,'INTERMEDIATE','WORD',NULL),
+(3325,'vocabulary','직업 · 요리사','뜻: 음식을 만드는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,334,'INTERMEDIATE','WORD',NULL),
+(3326,'vocabulary','직업 · 농부','뜻: 논밭에서 곡식을 기르는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,335,'INTERMEDIATE','WORD',NULL),
+(3327,'vocabulary','직업 · 어부','뜻: 바다에서 물고기를 잡는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,336,'INTERMEDIATE','WORD',NULL),
+(3328,'vocabulary','직업 · 우체부','뜻: 편지를 배달하는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,337,'INTERMEDIATE','WORD',NULL),
+(3329,'vocabulary','직업 · 미용사','뜻: 머리를 다듬어 주는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,338,'INTERMEDIATE','WORD',NULL),
+(3330,'vocabulary','직업 · 화가','뜻: 그림을 그리는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,339,'INTERMEDIATE','WORD',NULL),
+(3331,'vocabulary','직업 · 가수','뜻: 노래를 부르는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,340,'INTERMEDIATE','WORD',NULL),
+(3332,'vocabulary','직업 · 운전기사','뜻: 차를 운전하는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,341,'INTERMEDIATE','WORD',NULL),
+(3333,'vocabulary','직업 · 과학자','뜻: 실험하며 새로운 것을 알아내는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,342,'INTERMEDIATE','WORD',NULL),
+(3334,'vocabulary','직업 · 수의사','뜻: 아픈 동물을 치료하는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,343,'INTERMEDIATE','WORD',NULL),
+(3335,'vocabulary','직업 · 목수','뜻: 나무로 집이나 가구를 만드는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,344,'INTERMEDIATE','WORD',NULL),
+(3336,'vocabulary','직업 · 제빵사','뜻: 빵을 굽는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,345,'INTERMEDIATE','WORD',NULL),
+(3337,'vocabulary','직업 · 사서','뜻: 도서관에서 책을 관리하는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,346,'INTERMEDIATE','WORD',NULL),
+(3338,'vocabulary','직업 · 조종사','뜻: 비행기를 운전하는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,347,'INTERMEDIATE','WORD',NULL),
+(3339,'vocabulary','직업 · 기자','뜻: 소식을 알아보고 전하는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,348,'INTERMEDIATE','WORD',NULL),
+(3340,'vocabulary','직업 · 선수','뜻: 운동 경기를 하는 사람이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,349,'INTERMEDIATE','WORD',NULL),
+(3341,'vocabulary','옷과 꾸미기 · 바지','뜻: 두 다리를 따로 넣어 입는 옷이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,350,'BEGINNER','WORD',NULL),
+(3342,'vocabulary','옷과 꾸미기 · 치마','뜻: 다리를 한꺼번에 감싸는 옷이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,351,'BEGINNER','WORD',NULL),
+(3343,'vocabulary','옷과 꾸미기 · 셔츠','뜻: 단추가 달린 윗옷이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,352,'BEGINNER','WORD',NULL),
+(3344,'vocabulary','옷과 꾸미기 · 외투','뜻: 추울 때 겉에 입는 옷이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,353,'BEGINNER','WORD',NULL),
+(3345,'vocabulary','옷과 꾸미기 · 양말','뜻: 발에 신는 얇은 옷이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,354,'BEGINNER','WORD',NULL),
+(3346,'vocabulary','옷과 꾸미기 · 신발','뜻: 발을 보호하려고 신는 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,355,'BEGINNER','WORD',NULL),
+(3347,'vocabulary','옷과 꾸미기 · 모자','뜻: 머리에 쓰는 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,356,'BEGINNER','WORD',NULL),
+(3348,'vocabulary','옷과 꾸미기 · 안경','뜻: 눈이 잘 보이게 쓰는 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,357,'BEGINNER','WORD',NULL),
+(3349,'vocabulary','옷과 꾸미기 · 잠옷','뜻: 잘 때 입는 옷이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,358,'BEGINNER','WORD',NULL),
+(3350,'vocabulary','옷과 꾸미기 · 수영복','뜻: 수영할 때 입는 옷이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,359,'BEGINNER','WORD',NULL),
+(3351,'vocabulary','옷과 꾸미기 · 운동화','뜻: 운동할 때 신는 신발이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,360,'BEGINNER','WORD',NULL),
+(3352,'vocabulary','옷과 꾸미기 · 단추','뜻: 옷을 여미는 동그란 물건이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,361,'BEGINNER','WORD',NULL),
+(3353,'vocabulary','옷과 꾸미기 · 지퍼','뜻: 옷을 열고 닫는 이빨 모양 줄이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,362,'BEGINNER','WORD',NULL),
+(3354,'vocabulary','옷과 꾸미기 · 머리핀','뜻: 머리카락을 고정하는 작은 핀이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,363,'BEGINNER','WORD',NULL),
+(3355,'vocabulary','옷과 꾸미기 · 목걸이','뜻: 목에 거는 장신구예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,364,'BEGINNER','WORD',NULL),
+(3356,'vocabulary','옷과 꾸미기 · 반지','뜻: 손가락에 끼는 장신구예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,365,'BEGINNER','WORD',NULL),
+(3357,'vocabulary','옷과 꾸미기 · 허리띠','뜻: 바지가 흘러내리지 않게 매는 띠예요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,366,'BEGINNER','WORD',NULL),
+(3358,'vocabulary','옷과 꾸미기 · 우비','뜻: 비 올 때 입는 옷이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,367,'BEGINNER','WORD',NULL),
+(3359,'vocabulary','옷과 꾸미기 · 한복','뜻: 우리나라의 전통 옷이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,368,'BEGINNER','WORD',NULL),
+(3360,'vocabulary','옷과 꾸미기 · 교복','뜻: 학교에서 정한 옷이에요.
+낱말을 말한 뒤 예문을 읽어 보세요.','mic',NULL,369,'BEGINNER','WORD',NULL),
+(4001,'fluency','순서대로 말하기 · 손 씻기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,10,'BEGINNER','SHORT_SENTENCE',NULL),
+(4002,'fluency','순서대로 말하기 · 이 닦기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,11,'BEGINNER','SHORT_SENTENCE',NULL),
+(4003,'fluency','순서대로 말하기 · 라면 끓이기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,12,'BEGINNER','SHORT_SENTENCE',NULL),
+(4004,'fluency','순서대로 말하기 · 아침 준비','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,13,'BEGINNER','SHORT_SENTENCE',NULL),
+(4005,'fluency','순서대로 말하기 · 학교 가기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,14,'BEGINNER','SHORT_SENTENCE',NULL),
+(4006,'fluency','순서대로 말하기 · 잠자기 전','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,15,'BEGINNER','SHORT_SENTENCE',NULL),
+(4007,'fluency','순서대로 말하기 · 화분 심기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,16,'BEGINNER','SHORT_SENTENCE',NULL),
+(4008,'fluency','순서대로 말하기 · 샌드위치 만들기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,17,'BEGINNER','SHORT_SENTENCE',NULL),
+(4009,'fluency','순서대로 말하기 · 빨래 개기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,18,'BEGINNER','SHORT_SENTENCE',NULL),
+(4010,'fluency','순서대로 말하기 · 편지 쓰기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,19,'BEGINNER','SHORT_SENTENCE',NULL),
+(4011,'fluency','순서대로 말하기 · 길 건너기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,20,'BEGINNER','SHORT_SENTENCE',NULL),
+(4012,'fluency','순서대로 말하기 · 신발 신기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,21,'BEGINNER','SHORT_SENTENCE',NULL),
+(4013,'fluency','순서대로 말하기 · 컵라면 먹기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,22,'BEGINNER','SHORT_SENTENCE',NULL),
+(4014,'fluency','순서대로 말하기 · 과일 깎기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,23,'BEGINNER','SHORT_SENTENCE',NULL),
+(4015,'fluency','순서대로 말하기 · 책 빌리기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,24,'BEGINNER','SHORT_SENTENCE',NULL),
+(4016,'fluency','순서대로 말하기 · 색종이 접기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,25,'BEGINNER','SHORT_SENTENCE',NULL),
+(4017,'fluency','순서대로 말하기 · 방 청소','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,26,'BEGINNER','SHORT_SENTENCE',NULL),
+(4018,'fluency','순서대로 말하기 · 목욕하기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,27,'BEGINNER','SHORT_SENTENCE',NULL),
+(4019,'fluency','순서대로 말하기 · 우유 따르기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,28,'BEGINNER','SHORT_SENTENCE',NULL),
+(4020,'fluency','순서대로 말하기 · 머리 감기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,29,'BEGINNER','SHORT_SENTENCE',NULL),
+(4021,'fluency','순서대로 말하기 · 그림 그리기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,30,'BEGINNER','SHORT_SENTENCE',NULL),
+(4022,'fluency','순서대로 말하기 · 물건 사기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,31,'BEGINNER','SHORT_SENTENCE',NULL),
+(4023,'fluency','순서대로 말하기 · 줄넘기 하기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,32,'BEGINNER','SHORT_SENTENCE',NULL),
+(4024,'fluency','순서대로 말하기 · 식사 준비','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,33,'BEGINNER','SHORT_SENTENCE',NULL),
+(4025,'fluency','순서대로 말하기 · 버스 타기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,34,'BEGINNER','SHORT_SENTENCE',NULL),
+(4026,'fluency','순서대로 말하기 · 우산 쓰기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,35,'BEGINNER','SHORT_SENTENCE',NULL),
+(4027,'fluency','순서대로 말하기 · 선물 포장','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,36,'BEGINNER','SHORT_SENTENCE',NULL),
+(4028,'fluency','순서대로 말하기 · 감자 삶기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,37,'BEGINNER','SHORT_SENTENCE',NULL),
+(4029,'fluency','순서대로 말하기 · 놀이터 놀기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,38,'BEGINNER','SHORT_SENTENCE',NULL),
+(4030,'fluency','순서대로 말하기 · 양치 컵 씻기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,39,'BEGINNER','SHORT_SENTENCE',NULL),
+(4031,'fluency','순서대로 말하기 · 연 날리기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,40,'BEGINNER','SHORT_SENTENCE',NULL),
+(4032,'fluency','순서대로 말하기 · 쿠키 만들기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,41,'BEGINNER','SHORT_SENTENCE',NULL),
+(4033,'fluency','순서대로 말하기 · 가방 싸기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,42,'BEGINNER','SHORT_SENTENCE',NULL),
+(4034,'fluency','순서대로 말하기 · 씨앗 관찰','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,43,'BEGINNER','SHORT_SENTENCE',NULL),
+(4035,'fluency','순서대로 말하기 · 병원 가기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,44,'BEGINNER','SHORT_SENTENCE',NULL),
+(4036,'fluency','순서대로 말하기 · 주스 만들기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,45,'BEGINNER','SHORT_SENTENCE',NULL),
+(4037,'fluency','순서대로 말하기 · 분리수거','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,46,'BEGINNER','SHORT_SENTENCE',NULL),
+(4038,'fluency','순서대로 말하기 · 옷 입기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,47,'BEGINNER','SHORT_SENTENCE',NULL),
+(4039,'fluency','순서대로 말하기 · 구멍 난 양말','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,48,'BEGINNER','SHORT_SENTENCE',NULL),
+(4040,'fluency','순서대로 말하기 · 비빔밥 만들기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,49,'BEGINNER','SHORT_SENTENCE',NULL),
+(4041,'fluency','순서대로 말하기 · 강아지 산책','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,50,'BEGINNER','SHORT_SENTENCE',NULL),
+(4042,'fluency','순서대로 말하기 · 물고기 밥 주기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,51,'BEGINNER','SHORT_SENTENCE',NULL),
+(4043,'fluency','순서대로 말하기 · 눈사람 만들기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,52,'BEGINNER','LONG_SENTENCE',NULL),
+(4044,'fluency','순서대로 말하기 · 학교 끝나고','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,53,'BEGINNER','SHORT_SENTENCE',NULL),
+(4045,'fluency','순서대로 말하기 · 달걀 프라이','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,54,'BEGINNER','SHORT_SENTENCE',NULL),
+(4046,'fluency','순서대로 말하기 · 퍼즐 맞추기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,55,'BEGINNER','SHORT_SENTENCE',NULL),
+(4047,'fluency','순서대로 말하기 · 세수하기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,56,'BEGINNER','SHORT_SENTENCE',NULL),
+(4048,'fluency','순서대로 말하기 · 책 읽고 정리','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,57,'BEGINNER','SHORT_SENTENCE',NULL),
+(4049,'fluency','순서대로 말하기 · 텐트 치기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,58,'BEGINNER','SHORT_SENTENCE',NULL),
+(4050,'fluency','순서대로 말하기 · 주먹밥 만들기','일이 일어나는 순서대로 세 문장을 이어서 말해 보세요.','mic',NULL,59,'BEGINNER','SHORT_SENTENCE',NULL),
+(4051,'fluency','짧은 이야기 말하기 · 토끼와 당근','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,60,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4052,'fluency','짧은 이야기 말하기 · 잃어버린 장갑','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,61,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4053,'fluency','짧은 이야기 말하기 · 비 오는 날 개구리','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,62,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4054,'fluency','짧은 이야기 말하기 · 아기 새의 첫 비행','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,63,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4055,'fluency','짧은 이야기 말하기 · 다람쥐의 겨울 준비','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,64,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4056,'fluency','짧은 이야기 말하기 · 고양이와 털실','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,65,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4057,'fluency','짧은 이야기 말하기 · 꼬마 눈사람','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,66,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4058,'fluency','짧은 이야기 말하기 · 거북이의 경주','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,67,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4059,'fluency','짧은 이야기 말하기 · 빨간 풍선','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,68,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4060,'fluency','짧은 이야기 말하기 · 개미의 여름','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,69,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4061,'fluency','짧은 이야기 말하기 · 마법의 연필','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,70,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4062,'fluency','짧은 이야기 말하기 · 길 잃은 강아지','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,71,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4063,'fluency','짧은 이야기 말하기 · 도토리 키 재기','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,72,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4064,'fluency','짧은 이야기 말하기 · 해와 바람','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,73,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4065,'fluency','짧은 이야기 말하기 · 아기 돼지 삼 형제','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,74,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4066,'fluency','짧은 이야기 말하기 · 달님의 선물','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,75,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4067,'fluency','짧은 이야기 말하기 · 작은 씨앗','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,76,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4068,'fluency','짧은 이야기 말하기 · 욕심 많은 개','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,77,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4069,'fluency','짧은 이야기 말하기 · 생쥐와 사자','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,78,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4070,'fluency','짧은 이야기 말하기 · 무지개 물고기','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,79,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4071,'fluency','짧은 이야기 말하기 · 눈 오는 밤','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,80,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4072,'fluency','짧은 이야기 말하기 · 꿀벌의 하루','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,81,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4073,'fluency','짧은 이야기 말하기 · 산타 할아버지','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,82,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4074,'fluency','짧은 이야기 말하기 · 수박 한 통','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,83,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4075,'fluency','짧은 이야기 말하기 · 잠꾸러기 곰','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,84,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4076,'fluency','짧은 이야기 말하기 · 종이배 여행','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,85,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4077,'fluency','짧은 이야기 말하기 · 용감한 소방차','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,86,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4078,'fluency','짧은 이야기 말하기 · 반딧불이 친구','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,87,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4079,'fluency','짧은 이야기 말하기 · 금도끼 은도끼','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,88,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4080,'fluency','짧은 이야기 말하기 · 흥부와 제비','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,89,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4081,'fluency','짧은 이야기 말하기 · 엄마 오리','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,90,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4082,'fluency','짧은 이야기 말하기 · 우산 속 친구','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,91,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4083,'fluency','짧은 이야기 말하기 · 구름 기차','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,92,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4084,'fluency','짧은 이야기 말하기 · 양치기 소년','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,93,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4085,'fluency','짧은 이야기 말하기 · 요술 냄비','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,94,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4086,'fluency','짧은 이야기 말하기 · 펭귄의 소풍','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,95,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4087,'fluency','짧은 이야기 말하기 · 떡 하나 주면','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,96,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4088,'fluency','짧은 이야기 말하기 · 깜짝 생일 파티','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,97,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4089,'fluency','짧은 이야기 말하기 · 아기 별','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,98,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4090,'fluency','짧은 이야기 말하기 · 지렁이의 길','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,99,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4091,'fluency','짧은 이야기 말하기 · 떨어진 사과','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,100,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4092,'fluency','짧은 이야기 말하기 · 노란 우비','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,101,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4093,'fluency','짧은 이야기 말하기 · 작은 기차','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,102,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4094,'fluency','짧은 이야기 말하기 · 빵 굽는 곰','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,103,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4095,'fluency','짧은 이야기 말하기 · 모래성','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,104,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4096,'fluency','짧은 이야기 말하기 · 비밀 쪽지','짧은 이야기를 끊지 않고 이어서 말해 보세요.','mic',NULL,105,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4097,'fluency','상황 설명하기 · 놀이터 풍경','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,106,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4098,'fluency','상황 설명하기 · 시장 모습','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,107,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4099,'fluency','상황 설명하기 · 비 오는 거리','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,108,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4100,'fluency','상황 설명하기 · 교실 쉬는 시간','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,109,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4101,'fluency','상황 설명하기 · 생일 파티','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,110,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4102,'fluency','상황 설명하기 · 바닷가','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,111,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4103,'fluency','상황 설명하기 · 동물원','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,112,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4104,'fluency','상황 설명하기 · 부엌','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,113,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4105,'fluency','상황 설명하기 · 운동회','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,114,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4106,'fluency','상황 설명하기 · 병원 대기실','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,115,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4107,'fluency','상황 설명하기 · 눈 오는 공원','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,116,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4108,'fluency','상황 설명하기 · 버스 안','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,117,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4109,'fluency','상황 설명하기 · 캠핑장','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,118,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4110,'fluency','상황 설명하기 · 도서관','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,119,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4111,'fluency','상황 설명하기 · 빵집','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,120,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4112,'fluency','상황 설명하기 · 소방 훈련','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,121,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4113,'fluency','상황 설명하기 · 가을 산','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,122,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4114,'fluency','상황 설명하기 · 마트 계산대','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,123,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4115,'fluency','상황 설명하기 · 아침 식탁','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,124,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4116,'fluency','상황 설명하기 · 수영장','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,125,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4117,'fluency','상황 설명하기 · 농장','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,126,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4118,'fluency','상황 설명하기 · 공항','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,127,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4119,'fluency','상황 설명하기 · 꽃밭','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,128,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4120,'fluency','상황 설명하기 · 설날 아침','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,129,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4121,'fluency','상황 설명하기 · 미술 시간','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,130,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4122,'fluency','상황 설명하기 · 정류장','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,131,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4123,'fluency','상황 설명하기 · 놀이공원','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,132,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4124,'fluency','상황 설명하기 · 저녁 공원','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,133,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4125,'fluency','상황 설명하기 · 세차장','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,134,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4126,'fluency','상황 설명하기 · 과학실','장면을 떠올리며 무슨 일이 일어나는지 이어서 설명해 보세요.','mic',NULL,135,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4127,'fluency','경험 말하기 · 가족 여행','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,136,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4128,'fluency','경험 말하기 · 처음 자전거 탄 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,137,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4129,'fluency','경험 말하기 · 아팠던 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,138,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4130,'fluency','경험 말하기 · 친구와 다툰 일','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,139,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4131,'fluency','경험 말하기 · 운동회 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,140,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4132,'fluency','경험 말하기 · 김장하는 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,141,'INTERMEDIATE','SHORT_SENTENCE',NULL);
+INSERT IGNORE INTO exercises (exercise_id,category_id,title,instruction,input_type,target_phonemes,sort_order,difficulty,content_type,pronunciation_rule) VALUES
+(4133,'fluency','경험 말하기 · 첫 발표','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,142,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4134,'fluency','경험 말하기 · 반려동물','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,143,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4135,'fluency','경험 말하기 · 비 맞은 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,144,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4136,'fluency','경험 말하기 · 캠핑 간 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,145,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4137,'fluency','경험 말하기 · 요리한 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,146,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4138,'fluency','경험 말하기 · 상 받은 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,147,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4139,'fluency','경험 말하기 · 이사한 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,148,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4140,'fluency','경험 말하기 · 치과 간 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,149,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4141,'fluency','경험 말하기 · 눈 온 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,150,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4142,'fluency','경험 말하기 · 도서관 간 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,151,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4143,'fluency','경험 말하기 · 놀이공원 간 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,152,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4144,'fluency','경험 말하기 · 할머니 생신','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,153,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4145,'fluency','경험 말하기 · 잃어버린 물건','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,154,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4146,'fluency','경험 말하기 · 수영 배운 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,155,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4147,'fluency','경험 말하기 · 현장 학습','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,156,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4148,'fluency','경험 말하기 · 새 친구','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,157,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4149,'fluency','경험 말하기 · 고장 난 장난감','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,158,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4150,'fluency','경험 말하기 · 심부름','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,159,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4151,'fluency','경험 말하기 · 첫눈 오는 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,160,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4152,'fluency','경험 말하기 · 감기 걸린 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,161,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4153,'fluency','경험 말하기 · 텃밭 가꾸기','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,162,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4154,'fluency','경험 말하기 · 영화 본 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,163,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4155,'fluency','경험 말하기 · 늦잠 잔 날','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,164,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4156,'fluency','경험 말하기 · 바다 수영','내 경험처럼 자연스럽게 세 문장을 이어서 말해 보세요.','mic',NULL,165,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4157,'fluency','문장 이어 말하기 · 배고픈 오후','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,166,'ADVANCED','SHORT_SENTENCE',NULL),
+(4158,'fluency','문장 이어 말하기 · 비 그친 뒤','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,167,'ADVANCED','LONG_SENTENCE',NULL),
+(4159,'fluency','문장 이어 말하기 · 잃어버린 열쇠','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,168,'ADVANCED','SHORT_SENTENCE',NULL),
+(4160,'fluency','문장 이어 말하기 · 감기 조심','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,169,'ADVANCED','SHORT_SENTENCE',NULL),
+(4161,'fluency','문장 이어 말하기 · 연습의 힘','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,170,'ADVANCED','SHORT_SENTENCE',NULL),
+(4162,'fluency','문장 이어 말하기 · 늦은 버스','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,171,'ADVANCED','SHORT_SENTENCE',NULL),
+(4163,'fluency','문장 이어 말하기 · 고장 난 우산','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,172,'ADVANCED','SHORT_SENTENCE',NULL),
+(4164,'fluency','문장 이어 말하기 · 시험 준비','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,173,'ADVANCED','LONG_SENTENCE',NULL),
+(4165,'fluency','문장 이어 말하기 · 깜빡한 준비물','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,174,'ADVANCED','LONG_SENTENCE',NULL),
+(4166,'fluency','문장 이어 말하기 · 더운 여름날','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,175,'ADVANCED','SHORT_SENTENCE',NULL),
+(4167,'fluency','문장 이어 말하기 · 아픈 강아지','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,176,'ADVANCED','LONG_SENTENCE',NULL),
+(4168,'fluency','문장 이어 말하기 · 정전된 밤','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,177,'ADVANCED','SHORT_SENTENCE',NULL),
+(4169,'fluency','문장 이어 말하기 · 넘어진 친구','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,178,'ADVANCED','SHORT_SENTENCE',NULL),
+(4170,'fluency','문장 이어 말하기 · 기다린 택배','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,179,'ADVANCED','LONG_SENTENCE',NULL),
+(4171,'fluency','문장 이어 말하기 · 일찍 일어난 날','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,180,'ADVANCED','LONG_SENTENCE',NULL),
+(4172,'fluency','문장 이어 말하기 · 놓친 공','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,181,'ADVANCED','LONG_SENTENCE',NULL),
+(4173,'fluency','문장 이어 말하기 · 소풍 날 비','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,182,'ADVANCED','LONG_SENTENCE',NULL),
+(4174,'fluency','문장 이어 말하기 · 엎지른 우유','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,183,'ADVANCED','LONG_SENTENCE',NULL),
+(4175,'fluency','문장 이어 말하기 · 어려운 퍼즐','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,184,'ADVANCED','LONG_SENTENCE',NULL),
+(4176,'fluency','문장 이어 말하기 · 양보한 자리','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,185,'ADVANCED','SHORT_SENTENCE',NULL),
+(4177,'fluency','문장 이어 말하기 · 꽃이 핀 이유','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,186,'ADVANCED','LONG_SENTENCE',NULL),
+(4178,'fluency','문장 이어 말하기 · 늦게 잔 다음 날','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,187,'ADVANCED','SHORT_SENTENCE',NULL),
+(4179,'fluency','문장 이어 말하기 · 조용한 도서관','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,188,'ADVANCED','SHORT_SENTENCE',NULL),
+(4180,'fluency','문장 이어 말하기 · 새로 산 운동화','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,189,'ADVANCED','SHORT_SENTENCE',NULL),
+(4181,'fluency','문장 이어 말하기 · 줄넘기 연습','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,190,'ADVANCED','LONG_SENTENCE',NULL),
+(4182,'fluency','문장 이어 말하기 · 고마운 이웃','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,191,'ADVANCED','SHORT_SENTENCE',NULL),
+(4183,'fluency','문장 이어 말하기 · 막힌 길','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,192,'ADVANCED','SHORT_SENTENCE',NULL),
+(4184,'fluency','문장 이어 말하기 · 오래된 사진','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,193,'ADVANCED','SHORT_SENTENCE',NULL),
+(4185,'fluency','문장 이어 말하기 · 모르는 낱말','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,194,'ADVANCED','LONG_SENTENCE',NULL),
+(4186,'fluency','문장 이어 말하기 · 맛없는 반찬','이어 주는 말을 살려 세 문장을 자연스럽게 이어서 말해 보세요.','mic',NULL,195,'ADVANCED','LONG_SENTENCE',NULL),
+(4187,'fluency','자연스럽게 읽기 · 간장 공장','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,196,'BEGINNER','SHORT_SENTENCE',NULL),
+(4188,'fluency','자연스럽게 읽기 · 들의 콩깍지','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,197,'BEGINNER','LONG_SENTENCE',NULL),
+(4189,'fluency','자연스럽게 읽기 · 경찰청 철창살','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,198,'BEGINNER','SHORT_SENTENCE',NULL),
+(4190,'fluency','자연스럽게 읽기 · 내가 그린 기린','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,199,'BEGINNER','LONG_SENTENCE',NULL),
+(4191,'fluency','자연스럽게 읽기 · 봄 노래','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,200,'BEGINNER','SHORT_SENTENCE',NULL),
+(4192,'fluency','자연스럽게 읽기 · 비 노래','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,201,'BEGINNER','SHORT_SENTENCE',NULL),
+(4193,'fluency','자연스럽게 읽기 · 바다 노래','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,202,'BEGINNER','SHORT_SENTENCE',NULL),
+(4194,'fluency','자연스럽게 읽기 · 기차 노래','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,203,'BEGINNER','SHORT_SENTENCE',NULL),
+(4195,'fluency','자연스럽게 읽기 · 아침 인사','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,204,'BEGINNER','SHORT_SENTENCE',NULL),
+(4196,'fluency','자연스럽게 읽기 · 숲속 소리','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,205,'BEGINNER','SHORT_SENTENCE',NULL),
+(4197,'fluency','자연스럽게 읽기 · 눈 노래','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,206,'BEGINNER','SHORT_SENTENCE',NULL),
+(4198,'fluency','자연스럽게 읽기 · 반짝반짝 별','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,207,'BEGINNER','SHORT_SENTENCE',NULL),
+(4199,'fluency','자연스럽게 읽기 · 시계 소리','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,208,'BEGINNER','SHORT_SENTENCE',NULL),
+(4200,'fluency','자연스럽게 읽기 · 농장 친구들','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,209,'BEGINNER','SHORT_SENTENCE',NULL),
+(4201,'fluency','자연스럽게 읽기 · 요리 소리','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,210,'BEGINNER','SHORT_SENTENCE',NULL),
+(4202,'fluency','자연스럽게 읽기 · 가을 노래','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,211,'BEGINNER','SHORT_SENTENCE',NULL),
+(4203,'fluency','자연스럽게 읽기 · 청소 노래','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,212,'BEGINNER','SHORT_SENTENCE',NULL),
+(4204,'fluency','자연스럽게 읽기 · 북 치는 소리','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,213,'BEGINNER','SHORT_SENTENCE',NULL),
+(4205,'fluency','자연스럽게 읽기 · 잘 자요 인사','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,214,'BEGINNER','SHORT_SENTENCE',NULL),
+(4206,'fluency','자연스럽게 읽기 · 고마운 마음','세 문장을 쉬지 않고 리듬을 살려 자연스럽게 읽어 보세요.','mic',NULL,215,'BEGINNER','SHORT_SENTENCE',NULL),
+(4207,'fluency','일상 상황 말하기 · 가게에서 물건 찾기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,216,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4208,'fluency','일상 상황 말하기 · 식당에서 주문하기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,217,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4209,'fluency','일상 상황 말하기 · 길 묻기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,218,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4210,'fluency','일상 상황 말하기 · 전화 받기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,219,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4211,'fluency','일상 상황 말하기 · 친구 집 방문','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,220,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4212,'fluency','일상 상황 말하기 · 보건실 가기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,221,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4213,'fluency','일상 상황 말하기 · 도서관 대출','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,222,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4214,'fluency','일상 상황 말하기 · 버스에서 내리기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,223,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4215,'fluency','일상 상황 말하기 · 물건 교환','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,224,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4216,'fluency','일상 상황 말하기 · 병원 접수','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,225,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4217,'fluency','일상 상황 말하기 · 수업 중 질문','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,226,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4218,'fluency','일상 상황 말하기 · 분실물 찾기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,227,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4219,'fluency','일상 상황 말하기 · 생일 초대','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,228,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4220,'fluency','일상 상황 말하기 · 약속 정하기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,229,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4221,'fluency','일상 상황 말하기 · 사과하기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,230,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4222,'fluency','일상 상황 말하기 · 도움 요청','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,231,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4223,'fluency','일상 상황 말하기 · 음식 남기기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,232,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4224,'fluency','일상 상황 말하기 · 엘리베이터에서','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,233,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4225,'fluency','일상 상황 말하기 · 택배 받기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,234,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4226,'fluency','일상 상황 말하기 · 급식 받기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,235,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4227,'fluency','일상 상황 말하기 · 미용실에서','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,236,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4228,'fluency','일상 상황 말하기 · 놀이기구 줄','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,237,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4229,'fluency','일상 상황 말하기 · 친구 위로하기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,238,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4230,'fluency','일상 상황 말하기 · 수업 늦었을 때','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,239,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4231,'fluency','일상 상황 말하기 · 선물 받았을 때','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,240,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4232,'fluency','일상 상황 말하기 · 가게에서 계산','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,241,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4233,'fluency','일상 상황 말하기 · 아픈 친구 병문안','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,242,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4234,'fluency','일상 상황 말하기 · 놀이 규칙 정하기','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,243,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4235,'fluency','일상 상황 말하기 · 전학 온 친구에게','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,244,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4236,'fluency','일상 상황 말하기 · 고장 신고','이런 상황이라면 어떻게 말할지 세 문장을 이어서 말해 보세요.','mic',NULL,245,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4237,'fluency','물건 설명하기 · 우산 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,246,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4238,'fluency','물건 설명하기 · 냉장고 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,247,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4239,'fluency','물건 설명하기 · 시계 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,248,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4240,'fluency','물건 설명하기 · 가방 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,249,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4241,'fluency','물건 설명하기 · 연필 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,250,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4242,'fluency','물건 설명하기 · 자전거 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,251,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4243,'fluency','물건 설명하기 · 칫솔 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,252,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4244,'fluency','물건 설명하기 · 선풍기 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,253,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4245,'fluency','물건 설명하기 · 안경 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,254,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4246,'fluency','물건 설명하기 · 가위 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,255,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4247,'fluency','물건 설명하기 · 컵 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,256,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4248,'fluency','물건 설명하기 · 전화기 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,257,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4249,'fluency','물건 설명하기 · 텔레비전 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,258,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4250,'fluency','물건 설명하기 · 신발 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,259,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4251,'fluency','물건 설명하기 · 책 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,260,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4252,'fluency','물건 설명하기 · 의자 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,261,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4253,'fluency','물건 설명하기 · 청소기 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,262,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4254,'fluency','물건 설명하기 · 물뿌리개 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,263,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4255,'fluency','물건 설명하기 · 손전등 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,264,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4256,'fluency','물건 설명하기 · 달력 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,265,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4257,'fluency','물건 설명하기 · 열쇠 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,266,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4258,'fluency','물건 설명하기 · 지우개 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,267,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4259,'fluency','물건 설명하기 · 베개 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,268,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4260,'fluency','물건 설명하기 · 돋보기 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,269,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4261,'fluency','물건 설명하기 · 냄비 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,270,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4262,'fluency','물건 설명하기 · 줄자 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,271,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4263,'fluency','물건 설명하기 · 저금통 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,272,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4264,'fluency','물건 설명하기 · 풍선 설명','물건의 생김새와 쓰임을 세 문장으로 이어서 설명해 보세요.','mic',NULL,273,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4265,'fluency','하루 일과 말하기 · 월요일 아침','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,274,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4266,'fluency','하루 일과 말하기 · 토요일 오전','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,275,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4267,'fluency','하루 일과 말하기 · 일요일 오후','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,276,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4268,'fluency','하루 일과 말하기 · 학교 하루','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,277,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4269,'fluency','하루 일과 말하기 · 비 오는 날 하루','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,278,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4270,'fluency','하루 일과 말하기 · 방학 첫날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,279,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4271,'fluency','하루 일과 말하기 · 생일날 하루','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,280,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4272,'fluency','하루 일과 말하기 · 아픈 날 하루','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,281,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4273,'fluency','하루 일과 말하기 · 대청소 하는 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,282,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4274,'fluency','하루 일과 말하기 · 현장 학습 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,283,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4275,'fluency','하루 일과 말하기 · 눈 오는 날 하루','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,284,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4276,'fluency','하루 일과 말하기 · 시장 가는 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,285,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4277,'fluency','하루 일과 말하기 · 운동회 날 하루','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,286,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4278,'fluency','하루 일과 말하기 · 캠핑 가는 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,287,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4279,'fluency','하루 일과 말하기 · 도서관 가는 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,288,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4280,'fluency','하루 일과 말하기 · 설날 하루','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,289,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4281,'fluency','하루 일과 말하기 · 추석 하루','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,290,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4282,'fluency','하루 일과 말하기 · 이사 가는 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,291,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4283,'fluency','하루 일과 말하기 · 등산하는 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,292,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4284,'fluency','하루 일과 말하기 · 수영 배우는 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,293,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4285,'fluency','하루 일과 말하기 · 바닷가 가는 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,294,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4286,'fluency','하루 일과 말하기 · 병원 검진 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,295,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4287,'fluency','하루 일과 말하기 · 과학 실험 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,296,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4288,'fluency','하루 일과 말하기 · 할머니 댁 가는 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,297,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4289,'fluency','하루 일과 말하기 · 피아노 대회 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,298,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4290,'fluency','하루 일과 말하기 · 김장하는 날 하루','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,299,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4291,'fluency','하루 일과 말하기 · 놀이공원 가는 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,300,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4292,'fluency','하루 일과 말하기 · 학예회 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,301,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4293,'fluency','하루 일과 말하기 · 텃밭 가꾸는 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,302,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(4294,'fluency','하루 일과 말하기 · 친구 집 가는 날','하루 동안 한 일을 시간 순서대로 이어서 말해 보세요.','mic',NULL,303,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(4295,'fluency','감각으로 말하기 · 갓 구운 빵','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,304,'ADVANCED','LONG_SENTENCE',NULL),
+(4296,'fluency','감각으로 말하기 · 여름 바다','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,305,'ADVANCED','SHORT_SENTENCE',NULL),
+(4297,'fluency','감각으로 말하기 · 겨울 아침','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,306,'ADVANCED','SHORT_SENTENCE',NULL),
+(4298,'fluency','감각으로 말하기 · 비 온 뒤 숲','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,307,'ADVANCED','SHORT_SENTENCE',NULL),
+(4299,'fluency','감각으로 말하기 · 귤 까기','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,308,'ADVANCED','LONG_SENTENCE',NULL),
+(4300,'fluency','감각으로 말하기 · 불꽃놀이','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,309,'ADVANCED','SHORT_SENTENCE',NULL),
+(4301,'fluency','감각으로 말하기 · 솜사탕','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,310,'ADVANCED','SHORT_SENTENCE',NULL),
+(4302,'fluency','감각으로 말하기 · 가을 낙엽길','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,311,'ADVANCED','LONG_SENTENCE',NULL),
+(4303,'fluency','감각으로 말하기 · 따뜻한 목욕','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,312,'ADVANCED','SHORT_SENTENCE',NULL),
+(4304,'fluency','감각으로 말하기 · 아이스크림','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,313,'ADVANCED','SHORT_SENTENCE',NULL),
+(4305,'fluency','감각으로 말하기 · 시장 골목','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,314,'ADVANCED','SHORT_SENTENCE',NULL),
+(4306,'fluency','감각으로 말하기 · 캠핑 모닥불','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,315,'ADVANCED','SHORT_SENTENCE',NULL),
+(4307,'fluency','감각으로 말하기 · 봄 들판','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,316,'ADVANCED','SHORT_SENTENCE',NULL),
+(4308,'fluency','감각으로 말하기 · 눈길 걷기','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,317,'ADVANCED','LONG_SENTENCE',NULL),
+(4309,'fluency','감각으로 말하기 · 비빔국수','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,318,'ADVANCED','SHORT_SENTENCE',NULL),
+(4310,'fluency','감각으로 말하기 · 새 공책','보고 듣고 냄새 맡고 맛본 느낌을 세 문장으로 이어서 말해 보세요.','mic',NULL,319,'ADVANCED','LONG_SENTENCE',NULL),
+(5001,'expression','좋아하는 것 말하기 · 좋아하는 음식','질문: 가장 좋아하는 음식은 무엇인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,10,'BEGINNER','LONG_SENTENCE',NULL),
+(5002,'expression','좋아하는 것 말하기 · 좋아하는 계절','질문: 가장 좋아하는 계절은 언제인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,11,'BEGINNER','SHORT_SENTENCE',NULL),
+(5003,'expression','좋아하는 것 말하기 · 좋아하는 동물','질문: 가장 좋아하는 동물은 무엇인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,12,'BEGINNER','LONG_SENTENCE',NULL),
+(5004,'expression','좋아하는 것 말하기 · 좋아하는 색깔','질문: 가장 좋아하는 색깔은 무엇인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,13,'BEGINNER','SHORT_SENTENCE',NULL),
+(5005,'expression','좋아하는 것 말하기 · 좋아하는 놀이','질문: 친구와 하는 놀이 중에 무엇이 가장 좋아요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,14,'BEGINNER','SHORT_SENTENCE',NULL),
+(5006,'expression','좋아하는 것 말하기 · 좋아하는 과목','질문: 학교에서 가장 좋아하는 과목은 무엇인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,15,'BEGINNER','LONG_SENTENCE',NULL),
+(5007,'expression','좋아하는 것 말하기 · 좋아하는 책','질문: 가장 좋아하는 책을 소개해 주세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,16,'BEGINNER','LONG_SENTENCE',NULL),
+(5008,'expression','좋아하는 것 말하기 · 좋아하는 장소','질문: 가장 좋아하는 장소는 어디인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,17,'BEGINNER','SHORT_SENTENCE',NULL),
+(5009,'expression','좋아하는 것 말하기 · 좋아하는 노래','질문: 즐겨 부르는 노래가 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,18,'BEGINNER','LONG_SENTENCE',NULL),
+(5010,'expression','좋아하는 것 말하기 · 좋아하는 날씨','질문: 어떤 날씨를 좋아하나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,19,'BEGINNER','SHORT_SENTENCE',NULL),
+(5011,'expression','좋아하는 것 말하기 · 좋아하는 간식','질문: 가장 좋아하는 간식은 무엇인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,20,'BEGINNER','SHORT_SENTENCE',NULL),
+(5012,'expression','좋아하는 것 말하기 · 좋아하는 운동','질문: 어떤 운동을 좋아하나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,21,'BEGINNER','SHORT_SENTENCE',NULL),
+(5013,'expression','좋아하는 것 말하기 · 좋아하는 시간','질문: 하루 중 언제가 가장 좋아요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,22,'BEGINNER','LONG_SENTENCE',NULL),
+(5014,'expression','좋아하는 것 말하기 · 좋아하는 과일','질문: 가장 좋아하는 과일은 무엇인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,23,'BEGINNER','SHORT_SENTENCE',NULL),
+(5015,'expression','좋아하는 것 말하기 · 좋아하는 장난감','질문: 가장 아끼는 장난감은 무엇인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,24,'BEGINNER','SHORT_SENTENCE',NULL),
+(5016,'expression','좋아하는 것 말하기 · 좋아하는 친구','질문: 친한 친구를 소개해 주세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,25,'BEGINNER','LONG_SENTENCE',NULL),
+(5017,'expression','좋아하는 것 말하기 · 좋아하는 영화','질문: 재미있게 본 영화가 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,26,'BEGINNER','SHORT_SENTENCE',NULL),
+(5018,'expression','좋아하는 것 말하기 · 좋아하는 가족 활동','질문: 가족과 함께 하는 일 중 무엇이 좋아요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,27,'BEGINNER','LONG_SENTENCE',NULL),
+(5019,'expression','좋아하는 것 말하기 · 좋아하는 꽃','질문: 좋아하는 꽃이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,28,'BEGINNER','LONG_SENTENCE',NULL),
+(5020,'expression','좋아하는 것 말하기 · 좋아하는 요일','질문: 일주일 중 어느 요일이 좋아요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,29,'BEGINNER','LONG_SENTENCE',NULL),
+(5021,'expression','좋아하는 것 말하기 · 좋아하는 반찬','질문: 급식에서 좋아하는 반찬은 무엇인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,30,'BEGINNER','SHORT_SENTENCE',NULL),
+(5022,'expression','좋아하는 것 말하기 · 좋아하는 그림','질문: 어떤 그림을 그리는 걸 좋아하나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,31,'BEGINNER','LONG_SENTENCE',NULL);
+INSERT IGNORE INTO exercises (exercise_id,category_id,title,instruction,input_type,target_phonemes,sort_order,difficulty,content_type,pronunciation_rule) VALUES
+(5023,'expression','좋아하는 것 말하기 · 좋아하는 탈것','질문: 가장 타 보고 싶은 탈것은 무엇인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,32,'BEGINNER','SHORT_SENTENCE',NULL),
+(5024,'expression','좋아하는 것 말하기 · 좋아하는 공룡','질문: 좋아하는 공룡이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,33,'BEGINNER','SHORT_SENTENCE',NULL),
+(5025,'expression','좋아하는 것 말하기 · 좋아하는 옷','질문: 가장 좋아하는 옷은 무엇인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,34,'BEGINNER','LONG_SENTENCE',NULL),
+(5026,'expression','좋아하는 것 말하기 · 좋아하는 소리','질문: 듣기 좋은 소리가 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,35,'BEGINNER','SHORT_SENTENCE',NULL),
+(5027,'expression','싫어하는 것 말하기 · 싫어하는 음식','질문: 먹기 싫은 음식이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,36,'BEGINNER','SHORT_SENTENCE',NULL),
+(5028,'expression','싫어하는 것 말하기 · 싫어하는 날씨','질문: 싫어하는 날씨가 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,37,'BEGINNER','LONG_SENTENCE',NULL),
+(5029,'expression','싫어하는 것 말하기 · 싫어하는 소리','질문: 듣기 싫은 소리가 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,38,'BEGINNER','SHORT_SENTENCE',NULL),
+(5030,'expression','싫어하는 것 말하기 · 싫어하는 벌레','질문: 무서운 벌레가 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,39,'BEGINNER','SHORT_SENTENCE',NULL),
+(5031,'expression','싫어하는 것 말하기 · 싫어하는 일','질문: 하기 싫은 집안일이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,40,'BEGINNER','SHORT_SENTENCE',NULL),
+(5032,'expression','싫어하는 것 말하기 · 싫어하는 상황','질문: 어떤 때 기분이 나빠지나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,41,'BEGINNER','SHORT_SENTENCE',NULL),
+(5033,'expression','싫어하는 것 말하기 · 싫어하는 장소','질문: 가기 싫은 곳이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,42,'BEGINNER','SHORT_SENTENCE',NULL),
+(5034,'expression','싫어하는 것 말하기 · 싫어하는 냄새','질문: 싫어하는 냄새가 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,43,'BEGINNER','SHORT_SENTENCE',NULL),
+(5035,'expression','싫어하는 것 말하기 · 싫어하는 행동','질문: 친구가 어떤 행동을 하면 싫나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,44,'BEGINNER','LONG_SENTENCE',NULL),
+(5036,'expression','싫어하는 것 말하기 · 싫어하는 시간','질문: 하루 중 싫은 시간이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,45,'BEGINNER','SHORT_SENTENCE',NULL),
+(5037,'expression','싫어하는 것 말하기 · 싫어하는 놀이기구','질문: 무서운 놀이기구가 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,46,'BEGINNER','SHORT_SENTENCE',NULL),
+(5038,'expression','싫어하는 것 말하기 · 싫어하는 숙제','질문: 하기 싫은 숙제가 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,47,'BEGINNER','LONG_SENTENCE',NULL),
+(5039,'expression','싫어하는 것 말하기 · 싫어하는 맛','질문: 싫어하는 맛이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,48,'BEGINNER','LONG_SENTENCE',NULL),
+(5040,'expression','싫어하는 것 말하기 · 싫어하는 옷','질문: 입기 싫은 옷이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,49,'BEGINNER','SHORT_SENTENCE',NULL),
+(5041,'expression','싫어하는 것 말하기 · 싫어하는 순간','질문: 가장 싫은 순간은 언제인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,50,'BEGINNER','LONG_SENTENCE',NULL),
+(5042,'expression','싫어하는 것 말하기 · 싫어하는 계절','질문: 싫어하는 계절이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,51,'BEGINNER','SHORT_SENTENCE',NULL),
+(5043,'expression','싫어하는 것 말하기 · 싫어하는 말','질문: 듣기 싫은 말이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,52,'BEGINNER','SHORT_SENTENCE',NULL),
+(5044,'expression','싫어하는 것 말하기 · 싫어하는 기다림','질문: 기다리기 힘든 때가 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,53,'BEGINNER','LONG_SENTENCE',NULL),
+(5045,'expression','싫어하는 것 말하기 · 싫어하는 정리','질문: 정리하기 싫은 물건이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,54,'BEGINNER','SHORT_SENTENCE',NULL),
+(5046,'expression','싫어하는 것 말하기 · 싫어하는 교통','질문: 타기 싫은 탈것이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,55,'BEGINNER','LONG_SENTENCE',NULL),
+(5047,'expression','싫어하는 것 말하기 · 싫어하는 상처','질문: 다쳤을 때 무엇이 싫나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,56,'BEGINNER','LONG_SENTENCE',NULL),
+(5048,'expression','싫어하는 것 말하기 · 싫어하는 소음','질문: 시끄러워서 싫은 곳이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,57,'BEGINNER','SHORT_SENTENCE',NULL),
+(5049,'expression','싫어하는 것 말하기 · 싫어하는 게임 결과','질문: 게임에서 무엇이 싫나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,58,'BEGINNER','SHORT_SENTENCE',NULL),
+(5050,'expression','싫어하는 것 말하기 · 싫어하는 아침 메뉴','질문: 아침에 먹기 싫은 음식이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,59,'BEGINNER','SHORT_SENTENCE',NULL),
+(5051,'expression','싫어하는 것 말하기 · 싫어하는 기분','질문: 어떤 기분이 가장 싫나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,60,'BEGINNER','SHORT_SENTENCE',NULL),
+(5052,'expression','선택하고 이유 말하기 · 바다와 산','질문: 바다와 산 중에 어디에 가고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,61,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5053,'expression','선택하고 이유 말하기 · 여름과 겨울','질문: 여름과 겨울 중 어느 계절이 좋나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,62,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5054,'expression','선택하고 이유 말하기 · 강아지와 고양이','질문: 강아지와 고양이 중 무엇을 키우고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,63,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5055,'expression','선택하고 이유 말하기 · 빵과 밥','질문: 아침에 빵과 밥 중 무엇을 먹고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,64,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5056,'expression','선택하고 이유 말하기 · 책과 영화','질문: 같은 이야기를 책과 영화 중 무엇으로 볼래요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,65,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5057,'expression','선택하고 이유 말하기 · 자전거와 킥보드','질문: 자전거와 킥보드 중 무엇을 탈래요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,66,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5058,'expression','선택하고 이유 말하기 · 그림과 노래','질문: 발표회에서 그림과 노래 중 무엇을 할래요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,67,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5059,'expression','선택하고 이유 말하기 · 혼자와 함께','질문: 숙제를 혼자 할래요, 친구와 할래요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,68,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5060,'expression','선택하고 이유 말하기 · 피자와 치킨','질문: 생일에 피자와 치킨 중 무엇을 먹을래요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,69,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5061,'expression','선택하고 이유 말하기 · 아침형과 저녁형','질문: 일찍 자고 일찍 일어나는 것과 늦게 자고 늦게 일어나는 것 중 무엇이 좋나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,70,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5062,'expression','선택하고 이유 말하기 · 비 오는 날 놀이','질문: 비 오는 날 집에서 무엇을 하고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,71,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5063,'expression','선택하고 이유 말하기 · 선물 고르기','질문: 선물로 책과 장난감 중 무엇을 받고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,72,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5064,'expression','선택하고 이유 말하기 · 동물원과 수족관','질문: 동물원과 수족관 중 어디에 가고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,73,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5065,'expression','선택하고 이유 말하기 · 집과 밖','질문: 쉬는 날 집과 밖 중 어디에 있고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,74,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5066,'expression','선택하고 이유 말하기 · 짧은 머리와 긴 머리','질문: 짧은 머리와 긴 머리 중 무엇이 좋나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,75,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5067,'expression','선택하고 이유 말하기 · 하늘을 나는 능력','질문: 하늘을 나는 능력과 투명해지는 능력 중 무엇을 갖고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,76,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5068,'expression','선택하고 이유 말하기 · 과일 주스와 우유','질문: 간식으로 과일 주스와 우유 중 무엇을 마실래요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,77,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5069,'expression','선택하고 이유 말하기 · 버스와 지하철','질문: 버스와 지하철 중 무엇을 타고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,78,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5070,'expression','선택하고 이유 말하기 · 낮과 밤','질문: 낮과 밤 중 언제가 더 좋나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,79,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5071,'expression','선택하고 이유 말하기 · 연필과 색연필','질문: 그림을 그릴 때 연필과 색연필 중 무엇을 쓸래요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,80,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5072,'expression','선택하고 이유 말하기 · 축구와 농구','질문: 축구와 농구 중 무엇을 하고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,81,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5073,'expression','선택하고 이유 말하기 · 봄 소풍 장소','질문: 봄 소풍으로 공원과 놀이공원 중 어디가 좋나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,82,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5074,'expression','선택하고 이유 말하기 · 나무와 꽃','질문: 정원에 나무와 꽃 중 무엇을 심고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,83,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5075,'expression','선택하고 이유 말하기 · 조용한 놀이와 신나는 놀이','질문: 조용한 놀이와 신나는 놀이 중 무엇이 좋나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,84,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5076,'expression','선택하고 이유 말하기 · 편지와 전화','질문: 멀리 사는 친구에게 편지와 전화 중 무엇으로 연락할래요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,85,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5077,'expression','감정 표현하기 · 기뻤던 순간','질문: 최근에 가장 기뻤던 일은 무엇인가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,86,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5078,'expression','감정 표현하기 · 슬펐던 순간','질문: 슬펐던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,87,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5079,'expression','감정 표현하기 · 화났던 순간','질문: 화가 났던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,88,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5080,'expression','감정 표현하기 · 무서웠던 순간','질문: 무서웠던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,89,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5081,'expression','감정 표현하기 · 놀랐던 순간','질문: 깜짝 놀랐던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,90,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5082,'expression','감정 표현하기 · 뿌듯했던 순간','질문: 스스로 자랑스러웠던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,91,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5083,'expression','감정 표현하기 · 부끄러웠던 순간','질문: 부끄러웠던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,92,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5084,'expression','감정 표현하기 · 속상했던 순간','질문: 속상했던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,93,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5085,'expression','감정 표현하기 · 설렜던 순간','질문: 마음이 두근두근 설렜던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,94,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5086,'expression','감정 표현하기 · 고마웠던 순간','질문: 누군가에게 고마웠던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,95,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5087,'expression','감정 표현하기 · 외로웠던 순간','질문: 외로웠던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,96,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5088,'expression','감정 표현하기 · 걱정했던 순간','질문: 걱정했던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,97,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5089,'expression','감정 표현하기 · 긴장했던 순간','질문: 긴장했던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,98,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5090,'expression','감정 표현하기 · 미안했던 순간','질문: 친구에게 미안했던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,99,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5091,'expression','감정 표현하기 · 신났던 순간','질문: 가장 신났던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,100,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5092,'expression','감정 표현하기 · 억울했던 순간','질문: 억울했던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,101,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5093,'expression','감정 표현하기 · 행복한 기분','질문: 언제 가장 행복한가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,102,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5094,'expression','감정 표현하기 · 편안한 기분','질문: 언제 마음이 편안한가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,103,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5095,'expression','감정 표현하기 · 심심한 기분','질문: 심심할 때 무엇을 하나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,104,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5096,'expression','감정 표현하기 · 샘나는 기분','질문: 부러웠던 일을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,105,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5097,'expression','감정 표현하기 · 기분 바꾸기','질문: 기분이 나쁠 때 어떻게 기분을 바꾸나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,106,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5098,'expression','감정 표현하기 · 오늘의 기분','질문: 오늘 기분은 어떤가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,107,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5099,'expression','감정 표현하기 · 화가 날 때','질문: 화가 나면 어떻게 하나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,108,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5100,'expression','감정 표현하기 · 울고 싶을 때','질문: 울고 싶을 때 어떻게 하나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,109,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5101,'expression','감정 표현하기 · 감동한 순간','질문: 마음이 뭉클했던 적이 있나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,110,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5102,'expression','의견 말하기 · 급식 남기기','질문: 급식을 남기는 것에 대해 어떻게 생각하나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,111,'ADVANCED','LONG_SENTENCE',NULL),
+(5103,'expression','의견 말하기 · 숙제 필요성','질문: 숙제가 꼭 필요하다고 생각하나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,112,'ADVANCED','LONG_SENTENCE',NULL),
+(5104,'expression','의견 말하기 · 반려동물 키우기','질문: 반려동물을 키우려면 무엇이 필요할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,113,'ADVANCED','SHORT_SENTENCE',NULL),
+(5105,'expression','의견 말하기 · 스마트폰 사용','질문: 어린이의 스마트폰 사용에 대해 어떻게 생각하나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,114,'ADVANCED','LONG_SENTENCE',NULL),
+(5106,'expression','의견 말하기 · 일회용품','질문: 일회용품을 줄여야 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,115,'ADVANCED','SHORT_SENTENCE',NULL),
+(5107,'expression','의견 말하기 · 교실 규칙','질문: 교실에 꼭 필요한 규칙은 무엇일까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,116,'ADVANCED','LONG_SENTENCE',NULL),
+(5108,'expression','의견 말하기 · 방학 기간','질문: 방학이 더 길어야 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,117,'ADVANCED','SHORT_SENTENCE',NULL),
+(5109,'expression','의견 말하기 · 용돈 쓰기','질문: 용돈은 어떻게 쓰는 게 좋을까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,118,'ADVANCED','LONG_SENTENCE',NULL),
+(5110,'expression','의견 말하기 · 교통 안전','질문: 길을 건널 때 무엇이 가장 중요할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,119,'ADVANCED','SHORT_SENTENCE',NULL),
+(5111,'expression','의견 말하기 · 독서의 좋은 점','질문: 책을 많이 읽으면 무엇이 좋을까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,120,'ADVANCED','LONG_SENTENCE',NULL),
+(5112,'expression','의견 말하기 · 친구 사이 다툼','질문: 친구와 다투면 어떻게 하는 게 좋을까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,121,'ADVANCED','LONG_SENTENCE',NULL),
+(5113,'expression','의견 말하기 · 아침밥','질문: 아침밥을 꼭 먹어야 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,122,'ADVANCED','LONG_SENTENCE',NULL),
+(5114,'expression','의견 말하기 · 운동의 필요성','질문: 매일 운동을 해야 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,123,'ADVANCED','SHORT_SENTENCE',NULL),
+(5115,'expression','의견 말하기 · 물 아껴 쓰기','질문: 물을 아껴 써야 하는 이유는 무엇일까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,124,'ADVANCED','LONG_SENTENCE',NULL),
+(5116,'expression','의견 말하기 · 동물원 동물','질문: 동물원 동물들은 행복할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,125,'ADVANCED','LONG_SENTENCE',NULL),
+(5117,'expression','의견 말하기 · 게임 시간','질문: 게임은 하루에 얼마나 하는 게 좋을까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,126,'ADVANCED','LONG_SENTENCE',NULL),
+(5118,'expression','의견 말하기 · 양보하기','질문: 양보는 왜 중요할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,127,'ADVANCED','LONG_SENTENCE',NULL),
+(5119,'expression','의견 말하기 · 쓰레기 줍기','질문: 길에 떨어진 쓰레기를 주워야 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,128,'ADVANCED','LONG_SENTENCE',NULL),
+(5120,'expression','의견 말하기 · 인사의 중요성','질문: 인사는 왜 해야 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,129,'ADVANCED','SHORT_SENTENCE',NULL),
+(5121,'expression','의견 말하기 · 꿈의 중요성','질문: 꿈을 갖는 것은 왜 중요할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,130,'ADVANCED','LONG_SENTENCE',NULL),
+(5122,'expression','의견 말하기 · 실수에 대해','질문: 실수를 하면 어떻게 해야 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,131,'ADVANCED','LONG_SENTENCE',NULL),
+(5123,'expression','의견 말하기 · 나무 심기','질문: 나무를 많이 심어야 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,132,'ADVANCED','SHORT_SENTENCE',NULL),
+(5124,'expression','의견 말하기 · 도서관 규칙','질문: 도서관에서 조용히 해야 하는 이유는 무엇일까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,133,'ADVANCED','LONG_SENTENCE',NULL),
+(5125,'expression','의견 말하기 · 줄 서기','질문: 줄을 서는 것은 왜 필요할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,134,'ADVANCED','LONG_SENTENCE',NULL),
+(5126,'expression','의견 말하기 · 편식','질문: 편식하지 말아야 하는 이유는 무엇일까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,135,'ADVANCED','SHORT_SENTENCE',NULL),
+(5127,'expression','비교하기 · 사과와 배 비교','질문: 사과와 배는 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,136,'ADVANCED','SHORT_SENTENCE',NULL),
+(5128,'expression','비교하기 · 고양이와 강아지 비교','질문: 고양이와 강아지는 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,137,'ADVANCED','LONG_SENTENCE',NULL),
+(5129,'expression','비교하기 · 여름과 겨울 비교','질문: 여름과 겨울은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,138,'ADVANCED','SHORT_SENTENCE',NULL),
+(5130,'expression','비교하기 · 버스와 기차 비교','질문: 버스와 기차는 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,139,'ADVANCED','LONG_SENTENCE',NULL),
+(5131,'expression','비교하기 · 연필과 볼펜 비교','질문: 연필과 볼펜은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,140,'ADVANCED','LONG_SENTENCE',NULL),
+(5132,'expression','비교하기 · 바다와 강 비교','질문: 바다와 강은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,141,'ADVANCED','SHORT_SENTENCE',NULL),
+(5133,'expression','비교하기 · 해와 달 비교','질문: 해와 달은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,142,'ADVANCED','LONG_SENTENCE',NULL),
+(5134,'expression','비교하기 · 비와 눈 비교','질문: 비와 눈은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,143,'ADVANCED','LONG_SENTENCE',NULL),
+(5135,'expression','비교하기 · 책과 텔레비전 비교','질문: 책과 텔레비전은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,144,'ADVANCED','LONG_SENTENCE',NULL),
+(5136,'expression','비교하기 · 학교와 집 비교','질문: 학교와 집은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,145,'ADVANCED','SHORT_SENTENCE',NULL),
+(5137,'expression','비교하기 · 새와 비행기 비교','질문: 새와 비행기는 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,146,'ADVANCED','LONG_SENTENCE',NULL),
+(5138,'expression','비교하기 · 토끼와 거북이 비교','질문: 토끼와 거북이는 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,147,'ADVANCED','SHORT_SENTENCE',NULL),
+(5139,'expression','비교하기 · 아침과 저녁 비교','질문: 아침과 저녁은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,148,'ADVANCED','LONG_SENTENCE',NULL),
+(5140,'expression','비교하기 · 나무와 꽃 비교','질문: 나무와 꽃은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,149,'ADVANCED','SHORT_SENTENCE',NULL),
+(5141,'expression','비교하기 · 우유와 물 비교','질문: 우유와 물은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,150,'ADVANCED','LONG_SENTENCE',NULL),
+(5142,'expression','비교하기 · 자전거와 자동차 비교','질문: 자전거와 자동차는 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,151,'ADVANCED','LONG_SENTENCE',NULL),
+(5143,'expression','비교하기 · 시장과 마트 비교','질문: 시장과 마트는 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,152,'ADVANCED','LONG_SENTENCE',NULL),
+(5144,'expression','비교하기 · 의자와 소파 비교','질문: 의자와 소파는 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,153,'ADVANCED','LONG_SENTENCE',NULL),
+(5145,'expression','비교하기 · 산과 들 비교','질문: 산과 들은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,154,'ADVANCED','SHORT_SENTENCE',NULL),
+(5146,'expression','비교하기 · 편지와 문자 비교','질문: 편지와 문자 메시지는 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,155,'ADVANCED','LONG_SENTENCE',NULL),
+(5147,'expression','비교하기 · 어제와 오늘 비교','질문: 어제와 오늘은 무엇이 달랐나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,156,'ADVANCED','LONG_SENTENCE',NULL),
+(5148,'expression','비교하기 · 나와 동생 비교','질문: 나와 동생은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,157,'ADVANCED','LONG_SENTENCE',NULL),
+(5149,'expression','비교하기 · 봄과 가을 비교','질문: 봄과 가을은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,158,'ADVANCED','LONG_SENTENCE',NULL),
+(5150,'expression','비교하기 · 피아노와 기타 비교','질문: 피아노와 기타는 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,159,'ADVANCED','LONG_SENTENCE',NULL),
+(5151,'expression','비교하기 · 냉장고와 냉동실 비교','질문: 냉장고와 냉동실은 어떻게 다른가요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,160,'ADVANCED','SHORT_SENTENCE',NULL),
+(5152,'expression','부탁하기 · 연필 빌리기','질문: 친구에게 연필을 빌리고 싶을 때 어떻게 말할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,161,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5153,'expression','부탁하기 · 숙제 도움','질문: 어려운 숙제를 도와 달라고 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,162,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5154,'expression','부탁하기 · 자리 바꾸기','질문: 자리를 바꾸고 싶을 때 선생님께 어떻게 말할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,163,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5155,'expression','부탁하기 · 사진 찍어 달라기','질문: 사진을 찍어 달라고 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,164,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5156,'expression','부탁하기 · 조용히 해 달라기','질문: 시끄러운 친구에게 정중히 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,165,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5157,'expression','부탁하기 · 물 떠다 달라기','질문: 가족에게 물을 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,166,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5158,'expression','부탁하기 · 문 열어 달라기','질문: 짐이 많을 때 문을 열어 달라고 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,167,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5159,'expression','부탁하기 · 같이 놀자고 하기','질문: 놀고 있는 친구들에게 끼워 달라고 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,168,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5160,'expression','부탁하기 · 길 비켜 달라기','질문: 좁은 길에서 비켜 달라고 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,169,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5161,'expression','부탁하기 · 설명 다시 듣기','질문: 이해하지 못한 설명을 다시 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,170,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5162,'expression','부탁하기 · 장난감 같이 쓰기','질문: 친구 장난감을 같이 쓰자고 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,171,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5163,'expression','부탁하기 · 책 읽어 달라기','질문: 어른께 책을 읽어 달라고 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,172,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5164,'expression','부탁하기 · 기다려 달라기','질문: 친구에게 잠깐 기다려 달라고 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,173,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5165,'expression','부탁하기 · 화분 돌봐 달라기','질문: 여행 가는 동안 화분을 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,174,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5166,'expression','부탁하기 · 가방 들어 달라기','질문: 무거운 가방을 들어 달라고 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,175,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5167,'expression','부탁하기 · 번호 알려 달라기','질문: 친구에게 전화번호를 물어보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,176,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5168,'expression','부탁하기 · 천천히 말해 달라기','질문: 말이 빨라서 알아듣기 어려울 때 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,177,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5169,'expression','부탁하기 · 간식 나눠 달라기','질문: 친구에게 간식을 조금 나눠 달라고 해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,178,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5170,'expression','부탁하기 · 청소 도움','질문: 청소를 함께 하자고 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,179,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5171,'expression','부탁하기 · 우산 같이 쓰기','질문: 우산이 없을 때 친구에게 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,180,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5172,'expression','부탁하기 · 이름 불러 달라기','질문: 순서가 되면 불러 달라고 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,181,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5173,'expression','부탁하기 · 자리 맡아 달라기','질문: 잠깐 자리를 맡아 달라고 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,182,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5174,'expression','부탁하기 · 모르는 낱말 묻기','질문: 모르는 낱말의 뜻을 물어보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,183,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5175,'expression','부탁하기 · 불 꺼 달라기','질문: 잘 때 불을 꺼 달라고 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,184,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5176,'expression','부탁하기 · 사진 보내 달라기','질문: 찍은 사진을 보내 달라고 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,185,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5177,'expression','거절하기 · 위험한 장난 거절','질문: 친구가 위험한 장난을 하자고 할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,186,'ADVANCED','SHORT_SENTENCE',NULL),
+(5178,'expression','거절하기 · 과자 거절','질문: 배부를 때 과자를 권하면 어떻게 거절할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,187,'ADVANCED','SHORT_SENTENCE',NULL),
+(5179,'expression','거절하기 · 늦은 놀이 거절','질문: 늦게까지 놀자는 말을 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,188,'ADVANCED','LONG_SENTENCE',NULL),
+(5180,'expression','거절하기 · 숙제 베끼기 거절','질문: 숙제를 베끼게 해 달라는 부탁을 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,189,'ADVANCED','LONG_SENTENCE',NULL),
+(5181,'expression','거절하기 · 낯선 사람 거절','질문: 모르는 사람이 따라오라고 하면 어떻게 말할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,190,'ADVANCED','SHORT_SENTENCE',NULL),
+(5182,'expression','거절하기 · 물건 빌려주기 거절','질문: 아끼는 물건을 빌려 달라고 할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,191,'ADVANCED','LONG_SENTENCE',NULL),
+(5183,'expression','거절하기 · 게임 시간 거절','질문: 그만해야 할 시간에 게임을 더 하자는 말을 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,192,'ADVANCED','SHORT_SENTENCE',NULL),
+(5184,'expression','거절하기 · 놀림 거절','질문: 친구를 놀리자고 할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,193,'ADVANCED','SHORT_SENTENCE',NULL),
+(5185,'expression','거절하기 · 새치기 거절','질문: 새치기를 하자고 할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,194,'ADVANCED','SHORT_SENTENCE',NULL),
+(5186,'expression','거절하기 · 비밀 거절','질문: 다른 친구의 비밀을 말하라고 할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,195,'ADVANCED','LONG_SENTENCE',NULL),
+(5187,'expression','거절하기 · 매운 음식 거절','질문: 매운 음식을 권할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,196,'ADVANCED','LONG_SENTENCE',NULL),
+(5188,'expression','거절하기 · 늦은 전화 거절','질문: 밤늦게 통화하자는 말을 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,197,'ADVANCED','SHORT_SENTENCE',NULL),
+(5189,'expression','거절하기 · 무리한 부탁 거절','질문: 혼자 하기 힘든 일을 맡기려 할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,198,'ADVANCED','LONG_SENTENCE',NULL),
+(5190,'expression','거절하기 · 선물 거절','질문: 비싼 선물을 받기 곤란할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,199,'ADVANCED','LONG_SENTENCE',NULL),
+(5191,'expression','거절하기 · 쓰레기 버리기 거절','질문: 길에 쓰레기를 버리자고 할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,200,'ADVANCED','SHORT_SENTENCE',NULL),
+(5192,'expression','거절하기 · 수업 중 장난 거절','질문: 수업 시간에 장난치자는 말을 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,201,'ADVANCED','SHORT_SENTENCE',NULL),
+(5193,'expression','거절하기 · 허락 없는 외출 거절','질문: 부모님께 말하지 않고 나가자는 말을 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,202,'ADVANCED','SHORT_SENTENCE',NULL),
+(5194,'expression','거절하기 · 낯선 음식 거절','질문: 처음 보는 음식을 권할 때 정중하게 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,203,'ADVANCED','SHORT_SENTENCE',NULL),
+(5195,'expression','거절하기 · 대신 해 주기 거절','질문: 친구가 청소 당번을 대신해 달라고 할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,204,'ADVANCED','LONG_SENTENCE',NULL),
+(5196,'expression','거절하기 · 위험한 곳 거절','질문: 공사장 안에 들어가 보자고 할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,205,'ADVANCED','SHORT_SENTENCE',NULL),
+(5197,'expression','거절하기 · 불량 식품 거절','질문: 유통 기한이 지난 과자를 권할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,206,'ADVANCED','LONG_SENTENCE',NULL),
+(5198,'expression','거절하기 · 험담 거절','질문: 다른 사람 흉을 보자고 할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,207,'ADVANCED','LONG_SENTENCE',NULL),
+(5199,'expression','거절하기 · 동생 부탁 거절','질문: 동생이 내 일기장을 보여 달라고 할 때 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,208,'ADVANCED','SHORT_SENTENCE',NULL),
+(5200,'expression','거절하기 · 놀이 순서 거절','질문: 계속 먼저 하겠다는 친구에게 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,209,'ADVANCED','SHORT_SENTENCE',NULL),
+(5201,'expression','거절하기 · 밤 간식 거절','질문: 자기 전에 사탕을 먹자는 말을 거절해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,210,'ADVANCED','SHORT_SENTENCE',NULL),
+(5202,'expression','요청하기 · 도움 요청하기','질문: 길을 잃었을 때 도움을 요청해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,211,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5203,'expression','요청하기 · 화장실 요청','질문: 수업 중 화장실에 가고 싶을 때 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,212,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5204,'expression','요청하기 · 반찬 더 요청','질문: 급식에서 반찬을 더 받고 싶을 때 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,213,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5205,'expression','요청하기 · 조용한 자리 요청','질문: 도서관에서 조용한 자리를 물어보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,214,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5206,'expression','요청하기 · 물건 찾기 요청','질문: 가게에서 물건 위치를 물어보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,215,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5207,'expression','요청하기 · 사이즈 요청','질문: 옷가게에서 다른 크기를 요청해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,216,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5208,'expression','요청하기 · 쉬는 시간 요청','질문: 몸이 힘들 때 쉬고 싶다고 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,217,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5209,'expression','요청하기 · 메뉴 요청','질문: 식당에서 맵지 않게 해 달라고 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,218,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5210,'expression','요청하기 · 연락 요청','질문: 어른께 나중에 전화해 달라고 부탁해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,219,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5211,'expression','요청하기 · 차례 요청','질문: 놀이기구 차례를 물어보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,220,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5212,'expression','요청하기 · 설명 요청','질문: 놀이 방법을 알려 달라고 해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,221,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5213,'expression','요청하기 · 도구 요청','질문: 미술 시간에 필요한 도구를 요청해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,222,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5214,'expression','요청하기 · 시간 요청','질문: 시험을 다 못 풀었을 때 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,223,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5215,'expression','요청하기 · 반납 요청','질문: 빌려준 물건을 돌려 달라고 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,224,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5216,'expression','요청하기 · 조언 요청','질문: 어른께 조언을 구해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,225,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5217,'expression','요청하기 · 도움 손 요청','질문: 높은 곳의 물건을 내려 달라고 해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,226,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5218,'expression','요청하기 · 설명서 요청','질문: 장난감 조립이 어려울 때 도와 달라고 해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,227,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5219,'expression','요청하기 · 변경 요청','질문: 약속 시간을 바꾸자고 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,228,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5220,'expression','요청하기 · 확인 요청','질문: 숙제 범위를 확인해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,229,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5221,'expression','요청하기 · 의견 요청','질문: 친구의 생각을 물어보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,230,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5222,'expression','요청하기 · 가격 요청','질문: 가게에서 가격을 물어보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,231,'INTERMEDIATE','SHORT_SENTENCE',NULL);
+INSERT IGNORE INTO exercises (exercise_id,category_id,title,instruction,input_type,target_phonemes,sort_order,difficulty,content_type,pronunciation_rule) VALUES
+(5223,'expression','요청하기 · 허락 요청','질문: 친구 집에서 화장실을 써도 되는지 물어보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,232,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5224,'expression','요청하기 · 주문 요청','질문: 빵집에서 주문해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,233,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5225,'expression','요청하기 · 안내 요청','질문: 박물관에서 길을 물어보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,234,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5226,'expression','요청하기 · 수리 요청','질문: 고장 난 물건을 고쳐 달라고 해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,235,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5227,'expression','소개하고 설명하기 · 나 소개하기','질문: 친구들에게 나를 소개해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,236,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5228,'expression','소개하고 설명하기 · 가족 소개하기','질문: 우리 가족을 소개해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,237,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5229,'expression','소개하고 설명하기 · 우리 동네 소개','질문: 우리 동네를 소개해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,238,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5230,'expression','소개하고 설명하기 · 내 방 소개','질문: 내 방을 소개해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,239,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5231,'expression','소개하고 설명하기 · 우리 반 소개','질문: 우리 반을 소개해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,240,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5232,'expression','소개하고 설명하기 · 반려동물 소개','질문: 반려동물을 소개해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,241,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5233,'expression','소개하고 설명하기 · 보물 소개','질문: 나만의 보물을 소개해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,242,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5234,'expression','소개하고 설명하기 · 학교 소개','질문: 우리 학교를 소개해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,243,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5235,'expression','소개하고 설명하기 · 친구 소개','질문: 가장 친한 친구를 소개해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,244,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5236,'expression','소개하고 설명하기 · 놀이 방법 설명','질문: 좋아하는 놀이 방법을 설명해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,245,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5237,'expression','소개하고 설명하기 · 요리 방법 설명','질문: 간단한 요리 방법을 설명해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,246,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5238,'expression','소개하고 설명하기 · 길 설명','질문: 집에서 학교까지 가는 길을 설명해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,247,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5239,'expression','소개하고 설명하기 · 꿈 소개','질문: 나의 꿈을 소개해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,248,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5240,'expression','소개하고 설명하기 · 취미 소개','질문: 나의 취미를 소개해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,249,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5241,'expression','소개하고 설명하기 · 좋아하는 음식 설명','질문: 좋아하는 음식 만드는 법을 아는 대로 설명해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,250,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5242,'expression','소개하고 설명하기 · 명절 소개','질문: 좋아하는 명절을 소개해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,251,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5243,'expression','소개하고 설명하기 · 계절 놀이 설명','질문: 겨울에 하는 놀이를 설명해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,252,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5244,'expression','소개하고 설명하기 · 물건 쓰임 설명','질문: 우산의 쓰임을 설명해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,253,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5245,'expression','소개하고 설명하기 · 동물 특징 설명','질문: 좋아하는 동물의 특징을 설명해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,254,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5246,'expression','소개하고 설명하기 · 하루 일과 설명','질문: 나의 하루를 간단히 설명해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,255,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5247,'expression','소개하고 설명하기 · 규칙 설명','질문: 교실 규칙 하나를 설명해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,256,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5248,'expression','소개하고 설명하기 · 장래 계획 설명','질문: 이번 방학 계획을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,257,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5249,'expression','소개하고 설명하기 · 안전 수칙 설명','질문: 불이 났을 때 어떻게 해야 하는지 설명해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,258,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5250,'expression','소개하고 설명하기 · 식물 키우기 설명','질문: 식물을 키우는 방법을 설명해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,259,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(5251,'expression','소개하고 설명하기 · 좋아하는 운동 설명','질문: 좋아하는 운동 방법을 설명해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,260,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(5252,'expression','상상해서 말하기 · 하늘을 난다면','질문: 내가 하늘을 날 수 있다면 무엇을 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,261,'ADVANCED','LONG_SENTENCE',NULL),
+(5253,'expression','상상해서 말하기 · 동물과 대화','질문: 동물과 이야기할 수 있다면 누구와 말하고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,262,'ADVANCED','SHORT_SENTENCE',NULL),
+(5254,'expression','상상해서 말하기 · 투명 인간','질문: 투명 인간이 된다면 무엇을 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,263,'ADVANCED','LONG_SENTENCE',NULL),
+(5255,'expression','상상해서 말하기 · 소원 세 가지','질문: 소원 세 가지가 이루어진다면 무엇을 빌까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,264,'ADVANCED','LONG_SENTENCE',NULL),
+(5256,'expression','상상해서 말하기 · 선생님이 된다면','질문: 내가 선생님이 된다면 어떤 수업을 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,265,'ADVANCED','LONG_SENTENCE',NULL),
+(5257,'expression','상상해서 말하기 · 타임머신','질문: 타임머신이 있다면 어디로 가고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,266,'ADVANCED','SHORT_SENTENCE',NULL),
+(5258,'expression','상상해서 말하기 · 작아진다면','질문: 개미만큼 작아진다면 무엇을 해 보고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,267,'ADVANCED','SHORT_SENTENCE',NULL),
+(5259,'expression','상상해서 말하기 · 마법 지팡이','질문: 마법 지팡이가 생긴다면 무엇을 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,268,'ADVANCED','LONG_SENTENCE',NULL),
+(5260,'expression','상상해서 말하기 · 바닷속 여행','질문: 바닷속을 여행한다면 누구를 만나고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,269,'ADVANCED','LONG_SENTENCE',NULL),
+(5261,'expression','상상해서 말하기 · 우주 여행','질문: 우주에 간다면 무엇을 하고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,270,'ADVANCED','SHORT_SENTENCE',NULL),
+(5262,'expression','상상해서 말하기 · 하루 어른','질문: 하루 동안 어른이 된다면 무엇을 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,271,'ADVANCED','LONG_SENTENCE',NULL),
+(5263,'expression','상상해서 말하기 · 로봇 친구','질문: 나만의 로봇이 생긴다면 어떤 일을 시킬까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,272,'ADVANCED','LONG_SENTENCE',NULL),
+(5264,'expression','상상해서 말하기 · 구름 위 집','질문: 구름 위에 집이 있다면 어떨까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,273,'ADVANCED','LONG_SENTENCE',NULL),
+(5265,'expression','상상해서 말하기 · 말하는 인형','질문: 내 인형이 말을 한다면 무슨 이야기를 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,274,'ADVANCED','LONG_SENTENCE',NULL),
+(5266,'expression','상상해서 말하기 · 가게 주인','질문: 내가 가게를 연다면 무엇을 팔까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,275,'ADVANCED','LONG_SENTENCE',NULL),
+(5267,'expression','상상해서 말하기 · 동물이 된다면','질문: 동물이 된다면 무엇이 되고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,276,'ADVANCED','SHORT_SENTENCE',NULL),
+(5268,'expression','상상해서 말하기 · 비가 사탕이라면','질문: 하늘에서 사탕이 내린다면 어떨까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,277,'ADVANCED','LONG_SENTENCE',NULL),
+(5269,'expression','상상해서 말하기 · 그림 속으로','질문: 좋아하는 그림책 속으로 들어간다면?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,278,'ADVANCED','LONG_SENTENCE',NULL),
+(5270,'expression','상상해서 말하기 · 요리사가 된다면','질문: 요리사가 된다면 어떤 요리를 만들까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,279,'ADVANCED','LONG_SENTENCE',NULL),
+(5271,'expression','상상해서 말하기 · 날씨를 정한다면','질문: 내가 날씨를 정할 수 있다면?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,280,'ADVANCED','LONG_SENTENCE',NULL),
+(5272,'expression','상상해서 말하기 · 발명가가 된다면','질문: 발명가가 된다면 무엇을 만들고 싶나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,281,'ADVANCED','LONG_SENTENCE',NULL),
+(5273,'expression','상상해서 말하기 · 작은 정원','질문: 나만의 정원이 있다면 무엇을 심을까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,282,'ADVANCED','LONG_SENTENCE',NULL),
+(5274,'expression','상상해서 말하기 · 숲속 오두막','질문: 숲속 오두막에서 하룻밤을 지낸다면?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,283,'ADVANCED','LONG_SENTENCE',NULL),
+(5275,'expression','상상해서 말하기 · 공룡 친구','질문: 공룡이 친구라면 무엇을 같이 할까요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,284,'ADVANCED','LONG_SENTENCE',NULL),
+(5276,'expression','상상해서 말하기 · 보물 상자','질문: 보물 상자를 찾는다면 무엇이 들어 있으면 좋겠나요?
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,285,'ADVANCED','LONG_SENTENCE',NULL),
+(5277,'expression','칭찬과 감사 말하기 · 친구 칭찬하기','질문: 친구의 좋은 점을 칭찬해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,286,'BEGINNER','SHORT_SENTENCE',NULL),
+(5278,'expression','칭찬과 감사 말하기 · 선생님께 감사','질문: 선생님께 감사 인사를 해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,287,'BEGINNER','SHORT_SENTENCE',NULL),
+(5279,'expression','칭찬과 감사 말하기 · 부모님께 감사','질문: 부모님께 감사한 마음을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,288,'BEGINNER','LONG_SENTENCE',NULL),
+(5280,'expression','칭찬과 감사 말하기 · 동생 칭찬하기','질문: 동생을 칭찬해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,289,'BEGINNER','SHORT_SENTENCE',NULL),
+(5281,'expression','칭찬과 감사 말하기 · 요리 칭찬하기','질문: 맛있는 음식을 만들어 준 분께 칭찬해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,290,'BEGINNER','SHORT_SENTENCE',NULL),
+(5282,'expression','칭찬과 감사 말하기 · 도와준 친구에게','질문: 도와준 친구에게 고마움을 전해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,291,'BEGINNER','LONG_SENTENCE',NULL),
+(5283,'expression','칭찬과 감사 말하기 · 기사님께 인사','질문: 버스에서 내릴 때 기사님께 인사해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,292,'BEGINNER','SHORT_SENTENCE',NULL),
+(5284,'expression','칭찬과 감사 말하기 · 청소 칭찬','질문: 교실을 깨끗하게 청소한 친구를 칭찬해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,293,'BEGINNER','SHORT_SENTENCE',NULL),
+(5285,'expression','칭찬과 감사 말하기 · 발표 칭찬','질문: 발표를 잘한 친구를 칭찬해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,294,'BEGINNER','LONG_SENTENCE',NULL),
+(5286,'expression','칭찬과 감사 말하기 · 경비원께 감사','질문: 아파트 경비원 아저씨께 감사 인사를 해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,295,'BEGINNER','LONG_SENTENCE',NULL),
+(5287,'expression','칭찬과 감사 말하기 · 의사 선생님께','질문: 치료해 주신 의사 선생님께 인사해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,296,'BEGINNER','SHORT_SENTENCE',NULL),
+(5288,'expression','칭찬과 감사 말하기 · 양보 감사','질문: 자리를 양보받았을 때 인사해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,297,'BEGINNER','SHORT_SENTENCE',NULL),
+(5289,'expression','칭찬과 감사 말하기 · 선물 감사','질문: 선물을 받고 감사 인사를 해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,298,'BEGINNER','SHORT_SENTENCE',NULL),
+(5290,'expression','칭찬과 감사 말하기 · 노력 칭찬','질문: 열심히 연습한 친구를 칭찬해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,299,'BEGINNER','LONG_SENTENCE',NULL),
+(5291,'expression','칭찬과 감사 말하기 · 배려 칭찬','질문: 배려해 준 친구를 칭찬해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,300,'BEGINNER','SHORT_SENTENCE',NULL),
+(5292,'expression','칭찬과 감사 말하기 · 할머니께 감사','질문: 할머니께 감사한 마음을 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,301,'BEGINNER','LONG_SENTENCE',NULL),
+(5293,'expression','칭찬과 감사 말하기 · 소방관께 감사','질문: 소방관께 감사 편지를 쓰듯 말해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,302,'BEGINNER','SHORT_SENTENCE',NULL),
+(5294,'expression','칭찬과 감사 말하기 · 옷 칭찬','질문: 친구의 옷을 칭찬해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,303,'BEGINNER','LONG_SENTENCE',NULL),
+(5295,'expression','칭찬과 감사 말하기 · 글씨 칭찬','질문: 글씨를 예쁘게 쓴 친구를 칭찬해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,304,'BEGINNER','SHORT_SENTENCE',NULL),
+(5296,'expression','칭찬과 감사 말하기 · 아빠께 감사','질문: 아빠께 감사 인사를 해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,305,'BEGINNER','LONG_SENTENCE',NULL),
+(5297,'expression','칭찬과 감사 말하기 · 사서 선생님께','질문: 책을 찾아 주신 사서 선생님께 인사해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,306,'BEGINNER','SHORT_SENTENCE',NULL),
+(5298,'expression','칭찬과 감사 말하기 · 용기 칭찬','질문: 용기 낸 친구를 칭찬해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,307,'BEGINNER','SHORT_SENTENCE',NULL),
+(5299,'expression','칭찬과 감사 말하기 · 급식 감사','질문: 급식을 만들어 주시는 분께 감사 인사를 해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,308,'BEGINNER','SHORT_SENTENCE',NULL),
+(5300,'expression','칭찬과 감사 말하기 · 짝꿍 칭찬','질문: 짝꿍의 좋은 점을 칭찬해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,309,'BEGINNER','LONG_SENTENCE',NULL),
+(5301,'expression','칭찬과 감사 말하기 · 이웃께 감사','질문: 이웃에게 감사 인사를 해 보세요.
+예시 문장을 따라 말하거나 내 생각으로 바꿔 말해 보세요.','mic',NULL,310,'BEGINNER','SHORT_SENTENCE',NULL),
+(6001,'comprehension','누가 했나요 · 꽃에 물 주기','이야기: 아침에 할머니가 마당의 꽃에 물을 주셨어요. 꽃들이 반짝반짝 빛났어요.
+질문: 꽃에 물을 준 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,10,'BEGINNER','SHORT_SENTENCE',NULL),
+(6002,'comprehension','누가 했나요 · 그림 선물','이야기: 민지는 아빠 생신에 그림을 그려 드렸어요. 아빠는 그림을 냉장고에 붙이셨어요.
+질문: 아빠께 그림을 그려 드린 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,11,'BEGINNER','SHORT_SENTENCE',NULL),
+(6003,'comprehension','누가 했나요 · 고장 난 자전거','이야기: 지호의 자전거가 고장 났어요. 삼촌이 와서 바퀴를 고쳐 주셨어요.
+질문: 자전거를 고쳐 준 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,12,'BEGINNER','SHORT_SENTENCE',NULL),
+(6004,'comprehension','누가 했나요 · 교실 청소','이야기: 수업이 끝나고 서연이와 하준이가 교실을 쓸었어요. 선생님이 고맙다고 하셨어요.
+질문: 교실을 청소한 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,13,'BEGINNER','SHORT_SENTENCE',NULL),
+(6005,'comprehension','누가 했나요 · 강아지 산책','이야기: 저녁마다 형이 강아지를 데리고 산책을 나가요. 강아지는 형을 제일 좋아해요.
+질문: 강아지를 산책시키는 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,14,'BEGINNER','SHORT_SENTENCE',NULL),
+(6006,'comprehension','누가 했나요 · 떨어진 지갑','이야기: 길에 지갑이 떨어져 있었어요. 수아가 지갑을 주워 경찰서에 가져다주었어요.
+질문: 지갑을 경찰서에 가져다준 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,15,'BEGINNER','SHORT_SENTENCE',NULL),
+(6007,'comprehension','누가 했나요 · 김밥 만들기','이야기: 소풍날 아침, 엄마가 일찍 일어나 김밥을 싸 주셨어요. 김밥 속에 시금치가 들어 있었어요.
+질문: 김밥을 싸 준 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,16,'BEGINNER','SHORT_SENTENCE',NULL),
+(6008,'comprehension','누가 했나요 · 노래 대회','이야기: 학교 노래 대회에서 다은이가 일 등을 했어요. 친구들이 큰 박수를 보냈어요.
+질문: 노래 대회에서 일 등을 한 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,17,'BEGINNER','SHORT_SENTENCE',NULL),
+(6009,'comprehension','누가 했나요 · 동생 돌보기','이야기: 엄마가 장을 보러 가셨어요. 그동안 누나가 동생에게 책을 읽어 주었어요.
+질문: 동생에게 책을 읽어 준 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,18,'BEGINNER','SHORT_SENTENCE',NULL),
+(6010,'comprehension','누가 했나요 · 고양이 구조','이야기: 나무 위에 고양이가 올라가 내려오지 못했어요. 소방관 아저씨가 사다리를 타고 고양이를 구해 주셨어요.
+질문: 고양이를 구해 준 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,19,'BEGINNER','SHORT_SENTENCE',NULL),
+(6011,'comprehension','누가 했나요 · 편지 배달','이야기: 오후에 우체부 아저씨가 편지를 가져다주셨어요. 편지는 이모가 보낸 것이었어요.
+질문: 편지를 보낸 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,20,'BEGINNER','SHORT_SENTENCE',NULL),
+(6012,'comprehension','누가 했나요 · 낮잠 자는 아기','이야기: 거실에서 아기가 새근새근 자고 있었어요. 아빠가 아기에게 이불을 살짝 덮어 주셨어요.
+질문: 아기에게 이불을 덮어 준 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,21,'BEGINNER','SHORT_SENTENCE',NULL),
+(6013,'comprehension','누가 했나요 · 반장 선거','이야기: 우리 반 반장 선거가 열렸어요. 친구들이 가장 많이 뽑은 사람은 준호였어요.
+질문: 반장이 된 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,22,'BEGINNER','SHORT_SENTENCE',NULL),
+(6014,'comprehension','누가 했나요 · 깨진 컵','이야기: 부엌에서 쨍그랑 소리가 났어요. 동생이 컵을 떨어뜨려서 깨졌다고 말했어요.
+질문: 컵을 깨뜨린 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,23,'BEGINNER','SHORT_SENTENCE',NULL),
+(6015,'comprehension','누가 했나요 · 빵 굽기','이야기: 주말에 할아버지와 나는 함께 빵을 구웠어요. 할아버지가 반죽을 하고 나는 모양을 만들었어요.
+질문: 반죽을 한 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,24,'BEGINNER','SHORT_SENTENCE',NULL),
+(6016,'comprehension','누가 했나요 · 축구 경기','이야기: 운동장에서 축구 경기가 열렸어요. 마지막에 민수가 골을 넣어 우리 팀이 이겼어요.
+질문: 마지막에 골을 넣은 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,25,'BEGINNER','SHORT_SENTENCE',NULL),
+(6017,'comprehension','누가 했나요 · 화분 선물','이야기: 새 학년 첫날, 선생님이 반 아이들에게 작은 화분을 하나씩 나눠 주셨어요.
+질문: 화분을 나눠 준 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,26,'BEGINNER','SHORT_SENTENCE',NULL),
+(6018,'comprehension','누가 했나요 · 잃어버린 장갑','이야기: 하준이는 장갑을 잃어버렸어요. 다음 날 짝꿍 유나가 운동장에서 찾아 주었어요.
+질문: 장갑을 찾아 준 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,27,'BEGINNER','SHORT_SENTENCE',NULL),
+(6019,'comprehension','누가 했나요 · 설거지','이야기: 저녁을 먹고 아빠가 설거지를 하셨어요. 나는 그릇을 닦아 정리했어요.
+질문: 설거지를 한 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,28,'BEGINNER','SHORT_SENTENCE',NULL),
+(6020,'comprehension','누가 했나요 · 길 안내','이야기: 모르는 할머니가 은행을 찾고 계셨어요. 경찰관이 할머니를 은행까지 모셔다드렸어요.
+질문: 할머니를 은행까지 모셔다드린 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,29,'BEGINNER','SHORT_SENTENCE',NULL),
+(6021,'comprehension','누가 했나요 · 피아노 연주','이야기: 학예회에서 언니가 피아노를 연주했어요. 엄마는 사진을 찍으셨어요.
+질문: 피아노를 연주한 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,30,'BEGINNER','SHORT_SENTENCE',NULL),
+(6022,'comprehension','누가 했나요 · 나무 심기','이야기: 식목일에 우리 가족은 산에 갔어요. 아빠가 구덩이를 파고 내가 나무를 심었어요.
+질문: 구덩이를 판 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,31,'BEGINNER','SHORT_SENTENCE',NULL),
+(6023,'comprehension','누가 했나요 · 교통 정리','이야기: 학교 앞 횡단보도에서 녹색 어머니가 깃발을 들고 계셨어요. 아이들은 안전하게 길을 건넜어요.
+질문: 횡단보도에서 깃발을 든 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,32,'BEGINNER','SHORT_SENTENCE',NULL),
+(6024,'comprehension','누가 했나요 · 생일 케이크','이야기: 내 생일에 이모가 커다란 케이크를 사 오셨어요. 케이크 위에 딸기가 가득했어요.
+질문: 케이크를 사 온 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,33,'BEGINNER','SHORT_SENTENCE',NULL),
+(6025,'comprehension','누가 했나요 · 도서관 정리','이야기: 사서 선생님이 반납된 책을 책꽂이에 꽂고 계셨어요. 나도 옆에서 도와드렸어요.
+질문: 반납된 책을 꽂고 계신 분은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,34,'BEGINNER','SHORT_SENTENCE',NULL),
+(6026,'comprehension','누가 했나요 · 병아리 키우기','이야기: 우리 반에서 병아리를 키우게 되었어요. 매일 아침 지우가 병아리에게 모이를 주었어요.
+질문: 병아리에게 모이를 준 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,35,'BEGINNER','SHORT_SENTENCE',NULL),
+(6027,'comprehension','언제 했나요 · 아침 운동','이야기: 민호는 아침 일곱 시에 일어나 줄넘기를 해요. 그리고 학교에 가요.
+질문: 민호는 언제 줄넘기를 하나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,36,'BEGINNER','SHORT_SENTENCE',NULL),
+(6028,'comprehension','언제 했나요 · 겨울 방학','이야기: 겨울 방학에 우리 가족은 스키장에 갔어요. 하얀 눈 위에서 스키를 탔어요.
+질문: 가족은 언제 스키장에 갔나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,37,'BEGINNER','SHORT_SENTENCE',NULL),
+(6029,'comprehension','언제 했나요 · 점심시간','이야기: 점심시간 종이 울리자 우리는 급식실로 갔어요. 오늘은 카레가 나왔어요.
+질문: 급식실에는 언제 갔나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,38,'BEGINNER','SHORT_SENTENCE',NULL),
+(6030,'comprehension','언제 했나요 · 생일 파티','이야기: 토요일 오후에 친구의 생일 파티가 있었어요. 우리는 함께 게임을 했어요.
+질문: 생일 파티는 언제 있었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,39,'BEGINNER','SHORT_SENTENCE',NULL),
+(6031,'comprehension','언제 했나요 · 비 오는 날','이야기: 어제는 하루 종일 비가 내렸어요. 그래서 우리는 집에서 퍼즐을 맞췄어요.
+질문: 비가 내린 날은 언제인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,40,'BEGINNER','SHORT_SENTENCE',NULL),
+(6032,'comprehension','언제 했나요 · 보름달','이야기: 추석날 밤에 보름달이 둥글게 떴어요. 가족은 달을 보며 소원을 빌었어요.
+질문: 보름달은 언제 떴나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,41,'BEGINNER','SHORT_SENTENCE',NULL),
+(6033,'comprehension','언제 했나요 · 치과 예약','이야기: 다음 주 화요일에 치과에 가야 해요. 엄마가 달력에 동그라미를 쳤어요.
+질문: 치과에는 언제 가나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,42,'BEGINNER','SHORT_SENTENCE',NULL),
+(6034,'comprehension','언제 했나요 · 새벽 시장','이야기: 할아버지는 새벽 다섯 시에 시장에 가세요. 그때 가면 싱싱한 생선이 많대요.
+질문: 할아버지는 언제 시장에 가시나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,43,'BEGINNER','SHORT_SENTENCE',NULL),
+(6035,'comprehension','언제 했나요 · 봄 소풍','이야기: 사월에 우리 반은 봄 소풍을 갔어요. 공원에 벚꽃이 활짝 피어 있었어요.
+질문: 봄 소풍은 언제 갔나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,44,'BEGINNER','SHORT_SENTENCE',NULL),
+(6036,'comprehension','언제 했나요 · 잠자기 전','이야기: 나는 잠자기 전에 꼭 이를 닦아요. 그리고 엄마와 책을 한 권 읽어요.
+질문: 이는 언제 닦나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,45,'BEGINNER','SHORT_SENTENCE',NULL),
+(6037,'comprehension','언제 했나요 · 첫눈','이야기: 십이월 첫날에 첫눈이 내렸어요. 아이들이 운동장으로 뛰어나갔어요.
+질문: 첫눈은 언제 내렸나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,46,'BEGINNER','SHORT_SENTENCE',NULL),
+(6038,'comprehension','언제 했나요 · 학교 끝나고','이야기: 학교가 끝나면 서윤이는 피아노 학원에 가요. 그다음에 집에 와요.
+질문: 서윤이는 언제 피아노 학원에 가나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,47,'BEGINNER','SHORT_SENTENCE',NULL),
+(6039,'comprehension','언제 했나요 · 여름 휴가','이야기: 팔월에 우리는 바닷가로 여행을 갔어요. 수영도 하고 조개도 주웠어요.
+질문: 바닷가 여행은 언제 갔나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,48,'BEGINNER','SHORT_SENTENCE',NULL),
+(6040,'comprehension','언제 했나요 · 일요일 아침','이야기: 일요일 아침에는 아빠가 팬케이크를 구워 주세요. 나는 그 위에 꿀을 뿌려요.
+질문: 아빠는 언제 팬케이크를 구워 주시나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,49,'BEGINNER','SHORT_SENTENCE',NULL),
+(6041,'comprehension','언제 했나요 · 저녁 산책','이야기: 저녁을 먹고 나면 우리 가족은 공원을 한 바퀴 걸어요. 그러면 소화가 잘 돼요.
+질문: 가족은 언제 공원을 걷나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,50,'BEGINNER','SHORT_SENTENCE',NULL),
+(6042,'comprehension','언제 했나요 · 운동회','이야기: 운동회는 시월 둘째 주 금요일이에요. 우리 반은 이어달리기를 연습하고 있어요.
+질문: 운동회는 언제인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,51,'BEGINNER','SHORT_SENTENCE',NULL),
+(6043,'comprehension','언제 했나요 · 매미 소리','이야기: 한여름 낮에는 매미가 시끄럽게 울어요. 밤이 되면 조용해져요.
+질문: 매미는 언제 시끄럽게 우나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,52,'BEGINNER','SHORT_SENTENCE',NULL),
+(6044,'comprehension','언제 했나요 · 설날','이야기: 설날 아침에 우리는 할아버지께 세배를 드렸어요. 할아버지께서 세뱃돈을 주셨어요.
+질문: 세배는 언제 드렸나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,53,'BEGINNER','SHORT_SENTENCE',NULL),
+(6045,'comprehension','언제 했나요 · 낮잠','이야기: 동생은 점심을 먹고 나면 낮잠을 자요. 한 시간쯤 자고 일어나요.
+질문: 동생은 언제 낮잠을 자나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,54,'BEGINNER','SHORT_SENTENCE',NULL),
+(6046,'comprehension','언제 했나요 · 도서관 휴관','이야기: 우리 동네 도서관은 매주 월요일에 쉬어요. 그래서 화요일에 책을 빌리러 갔어요.
+질문: 도서관은 언제 쉬나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,55,'BEGINNER','SHORT_SENTENCE',NULL),
+(6047,'comprehension','언제 했나요 · 단풍 구경','이야기: 시월 말에 산에 단풍이 곱게 들었어요. 우리 가족은 그때 등산을 갔어요.
+질문: 단풍은 언제 곱게 들었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,56,'BEGINNER','SHORT_SENTENCE',NULL),
+(6048,'comprehension','언제 했나요 · 수업 시작','이야기: 우리 학교는 아홉 시에 첫 수업이 시작돼요. 나는 여덟 시 반까지 학교에 가요.
+질문: 첫 수업은 언제 시작되나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,57,'BEGINNER','SHORT_SENTENCE',NULL),
+(6049,'comprehension','언제 했나요 · 크리스마스','이야기: 크리스마스 전날 밤에 양말을 걸어 두었어요. 아침에 보니 선물이 들어 있었어요.
+질문: 양말은 언제 걸어 두었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,58,'BEGINNER','SHORT_SENTENCE',NULL),
+(6050,'comprehension','언제 했나요 · 알람','이야기: 내 알람은 매일 아침 일곱 시 반에 울려요. 알람이 울리면 바로 일어나요.
+질문: 알람은 언제 울리나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,59,'BEGINNER','LONG_SENTENCE',NULL),
+(6051,'comprehension','언제 했나요 · 장마','이야기: 칠월에 장마가 시작되었어요. 일주일 내내 비가 내렸어요.
+질문: 장마는 언제 시작되었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,60,'BEGINNER','SHORT_SENTENCE',NULL),
+(6052,'comprehension','언제 했나요 · 졸업식','이야기: 형의 졸업식은 이월에 있어요. 우리 가족은 꽃다발을 사 가기로 했어요.
+질문: 형의 졸업식은 언제인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,61,'BEGINNER','SHORT_SENTENCE',NULL),
+(6053,'comprehension','어디에서 했나요 · 도서관 숙제','이야기: 하은이는 도서관에서 숙제를 했어요. 조용해서 집중이 잘 되었어요.
+질문: 하은이는 어디에서 숙제를 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,62,'BEGINNER','SHORT_SENTENCE',NULL),
+(6054,'comprehension','어디에서 했나요 · 놀이터 친구','이야기: 나는 놀이터에서 새 친구를 만났어요. 우리는 함께 미끄럼틀을 탔어요.
+질문: 새 친구는 어디에서 만났나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,63,'BEGINNER','SHORT_SENTENCE',NULL),
+(6055,'comprehension','어디에서 했나요 · 바닷가 조개','이야기: 우리 가족은 바닷가에서 조개를 주웠어요. 하얀 조개가 가장 예뻤어요.
+질문: 조개는 어디에서 주웠나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,64,'BEGINNER','SHORT_SENTENCE',NULL),
+(6056,'comprehension','어디에서 했나요 · 잃어버린 모자','이야기: 도윤이는 모자를 버스에 두고 내렸어요. 다행히 버스 회사에서 찾았어요.
+질문: 도윤이는 모자를 어디에 두고 내렸나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,65,'BEGINNER','SHORT_SENTENCE',NULL),
+(6057,'comprehension','어디에서 했나요 · 고양이 낮잠','이야기: 우리 집 고양이는 창가에서 낮잠을 자요. 햇볕이 따뜻하게 들거든요.
+질문: 고양이는 어디에서 낮잠을 자나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,66,'BEGINNER','SHORT_SENTENCE',NULL),
+(6058,'comprehension','어디에서 했나요 · 할머니 텃밭','이야기: 할머니는 집 뒤 텃밭에서 상추를 기르세요. 나는 가끔 상추를 따요.
+질문: 할머니는 어디에서 상추를 기르시나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,67,'BEGINNER','SHORT_SENTENCE',NULL),
+(6059,'comprehension','어디에서 했나요 · 수영 강습','이야기: 토요일마다 나는 동네 수영장에서 수영을 배워요. 선생님이 친절하세요.
+질문: 수영은 어디에서 배우나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,68,'BEGINNER','SHORT_SENTENCE',NULL),
+(6060,'comprehension','어디에서 했나요 · 열쇠 찾기','이야기: 아빠가 열쇠를 찾고 계셨어요. 열쇠는 소파 쿠션 밑에 있었어요.
+질문: 열쇠는 어디에 있었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,69,'BEGINNER','SHORT_SENTENCE',NULL),
+(6061,'comprehension','어디에서 했나요 · 캠핑','이야기: 우리는 강가 캠핑장에서 텐트를 쳤어요. 밤에는 물소리가 들렸어요.
+질문: 텐트는 어디에 쳤나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,70,'BEGINNER','SHORT_SENTENCE',NULL),
+(6062,'comprehension','어디에서 했나요 · 새 둥지','이야기: 학교 뒤 소나무에 새 둥지가 있어요. 아기 새들이 짹짹 울어요.
+질문: 새 둥지는 어디에 있나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,71,'BEGINNER','SHORT_SENTENCE',NULL),
+(6063,'comprehension','어디에서 했나요 · 기린 구경','이야기: 우리는 동물원에서 기린을 보았어요. 기린은 높은 나뭇잎을 먹고 있었어요.
+질문: 기린은 어디에서 보았나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,72,'BEGINNER','SHORT_SENTENCE',NULL),
+(6064,'comprehension','어디에서 했나요 · 생일 파티 장소','이야기: 민서의 생일 파티는 키즈 카페에서 열렸어요. 우리는 볼풀에서 놀았어요.
+질문: 생일 파티는 어디에서 열렸나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,73,'BEGINNER','SHORT_SENTENCE',NULL),
+(6065,'comprehension','어디에서 했나요 · 줄넘기 연습','이야기: 나는 아파트 앞마당에서 줄넘기를 연습해요. 바닥이 평평해서 좋아요.
+질문: 줄넘기는 어디에서 연습하나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,74,'BEGINNER','SHORT_SENTENCE',NULL),
+(6066,'comprehension','어디에서 했나요 · 우산 놓고 온 곳','이야기: 비가 그치자 수지는 우산을 식당에 두고 왔어요. 다시 가서 찾아왔어요.
+질문: 수지는 우산을 어디에 두고 왔나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,75,'BEGINNER','SHORT_SENTENCE',NULL),
+(6067,'comprehension','어디에서 했나요 · 그림 전시','이야기: 내 그림이 복도 게시판에 걸렸어요. 지나가는 친구들이 보고 칭찬했어요.
+질문: 그림은 어디에 걸렸나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,76,'BEGINNER','SHORT_SENTENCE',NULL),
+(6068,'comprehension','어디에서 했나요 · 나비 발견','이야기: 우리는 학교 화단에서 노랑나비를 발견했어요. 나비는 꽃 위에 앉아 있었어요.
+질문: 노랑나비는 어디에서 발견했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,77,'BEGINNER','SHORT_SENTENCE',NULL),
+(6069,'comprehension','어디에서 했나요 · 비빔밥 맛집','이야기: 삼촌은 시장 안의 작은 식당에서 비빔밥을 사 주셨어요. 정말 맛있었어요.
+질문: 비빔밥은 어디에서 먹었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,78,'BEGINNER','SHORT_SENTENCE',NULL),
+(6070,'comprehension','어디에서 했나요 · 연 날리기','이야기: 우리는 강변 공원에서 연을 날렸어요. 바람이 적당히 불었어요.
+질문: 연은 어디에서 날렸나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,79,'BEGINNER','SHORT_SENTENCE',NULL),
+(6071,'comprehension','어디에서 했나요 · 양말 한 짝','이야기: 양말 한 짝이 없어졌어요. 찾아보니 세탁기 안에 남아 있었어요.
+질문: 양말 한 짝은 어디에 있었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,80,'BEGINNER','SHORT_SENTENCE',NULL),
+(6072,'comprehension','어디에서 했나요 · 영화 관람','이야기: 주말에 가족과 영화관에서 만화 영화를 봤어요. 팝콘도 먹었어요.
+질문: 만화 영화는 어디에서 봤나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,81,'BEGINNER','SHORT_SENTENCE',NULL),
+(6073,'comprehension','어디에서 했나요 · 개구리 소리','이야기: 저녁마다 논에서 개구리가 개굴개굴 울어요. 여름밤이 시끌벅적해요.
+질문: 개구리는 어디에서 우나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,82,'BEGINNER','SHORT_SENTENCE',NULL),
+(6074,'comprehension','어디에서 했나요 · 책 반납','이야기: 다 읽은 책을 학교 도서실 반납함에 넣었어요. 사서 선생님이 확인하셨어요.
+질문: 책은 어디에 넣었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,83,'BEGINNER','SHORT_SENTENCE',NULL),
+(6075,'comprehension','어디에서 했나요 · 겨울 썰매','이야기: 아이들은 마을 뒷산 언덕에서 썰매를 탔어요. 신나게 미끄러져 내려왔어요.
+질문: 썰매는 어디에서 탔나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,84,'BEGINNER','SHORT_SENTENCE',NULL),
+(6076,'comprehension','어디에서 했나요 · 가족사진 촬영','이야기: 우리 가족은 사진관에서 가족사진을 찍었어요. 모두 한복을 입었어요.
+질문: 가족사진은 어디에서 찍었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,85,'BEGINNER','SHORT_SENTENCE',NULL),
+(6077,'comprehension','어디에서 했나요 · 과학 실험','이야기: 우리는 과학실에서 화산 실험을 했어요. 거품이 부글부글 올라왔어요.
+질문: 화산 실험은 어디에서 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,86,'BEGINNER','SHORT_SENTENCE',NULL),
+(6078,'comprehension','어디에서 했나요 · 소풍 도시락','이야기: 소풍날 우리는 잔디밭에 돗자리를 깔고 도시락을 먹었어요.
+질문: 도시락은 어디에서 먹었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,87,'BEGINNER','SHORT_SENTENCE',NULL),
+(6079,'comprehension','무엇을 했나요 · 주말 활동','이야기: 주말에 지민이는 아빠와 함께 연을 만들었어요. 연에 용 그림을 그렸어요.
+질문: 지민이는 주말에 무엇을 만들었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,88,'BEGINNER','SHORT_SENTENCE',NULL),
+(6080,'comprehension','무엇을 했나요 · 아침 메뉴','이야기: 오늘 아침에 엄마가 달걀말이를 해 주셨어요. 나는 밥과 함께 맛있게 먹었어요.
+질문: 오늘 아침에 무엇을 먹었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,89,'BEGINNER','SHORT_SENTENCE',NULL),
+(6081,'comprehension','무엇을 했나요 · 생일 선물','이야기: 동생은 생일 선물로 공룡 인형을 받았어요. 하루 종일 인형을 안고 다녔어요.
+질문: 동생이 받은 생일 선물은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,90,'BEGINNER','SHORT_SENTENCE',NULL),
+(6082,'comprehension','무엇을 했나요 · 시장 심부름','이야기: 엄마가 시장에서 두부와 콩나물을 사 오라고 하셨어요. 나는 잊지 않으려고 쪽지에 적었어요.
+질문: 무엇을 사 오라고 하셨나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,91,'BEGINNER','SHORT_SENTENCE',NULL),
+(6083,'comprehension','무엇을 했나요 · 미술 시간','이야기: 미술 시간에 우리는 찰흙으로 그릇을 만들었어요. 나는 작은 컵을 만들었어요.
+질문: 미술 시간에 무엇으로 그릇을 만들었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,92,'BEGINNER','SHORT_SENTENCE',NULL),
+(6084,'comprehension','무엇을 했나요 · 가방 속','이야기: 태오의 가방 속에는 교과서, 필통, 물병이 들어 있어요. 오늘은 우산도 넣었어요.
+질문: 오늘 가방에 더 넣은 것은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,93,'BEGINNER','SHORT_SENTENCE',NULL),
+(6085,'comprehension','무엇을 했나요 · 방학 숙제','이야기: 방학 숙제로 나는 매일 일기를 썼어요. 그림도 함께 그렸어요.
+질문: 방학 숙제로 무엇을 썼나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,94,'BEGINNER','SHORT_SENTENCE',NULL),
+(6086,'comprehension','무엇을 했나요 · 간식 시간','이야기: 간식 시간에 선생님이 귤을 나누어 주셨어요. 우리는 껍질을 까서 먹었어요.
+질문: 선생님이 나누어 준 간식은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,95,'BEGINNER','SHORT_SENTENCE',NULL),
+(6087,'comprehension','무엇을 했나요 · 놀이 시간','이야기: 쉬는 시간에 우리는 공기놀이를 했어요. 나는 꺾기까지 성공했어요.
+질문: 쉬는 시간에 무슨 놀이를 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,96,'BEGINNER','SHORT_SENTENCE',NULL),
+(6088,'comprehension','무엇을 했나요 · 화분 관찰','이야기: 과학 시간에 강낭콩을 심었어요. 일주일 뒤에 새싹이 났어요.
+질문: 과학 시간에 무엇을 심었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,97,'BEGINNER','SHORT_SENTENCE',NULL),
+(6089,'comprehension','무엇을 했나요 · 할머니의 선물','이야기: 할머니가 내게 털목도리를 떠 주셨어요. 목도리는 빨간색이에요.
+질문: 할머니가 떠 주신 것은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,98,'BEGINNER','SHORT_SENTENCE',NULL),
+(6090,'comprehension','무엇을 했나요 · 아빠의 요리','이야기: 일요일에 아빠가 김치볶음밥을 만드셨어요. 위에 달걀 프라이도 올리셨어요.
+질문: 아빠가 만드신 요리는 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,99,'BEGINNER','SHORT_SENTENCE',NULL),
+(6091,'comprehension','무엇을 했나요 · 동물원 먹이','이야기: 동물원에서 우리는 염소에게 당근을 주었어요. 염소가 오물오물 먹었어요.
+질문: 염소에게 무엇을 주었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,100,'BEGINNER','SHORT_SENTENCE',NULL),
+(6092,'comprehension','무엇을 했나요 · 잃어버린 물건','이야기: 수민이는 운동장에서 필통을 잃어버렸어요. 필통에는 이름이 적혀 있었어요.
+질문: 수민이가 잃어버린 것은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,101,'BEGINNER','SHORT_SENTENCE',NULL),
+(6093,'comprehension','무엇을 했나요 · 아침 운동','이야기: 할아버지는 매일 아침 공원에서 체조를 하세요. 그 덕분에 아주 건강하세요.
+질문: 할아버지는 아침마다 무엇을 하시나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,102,'BEGINNER','SHORT_SENTENCE',NULL),
+(6094,'comprehension','무엇을 했나요 · 책 고르기','이야기: 도서관에서 나는 우주에 관한 책을 빌렸어요. 행성 사진이 많이 들어 있었어요.
+질문: 어떤 책을 빌렸나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,103,'BEGINNER','SHORT_SENTENCE',NULL),
+(6095,'comprehension','무엇을 했나요 · 마트 장보기','이야기: 우리는 마트에서 우유, 빵, 사과를 샀어요. 사과는 동생이 골랐어요.
+질문: 동생이 고른 것은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,104,'BEGINNER','SHORT_SENTENCE',NULL),
+(6096,'comprehension','무엇을 했나요 · 학예회 준비','이야기: 학예회에서 우리 반은 합창을 하기로 했어요. 매일 노래를 연습했어요.
+질문: 우리 반은 학예회에서 무엇을 하기로 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,105,'BEGINNER','SHORT_SENTENCE',NULL),
+(6097,'comprehension','무엇을 했나요 · 비 오는 날 놀이','이야기: 비가 와서 우리는 집에서 종이접기를 했어요. 개구리를 접어 튕기며 놀았어요.
+질문: 종이로 무엇을 접었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,106,'BEGINNER','SHORT_SENTENCE',NULL),
+(6098,'comprehension','무엇을 했나요 · 여행 기념품','이야기: 제주도 여행에서 나는 귤 모양 열쇠고리를 샀어요. 가방에 달고 다녀요.
+질문: 여행에서 산 기념품은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,107,'BEGINNER','SHORT_SENTENCE',NULL),
+(6099,'comprehension','무엇을 했나요 · 현장 학습','이야기: 현장 학습으로 우리는 과자 공장에 갔어요. 과자가 만들어지는 모습을 보았어요.
+질문: 현장 학습으로 어디에 가서 무엇을 보았나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,108,'BEGINNER','LONG_SENTENCE',NULL),
+(6100,'comprehension','무엇을 했나요 · 겨울 간식','이야기: 겨울밤에 아빠가 붕어빵을 사 오셨어요. 팥이 가득 들어 있었어요.
+질문: 아빠가 사 오신 간식은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,109,'BEGINNER','SHORT_SENTENCE',NULL),
+(6101,'comprehension','무엇을 했나요 · 엄마의 부탁','이야기: 엄마가 빨래를 개 달라고 부탁하셨어요. 나는 수건부터 반듯하게 접었어요.
+질문: 엄마는 무엇을 부탁하셨나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,110,'BEGINNER','SHORT_SENTENCE',NULL),
+(6102,'comprehension','무엇을 했나요 · 선생님 말씀','이야기: 선생님은 내일 색종이와 풀을 가져오라고 하셨어요.
+질문: 내일 무엇을 가져가야 하나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,111,'BEGINNER','SHORT_SENTENCE',NULL),
+(6103,'comprehension','무엇을 했나요 · 친구 선물','이야기: 짝꿍이 전학 가면서 나에게 편지를 주었어요. 편지에는 고맙다는 말이 쓰여 있었어요.
+질문: 짝꿍이 준 것은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,112,'BEGINNER','SHORT_SENTENCE',NULL),
+(6104,'comprehension','무엇을 했나요 · 소풍 준비','이야기: 소풍 전날 나는 물병과 돗자리를 챙겼어요. 엄마는 과일을 준비해 주셨어요.
+질문: 엄마가 준비해 주신 것은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,113,'BEGINNER','SHORT_SENTENCE',NULL),
+(6105,'comprehension','왜 그랬나요 · 우산 챙기기','이야기: 하늘에 먹구름이 잔뜩 끼었어요. 그래서 지우는 우산을 챙겨 나갔어요.
+질문: 지우는 왜 우산을 챙겼나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,114,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6106,'comprehension','왜 그랬나요 · 늦잠','이야기: 어젯밤 민준이는 늦게까지 만화를 봤어요. 그래서 아침에 늦잠을 잤어요.
+질문: 민준이는 왜 늦잠을 잤나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,115,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6107,'comprehension','왜 그랬나요 · 병원 가기','이야기: 서아는 아침부터 열이 나고 기침을 했어요. 그래서 엄마와 병원에 갔어요.
+질문: 서아는 왜 병원에 갔나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,116,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6108,'comprehension','왜 그랬나요 · 외투 벗기','이야기: 해가 쨍쨍 내리쬐어서 날씨가 더워졌어요. 아이들은 외투를 벗었어요.
+질문: 아이들은 왜 외투를 벗었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,117,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6109,'comprehension','왜 그랬나요 · 사과하기','이야기: 하준이가 뛰다가 친구 발을 밟았어요. 하준이는 친구에게 미안하다고 말했어요.
+질문: 하준이는 왜 사과했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,118,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6110,'comprehension','왜 그랬나요 · 물 주기','이야기: 화분의 흙이 바싹 말라 있었어요. 그래서 나는 화분에 물을 듬뿍 주었어요.
+질문: 왜 화분에 물을 주었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,119,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6111,'comprehension','왜 그랬나요 · 창문 닫기','이야기: 밖에서 차가운 바람이 불어 들어왔어요. 엄마가 창문을 닫으셨어요.
+질문: 엄마는 왜 창문을 닫으셨나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,120,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6112,'comprehension','왜 그랬나요 · 기뻐한 이유','이야기: 지민이는 받아쓰기에서 백 점을 받았어요. 지민이는 너무 기뻐서 폴짝 뛰었어요.
+질문: 지민이는 왜 기뻐했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,121,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6113,'comprehension','왜 그랬나요 · 울음','이야기: 동생이 아이스크림을 바닥에 떨어뜨렸어요. 동생은 앙 하고 울음을 터뜨렸어요.
+질문: 동생은 왜 울었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,122,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6114,'comprehension','왜 그랬나요 · 일찍 자기','이야기: 내일은 아침 일찍 소풍을 가요. 그래서 오늘은 일찍 잠자리에 들었어요.
+질문: 오늘은 왜 일찍 잤나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,123,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6115,'comprehension','왜 그랬나요 · 손 씻기','이야기: 밖에서 놀고 들어오니 손이 흙투성이였어요. 나는 바로 비누로 손을 씻었어요.
+질문: 왜 손을 씻었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,124,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6116,'comprehension','왜 그랬나요 · 선글라스','이야기: 해변의 햇빛이 너무 눈부셨어요. 아빠는 선글라스를 쓰셨어요.
+질문: 아빠는 왜 선글라스를 쓰셨나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,125,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6117,'comprehension','왜 그랬나요 · 조용히 걷기','이야기: 아기가 방에서 자고 있었어요. 그래서 우리는 발뒤꿈치를 들고 조용히 걸었어요.
+질문: 왜 조용히 걸었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,126,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6118,'comprehension','왜 그랬나요 · 지각','이야기: 버스가 오지 않아서 한참 기다렸어요. 결국 수업에 조금 늦었어요.
+질문: 왜 수업에 늦었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,127,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6119,'comprehension','왜 그랬나요 · 선물 산 이유','이야기: 다음 주가 엄마 생신이에요. 그래서 나는 용돈을 모아 꽃을 샀어요.
+질문: 왜 꽃을 샀나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,128,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6120,'comprehension','왜 그랬나요 · 강아지 짖음','이야기: 누군가 초인종을 눌렀어요. 그러자 강아지가 현관으로 달려가 짖었어요.
+질문: 강아지는 왜 짖었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,129,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6121,'comprehension','왜 그랬나요 · 부채질','이야기: 정전이 되어서 선풍기가 꺼졌어요. 할머니는 부채로 부채질을 하셨어요.
+질문: 할머니는 왜 부채질을 하셨나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,130,'INTERMEDIATE','SHORT_SENTENCE',NULL);
+INSERT IGNORE INTO exercises (exercise_id,category_id,title,instruction,input_type,target_phonemes,sort_order,difficulty,content_type,pronunciation_rule) VALUES
+(6122,'comprehension','왜 그랬나요 · 교실 이동','이야기: 교실 에어컨이 고장 났어요. 그래서 우리는 도서실에서 수업을 했어요.
+질문: 왜 도서실에서 수업을 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,131,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6123,'comprehension','왜 그랬나요 · 밥 많이 먹기','이야기: 오전 내내 운동회 연습을 했어요. 그래서 점심을 두 그릇이나 먹었어요.
+질문: 점심을 왜 많이 먹었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,132,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6124,'comprehension','왜 그랬나요 · 장화 신기','이야기: 밤새 비가 내려서 길에 물웅덩이가 많았어요. 동생은 장화를 신고 나갔어요.
+질문: 동생은 왜 장화를 신었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,133,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6125,'comprehension','왜 그랬나요 · 안경 찾기','이야기: 할아버지는 신문 글씨가 잘 안 보이셨어요. 그래서 안경을 찾으셨어요.
+질문: 할아버지는 왜 안경을 찾으셨나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,134,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6126,'comprehension','왜 그랬나요 · 마스크 쓰기','이야기: 황사 때문에 공기가 뿌옇게 흐렸어요. 우리는 마스크를 쓰고 학교에 갔어요.
+질문: 왜 마스크를 썼나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,135,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6127,'comprehension','왜 그랬나요 · 웃음','이야기: 친구가 우스꽝스러운 표정을 지었어요. 반 아이들이 모두 깔깔 웃었어요.
+질문: 아이들은 왜 웃었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,136,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6128,'comprehension','왜 그랬나요 · 화분 옮기기','이야기: 베란다 화분에 햇볕이 잘 들지 않았어요. 엄마는 화분을 창가로 옮기셨어요.
+질문: 엄마는 왜 화분을 옮기셨나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,137,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6129,'comprehension','왜 그랬나요 · 간식 나누기','이야기: 친구가 간식을 집에 두고 왔어요. 그래서 나는 내 과자를 반으로 나누어 주었어요.
+질문: 왜 과자를 나누어 주었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,138,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6130,'comprehension','왜 그랬나요 · 연습하기','이야기: 다음 주에 피아노 발표회가 있어요. 그래서 서윤이는 매일 한 시간씩 연습해요.
+질문: 서윤이는 왜 매일 연습하나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,139,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6131,'comprehension','어떤 순서였나요 · 아침 순서','이야기: 나는 일어나서 먼저 세수를 했어요. 그다음 옷을 입고 마지막으로 아침밥을 먹었어요.
+질문: 세수를 한 다음에 무엇을 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,140,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6132,'comprehension','어떤 순서였나요 · 요리 순서','이야기: 엄마는 먼저 감자를 씻으셨어요. 그다음 껍질을 벗기고 마지막에 냄비에 넣고 삶으셨어요.
+질문: 감자를 씻은 다음에 무엇을 하셨나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,141,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6133,'comprehension','어떤 순서였나요 · 학교 가는 길','이야기: 집을 나서서 먼저 문구점에 들렀어요. 그다음 친구를 만나고 함께 학교에 갔어요.
+질문: 가장 먼저 들른 곳은 어디인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,142,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6134,'comprehension','어떤 순서였나요 · 씨앗 자라기','이야기: 씨앗을 심으면 먼저 뿌리가 나와요. 그다음 새싹이 돋고 나중에 잎이 자라요.
+질문: 뿌리가 나온 다음에 무엇이 돋나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,143,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6135,'comprehension','어떤 순서였나요 · 소풍 날','이야기: 소풍날 우리는 버스를 타고 공원에 갔어요. 공원에서 보물찾기를 하고 나서 도시락을 먹었어요.
+질문: 보물찾기를 한 다음에 무엇을 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,144,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6136,'comprehension','어떤 순서였나요 · 병원 순서','이야기: 병원에 가면 먼저 접수를 해요. 그다음 차례를 기다렸다가 진료를 받아요.
+질문: 병원에서 가장 먼저 하는 일은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,145,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6137,'comprehension','어떤 순서였나요 · 편지 보내기','이야기: 편지를 다 쓴 뒤 봉투에 넣었어요. 우표를 붙이고 우체통에 넣었어요.
+질문: 우표를 붙인 다음에 무엇을 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,146,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6138,'comprehension','어떤 순서였나요 · 라면 끓이기','이야기: 물을 끓인 다음 면과 수프를 넣었어요. 마지막에 달걀을 넣었어요.
+질문: 마지막에 넣은 것은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,147,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6139,'comprehension','어떤 순서였나요 · 놀이공원','이야기: 놀이공원에서 처음에 회전목마를 탔어요. 그다음 바이킹을 타고 마지막에 관람차를 탔어요.
+질문: 마지막에 탄 것은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,148,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6140,'comprehension','어떤 순서였나요 · 목욕 순서','이야기: 목욕할 때 먼저 머리를 감아요. 그다음 몸을 씻고 마지막에 물로 헹궈요.
+질문: 머리를 감은 다음에 무엇을 하나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,149,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6141,'comprehension','어떤 순서였나요 · 나비의 일생','이야기: 나비는 처음에 알이었어요. 알에서 애벌레가 나오고, 번데기가 된 뒤 나비가 되었어요.
+질문: 애벌레 다음에는 무엇이 되나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,150,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6142,'comprehension','어떤 순서였나요 · 그림 그리기','이야기: 먼저 연필로 밑그림을 그렸어요. 그다음 크레파스로 색칠하고 마지막에 이름을 썼어요.
+질문: 마지막에 한 일은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,151,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6143,'comprehension','어떤 순서였나요 · 장보기 순서','이야기: 마트에서 먼저 채소 코너에 갔어요. 그다음 과일을 고르고 마지막에 계산했어요.
+질문: 채소 코너 다음에 무엇을 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,152,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6144,'comprehension','어떤 순서였나요 · 세탁기 사용','이야기: 빨래를 세탁기에 넣었어요. 세제를 넣고 시작 버튼을 눌렀어요.
+질문: 세제를 넣은 다음에 무엇을 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,153,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6145,'comprehension','어떤 순서였나요 · 눈사람 만들기','이야기: 큰 눈덩이를 먼저 굴렸어요. 그 위에 작은 눈덩이를 올리고 마지막으로 모자를 씌웠어요.
+질문: 가장 먼저 한 일은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,154,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6146,'comprehension','어떤 순서였나요 · 하루 일과','이야기: 나는 학교가 끝나고 태권도장에 갔어요. 그다음 집에 와서 숙제를 하고 저녁을 먹었어요.
+질문: 태권도장에 다녀와서 가장 먼저 한 일은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,155,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6147,'comprehension','어떤 순서였나요 · 케이크 만들기','이야기: 빵 위에 생크림을 발랐어요. 그 위에 딸기를 올리고 마지막에 초를 꽂았어요.
+질문: 딸기를 올린 다음에 무엇을 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,156,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6148,'comprehension','어떤 순서였나요 · 등산 순서','이야기: 산 입구에서 물을 샀어요. 중턱에서 잠깐 쉬고 꼭대기에서 사진을 찍었어요.
+질문: 꼭대기에서 무엇을 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,157,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6149,'comprehension','어떤 순서였나요 · 식물원 구경','이야기: 식물원에서 처음에 선인장을 보았어요. 다음으로 연꽃 연못에 가고 마지막에 열대 식물관에 갔어요.
+질문: 연꽃 연못 다음에 간 곳은 어디인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,158,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6150,'comprehension','어떤 순서였나요 · 옷 입기 순서','이야기: 동생은 먼저 양말을 신었어요. 그다음 바지를 입고 마지막에 점퍼를 입었어요.
+질문: 동생이 마지막에 입은 것은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,159,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6151,'comprehension','어떤 순서였나요 · 비 오는 날 순서','이야기: 비가 오기 시작하자 먼저 빨래를 걷었어요. 그다음 창문을 닫고 우산을 꺼냈어요.
+질문: 빨래를 걷은 다음에 무엇을 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,160,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6152,'comprehension','어떤 순서였나요 · 도서관 이용','이야기: 도서관에 들어가서 먼저 책을 골랐어요. 자리에 앉아 읽은 뒤 대출을 했어요.
+질문: 책을 다 읽은 뒤 무엇을 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,161,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6153,'comprehension','어떤 순서였나요 · 샌드위치','이야기: 빵에 버터를 발랐어요. 햄을 올린 다음 치즈를 올렸어요.
+질문: 햄을 올린 다음에 올린 것은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,162,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6154,'comprehension','어떤 순서였나요 · 여행 출발','이야기: 짐을 차에 싣고 출발했어요. 휴게소에서 쉬었다가 바다에 도착했어요.
+질문: 바다에 도착하기 전에 어디에서 쉬었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,163,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6155,'comprehension','어떤 순서였나요 · 청소 순서','이야기: 먼저 창문을 열어 환기했어요. 그다음 먼지를 털고 마지막으로 바닥을 닦았어요.
+질문: 가장 마지막에 한 일은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,164,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6156,'comprehension','어떤 순서였나요 · 개구리의 일생','이야기: 개구리는 알에서 올챙이로 태어나요. 올챙이에게 다리가 생기고 꼬리가 없어지면 개구리가 돼요.
+질문: 알에서 무엇이 태어나나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,165,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6157,'comprehension','원인과 결과 · 얼음 녹기','이야기: 햇볕이 뜨거운 곳에 얼음을 놓아두었어요. 한참 뒤에 보니 얼음이 물이 되어 있었어요.
+질문: 얼음은 어떻게 되었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,166,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6158,'comprehension','원인과 결과 · 시든 꽃','이야기: 며칠 동안 꽃에 물을 주지 않았어요. 꽃이 고개를 푹 숙였어요.
+질문: 꽃은 왜 고개를 숙였나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,167,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6159,'comprehension','원인과 결과 · 넘어진 이유','이야기: 길이 얼어서 미끄러웠어요. 민수는 뛰다가 꽈당 넘어졌어요.
+질문: 민수가 넘어진 까닭은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,168,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6160,'comprehension','원인과 결과 · 배탈','이야기: 동생은 찬 아이스크림을 세 개나 먹었어요. 밤에 배가 아프다고 했어요.
+질문: 동생은 왜 배가 아팠나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,169,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6161,'comprehension','원인과 결과 · 깨끗한 교실','이야기: 우리 반은 쉬는 시간마다 쓰레기를 주웠어요. 그래서 교실이 늘 깨끗했어요.
+질문: 교실이 늘 깨끗한 까닭은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,170,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6162,'comprehension','원인과 결과 · 젖은 옷','이야기: 갑자기 소나기가 쏟아졌어요. 우산이 없던 나는 옷이 흠뻑 젖었어요.
+질문: 옷이 젖은 까닭은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,171,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6163,'comprehension','원인과 결과 · 키 큰 해바라기','이야기: 해바라기를 햇볕이 잘 드는 곳에 심고 매일 물을 주었어요. 해바라기가 내 키보다 크게 자랐어요.
+질문: 해바라기는 어떻게 자랐나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,172,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6164,'comprehension','원인과 결과 · 불 꺼진 방','이야기: 전구가 다 닳아서 꺼졌어요. 방 안이 깜깜해졌어요.
+질문: 방이 깜깜해진 까닭은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,173,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6165,'comprehension','원인과 결과 · 빨라진 달리기','이야기: 하은이는 한 달 동안 매일 달리기를 연습했어요. 운동회에서 일 등을 했어요.
+질문: 하은이가 일 등을 한 까닭은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,174,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6166,'comprehension','원인과 결과 · 녹슨 자전거','이야기: 자전거를 비 오는 마당에 오래 두었어요. 자전거 체인이 빨갛게 녹슬었어요.
+질문: 체인은 왜 녹슬었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,175,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6167,'comprehension','원인과 결과 · 감기','이야기: 추운 날 얇은 옷을 입고 나갔어요. 다음 날 콧물이 나고 기침을 했어요.
+질문: 감기에 걸린 까닭은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,176,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6168,'comprehension','원인과 결과 · 깨진 화분','이야기: 바람이 세게 불어 창틀의 화분이 떨어졌어요. 화분이 깨져서 흙이 쏟아졌어요.
+질문: 화분은 왜 떨어졌나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,177,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6169,'comprehension','원인과 결과 · 상한 우유','이야기: 우유를 냉장고에 넣지 않고 밖에 두었어요. 다음 날 우유에서 시큼한 냄새가 났어요.
+질문: 우유는 왜 상했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,178,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6170,'comprehension','원인과 결과 · 칭찬받은 이유','이야기: 지호는 넘어진 친구를 보건실에 데려다주었어요. 선생님께서 지호를 칭찬하셨어요.
+질문: 선생님은 왜 지호를 칭찬하셨나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,179,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6171,'comprehension','원인과 결과 · 막힌 길','이야기: 사거리에서 자동차 사고가 났어요. 도로에 차가 길게 막혔어요.
+질문: 도로가 막힌 까닭은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,180,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6172,'comprehension','원인과 결과 · 엎질러진 물','이야기: 강아지가 꼬리를 흔들다가 물그릇을 쳤어요. 바닥이 물바다가 되었어요.
+질문: 바닥은 왜 젖었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,181,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6173,'comprehension','원인과 결과 · 무지개','이야기: 비가 그친 뒤 해가 나왔어요. 하늘에 무지개가 떴어요.
+질문: 무지개는 언제 떴나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,182,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6174,'comprehension','원인과 결과 · 부푼 풍선','이야기: 풍선에 바람을 계속 불어 넣었어요. 풍선이 펑 하고 터졌어요.
+질문: 풍선은 왜 터졌나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,183,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6175,'comprehension','원인과 결과 · 조용해진 교실','이야기: 선생님이 손가락을 입에 대셨어요. 떠들던 아이들이 조용해졌어요.
+질문: 교실이 조용해진 까닭은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,184,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6176,'comprehension','원인과 결과 · 타 버린 빵','이야기: 빵을 굽다가 텔레비전에 정신이 팔렸어요. 빵이 까맣게 타 버렸어요.
+질문: 빵은 왜 탔나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,185,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6177,'comprehension','원인과 결과 · 모인 개미','이야기: 바닥에 사탕을 떨어뜨렸어요. 잠시 뒤 개미들이 줄지어 모여들었어요.
+질문: 개미들이 모여든 까닭은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,186,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6178,'comprehension','원인과 결과 · 가득 찬 저금통','이야기: 나는 용돈을 받을 때마다 저금통에 넣었어요. 일 년이 지나자 저금통이 가득 찼어요.
+질문: 저금통이 가득 찬 까닭은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,187,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6179,'comprehension','원인과 결과 · 흐려진 거울','이야기: 뜨거운 물로 샤워를 했어요. 욕실 거울이 뿌옇게 흐려졌어요.
+질문: 거울은 왜 흐려졌나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,188,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6180,'comprehension','원인과 결과 · 쑥쑥 자란 키','이야기: 동생은 우유를 잘 마시고 일찍 잤어요. 일 년 동안 키가 많이 자랐어요.
+질문: 동생의 키가 많이 자란 까닭은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,189,'INTERMEDIATE','LONG_SENTENCE',NULL),
+(6181,'comprehension','원인과 결과 · 그친 울음','이야기: 아기가 울고 있었어요. 엄마가 자장가를 불러 주자 울음을 그쳤어요.
+질문: 아기는 왜 울음을 그쳤나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,190,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6182,'comprehension','원인과 결과 · 지워진 그림','이야기: 운동장 바닥에 분필로 그림을 그렸어요. 밤새 비가 내려 그림이 모두 지워졌어요.
+질문: 그림은 왜 지워졌나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,191,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6183,'comprehension','대화 이해하기 · 준비물 대화','이야기: 민지: 내일 미술 시간 준비물이 뭐야? / 지호: 크레파스랑 도화지야.
+질문: 미술 시간 준비물은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,192,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6184,'comprehension','대화 이해하기 · 약속 대화','이야기: 하준: 우리 몇 시에 만날까? / 서연: 세 시에 놀이터에서 만나자.
+질문: 두 친구는 어디에서 만나기로 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,193,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6185,'comprehension','대화 이해하기 · 점심 메뉴 대화','이야기: 엄마: 점심으로 뭐 먹고 싶니? / 아들: 저는 짜장면이 먹고 싶어요.
+질문: 아들이 먹고 싶은 음식은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,194,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6186,'comprehension','대화 이해하기 · 가게 대화','이야기: 손님: 이 공책 얼마예요? / 주인: 천 원이에요.
+질문: 공책은 얼마인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,195,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6187,'comprehension','대화 이해하기 · 병원 대화','이야기: 의사: 어디가 아파서 왔니? / 수아: 목이 따끔따끔 아파요.
+질문: 수아는 어디가 아픈가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,196,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6188,'comprehension','대화 이해하기 · 길 묻기 대화','이야기: 할머니: 우체국이 어디 있니? / 지우: 은행 옆에 있어요.
+질문: 우체국은 어디에 있나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,197,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6189,'comprehension','대화 이해하기 · 날씨 대화','이야기: 아빠: 오늘 비 온대. / 딸: 그럼 우산을 챙길게요.
+질문: 딸은 무엇을 챙기기로 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,198,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6190,'comprehension','대화 이해하기 · 선물 대화','이야기: 도윤: 생일 선물로 뭐 받고 싶어? / 하은: 나는 그림책을 받고 싶어.
+질문: 하은이가 받고 싶은 선물은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,199,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6191,'comprehension','대화 이해하기 · 숙제 대화','이야기: 선생님: 숙제를 다 했나요? / 민수: 아니요, 수학 숙제를 집에 두고 왔어요.
+질문: 민수는 무엇을 집에 두고 왔나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,200,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6192,'comprehension','대화 이해하기 · 전화 대화','이야기: 이모: 엄마 계시니? / 서윤: 지금 시장에 가셨어요.
+질문: 엄마는 어디에 가셨나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,201,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6193,'comprehension','대화 이해하기 · 놀이 대화','이야기: 준호: 우리 뭐 하고 놀까? / 태오: 비가 오니까 보드게임 하자.
+질문: 태오는 왜 보드게임을 하자고 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,202,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6194,'comprehension','대화 이해하기 · 분실물 대화','이야기: 지아: 내 필통 못 봤니? / 민호: 아까 사물함 위에 있던데.
+질문: 필통은 어디에 있었나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,203,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6195,'comprehension','대화 이해하기 · 주문 대화','이야기: 점원: 무엇을 드릴까요? / 아빠: 딸기 우유 두 개 주세요.
+질문: 아빠는 무엇을 주문했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,204,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6196,'comprehension','대화 이해하기 · 여행 대화','이야기: 삼촌: 이번 방학에 어디 가니? / 수민: 할머니가 계신 부산에 가요.
+질문: 수민이는 방학에 어디에 가나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,205,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6197,'comprehension','대화 이해하기 · 기분 대화','이야기: 엄마: 오늘 왜 이렇게 기분이 좋아? / 지호: 발표를 잘해서 칭찬받았어요.
+질문: 지호는 왜 기분이 좋은가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,206,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6198,'comprehension','대화 이해하기 · 버스 대화','이야기: 승객: 이 버스 시청에 가나요? / 기사: 아니요, 다음 버스를 타세요.
+질문: 승객은 어떻게 해야 하나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,207,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6199,'comprehension','대화 이해하기 · 도서관 대화','이야기: 사서: 책은 언제까지 반납하면 돼요? / 학생: 다음 주 월요일까지요.
+질문: 책은 언제까지 반납해야 하나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,208,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6200,'comprehension','대화 이해하기 · 청소 대화','이야기: 형: 내가 바닥을 닦을게. / 동생: 그럼 나는 창문을 닦을게.
+질문: 동생은 무엇을 닦기로 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,209,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6201,'comprehension','대화 이해하기 · 간식 대화','이야기: 할머니: 고구마 먹을래, 감자 먹을래? / 손녀: 저는 고구마요.
+질문: 손녀가 고른 간식은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,210,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6202,'comprehension','대화 이해하기 · 운동 대화','이야기: 민재: 너 무슨 운동 좋아해? / 서아: 나는 배드민턴을 제일 좋아해.
+질문: 서아가 좋아하는 운동은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,211,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6203,'comprehension','대화 이해하기 · 동물 대화','이야기: 아이: 저 새 이름이 뭐예요? / 아빠: 저건 까치란다.
+질문: 그 새의 이름은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,212,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6204,'comprehension','대화 이해하기 · 시간 대화','이야기: 동생: 지금 몇 시야? / 누나: 여섯 시 반이야, 곧 저녁 먹을 시간이야.
+질문: 지금은 몇 시인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,213,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6205,'comprehension','대화 이해하기 · 양보 대화','이야기: 할아버지: 고맙구나. / 학생: 아니에요, 여기 앉으세요.
+질문: 학생은 할아버지께 무엇을 했나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,214,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6206,'comprehension','대화 이해하기 · 색깔 대화','이야기: 지우: 무슨 색 풍선을 살까? / 하린: 하늘색이 예쁠 것 같아.
+질문: 하린이가 고른 색깔은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,215,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6207,'comprehension','대화 이해하기 · 화분 대화','이야기: 선생님: 화분에 물을 준 사람? / 다은: 제가 아침에 줬어요.
+질문: 화분에 물을 준 사람은 누구인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,216,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6208,'comprehension','대화 이해하기 · 영화 대화','이야기: 아빠: 무슨 영화 볼래? / 아들: 공룡이 나오는 영화요.
+질문: 아들이 보고 싶은 영화는 어떤 영화인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,217,'INTERMEDIATE','SHORT_SENTENCE',NULL),
+(6209,'comprehension','생각해서 답하기 · 젖은 땅','이야기: 아침에 나가 보니 땅이 젖어 있고 웅덩이가 생겼어요. 나뭇잎에도 물방울이 맺혀 있었어요.
+질문: 밤사이에 무슨 일이 있었을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,218,'ADVANCED','SHORT_SENTENCE',NULL),
+(6210,'comprehension','생각해서 답하기 · 빈 접시','이야기: 식탁 위 접시에 과자 부스러기만 남아 있었어요. 동생 입가에 과자 가루가 묻어 있었어요.
+질문: 과자는 누가 먹었을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,219,'ADVANCED','SHORT_SENTENCE',NULL),
+(6211,'comprehension','생각해서 답하기 · 하품','이야기: 수업 시간에 민수가 계속 하품을 했어요. 눈도 자꾸 감겼어요.
+질문: 민수는 어떤 상태일까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,220,'ADVANCED','SHORT_SENTENCE',NULL),
+(6212,'comprehension','생각해서 답하기 · 큰 가방','이야기: 지호가 커다란 가방에 수영복과 수건을 챙겼어요.
+질문: 지호는 어디에 가려는 걸까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,221,'ADVANCED','SHORT_SENTENCE',NULL),
+(6213,'comprehension','생각해서 답하기 · 꽃다발','이야기: 아빠가 퇴근길에 꽃다발과 케이크를 사 오셨어요. 오늘은 엄마의 특별한 날이에요.
+질문: 오늘은 무슨 날일까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,222,'ADVANCED','SHORT_SENTENCE',NULL),
+(6214,'comprehension','생각해서 답하기 · 발자국','이야기: 눈 위에 작은 발자국이 이어져 있었어요. 발자국은 개집 앞에서 끝났어요.
+질문: 발자국의 주인은 누구일까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,223,'ADVANCED','SHORT_SENTENCE',NULL),
+(6215,'comprehension','생각해서 답하기 · 땀 흘린 얼굴','이야기: 하은이 얼굴이 빨개지고 땀이 뻘뻘 났어요. 손에는 줄넘기를 들고 있었어요.
+질문: 하은이는 무엇을 하고 왔을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,224,'ADVANCED','SHORT_SENTENCE',NULL),
+(6216,'comprehension','생각해서 답하기 · 조용한 교실','이야기: 교실에 아무도 없고 불이 꺼져 있었어요. 칠판에 체육관으로 오라고 적혀 있었어요.
+질문: 반 친구들은 어디에 있을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,225,'ADVANCED','SHORT_SENTENCE',NULL),
+(6217,'comprehension','생각해서 답하기 · 식은 국','이야기: 국을 떠 놓고 오랫동안 전화를 했어요. 다시 와 보니 국이 미지근했어요.
+질문: 국이 미지근해진 까닭은 무엇일까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,226,'ADVANCED','SHORT_SENTENCE',NULL),
+(6218,'comprehension','생각해서 답하기 · 우는 아기','이야기: 아기가 젖병을 보더니 손을 뻗으며 울었어요.
+질문: 아기는 왜 울었을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,227,'ADVANCED','SHORT_SENTENCE',NULL),
+(6219,'comprehension','생각해서 답하기 · 짐 싸기','이야기: 엄마가 여행 가방에 수영복, 선크림, 모자를 넣으셨어요.
+질문: 가족은 어디로 여행을 갈까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,228,'ADVANCED','SHORT_SENTENCE',NULL),
+(6220,'comprehension','생각해서 답하기 · 떨리는 목소리','이야기: 무대에 오른 서연이의 목소리가 떨렸어요. 손도 꼭 쥐고 있었어요.
+질문: 서연이의 기분은 어떨까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,229,'ADVANCED','SHORT_SENTENCE',NULL),
+(6221,'comprehension','생각해서 답하기 · 흙 묻은 신발','이야기: 형의 운동화에 흙이 잔뜩 묻어 있었어요. 형은 축구공을 들고 들어왔어요.
+질문: 형은 어디에서 놀다 왔을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,230,'ADVANCED','SHORT_SENTENCE',NULL),
+(6222,'comprehension','생각해서 답하기 · 펼쳐진 우산들','이야기: 사람들이 하나둘 우산을 펴기 시작했어요.
+질문: 날씨는 어떻게 변했을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,231,'ADVANCED','SHORT_SENTENCE',NULL),
+(6223,'comprehension','생각해서 답하기 · 줄 선 사람들','이야기: 가게 앞에 사람들이 길게 줄을 서 있었어요. 고소한 빵 냄새가 났어요.
+질문: 그 가게는 어떤 가게일까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,232,'ADVANCED','SHORT_SENTENCE',NULL),
+(6224,'comprehension','생각해서 답하기 · 선물 상자','이야기: 친구가 내 생일에 리본 달린 상자를 내밀었어요. 상자 안에서 바스락 소리가 났어요.
+질문: 친구가 내민 것은 무엇일까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,233,'ADVANCED','SHORT_SENTENCE',NULL),
+(6225,'comprehension','생각해서 답하기 · 엉망인 방','이야기: 동생 방에 장난감이 흩어져 있고 블록 탑이 무너져 있었어요.
+질문: 동생은 방에서 무엇을 했을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,234,'ADVANCED','SHORT_SENTENCE',NULL),
+(6226,'comprehension','생각해서 답하기 · 일찍 켜진 불','이야기: 오후 네 시인데 밖이 어두워져서 거리에 불이 켜졌어요.
+질문: 어느 계절일까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,235,'ADVANCED','SHORT_SENTENCE',NULL),
+(6227,'comprehension','생각해서 답하기 · 기쁜 표정','이야기: 시험지를 받은 하준이가 활짝 웃으며 엄마에게 달려갔어요.
+질문: 하준이의 시험 결과는 어땠을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,236,'ADVANCED','SHORT_SENTENCE',NULL),
+(6228,'comprehension','생각해서 답하기 · 빈 새 둥지','이야기: 봄에 새 둥지에 아기 새가 있었어요. 여름에 다시 보니 둥지가 비어 있었어요.
+질문: 아기 새들은 어떻게 되었을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,237,'ADVANCED','SHORT_SENTENCE',NULL),
+(6229,'comprehension','생각해서 답하기 · 가득 찬 장바구니','이야기: 엄마가 장바구니에 밀가루, 달걀, 딸기, 생크림을 담으셨어요.
+질문: 엄마는 무엇을 만드시려는 걸까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,238,'ADVANCED','SHORT_SENTENCE',NULL),
+(6230,'comprehension','생각해서 답하기 · 꺼진 화면','이야기: 텔레비전을 보는데 갑자기 화면과 불이 함께 꺼졌어요.
+질문: 무슨 일이 일어났을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,239,'ADVANCED','SHORT_SENTENCE',NULL),
+(6231,'comprehension','생각해서 답하기 · 젖은 머리','이야기: 누나가 머리에 수건을 두르고 욕실에서 나왔어요.
+질문: 누나는 방금 무엇을 했을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,240,'ADVANCED','SHORT_SENTENCE',NULL),
+(6232,'comprehension','생각해서 답하기 · 뛰어가는 아이','이야기: 아이가 시계를 보더니 가방을 들고 정류장으로 뛰어갔어요.
+질문: 아이는 왜 뛰어갔을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,241,'ADVANCED','SHORT_SENTENCE',NULL),
+(6233,'comprehension','생각해서 답하기 · 하얀 입김','이야기: 아이들이 말할 때마다 입에서 하얀 김이 나왔어요.
+질문: 날씨가 어떨까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,242,'ADVANCED','SHORT_SENTENCE',NULL),
+(6234,'comprehension','생각해서 답하기 · 잠긴 문','이야기: 문을 두드려도 대답이 없고 신발장에 신발이 하나도 없었어요.
+질문: 집에 누가 있을까요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,243,'ADVANCED','SHORT_SENTENCE',NULL),
+(6235,'comprehension','중심 내용 찾기 · 꿀벌의 일','이야기: 꿀벌은 꽃에서 꿀을 모아요. 꽃가루를 옮겨 열매가 열리게 도와요. 꿀벌 덕분에 우리는 과일을 먹을 수 있어요.
+질문: 이 글은 무엇에 대한 이야기인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,244,'ADVANCED','SHORT_SENTENCE',NULL),
+(6236,'comprehension','중심 내용 찾기 · 이 닦기의 중요성','이야기: 이를 닦지 않으면 충치가 생겨요. 충치가 생기면 이가 아프고 음식을 먹기 힘들어요. 그래서 밥을 먹고 꼭 이를 닦아야 해요.
+질문: 이 글에서 하고 싶은 말은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,245,'ADVANCED','LONG_SENTENCE',NULL),
+(6237,'comprehension','중심 내용 찾기 · 나무의 고마움','이야기: 나무는 맑은 공기를 만들어 줘요. 여름에는 시원한 그늘을 주고 새들의 집이 되어 줘요.
+질문: 이 글은 무엇을 말하고 있나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,246,'ADVANCED','SHORT_SENTENCE',NULL),
+(6238,'comprehension','중심 내용 찾기 · 가을 운동회','이야기: 가을 운동회 날 우리 반은 줄다리기와 이어달리기를 했어요. 모두 힘을 합쳐서 줄다리기에서 이겼어요.
+질문: 운동회에서 우리 반이 이긴 경기는 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,247,'ADVANCED','SHORT_SENTENCE',NULL),
+(6239,'comprehension','중심 내용 찾기 · 물 아끼기','이야기: 물은 우리 생활에 꼭 필요해요. 양치할 때 컵을 쓰고 샤워 시간을 줄이면 물을 아낄 수 있어요.
+질문: 물을 아끼는 방법 한 가지를 말해 보세요.
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,248,'ADVANCED','LONG_SENTENCE',NULL),
+(6240,'comprehension','중심 내용 찾기 · 펭귄의 생활','이야기: 펭귄은 추운 남극에 살아요. 날지는 못하지만 헤엄을 아주 잘 쳐요. 물고기를 잡아먹으며 무리 지어 살아요.
+질문: 펭귄은 무엇을 잘하나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,249,'ADVANCED','SHORT_SENTENCE',NULL),
+(6241,'comprehension','중심 내용 찾기 · 교통 안전','이야기: 길을 건널 때는 신호등을 잘 봐야 해요. 초록불이 켜져도 좌우를 살피고 손을 들고 건너요.
+질문: 길을 건널 때 지켜야 할 것은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,250,'ADVANCED','LONG_SENTENCE',NULL),
+(6242,'comprehension','중심 내용 찾기 · 김치 만들기','이야기: 김치는 배추를 소금에 절인 뒤 양념을 버무려 만들어요. 우리 조상들은 겨울을 나려고 김장을 했어요.
+질문: 김치는 어떻게 만드나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,251,'ADVANCED','LONG_SENTENCE',NULL),
+(6243,'comprehension','중심 내용 찾기 · 고마운 소방관','이야기: 소방관은 불을 끄고 위험에 빠진 사람을 구해요. 밤낮없이 우리를 지켜 주는 고마운 분들이에요.
+질문: 소방관은 어떤 일을 하나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,252,'ADVANCED','LONG_SENTENCE',NULL),
+(6244,'comprehension','중심 내용 찾기 · 겨울잠','이야기: 곰과 개구리는 겨울이 오면 겨울잠을 자요. 먹이가 부족한 겨울을 잠을 자며 견뎌요.
+질문: 동물들이 겨울잠을 자는 까닭은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,253,'ADVANCED','SHORT_SENTENCE',NULL),
+(6245,'comprehension','중심 내용 찾기 · 분리수거','이야기: 쓰레기를 종이, 플라스틱, 유리로 나누어 버리는 것을 분리수거라고 해요. 분리수거를 하면 다시 쓸 수 있는 물건이 많아져요.
+질문: 분리수거를 하면 무엇이 좋은가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,254,'ADVANCED','LONG_SENTENCE',NULL),
+(6246,'comprehension','중심 내용 찾기 · 달의 모양','이야기: 달은 날마다 모양이 조금씩 바뀌어요. 가느다란 초승달이 점점 커져 둥근 보름달이 돼요.
+질문: 달은 어떻게 변하나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,255,'ADVANCED','SHORT_SENTENCE',NULL),
+(6247,'comprehension','중심 내용 찾기 · 골고루 먹기','이야기: 채소에는 비타민이, 고기에는 단백질이 많아요. 음식을 골고루 먹어야 몸이 튼튼해져요.
+질문: 이 글에서 하고 싶은 말은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,256,'ADVANCED','SHORT_SENTENCE',NULL),
+(6248,'comprehension','중심 내용 찾기 · 한글의 탄생','이야기: 세종 대왕은 백성들이 글을 쉽게 읽고 쓰도록 한글을 만드셨어요. 한글은 배우기 쉬운 글자예요.
+질문: 세종 대왕은 왜 한글을 만드셨나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,257,'ADVANCED','LONG_SENTENCE',NULL),
+(6249,'comprehension','중심 내용 찾기 · 개미의 협동','이야기: 개미는 큰 먹이를 혼자 옮기지 못해요. 그래서 여러 마리가 힘을 합쳐 먹이를 날라요.
+질문: 개미들은 큰 먹이를 어떻게 옮기나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,258,'ADVANCED','SHORT_SENTENCE',NULL),
+(6250,'comprehension','중심 내용 찾기 · 도서관 예절','이야기: 도서관에서는 조용히 해야 해요. 책은 깨끗하게 보고 다 읽은 책은 제자리에 꽂아요.
+질문: 도서관에서 지켜야 할 일 한 가지를 말해 보세요.
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,259,'ADVANCED','SHORT_SENTENCE',NULL),
+(6251,'comprehension','중심 내용 찾기 · 잠의 중요성','이야기: 잠을 푹 자면 몸이 쑥쑥 자라고 기억력도 좋아져요. 어린이는 하루에 아홉 시간 넘게 자는 것이 좋아요.
+질문: 잠을 푹 자면 무엇이 좋아지나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,260,'ADVANCED','SHORT_SENTENCE',NULL),
+(6252,'comprehension','중심 내용 찾기 · 사계절','이야기: 우리나라에는 봄, 여름, 가을, 겨울 네 계절이 있어요. 계절마다 날씨와 입는 옷이 달라요.
+질문: 우리나라에는 계절이 몇 개 있나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,261,'ADVANCED','SHORT_SENTENCE',NULL),
+(6253,'comprehension','중심 내용 찾기 · 손 씻기 습관','이야기: 손에는 눈에 보이지 않는 세균이 많아요. 밖에서 돌아오면 비누로 손을 깨끗이 씻어야 감기를 막을 수 있어요.
+질문: 손을 씻으면 무엇을 막을 수 있나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,262,'ADVANCED','SHORT_SENTENCE',NULL),
+(6254,'comprehension','중심 내용 찾기 · 씨앗 여행','이야기: 민들레 씨앗은 바람을 타고 멀리 날아가요. 도깨비바늘은 동물 털에 붙어서 다른 곳으로 가요.
+질문: 민들레 씨앗은 어떻게 멀리 가나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,263,'ADVANCED','SHORT_SENTENCE',NULL),
+(6255,'comprehension','중심 내용 찾기 · 화산','이야기: 화산은 땅속의 뜨거운 마그마가 밖으로 터져 나오는 산이에요. 뜨거운 용암이 흘러내려요.
+질문: 화산에서는 무엇이 흘러내리나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,264,'ADVANCED','SHORT_SENTENCE',NULL),
+(6256,'comprehension','중심 내용 찾기 · 설날 풍습','이야기: 설날에는 떡국을 먹고 웃어른께 세배를 드려요. 윷놀이와 연날리기도 해요.
+질문: 설날에 먹는 음식은 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,265,'ADVANCED','SHORT_SENTENCE',NULL),
+(6257,'comprehension','중심 내용 찾기 · 고래','이야기: 고래는 바다에 살지만 물고기가 아니에요. 새끼를 낳아 젖을 먹이고 숨을 쉬러 물 위로 올라와요.
+질문: 고래는 숨을 쉬려고 어떻게 하나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,266,'ADVANCED','SHORT_SENTENCE',NULL),
+(6258,'comprehension','중심 내용 찾기 · 친구와 사이좋게','이야기: 친구와 사이좋게 지내려면 서로 양보해야 해요. 친구 말을 잘 들어 주고 고마울 때 고맙다고 말해요.
+질문: 친구와 사이좋게 지내는 방법 한 가지는 무엇인가요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,267,'ADVANCED','SHORT_SENTENCE',NULL),
+(6259,'comprehension','중심 내용 찾기 · 비가 오는 까닭','이야기: 햇볕에 데워진 물은 수증기가 되어 하늘로 올라가요. 수증기가 모여 구름이 되고, 구름이 무거워지면 비가 내려요.
+질문: 구름이 무거워지면 어떻게 되나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,268,'ADVANCED','SHORT_SENTENCE',NULL),
+(6260,'comprehension','중심 내용 찾기 · 우리 몸의 뼈','이야기: 우리 몸에는 이백 개가 넘는 뼈가 있어요. 뼈는 몸을 받쳐 주고 뇌와 심장 같은 기관을 보호해요.
+질문: 뼈는 어떤 일을 하나요?
+이야기를 읽고 질문에 알맞은 대답을 말해 보세요.','mic',NULL,269,'ADVANCED','SHORT_SENTENCE',NULL);
+INSERT IGNORE INTO exercise_items (exercise_id,text_value,emoji,sort_order) VALUES
+(2001,'가',NULL,1),
+(2001,'거',NULL,2),
+(2001,'고',NULL,3),
+(2001,'구',NULL,4),
+(2001,'그',NULL,5),
+(2002,'까',NULL,1),
+(2002,'꺼',NULL,2),
+(2002,'꼬',NULL,3),
+(2002,'꾸',NULL,4),
+(2002,'끄',NULL,5),
+(2003,'나',NULL,1),
+(2003,'너',NULL,2),
+(2003,'노',NULL,3),
+(2003,'누',NULL,4),
+(2003,'느',NULL,5),
+(2004,'다',NULL,1),
+(2004,'더',NULL,2),
+(2004,'도',NULL,3),
+(2004,'두',NULL,4),
+(2004,'드',NULL,5),
+(2005,'따',NULL,1),
+(2005,'떠',NULL,2),
+(2005,'또',NULL,3),
+(2005,'뚜',NULL,4),
+(2005,'뜨',NULL,5),
+(2006,'라',NULL,1),
+(2006,'러',NULL,2),
+(2006,'로',NULL,3),
+(2006,'루',NULL,4),
+(2006,'르',NULL,5),
+(2007,'마',NULL,1),
+(2007,'머',NULL,2),
+(2007,'모',NULL,3),
+(2007,'무',NULL,4),
+(2007,'므',NULL,5),
+(2008,'바',NULL,1),
+(2008,'버',NULL,2),
+(2008,'보',NULL,3),
+(2008,'부',NULL,4),
+(2008,'브',NULL,5),
+(2009,'빠',NULL,1),
+(2009,'뻐',NULL,2),
+(2009,'뽀',NULL,3),
+(2009,'뿌',NULL,4),
+(2009,'쁘',NULL,5),
+(2010,'사',NULL,1),
+(2010,'서',NULL,2),
+(2010,'소',NULL,3),
+(2010,'수',NULL,4),
+(2010,'스',NULL,5),
+(2011,'싸',NULL,1),
+(2011,'써',NULL,2),
+(2011,'쏘',NULL,3),
+(2011,'쑤',NULL,4),
+(2011,'쓰',NULL,5),
+(2012,'자',NULL,1),
+(2012,'저',NULL,2),
+(2012,'조',NULL,3),
+(2012,'주',NULL,4),
+(2012,'즈',NULL,5),
+(2013,'짜',NULL,1),
+(2013,'쩌',NULL,2),
+(2013,'쪼',NULL,3),
+(2013,'쭈',NULL,4),
+(2013,'쯔',NULL,5),
+(2014,'차',NULL,1),
+(2014,'처',NULL,2),
+(2014,'초',NULL,3),
+(2014,'추',NULL,4),
+(2014,'츠',NULL,5),
+(2015,'카',NULL,1),
+(2015,'커',NULL,2),
+(2015,'코',NULL,3),
+(2015,'쿠',NULL,4),
+(2015,'크',NULL,5),
+(2016,'타',NULL,1),
+(2016,'터',NULL,2),
+(2016,'토',NULL,3),
+(2016,'투',NULL,4),
+(2016,'트',NULL,5),
+(2017,'파',NULL,1),
+(2017,'퍼',NULL,2),
+(2017,'포',NULL,3),
+(2017,'푸',NULL,4),
+(2017,'프',NULL,5),
+(2018,'하',NULL,1),
+(2018,'허',NULL,2),
+(2018,'호',NULL,3),
+(2018,'후',NULL,4),
+(2018,'흐',NULL,5),
+(2019,'기',NULL,1),
+(2019,'개',NULL,2),
+(2019,'게',NULL,3),
+(2019,'괴',NULL,4),
+(2019,'귀',NULL,5),
+(2020,'끼',NULL,1),
+(2020,'깨',NULL,2),
+(2020,'께',NULL,3),
+(2020,'꾀',NULL,4),
+(2020,'뀌',NULL,5),
+(2021,'니',NULL,1),
+(2021,'내',NULL,2),
+(2021,'네',NULL,3),
+(2021,'뇌',NULL,4),
+(2021,'뉘',NULL,5),
+(2022,'디',NULL,1),
+(2022,'대',NULL,2),
+(2022,'데',NULL,3),
+(2022,'되',NULL,4),
+(2022,'뒤',NULL,5),
+(2023,'띠',NULL,1),
+(2023,'때',NULL,2),
+(2023,'떼',NULL,3),
+(2023,'뙤',NULL,4),
+(2023,'뛰',NULL,5),
+(2024,'리',NULL,1),
+(2024,'래',NULL,2),
+(2024,'레',NULL,3),
+(2024,'뢰',NULL,4),
+(2024,'뤼',NULL,5),
+(2025,'미',NULL,1),
+(2025,'매',NULL,2),
+(2025,'메',NULL,3),
+(2025,'뫼',NULL,4),
+(2025,'뮈',NULL,5),
+(2026,'비',NULL,1),
+(2026,'배',NULL,2),
+(2026,'베',NULL,3),
+(2026,'뵈',NULL,4),
+(2026,'뷔',NULL,5),
+(2027,'삐',NULL,1),
+(2027,'빼',NULL,2),
+(2027,'뻬',NULL,3),
+(2027,'뾔',NULL,4),
+(2027,'쀠',NULL,5),
+(2028,'시',NULL,1),
+(2028,'새',NULL,2),
+(2028,'세',NULL,3),
+(2028,'쇠',NULL,4),
+(2028,'쉬',NULL,5),
+(2029,'씨',NULL,1),
+(2029,'쌔',NULL,2),
+(2029,'쎄',NULL,3),
+(2029,'쐬',NULL,4),
+(2029,'쒸',NULL,5),
+(2030,'지',NULL,1),
+(2030,'재',NULL,2),
+(2030,'제',NULL,3),
+(2030,'죄',NULL,4),
+(2030,'쥐',NULL,5),
+(2031,'찌',NULL,1),
+(2031,'째',NULL,2),
+(2031,'쩨',NULL,3),
+(2031,'쬐',NULL,4),
+(2031,'쮜',NULL,5),
+(2032,'치',NULL,1),
+(2032,'채',NULL,2),
+(2032,'체',NULL,3),
+(2032,'최',NULL,4),
+(2032,'취',NULL,5),
+(2033,'키',NULL,1),
+(2033,'캐',NULL,2),
+(2033,'케',NULL,3),
+(2033,'쾨',NULL,4),
+(2033,'퀴',NULL,5),
+(2034,'티',NULL,1),
+(2034,'태',NULL,2),
+(2034,'테',NULL,3),
+(2034,'퇴',NULL,4),
+(2034,'튀',NULL,5),
+(2035,'피',NULL,1),
+(2035,'패',NULL,2),
+(2035,'페',NULL,3),
+(2035,'푀',NULL,4),
+(2035,'퓌',NULL,5),
+(2036,'히',NULL,1),
+(2036,'해',NULL,2),
+(2036,'헤',NULL,3),
+(2036,'회',NULL,4),
+(2036,'휘',NULL,5),
+(2037,'갸',NULL,1),
+(2037,'겨',NULL,2),
+(2037,'교',NULL,3),
+(2037,'규',NULL,4),
+(2037,'과',NULL,5),
+(2038,'꺄',NULL,1),
+(2038,'껴',NULL,2),
+(2038,'꾜',NULL,3),
+(2038,'뀨',NULL,4),
+(2038,'꽈',NULL,5),
+(2039,'냐',NULL,1),
+(2039,'녀',NULL,2),
+(2039,'뇨',NULL,3),
+(2039,'뉴',NULL,4),
+(2039,'놔',NULL,5),
+(2040,'댜',NULL,1),
+(2040,'뎌',NULL,2),
+(2040,'됴',NULL,3),
+(2040,'듀',NULL,4),
+(2040,'돠',NULL,5),
+(2041,'땨',NULL,1),
+(2041,'뗘',NULL,2),
+(2041,'뚀',NULL,3),
+(2041,'뜌',NULL,4),
+(2041,'똬',NULL,5),
+(2042,'랴',NULL,1),
+(2042,'려',NULL,2),
+(2042,'료',NULL,3),
+(2042,'류',NULL,4),
+(2042,'롸',NULL,5),
+(2043,'먀',NULL,1),
+(2043,'며',NULL,2),
+(2043,'묘',NULL,3),
+(2043,'뮤',NULL,4),
+(2043,'뫄',NULL,5),
+(2044,'뱌',NULL,1),
+(2044,'벼',NULL,2),
+(2044,'뵤',NULL,3),
+(2044,'뷰',NULL,4),
+(2044,'봐',NULL,5),
+(2045,'뺘',NULL,1),
+(2045,'뼈',NULL,2),
+(2045,'뾰',NULL,3),
+(2045,'쀼',NULL,4),
+(2045,'뽜',NULL,5),
+(2046,'샤',NULL,1),
+(2046,'셔',NULL,2),
+(2046,'쇼',NULL,3),
+(2046,'슈',NULL,4),
+(2046,'솨',NULL,5),
+(2047,'쌰',NULL,1),
+(2047,'쎠',NULL,2),
+(2047,'쑈',NULL,3),
+(2047,'쓔',NULL,4),
+(2047,'쏴',NULL,5),
+(2048,'쟈',NULL,1),
+(2048,'져',NULL,2),
+(2048,'죠',NULL,3),
+(2048,'쥬',NULL,4),
+(2048,'좌',NULL,5),
+(2049,'쨔',NULL,1),
+(2049,'쪄',NULL,2),
+(2049,'쬬',NULL,3),
+(2049,'쮸',NULL,4),
+(2049,'쫘',NULL,5),
+(2050,'챠',NULL,1),
+(2050,'쳐',NULL,2),
+(2050,'쵸',NULL,3),
+(2050,'츄',NULL,4),
+(2050,'촤',NULL,5),
+(2051,'캬',NULL,1),
+(2051,'켜',NULL,2),
+(2051,'쿄',NULL,3),
+(2051,'큐',NULL,4),
+(2051,'콰',NULL,5),
+(2052,'탸',NULL,1),
+(2052,'텨',NULL,2),
+(2052,'툐',NULL,3),
+(2052,'튜',NULL,4),
+(2052,'톼',NULL,5),
+(2053,'퍄',NULL,1),
+(2053,'펴',NULL,2),
+(2053,'표',NULL,3),
+(2053,'퓨',NULL,4),
+(2053,'퐈',NULL,5),
+(2054,'햐',NULL,1),
+(2054,'혀',NULL,2),
+(2054,'효',NULL,3),
+(2054,'휴',NULL,4),
+(2054,'화',NULL,5),
+(2055,'각',NULL,1),
+(2055,'간',NULL,2),
+(2055,'갈',NULL,3),
+(2055,'감',NULL,4),
+(2055,'강',NULL,5),
+(2056,'깍',NULL,1),
+(2056,'깐',NULL,2),
+(2056,'깔',NULL,3),
+(2056,'깜',NULL,4),
+(2056,'깡',NULL,5),
+(2057,'낙',NULL,1),
+(2057,'난',NULL,2),
+(2057,'날',NULL,3),
+(2057,'남',NULL,4),
+(2057,'낭',NULL,5),
+(2058,'닥',NULL,1),
+(2058,'단',NULL,2),
+(2058,'달',NULL,3),
+(2058,'담',NULL,4),
+(2058,'당',NULL,5),
+(2059,'딱',NULL,1),
+(2059,'딴',NULL,2),
+(2059,'딸',NULL,3),
+(2059,'땀',NULL,4),
+(2059,'땅',NULL,5),
+(2060,'락',NULL,1),
+(2060,'란',NULL,2),
+(2060,'랄',NULL,3),
+(2060,'람',NULL,4),
+(2060,'랑',NULL,5),
+(2061,'막',NULL,1),
+(2061,'만',NULL,2),
+(2061,'말',NULL,3),
+(2061,'맘',NULL,4),
+(2061,'망',NULL,5),
+(2062,'박',NULL,1),
+(2062,'반',NULL,2),
+(2062,'발',NULL,3),
+(2062,'밤',NULL,4),
+(2062,'방',NULL,5),
+(2063,'빡',NULL,1),
+(2063,'빤',NULL,2),
+(2063,'빨',NULL,3),
+(2063,'빰',NULL,4),
+(2063,'빵',NULL,5),
+(2064,'삭',NULL,1),
+(2064,'산',NULL,2),
+(2064,'살',NULL,3),
+(2064,'삼',NULL,4),
+(2064,'상',NULL,5),
+(2065,'싹',NULL,1),
+(2065,'싼',NULL,2),
+(2065,'쌀',NULL,3),
+(2065,'쌈',NULL,4),
+(2065,'쌍',NULL,5),
+(2066,'작',NULL,1),
+(2066,'잔',NULL,2),
+(2066,'잘',NULL,3),
+(2066,'잠',NULL,4),
+(2066,'장',NULL,5),
+(2067,'짝',NULL,1),
+(2067,'짠',NULL,2),
+(2067,'짤',NULL,3),
+(2067,'짬',NULL,4),
+(2067,'짱',NULL,5),
+(2068,'착',NULL,1),
+(2068,'찬',NULL,2),
+(2068,'찰',NULL,3),
+(2068,'참',NULL,4),
+(2068,'창',NULL,5),
+(2069,'칵',NULL,1),
+(2069,'칸',NULL,2),
+(2069,'칼',NULL,3),
+(2069,'캄',NULL,4),
+(2069,'캉',NULL,5),
+(2070,'탁',NULL,1),
+(2070,'탄',NULL,2),
+(2070,'탈',NULL,3),
+(2070,'탐',NULL,4),
+(2070,'탕',NULL,5),
+(2071,'팍',NULL,1),
+(2071,'판',NULL,2),
+(2071,'팔',NULL,3),
+(2071,'팜',NULL,4),
+(2071,'팡',NULL,5),
+(2072,'학',NULL,1),
+(2072,'한',NULL,2),
+(2072,'할',NULL,3),
+(2072,'함',NULL,4),
+(2072,'항',NULL,5),
+(2073,'아',NULL,1),
+(2073,'가',NULL,2),
+(2073,'나',NULL,3),
+(2073,'마',NULL,4),
+(2073,'바',NULL,5),
+(2074,'어',NULL,1),
+(2074,'거',NULL,2),
+(2074,'너',NULL,3),
+(2074,'머',NULL,4),
+(2074,'버',NULL,5),
+(2075,'오',NULL,1),
+(2075,'고',NULL,2),
+(2075,'노',NULL,3),
+(2075,'모',NULL,4),
+(2075,'보',NULL,5),
+(2076,'우',NULL,1),
+(2076,'구',NULL,2),
+(2076,'누',NULL,3),
+(2076,'무',NULL,4),
+(2076,'부',NULL,5),
+(2077,'으',NULL,1),
+(2077,'그',NULL,2),
+(2077,'느',NULL,3),
+(2077,'므',NULL,4),
+(2077,'브',NULL,5),
+(2078,'이',NULL,1),
+(2078,'기',NULL,2),
+(2078,'니',NULL,3),
+(2078,'미',NULL,4),
+(2078,'비',NULL,5),
+(2079,'애',NULL,1),
+(2079,'개',NULL,2),
+(2079,'내',NULL,3),
+(2079,'매',NULL,4),
+(2079,'배',NULL,5),
+(2080,'에',NULL,1),
+(2080,'게',NULL,2),
+(2080,'네',NULL,3),
+(2080,'메',NULL,4),
+(2080,'베',NULL,5),
+(2081,'야',NULL,1),
+(2081,'갸',NULL,2),
+(2081,'냐',NULL,3),
+(2081,'먀',NULL,4),
+(2081,'뱌',NULL,5),
+(2082,'여',NULL,1),
+(2082,'겨',NULL,2),
+(2082,'녀',NULL,3),
+(2082,'며',NULL,4),
+(2082,'벼',NULL,5),
+(2083,'요',NULL,1),
+(2083,'교',NULL,2),
+(2083,'뇨',NULL,3),
+(2083,'묘',NULL,4),
+(2083,'뵤',NULL,5),
+(2084,'유',NULL,1),
+(2084,'규',NULL,2),
+(2084,'뉴',NULL,3),
+(2084,'뮤',NULL,4),
+(2084,'뷰',NULL,5),
+(2085,'와',NULL,1),
+(2085,'과',NULL,2),
+(2085,'놔',NULL,3),
+(2085,'뫄',NULL,4),
+(2085,'봐',NULL,5),
+(2086,'워',NULL,1),
+(2086,'궈',NULL,2),
+(2086,'눠',NULL,3),
+(2086,'뭐',NULL,4),
+(2086,'붜',NULL,5),
+(2087,'외',NULL,1),
+(2087,'괴',NULL,2),
+(2087,'뇌',NULL,3),
+(2087,'뫼',NULL,4),
+(2087,'뵈',NULL,5),
+(2088,'위',NULL,1),
+(2088,'귀',NULL,2),
+(2088,'뉘',NULL,3),
+(2088,'뮈',NULL,4),
+(2088,'뷔',NULL,5),
+(2089,'불',NULL,1),
+(2089,'뿔',NULL,2),
+(2089,'풀',NULL,3),
+(2089,'발',NULL,4),
+(2089,'팔',NULL,5),
+(2090,'달',NULL,1),
+(2090,'딸',NULL,2),
+(2090,'탈',NULL,3),
+(2090,'담',NULL,4),
+(2090,'땀',NULL,5),
+(2091,'굴',NULL,1),
+(2091,'꿀',NULL,2),
+(2091,'공',NULL,3),
+(2091,'콩',NULL,4),
+(2091,'개',NULL,5),
+(2092,'자다',NULL,1),
+(2092,'짜다',NULL,2),
+(2092,'차다',NULL,3),
+(2092,'종',NULL,4),
+(2092,'총',NULL,5),
+(2093,'살',NULL,1),
+(2093,'쌀',NULL,2),
+(2093,'사다',NULL,3),
+(2093,'싸다',NULL,4),
+(2093,'시',NULL,5),
+(2094,'라면',NULL,1),
+(2094,'나무',NULL,2),
+(2094,'레몬',NULL,3),
+(2094,'네모',NULL,4),
+(2094,'로봇',NULL,5),
+(2095,'말',NULL,1),
+(2095,'발',NULL,2),
+(2095,'물',NULL,3),
+(2095,'불',NULL,4),
+(2095,'목',NULL,5),
+(2096,'해',NULL,1),
+(2096,'개',NULL,2),
+(2096,'호수',NULL,3),
+(2096,'고추',NULL,4),
+(2096,'하마',NULL,5),
+(2097,'꿈',NULL,1),
+(2097,'굼벵이',NULL,2),
+(2097,'꼬리',NULL,3),
+(2097,'고리',NULL,4),
+(2097,'깨',NULL,5),
+(2098,'떡',NULL,1),
+(2098,'덕',NULL,2),
+(2098,'뜰',NULL,3),
+(2098,'들',NULL,4),
+(2098,'똑',NULL,5),
+(2099,'빵',NULL,1),
+(2099,'방',NULL,2),
+(2099,'뼈',NULL,3),
+(2099,'벼',NULL,4),
+(2099,'뿌리',NULL,5),
+(2100,'쓰다',NULL,1),
+(2100,'서다',NULL,2),
+(2100,'씨',NULL,3),
+(2100,'시소',NULL,4),
+(2100,'쑥',NULL,5);
+INSERT IGNORE INTO exercise_items (exercise_id,text_value,emoji,sort_order) VALUES
+(2101,'짝',NULL,1),
+(2101,'작다',NULL,2),
+(2101,'찌개',NULL,3),
+(2101,'지게',NULL,4),
+(2101,'쪽',NULL,5),
+(2102,'차',NULL,1),
+(2102,'자',NULL,2),
+(2102,'춤',NULL,3),
+(2102,'줌',NULL,4),
+(2102,'침',NULL,5),
+(2103,'키',NULL,1),
+(2103,'기',NULL,2),
+(2103,'컵',NULL,3),
+(2103,'겁',NULL,4),
+(2103,'칼',NULL,5),
+(2104,'탑',NULL,1),
+(2104,'답',NULL,2),
+(2104,'통',NULL,3),
+(2104,'동',NULL,4),
+(2104,'털',NULL,5),
+(2105,'파',NULL,1),
+(2105,'바',NULL,2),
+(2105,'포도',NULL,3),
+(2105,'보도',NULL,4),
+(2105,'피',NULL,5),
+(2106,'나리',NULL,1),
+(2106,'다리',NULL,2),
+(2106,'누나',NULL,3),
+(2106,'두부',NULL,4),
+(2106,'노래',NULL,5),
+(2107,'라디오',NULL,1),
+(2107,'다리미',NULL,2),
+(2107,'로켓',NULL,3),
+(2107,'도토리',NULL,4),
+(2107,'리본',NULL,5),
+(2108,'사과',NULL,1),
+(2108,'자두',NULL,2),
+(2108,'소',NULL,3),
+(2108,'조개',NULL,4),
+(2108,'수박',NULL,5),
+(3001,'엄마','👩',1),
+(3001,'엄마가 따뜻하게 안아 주셨어요.',NULL,2),
+(3002,'아빠','👨',1),
+(3002,'아빠와 함께 자전거를 탔어요.',NULL,2),
+(3003,'할머니','👵',1),
+(3003,'할머니 댁에 놀러 갔어요.',NULL,2),
+(3004,'할아버지','👴',1),
+(3004,'할아버지께서 옛날이야기를 들려주셨어요.',NULL,2),
+(3005,'형','🧒',1),
+(3005,'형이 숙제를 도와주었어요.',NULL,2),
+(3006,'누나','👧',1),
+(3006,'누나와 보드게임을 했어요.',NULL,2),
+(3007,'오빠','👦',1),
+(3007,'오빠가 우산을 씌워 주었어요.',NULL,2),
+(3008,'언니','👧',1),
+(3008,'언니가 머리를 묶어 주었어요.',NULL,2),
+(3009,'동생','👶',1),
+(3009,'동생이 블록을 높이 쌓았어요.',NULL,2),
+(3010,'아기','👶',1),
+(3010,'아기가 새근새근 자고 있어요.',NULL,2),
+(3011,'삼촌','🧔',1),
+(3011,'삼촌이 선물을 사 오셨어요.',NULL,2),
+(3012,'이모','👩',1),
+(3012,'이모가 맛있는 떡을 만들어 주셨어요.',NULL,2),
+(3013,'고모','👩',1),
+(3013,'고모와 함께 공원을 걸었어요.',NULL,2),
+(3014,'사촌','🧑',1),
+(3014,'명절에 사촌들과 윷놀이를 했어요.',NULL,2),
+(3015,'가족사진','🖼️',1),
+(3015,'거실에 가족사진이 걸려 있어요.',NULL,2),
+(3016,'부모님','👪',1),
+(3016,'부모님께 감사 편지를 썼어요.',NULL,2),
+(3017,'쌍둥이','👯',1),
+(3017,'쌍둥이 형제는 얼굴이 똑같아요.',NULL,2),
+(3018,'손자','👦',1),
+(3018,'할머니가 손자를 무척 아끼세요.',NULL,2),
+(3019,'명절','🏮',1),
+(3019,'명절에 온 가족이 모였어요.',NULL,2),
+(3020,'생일','🎂',1),
+(3020,'내 생일에 친구들을 초대했어요.',NULL,2),
+(3021,'교실','🏫',1),
+(3021,'교실 창문을 활짝 열었어요.',NULL,2),
+(3022,'선생님','🧑‍🏫',1),
+(3022,'선생님께 큰 소리로 인사했어요.',NULL,2),
+(3023,'칠판','📋',1),
+(3023,'칠판에 오늘 날짜를 썼어요.',NULL,2),
+(3024,'공책','📓',1),
+(3024,'공책에 받아쓰기를 했어요.',NULL,2),
+(3025,'연필','✏️',1),
+(3025,'연필을 뾰족하게 깎았어요.',NULL,2),
+(3026,'지우개','🧽',1),
+(3026,'지우개로 틀린 글자를 지웠어요.',NULL,2),
+(3027,'필통','🖊️',1),
+(3027,'필통에 색연필을 넣었어요.',NULL,2),
+(3028,'가방','🎒',1),
+(3028,'가방을 메고 학교에 갔어요.',NULL,2),
+(3029,'급식','🍱',1),
+(3029,'오늘 급식은 카레라이스였어요.',NULL,2),
+(3030,'운동장','⚽',1),
+(3030,'운동장에서 줄넘기를 했어요.',NULL,2),
+(3031,'도서실','📚',1),
+(3031,'도서실에서 그림책을 빌렸어요.',NULL,2),
+(3032,'숙제','📝',1),
+(3032,'저녁 먹기 전에 숙제를 끝냈어요.',NULL,2),
+(3033,'시간표','🗓️',1),
+(3033,'시간표를 보고 책을 챙겼어요.',NULL,2),
+(3034,'짝꿍','🤝',1),
+(3034,'짝꿍과 지우개를 나누어 썼어요.',NULL,2),
+(3035,'쉬는 시간','🔔',1),
+(3035,'쉬는 시간에 화장실에 다녀왔어요.',NULL,2),
+(3036,'받아쓰기','✍️',1),
+(3036,'받아쓰기에서 백 점을 받았어요.',NULL,2),
+(3037,'교과서','📘',1),
+(3037,'교과서를 펴고 소리 내어 읽었어요.',NULL,2),
+(3038,'실내화','🥿',1),
+(3038,'교실에 들어가기 전에 실내화로 갈아 신었어요.',NULL,2),
+(3039,'방학','🏖️',1),
+(3039,'여름 방학에 바다에 갔어요.',NULL,2),
+(3040,'알림장','📒',1),
+(3040,'알림장에 준비물을 적었어요.',NULL,2),
+(3041,'밥','🍚',1),
+(3041,'따뜻한 밥을 한 그릇 먹었어요.',NULL,2),
+(3042,'국','🍲',1),
+(3042,'미역국을 후후 불어 먹었어요.',NULL,2),
+(3043,'김치','🥬',1),
+(3043,'김치가 맵지만 맛있어요.',NULL,2),
+(3044,'라면','🍜',1),
+(3044,'주말에 아빠와 라면을 끓였어요.',NULL,2),
+(3045,'김밥','🍙',1),
+(3045,'소풍 갈 때 김밥을 쌌어요.',NULL,2),
+(3046,'떡볶이','🌶️',1),
+(3046,'떡볶이가 조금 매웠어요.',NULL,2),
+(3047,'만두','🥟',1),
+(3047,'할머니와 만두를 빚었어요.',NULL,2),
+(3048,'빵','🍞',1),
+(3048,'아침으로 빵에 잼을 발라 먹었어요.',NULL,2),
+(3049,'우유','🥛',1),
+(3049,'우유를 마시고 키가 크고 싶어요.',NULL,2),
+(3050,'달걀','🥚',1),
+(3050,'달걀을 삶아서 껍질을 깠어요.',NULL,2),
+(3051,'치킨','🍗',1),
+(3051,'생일에 치킨을 시켜 먹었어요.',NULL,2),
+(3052,'피자','🍕',1),
+(3052,'피자를 한 조각씩 나누어 먹었어요.',NULL,2),
+(3053,'국수','🍝',1),
+(3053,'잔치에서 국수를 먹었어요.',NULL,2),
+(3054,'죽','🥣',1),
+(3054,'감기에 걸려서 죽을 먹었어요.',NULL,2),
+(3055,'반찬','🥗',1),
+(3055,'엄마가 반찬을 여러 가지 만드셨어요.',NULL,2),
+(3056,'간식','🍪',1),
+(3056,'학교 끝나고 간식으로 고구마를 먹었어요.',NULL,2),
+(3057,'아이스크림','🍦',1),
+(3057,'더운 날 아이스크림이 녹았어요.',NULL,2),
+(3058,'주스','🧃',1),
+(3058,'오렌지 주스를 컵에 따랐어요.',NULL,2),
+(3059,'도시락','🍱',1),
+(3059,'현장 학습에 도시락을 가져갔어요.',NULL,2),
+(3060,'비빔밥','🥘',1),
+(3060,'비빔밥을 쓱쓱 비벼 먹었어요.',NULL,2),
+(3061,'사과','🍎',1),
+(3061,'아침에 사과를 깎아 먹었어요.',NULL,2),
+(3062,'바나나','🍌',1),
+(3062,'원숭이가 바나나를 좋아해요.',NULL,2),
+(3063,'포도','🍇',1),
+(3063,'포도를 한 알씩 떼어 먹었어요.',NULL,2),
+(3064,'딸기','🍓',1),
+(3064,'딸기에 우유를 부어 먹었어요.',NULL,2),
+(3065,'수박','🍉',1),
+(3065,'여름에 시원한 수박을 먹었어요.',NULL,2),
+(3066,'귤','🍊',1),
+(3066,'겨울에 귤을 까서 나누어 먹었어요.',NULL,2),
+(3067,'배','🍐',1),
+(3067,'배를 먹으니 목이 시원했어요.',NULL,2),
+(3068,'복숭아','🍑',1),
+(3068,'복숭아가 달콤하고 부드러워요.',NULL,2),
+(3069,'참외','🍈',1),
+(3069,'참외를 반으로 잘라 씨를 뺐어요.',NULL,2),
+(3070,'감','🟠',1),
+(3070,'마당 감나무에 감이 주렁주렁 열렸어요.',NULL,2),
+(3071,'당근','🥕',1),
+(3071,'토끼에게 당근을 주었어요.',NULL,2),
+(3072,'오이','🥒',1),
+(3072,'오이를 썰어 샐러드에 넣었어요.',NULL,2),
+(3073,'감자','🥔',1),
+(3073,'감자를 쪄서 소금에 찍어 먹었어요.',NULL,2),
+(3074,'고구마','🍠',1),
+(3074,'군고구마가 달콤해요.',NULL,2),
+(3075,'양파','🧅',1),
+(3075,'양파를 썰다가 눈물이 났어요.',NULL,2),
+(3076,'배추','🥬',1),
+(3076,'배추를 소금에 절였어요.',NULL,2),
+(3077,'토마토','🍅',1),
+(3077,'토마토를 갈아서 주스를 만들었어요.',NULL,2),
+(3078,'옥수수','🌽',1),
+(3078,'옥수수를 쪄서 하모니카처럼 먹었어요.',NULL,2),
+(3079,'버섯','🍄',1),
+(3079,'버섯을 넣고 찌개를 끓였어요.',NULL,2),
+(3080,'호박','🎃',1),
+(3080,'호박으로 죽을 만들었어요.',NULL,2),
+(3081,'집','🏠',1),
+(3081,'학교가 끝나고 집으로 돌아왔어요.',NULL,2),
+(3082,'병원','🏥',1),
+(3082,'열이 나서 병원에 갔어요.',NULL,2),
+(3083,'약국','💊',1),
+(3083,'약국에서 감기약을 샀어요.',NULL,2),
+(3084,'시장','🛒',1),
+(3084,'시장에서 생선을 샀어요.',NULL,2),
+(3085,'마트','🏬',1),
+(3085,'마트에서 우유와 빵을 샀어요.',NULL,2),
+(3086,'공원','🌳',1),
+(3086,'공원에서 강아지와 산책했어요.',NULL,2),
+(3087,'놀이터','🛝',1),
+(3087,'놀이터에서 그네를 탔어요.',NULL,2),
+(3088,'도서관','📚',1),
+(3088,'도서관에서 조용히 책을 읽었어요.',NULL,2),
+(3089,'은행','🏦',1),
+(3089,'엄마와 은행에 가서 저금했어요.',NULL,2),
+(3090,'우체국','📮',1),
+(3090,'우체국에서 할머니께 편지를 부쳤어요.',NULL,2),
+(3091,'경찰서','🚓',1),
+(3091,'길에서 주운 지갑을 경찰서에 맡겼어요.',NULL,2),
+(3092,'소방서','🚒',1),
+(3092,'소방서에 빨간 소방차가 있어요.',NULL,2),
+(3093,'수영장','🏊',1),
+(3093,'수영장에서 물장구를 쳤어요.',NULL,2),
+(3094,'미용실','💇',1),
+(3094,'미용실에서 머리를 짧게 잘랐어요.',NULL,2),
+(3095,'식당','🍽️',1),
+(3095,'식당에서 냉면을 먹었어요.',NULL,2),
+(3096,'동물원','🦒',1),
+(3096,'동물원에서 기린을 보았어요.',NULL,2),
+(3097,'박물관','🏛️',1),
+(3097,'박물관에서 오래된 그릇을 보았어요.',NULL,2),
+(3098,'치과','🦷',1),
+(3098,'치과에서 충치를 치료했어요.',NULL,2),
+(3099,'빵집','🥐',1),
+(3099,'빵집에서 고소한 냄새가 났어요.',NULL,2),
+(3100,'영화관','🎬',1),
+(3100,'영화관에서 팝콘을 먹으며 영화를 봤어요.',NULL,2),
+(3101,'버스','🚌',1),
+(3101,'버스를 타고 할머니 댁에 갔어요.',NULL,2),
+(3102,'지하철','🚇',1),
+(3102,'지하철에서 자리를 양보했어요.',NULL,2),
+(3103,'기차','🚆',1),
+(3103,'기차를 타고 바닷가에 갔어요.',NULL,2),
+(3104,'비행기','✈️',1),
+(3104,'비행기가 구름 위로 날아갔어요.',NULL,2),
+(3105,'배','🚢',1),
+(3105,'배를 타고 섬에 갔어요.',NULL,2),
+(3106,'자전거','🚲',1),
+(3106,'헬멧을 쓰고 자전거를 탔어요.',NULL,2),
+(3107,'택시','🚕',1),
+(3107,'비가 와서 택시를 탔어요.',NULL,2),
+(3108,'트럭','🚚',1),
+(3108,'트럭이 이삿짐을 실었어요.',NULL,2),
+(3109,'구급차','🚑',1),
+(3109,'구급차가 삐뽀삐뽀 지나갔어요.',NULL,2),
+(3110,'신호등','🚦',1),
+(3110,'신호등이 초록불로 바뀌었어요.',NULL,2),
+(3111,'횡단보도','🚸',1),
+(3111,'횡단보도에서는 손을 들고 건너요.',NULL,2),
+(3112,'정류장','🚏',1),
+(3112,'정류장에서 버스를 기다렸어요.',NULL,2),
+(3113,'헬리콥터','🚁',1),
+(3113,'헬리콥터가 하늘에 떠 있어요.',NULL,2),
+(3114,'오토바이','🏍️',1),
+(3114,'오토바이가 빠르게 지나갔어요.',NULL,2),
+(3115,'킥보드','🛴',1),
+(3115,'공원에서 킥보드를 탔어요.',NULL,2),
+(3116,'안전벨트','💺',1),
+(3116,'차에 타자마자 안전벨트를 맸어요.',NULL,2),
+(3117,'도로','🛣️',1),
+(3117,'도로에 차가 많이 밀렸어요.',NULL,2),
+(3118,'다리','🌉',1),
+(3118,'큰 다리를 건너 강 건너편에 갔어요.',NULL,2),
+(3119,'터널','🕳️',1),
+(3119,'터널에 들어가니 깜깜해졌어요.',NULL,2),
+(3120,'주차장','🅿️',1),
+(3120,'주차장에 차를 세웠어요.',NULL,2),
+(3121,'맑음','☀️',1),
+(3121,'오늘은 하늘이 맑아서 소풍 가기 좋아요.',NULL,2),
+(3122,'비','🌧️',1),
+(3122,'비가 와서 우산을 썼어요.',NULL,2),
+(3123,'눈','❄️',1),
+(3123,'눈이 와서 눈사람을 만들었어요.',NULL,2),
+(3124,'바람','🌬️',1),
+(3124,'바람이 불어서 연을 날렸어요.',NULL,2),
+(3125,'구름','☁️',1),
+(3125,'구름이 솜사탕처럼 생겼어요.',NULL,2),
+(3126,'천둥','⛈️',1),
+(3126,'천둥소리에 깜짝 놀랐어요.',NULL,2),
+(3127,'번개','⚡',1),
+(3127,'번개가 번쩍하고 쳤어요.',NULL,2),
+(3128,'무지개','🌈',1),
+(3128,'비가 그치자 무지개가 떴어요.',NULL,2),
+(3129,'안개','🌫️',1),
+(3129,'아침에 안개가 껴서 앞이 잘 안 보였어요.',NULL,2),
+(3130,'태풍','🌀',1),
+(3130,'태풍이 와서 창문을 꼭 닫았어요.',NULL,2),
+(3131,'소나기','🌦️',1),
+(3131,'소나기가 내려서 처마 밑에 숨었어요.',NULL,2),
+(3132,'더위','🥵',1),
+(3132,'더위를 피해 그늘에서 쉬었어요.',NULL,2),
+(3133,'추위','🥶',1),
+(3133,'추위에 손이 꽁꽁 얼었어요.',NULL,2),
+(3134,'일기 예보','📺',1),
+(3134,'일기 예보에서 내일 비가 온다고 했어요.',NULL,2),
+(3135,'기온','🌡️',1),
+(3135,'오늘은 기온이 많이 내려갔어요.',NULL,2),
+(3136,'햇볕','🌞',1),
+(3136,'햇볕에 빨래를 말렸어요.',NULL,2),
+(3137,'우산','☂️',1),
+(3137,'우산을 접어서 가방에 넣었어요.',NULL,2),
+(3138,'장화','👢',1),
+(3138,'장화를 신고 물웅덩이를 첨벙 밟았어요.',NULL,2),
+(3139,'황사','😷',1),
+(3139,'황사가 심해서 마스크를 썼어요.',NULL,2),
+(3140,'서리','🧊',1),
+(3140,'아침에 풀잎에 서리가 하얗게 내렸어요.',NULL,2),
+(3141,'기쁘다','😄',1),
+(3141,'선물을 받아서 정말 기뻤어요.',NULL,2),
+(3142,'슬프다','😢',1),
+(3142,'강아지가 아파서 슬펐어요.',NULL,2),
+(3143,'화나다','😠',1),
+(3143,'동생이 내 그림을 찢어서 화가 났어요.',NULL,2),
+(3144,'무섭다','😨',1),
+(3144,'깜깜한 밤길이 무서웠어요.',NULL,2),
+(3145,'놀라다','😲',1),
+(3145,'큰 소리에 깜짝 놀랐어요.',NULL,2),
+(3146,'부끄럽다','😳',1),
+(3146,'발표할 때 조금 부끄러웠어요.',NULL,2),
+(3147,'신나다','🤩',1),
+(3147,'놀이공원에 가서 너무 신났어요.',NULL,2),
+(3148,'걱정되다','😟',1),
+(3148,'시험을 앞두고 걱정됐어요.',NULL,2),
+(3149,'속상하다','😞',1),
+(3149,'그림을 망쳐서 속상했어요.',NULL,2),
+(3150,'외롭다','🥺',1),
+(3150,'친구가 이사 가서 외로웠어요.',NULL,2),
+(3151,'뿌듯하다','😊',1),
+(3151,'혼자 방 청소를 해서 뿌듯했어요.',NULL,2),
+(3152,'심심하다','🥱',1),
+(3152,'비가 와서 밖에 못 나가 심심했어요.',NULL,2),
+(3153,'편안하다','😌',1),
+(3153,'엄마 품에 안기니 편안했어요.',NULL,2),
+(3154,'고맙다','🙏',1),
+(3154,'친구가 연필을 빌려줘서 고마웠어요.',NULL,2),
+(3155,'미안하다','🙇',1),
+(3155,'친구 발을 밟아서 미안했어요.',NULL,2),
+(3156,'설레다','💓',1),
+(3156,'소풍 전날 밤 마음이 설렜어요.',NULL,2),
+(3157,'긴장되다','😬',1),
+(3157,'달리기 출발선에서 긴장됐어요.',NULL,2),
+(3158,'샘나다','😒',1),
+(3158,'친구 새 장난감이 샘났어요.',NULL,2),
+(3159,'억울하다','😤',1),
+(3159,'내가 안 깼는데 혼나서 억울했어요.',NULL,2),
+(3160,'그립다','🥲',1),
+(3160,'멀리 사는 할머니가 그리워요.',NULL,2),
+(3161,'먹다','🍽️',1),
+(3161,'점심으로 국수를 먹었어요.',NULL,2),
+(3162,'마시다','🥤',1),
+(3162,'운동하고 물을 마셨어요.',NULL,2),
+(3163,'자다','😴',1),
+(3163,'일찍 자고 일찍 일어났어요.',NULL,2),
+(3164,'씻다','🧼',1),
+(3164,'밥 먹기 전에 손을 씻었어요.',NULL,2),
+(3165,'걷다','🚶',1),
+(3165,'학교까지 천천히 걸었어요.',NULL,2),
+(3166,'달리다','🏃',1),
+(3166,'운동회에서 힘껏 달렸어요.',NULL,2),
+(3167,'앉다','🪑',1),
+(3167,'의자에 바르게 앉았어요.',NULL,2),
+(3168,'서다','🧍',1),
+(3168,'줄을 맞춰 바르게 섰어요.',NULL,2),
+(3169,'읽다','📖',1),
+(3169,'동화책을 소리 내어 읽었어요.',NULL,2),
+(3170,'쓰다','✍️',1),
+(3170,'일기장에 오늘 일을 썼어요.',NULL,2),
+(3171,'그리다','🎨',1),
+(3171,'크레파스로 우리 집을 그렸어요.',NULL,2),
+(3172,'노래하다','🎤',1),
+(3172,'친구들 앞에서 노래했어요.',NULL,2),
+(3173,'웃다','😆',1),
+(3173,'친구의 농담에 크게 웃었어요.',NULL,2),
+(3174,'울다','😭',1),
+(3174,'넘어져서 엉엉 울었어요.',NULL,2),
+(3175,'던지다','🤾',1),
+(3175,'공을 친구에게 던졌어요.',NULL,2),
+(3176,'받다','🙌',1),
+(3176,'생일 선물을 받았어요.',NULL,2),
+(3177,'열다','🚪',1),
+(3177,'창문을 열어 바람을 들였어요.',NULL,2),
+(3178,'닫다','🚪',1),
+(3178,'추워서 문을 꼭 닫았어요.',NULL,2),
+(3179,'돕다','🤝',1),
+(3179,'엄마의 설거지를 도왔어요.',NULL,2),
+(3180,'기다리다','⏳',1),
+(3180,'정류장에서 버스를 기다렸어요.',NULL,2),
+(3181,'칫솔','🪥',1),
+(3181,'칫솔에 치약을 짜서 이를 닦았어요.',NULL,2),
+(3182,'치약','🦷',1),
+(3182,'치약을 조금만 짜요.',NULL,2),
+(3183,'수건','🧻',1),
+(3183,'세수하고 수건으로 얼굴을 닦았어요.',NULL,2),
+(3184,'비누','🧼',1),
+(3184,'비누로 손을 깨끗이 씻었어요.',NULL,2),
+(3185,'빗','🪮',1),
+(3185,'빗으로 머리를 단정하게 빗었어요.',NULL,2),
+(3186,'거울','🪞',1),
+(3186,'거울을 보며 옷매무새를 고쳤어요.',NULL,2),
+(3187,'휴지','🧻',1),
+(3187,'휴지로 콧물을 닦았어요.',NULL,2),
+(3188,'컵','🥛',1),
+(3188,'컵에 물을 가득 따랐어요.',NULL,2),
+(3189,'숟가락','🥄',1),
+(3189,'숟가락으로 국물을 떠먹었어요.',NULL,2),
+(3190,'젓가락','🥢',1),
+(3190,'젓가락으로 콩을 집었어요.',NULL,2),
+(3191,'접시','🍽️',1),
+(3191,'접시에 과일을 담았어요.',NULL,2),
+(3192,'냄비','🍲',1),
+(3192,'냄비에 물을 붓고 끓였어요.',NULL,2),
+(3193,'베개','🛏️',1),
+(3193,'푹신한 베개를 베고 잤어요.',NULL,2),
+(3194,'이불','🛌',1),
+(3194,'추워서 이불을 덮었어요.',NULL,2),
+(3195,'시계','⏰',1),
+(3195,'시계를 보니 벌써 아홉 시였어요.',NULL,2),
+(3196,'가위','✂️',1),
+(3196,'가위로 색종이를 오렸어요.',NULL,2),
+(3197,'풀','🧴',1),
+(3197,'풀로 색종이를 붙였어요.',NULL,2),
+(3198,'우산꽂이','☔',1),
+(3198,'현관 우산꽂이에 우산을 꽂았어요.',NULL,2),
+(3199,'쓰레기통','🗑️',1),
+(3199,'과자 봉지를 쓰레기통에 버렸어요.',NULL,2),
+(3200,'리모컨','📱',1),
+(3200,'리모컨으로 텔레비전을 켰어요.',NULL,2),
+(3201,'아침','🌅',1),
+(3201,'아침에 일어나서 세수를 했어요.',NULL,2),
+(3202,'점심','🕛',1),
+(3202,'점심에 친구와 같이 밥을 먹었어요.',NULL,2),
+(3203,'저녁','🌇',1),
+(3203,'저녁에 가족과 산책했어요.',NULL,2),
+(3204,'밤','🌙',1),
+(3204,'밤하늘에 별이 반짝였어요.',NULL,2),
+(3205,'새벽','🌌',1),
+(3205,'새벽에 닭이 꼬끼오 울었어요.',NULL,2),
+(3206,'오늘','📅',1),
+(3206,'오늘은 체육 수업이 있어요.',NULL,2),
+(3207,'어제','⬅️',1),
+(3207,'어제 할머니 댁에 다녀왔어요.',NULL,2),
+(3208,'내일','➡️',1),
+(3208,'내일은 현장 학습을 가요.',NULL,2),
+(3209,'주말','🛋️',1),
+(3209,'주말에 가족과 캠핑을 갔어요.',NULL,2),
+(3210,'요일','🗓️',1),
+(3210,'오늘이 무슨 요일인지 달력을 봤어요.',NULL,2),
+(3211,'달력','📆',1),
+(3211,'달력에 내 생일을 동그라미 쳤어요.',NULL,2),
+(3212,'시각','🕒',1),
+(3212,'약속 시각에 늦지 않게 서둘렀어요.',NULL,2),
+(3213,'일찍','🐓',1),
+(3213,'오늘은 일찍 학교에 도착했어요.',NULL,2),
+(3214,'늦게','🐢',1),
+(3214,'늦게 일어나서 지각할 뻔했어요.',NULL,2),
+(3215,'잠깐','⏱️',1),
+(3215,'잠깐만 기다려 주세요.',NULL,2),
+(3216,'하루','☀️',1),
+(3216,'하루 종일 비가 내렸어요.',NULL,2),
+(3217,'일주일','7️⃣',1),
+(3217,'일주일 동안 꽃에 물을 주었어요.',NULL,2),
+(3218,'지금','👉',1),
+(3218,'지금 바로 출발해요.',NULL,2),
+(3219,'나중','🔜',1),
+(3219,'숙제는 나중에 하지 말고 먼저 해요.',NULL,2),
+(3220,'옛날','📜',1),
+(3220,'옛날에 호랑이가 살았대요.',NULL,2),
+(3221,'봄','🌸',1),
+(3221,'봄이 되자 개나리가 피었어요.',NULL,2),
+(3222,'여름','🌞',1),
+(3222,'여름에 바다에서 수영했어요.',NULL,2),
+(3223,'가을','🍁',1),
+(3223,'가을에 낙엽을 밟으며 걸었어요.',NULL,2),
+(3224,'겨울','⛄',1),
+(3224,'겨울에 썰매를 탔어요.',NULL,2),
+(3225,'꽃샘추위','🌬️',1),
+(3225,'꽃샘추위에 외투를 다시 꺼냈어요.',NULL,2),
+(3226,'장마','🌧️',1),
+(3226,'장마라서 매일 우산을 챙겼어요.',NULL,2),
+(3227,'단풍','🍂',1),
+(3227,'산에 단풍이 곱게 들었어요.',NULL,2),
+(3228,'낙엽','🍃',1),
+(3228,'낙엽을 모아 책갈피를 만들었어요.',NULL,2),
+(3229,'눈사람','☃️',1),
+(3229,'눈사람에게 목도리를 둘러 주었어요.',NULL,2),
+(3230,'썰매','🛷',1),
+(3230,'언덕에서 썰매를 타고 내려왔어요.',NULL,2);
+INSERT IGNORE INTO exercise_items (exercise_id,text_value,emoji,sort_order) VALUES
+(3231,'개나리','🌼',1),
+(3231,'담장에 개나리가 활짝 피었어요.',NULL,2),
+(3232,'진달래','🌺',1),
+(3232,'산에 진달래가 분홍빛으로 피었어요.',NULL,2),
+(3233,'매미','🦗',1),
+(3233,'매미가 나무에서 시끄럽게 울었어요.',NULL,2),
+(3234,'부채','🪭',1),
+(3234,'더워서 부채를 부쳤어요.',NULL,2),
+(3235,'선풍기','🌀',1),
+(3235,'선풍기를 켜고 낮잠을 잤어요.',NULL,2),
+(3236,'장갑','🧤',1),
+(3236,'장갑을 끼고 눈싸움을 했어요.',NULL,2),
+(3237,'목도리','🧣',1),
+(3237,'엄마가 목도리를 둘러 주셨어요.',NULL,2),
+(3238,'추수','🌾',1),
+(3238,'논에서 추수하는 모습을 보았어요.',NULL,2),
+(3239,'벚꽃','🌸',1),
+(3239,'벚꽃잎이 눈처럼 날렸어요.',NULL,2),
+(3240,'팥빙수','🍧',1),
+(3240,'더운 날 팥빙수를 나누어 먹었어요.',NULL,2),
+(3241,'그림 그리기','🖍️',1),
+(3241,'주말마다 그림 그리기를 해요.',NULL,2),
+(3242,'피아노','🎹',1),
+(3242,'피아노로 동요를 쳤어요.',NULL,2),
+(3243,'종이접기','🦢',1),
+(3243,'종이접기로 학을 접었어요.',NULL,2),
+(3244,'축구','⚽',1),
+(3244,'친구들과 운동장에서 축구를 했어요.',NULL,2),
+(3245,'수영','🏊',1),
+(3245,'여름 방학에 수영을 배웠어요.',NULL,2),
+(3246,'줄넘기','🪢',1),
+(3246,'줄넘기를 백 번 넘었어요.',NULL,2),
+(3247,'독서','📖',1),
+(3247,'자기 전에 독서를 해요.',NULL,2),
+(3248,'블록 놀이','🧱',1),
+(3248,'블록 놀이로 높은 성을 쌓았어요.',NULL,2),
+(3249,'퍼즐','🧩',1),
+(3249,'백 조각 퍼즐을 다 맞췄어요.',NULL,2),
+(3250,'캠핑','🏕️',1),
+(3250,'가족과 캠핑을 가서 별을 봤어요.',NULL,2),
+(3251,'요리','🍳',1),
+(3251,'엄마와 함께 요리를 했어요.',NULL,2),
+(3252,'노래방','🎤',1),
+(3252,'노래방에서 신나게 노래를 불렀어요.',NULL,2),
+(3253,'보드게임','🎲',1),
+(3253,'가족과 보드게임을 하며 웃었어요.',NULL,2),
+(3254,'태권도','🥋',1),
+(3254,'태권도장에서 발차기를 배웠어요.',NULL,2),
+(3255,'자전거 타기','🚴',1),
+(3255,'강변에서 자전거 타기를 했어요.',NULL,2),
+(3256,'낚시','🎣',1),
+(3256,'아빠와 낚시를 가서 물고기를 잡았어요.',NULL,2),
+(3257,'사진 찍기','📷',1),
+(3257,'꽃 사진 찍기를 좋아해요.',NULL,2),
+(3258,'춤','💃',1),
+(3258,'신나는 음악에 맞춰 춤을 췄어요.',NULL,2),
+(3259,'등산','⛰️',1),
+(3259,'주말에 가족과 등산을 했어요.',NULL,2),
+(3260,'만들기','✂️',1),
+(3260,'만들기 시간에 상자로 로봇을 만들었어요.',NULL,2),
+(3261,'강아지','🐶',1),
+(3261,'강아지가 꼬리를 흔들었어요.',NULL,2),
+(3262,'고양이','🐱',1),
+(3262,'고양이가 창가에서 낮잠을 자요.',NULL,2),
+(3263,'토끼','🐰',1),
+(3263,'토끼가 풀을 오물오물 먹었어요.',NULL,2),
+(3264,'코끼리','🐘',1),
+(3264,'코끼리가 코로 물을 뿌렸어요.',NULL,2),
+(3265,'기린','🦒',1),
+(3265,'기린이 높은 나뭇잎을 먹었어요.',NULL,2),
+(3266,'사자','🦁',1),
+(3266,'사자가 어흥 하고 울었어요.',NULL,2),
+(3267,'호랑이','🐯',1),
+(3267,'호랑이가 숲속을 걸어갔어요.',NULL,2),
+(3268,'원숭이','🐵',1),
+(3268,'원숭이가 나무에 매달렸어요.',NULL,2),
+(3269,'곰','🐻',1),
+(3269,'곰이 겨울잠을 자요.',NULL,2),
+(3270,'펭귄','🐧',1),
+(3270,'펭귄이 뒤뚱뒤뚱 걸었어요.',NULL,2),
+(3271,'돼지','🐷',1),
+(3271,'돼지가 진흙탕에서 뒹굴었어요.',NULL,2),
+(3272,'소','🐮',1),
+(3272,'소가 들판에서 풀을 뜯어요.',NULL,2),
+(3273,'말','🐴',1),
+(3273,'말이 초원을 힘차게 달렸어요.',NULL,2),
+(3274,'닭','🐔',1),
+(3274,'닭이 알을 낳았어요.',NULL,2),
+(3275,'오리','🦆',1),
+(3275,'오리가 연못에서 헤엄쳤어요.',NULL,2),
+(3276,'거북이','🐢',1),
+(3276,'거북이가 느릿느릿 기어갔어요.',NULL,2),
+(3277,'개구리','🐸',1),
+(3277,'개구리가 연잎 위로 뛰었어요.',NULL,2),
+(3278,'다람쥐','🐿️',1),
+(3278,'다람쥐가 볼에 도토리를 넣었어요.',NULL,2),
+(3279,'나비','🦋',1),
+(3279,'나비가 꽃 위에 살포시 앉았어요.',NULL,2),
+(3280,'물고기','🐟',1),
+(3280,'어항 속 물고기가 헤엄쳐요.',NULL,2),
+(3281,'하늘','🌤️',1),
+(3281,'하늘이 파랗게 맑았어요.',NULL,2),
+(3282,'바다','🌊',1),
+(3282,'바다에서 파도 소리를 들었어요.',NULL,2),
+(3283,'산','⛰️',1),
+(3283,'산꼭대기에 올라 야호를 외쳤어요.',NULL,2),
+(3284,'강','🏞️',1),
+(3284,'강에서 오리가 헤엄쳤어요.',NULL,2),
+(3285,'나무','🌳',1),
+(3285,'나무 그늘에서 쉬었어요.',NULL,2),
+(3286,'꽃','🌷',1),
+(3286,'꽃에서 좋은 향기가 났어요.',NULL,2),
+(3287,'풀밭','🌿',1),
+(3287,'풀밭에 누워 구름을 봤어요.',NULL,2),
+(3288,'돌','🪨',1),
+(3288,'냇가에서 납작한 돌을 주웠어요.',NULL,2),
+(3289,'모래','🏖️',1),
+(3289,'모래로 두꺼비집을 지었어요.',NULL,2),
+(3290,'해','☀️',1),
+(3290,'해가 산 위로 떠올랐어요.',NULL,2),
+(3291,'달','🌕',1),
+(3291,'보름달이 둥글게 떴어요.',NULL,2),
+(3292,'별','⭐',1),
+(3292,'별을 세다가 잠이 들었어요.',NULL,2),
+(3293,'섬','🏝️',1),
+(3293,'배를 타고 작은 섬에 갔어요.',NULL,2),
+(3294,'숲','🌲',1),
+(3294,'숲에서 새소리가 들렸어요.',NULL,2),
+(3295,'연못','🪷',1),
+(3295,'연못에 연꽃이 피었어요.',NULL,2),
+(3296,'폭포','💧',1),
+(3296,'폭포 물소리가 시원했어요.',NULL,2),
+(3297,'들판','🌾',1),
+(3297,'들판에 메뚜기가 뛰어다녀요.',NULL,2),
+(3298,'흙','🟤',1),
+(3298,'화분에 흙을 담고 씨앗을 심었어요.',NULL,2),
+(3299,'씨앗','🌱',1),
+(3299,'씨앗에서 새싹이 돋았어요.',NULL,2),
+(3300,'바위','🗿',1),
+(3300,'바위 위에 올라가 사진을 찍었어요.',NULL,2),
+(3301,'머리','🙆',1),
+(3301,'모자를 머리에 썼어요.',NULL,2),
+(3302,'얼굴','🙂',1),
+(3302,'찬물로 얼굴을 씻었어요.',NULL,2),
+(3303,'눈','👀',1),
+(3303,'눈을 감고 열까지 셌어요.',NULL,2),
+(3304,'코','👃',1),
+(3304,'코로 꽃향기를 맡았어요.',NULL,2),
+(3305,'입','👄',1),
+(3305,'입을 크게 벌리고 아 했어요.',NULL,2),
+(3306,'귀','👂',1),
+(3306,'귀를 기울여 새소리를 들었어요.',NULL,2),
+(3307,'이','🦷',1),
+(3307,'밥을 먹고 이를 닦았어요.',NULL,2),
+(3308,'혀','👅',1),
+(3308,'혀를 쏙 내밀었어요.',NULL,2),
+(3309,'목','🧣',1),
+(3309,'목이 아파서 따뜻한 물을 마셨어요.',NULL,2),
+(3310,'어깨','🤷',1),
+(3310,'아빠 어깨를 주물러 드렸어요.',NULL,2),
+(3311,'팔','💪',1),
+(3311,'팔을 쭉 펴고 기지개를 켰어요.',NULL,2),
+(3312,'손','✋',1),
+(3312,'손을 들고 발표했어요.',NULL,2),
+(3313,'손가락','☝️',1),
+(3313,'손가락으로 숫자를 세었어요.',NULL,2),
+(3314,'배','🫃',1),
+(3314,'밥을 많이 먹어서 배가 불러요.',NULL,2),
+(3315,'등','🔙',1),
+(3315,'엄마가 등을 토닥여 주셨어요.',NULL,2),
+(3316,'무릎','🦵',1),
+(3316,'넘어져서 무릎이 까졌어요.',NULL,2),
+(3317,'다리','🦵',1),
+(3317,'다리가 아프도록 걸었어요.',NULL,2),
+(3318,'발','🦶',1),
+(3318,'발을 깨끗이 씻었어요.',NULL,2),
+(3319,'발가락','🦶',1),
+(3319,'모래 속에서 발가락을 꼼지락거렸어요.',NULL,2),
+(3320,'머리카락','💇',1),
+(3320,'머리카락을 하나로 묶었어요.',NULL,2),
+(3321,'의사','🧑‍⚕️',1),
+(3321,'의사 선생님이 청진기를 대 보셨어요.',NULL,2),
+(3322,'간호사','👩‍⚕️',1),
+(3322,'간호사가 주사를 놓아 주었어요.',NULL,2),
+(3323,'소방관','🧑‍🚒',1),
+(3323,'소방관이 불을 끄러 출동했어요.',NULL,2),
+(3324,'경찰관','👮',1),
+(3324,'경찰관이 길을 알려 주었어요.',NULL,2),
+(3325,'요리사','🧑‍🍳',1),
+(3325,'요리사가 맛있는 파스타를 만들었어요.',NULL,2),
+(3326,'농부','🧑‍🌾',1),
+(3326,'농부가 논에 모를 심었어요.',NULL,2),
+(3327,'어부','🎣',1),
+(3327,'어부가 그물로 물고기를 잡았어요.',NULL,2),
+(3328,'우체부','📬',1),
+(3328,'우체부 아저씨가 소포를 가져다주셨어요.',NULL,2),
+(3329,'미용사','💇',1),
+(3329,'미용사가 머리를 예쁘게 잘라 주었어요.',NULL,2),
+(3330,'화가','🧑‍🎨',1),
+(3330,'화가가 바다 풍경을 그렸어요.',NULL,2),
+(3331,'가수','🧑‍🎤',1),
+(3331,'가수가 무대에서 노래를 불렀어요.',NULL,2),
+(3332,'운전기사','🧑‍✈️',1),
+(3332,'버스 운전기사님께 인사했어요.',NULL,2),
+(3333,'과학자','🧑‍🔬',1),
+(3333,'과학자가 현미경으로 세포를 봤어요.',NULL,2),
+(3334,'수의사','🐾',1),
+(3334,'수의사가 강아지를 진찰했어요.',NULL,2),
+(3335,'목수','🔨',1),
+(3335,'목수가 나무로 의자를 만들었어요.',NULL,2),
+(3336,'제빵사','🥖',1),
+(3336,'제빵사가 새벽부터 빵을 구웠어요.',NULL,2),
+(3337,'사서','📚',1),
+(3337,'사서 선생님이 책을 찾아 주셨어요.',NULL,2),
+(3338,'조종사','🧑‍✈️',1),
+(3338,'조종사가 비행기를 하늘로 띄웠어요.',NULL,2),
+(3339,'기자','📰',1),
+(3339,'기자가 운동회 소식을 취재했어요.',NULL,2),
+(3340,'선수','🏅',1),
+(3340,'축구 선수가 멋지게 골을 넣었어요.',NULL,2),
+(3341,'바지','👖',1),
+(3341,'바지 주머니에 손을 넣었어요.',NULL,2),
+(3342,'치마','👗',1),
+(3342,'분홍색 치마를 입었어요.',NULL,2),
+(3343,'셔츠','👔',1),
+(3343,'셔츠 단추를 하나씩 채웠어요.',NULL,2),
+(3344,'외투','🧥',1),
+(3344,'밖에 나가기 전에 외투를 입었어요.',NULL,2),
+(3345,'양말','🧦',1),
+(3345,'양말을 짝을 맞춰 신었어요.',NULL,2),
+(3346,'신발','👟',1),
+(3346,'신발 끈을 단단히 묶었어요.',NULL,2),
+(3347,'모자','🧢',1),
+(3347,'햇볕이 뜨거워서 모자를 썼어요.',NULL,2),
+(3348,'안경','👓',1),
+(3348,'할아버지께서 안경을 쓰고 신문을 읽으셨어요.',NULL,2),
+(3349,'잠옷','🛌',1),
+(3349,'목욕하고 잠옷으로 갈아입었어요.',NULL,2),
+(3350,'수영복','🩱',1),
+(3350,'수영장에서 수영복을 입었어요.',NULL,2),
+(3351,'운동화','👟',1),
+(3351,'새 운동화를 신고 달렸어요.',NULL,2),
+(3352,'단추','🔘',1),
+(3352,'떨어진 단추를 다시 달았어요.',NULL,2),
+(3353,'지퍼','🤐',1),
+(3353,'외투 지퍼를 끝까지 올렸어요.',NULL,2),
+(3354,'머리핀','📍',1),
+(3354,'머리핀으로 앞머리를 넘겼어요.',NULL,2),
+(3355,'목걸이','📿',1),
+(3355,'엄마가 목걸이를 선물 받으셨어요.',NULL,2),
+(3356,'반지','💍',1),
+(3356,'반지가 손가락에 꼭 맞았어요.',NULL,2),
+(3357,'허리띠','👖',1),
+(3357,'허리띠를 매고 바지를 입었어요.',NULL,2),
+(3358,'우비','🧥',1),
+(3358,'비가 와서 노란 우비를 입었어요.',NULL,2),
+(3359,'한복','👘',1),
+(3359,'설날에 한복을 입고 세배했어요.',NULL,2),
+(3360,'교복','🎓',1),
+(3360,'형이 중학교 교복을 입었어요.',NULL,2),
+(4001,'먼저 손에 물을 묻혀요.',NULL,1),
+(4001,'비누로 거품을 내서 문질러요.',NULL,2),
+(4001,'물로 헹구고 수건으로 닦아요.',NULL,3),
+(4002,'칫솔에 치약을 짜요.',NULL,1),
+(4002,'위아래로 구석구석 닦아요.',NULL,2),
+(4002,'물로 입을 깨끗이 헹궈요.',NULL,3),
+(4003,'냄비에 물을 붓고 끓여요.',NULL,1),
+(4003,'면과 수프를 넣어요.',NULL,2),
+(4003,'삼 분 뒤에 불을 꺼요.',NULL,3),
+(4004,'아침에 눈을 떠요.',NULL,1),
+(4004,'세수하고 옷을 입어요.',NULL,2),
+(4004,'밥을 먹고 가방을 메요.',NULL,3),
+(4005,'신발을 신고 현관문을 나서요.',NULL,1),
+(4005,'횡단보도를 건너요.',NULL,2),
+(4005,'교실에 들어가서 인사해요.',NULL,3),
+(4006,'잠옷으로 갈아입어요.',NULL,1),
+(4006,'이를 닦고 화장실에 다녀와요.',NULL,2),
+(4006,'불을 끄고 침대에 누워요.',NULL,3),
+(4007,'화분에 흙을 담아요.',NULL,1),
+(4007,'씨앗을 심고 흙을 덮어요.',NULL,2),
+(4007,'물을 듬뿍 주어요.',NULL,3),
+(4008,'빵에 버터를 발라요.',NULL,1),
+(4008,'햄과 치즈를 올려요.',NULL,2),
+(4008,'빵을 덮고 반으로 잘라요.',NULL,3),
+(4009,'마른 빨래를 걷어요.',NULL,1),
+(4009,'옷을 반듯하게 접어요.',NULL,2),
+(4009,'서랍에 차곡차곡 넣어요.',NULL,3),
+(4010,'편지지와 연필을 준비해요.',NULL,1),
+(4010,'하고 싶은 말을 또박또박 써요.',NULL,2),
+(4010,'봉투에 넣고 우표를 붙여요.',NULL,3),
+(4011,'신호등 앞에서 멈춰요.',NULL,1),
+(4011,'초록불이 켜지면 좌우를 살펴요.',NULL,2),
+(4011,'손을 들고 천천히 건너요.',NULL,3),
+(4012,'발을 신발에 쏙 넣어요.',NULL,1),
+(4012,'뒤꿈치를 잘 맞춰요.',NULL,2),
+(4012,'신발 끈을 리본으로 묶어요.',NULL,3),
+(4013,'뚜껑을 반쯤 열어요.',NULL,1),
+(4013,'뜨거운 물을 선까지 부어요.',NULL,2),
+(4013,'기다렸다가 젓가락으로 먹어요.',NULL,3),
+(4014,'과일을 물에 씻어요.',NULL,1),
+(4014,'칼로 껍질을 조심히 깎아요.',NULL,2),
+(4014,'먹기 좋게 잘라 접시에 담아요.',NULL,3),
+(4015,'도서관에서 읽고 싶은 책을 골라요.',NULL,1),
+(4015,'대출 데스크에 책을 가져가요.',NULL,2),
+(4015,'도서 카드를 보여 주고 빌려요.',NULL,3),
+(4016,'색종이를 반으로 접어요.',NULL,1),
+(4016,'모서리를 삼각형으로 접어요.',NULL,2),
+(4016,'뒤집어서 모양을 다듬어요.',NULL,3),
+(4017,'바닥에 떨어진 장난감을 주워요.',NULL,1),
+(4017,'책상 위를 정리해요.',NULL,2),
+(4017,'청소기로 먼지를 빨아들여요.',NULL,3),
+(4018,'따뜻한 물을 받아요.',NULL,1),
+(4018,'몸에 비누칠을 해요.',NULL,2),
+(4018,'물로 씻고 수건으로 닦아요.',NULL,3),
+(4019,'냉장고에서 우유를 꺼내요.',NULL,1),
+(4019,'컵에 천천히 따라요.',NULL,2),
+(4019,'우유를 다시 냉장고에 넣어요.',NULL,3),
+(4020,'머리에 물을 적셔요.',NULL,1),
+(4020,'샴푸로 거품을 내어 문질러요.',NULL,2),
+(4020,'물로 깨끗이 헹궈요.',NULL,3),
+(4021,'도화지를 펼쳐요.',NULL,1),
+(4021,'연필로 밑그림을 그려요.',NULL,2),
+(4021,'크레파스로 색칠해요.',NULL,3),
+(4022,'사고 싶은 물건을 골라요.',NULL,1),
+(4022,'계산대에 가져가서 돈을 내요.',NULL,2),
+(4022,'거스름돈과 영수증을 받아요.',NULL,3),
+(4023,'줄 손잡이를 두 손에 잡아요.',NULL,1),
+(4023,'줄을 머리 위로 넘겨요.',NULL,2),
+(4023,'발밑으로 올 때 폴짝 뛰어요.',NULL,3),
+(4024,'식탁을 행주로 닦아요.',NULL,1),
+(4024,'숟가락과 젓가락을 놓아요.',NULL,2),
+(4024,'밥과 반찬을 차려요.',NULL,3),
+(4025,'정류장에서 버스를 기다려요.',NULL,1),
+(4025,'버스가 오면 줄을 서서 타요.',NULL,2),
+(4025,'교통 카드를 찍고 자리에 앉아요.',NULL,3),
+(4026,'우산 단추를 풀어요.',NULL,1),
+(4026,'우산을 활짝 펴요.',NULL,2),
+(4026,'머리 위로 우산을 들어요.',NULL,3),
+(4027,'상자에 선물을 넣어요.',NULL,1),
+(4027,'포장지로 상자를 감싸요.',NULL,2),
+(4027,'리본을 예쁘게 묶어요.',NULL,3),
+(4028,'감자를 깨끗이 씻어요.',NULL,1),
+(4028,'냄비에 물과 감자를 넣어요.',NULL,2),
+(4028,'젓가락이 쑥 들어가면 꺼내요.',NULL,3),
+(4029,'미끄럼틀 계단을 올라가요.',NULL,1),
+(4029,'위에서 앉아 자세를 잡아요.',NULL,2),
+(4029,'쭉 미끄러져 내려와요.',NULL,3),
+(4030,'컵에 물을 받아요.',NULL,1),
+(4030,'솔로 안쪽을 문질러요.',NULL,2),
+(4030,'뒤집어서 물기를 빼요.',NULL,3),
+(4031,'넓은 들판으로 나가요.',NULL,1),
+(4031,'바람을 등지고 연을 띄워요.',NULL,2),
+(4031,'실을 천천히 풀어 줘요.',NULL,3),
+(4032,'반죽을 동그랗게 빚어요.',NULL,1),
+(4032,'오븐 판에 가지런히 올려요.',NULL,2),
+(4032,'노릇하게 구워서 식혀요.',NULL,3),
+(4033,'시간표를 확인해요.',NULL,1),
+(4033,'교과서와 공책을 넣어요.',NULL,2),
+(4033,'필통과 알림장을 챙겨요.',NULL,3),
+(4034,'씨앗을 물에 불려요.',NULL,1),
+(4034,'젖은 솜 위에 올려 두어요.',NULL,2),
+(4034,'날마다 싹이 났는지 살펴봐요.',NULL,3),
+(4035,'접수대에 이름을 말해요.',NULL,1),
+(4035,'대기실에서 차례를 기다려요.',NULL,2),
+(4035,'의사 선생님께 아픈 곳을 말해요.',NULL,3),
+(4036,'과일을 작게 잘라요.',NULL,1),
+(4036,'믹서에 과일과 물을 넣어요.',NULL,2),
+(4036,'버튼을 눌러 곱게 갈아요.',NULL,3),
+(4037,'다 마신 병을 물로 헹궈요.',NULL,1),
+(4037,'라벨을 떼어 내요.',NULL,2),
+(4037,'병 수거함에 넣어요.',NULL,3),
+(4038,'속옷과 양말을 먼저 입어요.',NULL,1),
+(4038,'바지와 윗옷을 입어요.',NULL,2),
+(4038,'마지막으로 외투를 걸쳐요.',NULL,3),
+(4039,'바늘에 실을 꿰어요.',NULL,1),
+(4039,'구멍 난 곳을 촘촘히 꿰매요.',NULL,2),
+(4039,'매듭을 짓고 실을 잘라요.',NULL,3),
+(4040,'그릇에 밥을 담아요.',NULL,1),
+(4040,'나물과 달걀을 올려요.',NULL,2),
+(4040,'고추장을 넣고 쓱쓱 비벼요.',NULL,3),
+(4041,'강아지 목줄을 채워요.',NULL,1),
+(4041,'공원을 한 바퀴 걸어요.',NULL,2),
+(4041,'집에 와서 발을 닦아 줘요.',NULL,3),
+(4042,'어항 뚜껑을 열어요.',NULL,1),
+(4042,'먹이를 조금만 뿌려요.',NULL,2),
+(4042,'물고기가 먹는 모습을 지켜봐요.',NULL,3),
+(4043,'작은 눈덩이를 굴려 크게 만들어요.',NULL,1),
+(4043,'큰 눈덩이 위에 작은 눈덩이를 올려요.',NULL,2),
+(4043,'나뭇가지로 팔을 꽂아요.',NULL,3),
+(4044,'책상 서랍을 정리해요.',NULL,1),
+(4044,'선생님께 인사해요.',NULL,2),
+(4044,'친구와 함께 교문을 나서요.',NULL,3),
+(4045,'팬에 기름을 둘러요.',NULL,1),
+(4045,'달걀을 톡 깨서 넣어요.',NULL,2),
+(4045,'흰자가 익으면 접시에 옮겨요.',NULL,3),
+(4046,'퍼즐 조각을 쏟아 펼쳐요.',NULL,1),
+(4046,'테두리 조각부터 맞춰요.',NULL,2),
+(4046,'가운데 그림을 채워 완성해요.',NULL,3),
+(4047,'손에 물을 받아요.',NULL,1),
+(4047,'얼굴을 문질러 씻어요.',NULL,2),
+(4047,'수건으로 얼굴을 톡톡 닦아요.',NULL,3),
+(4048,'책을 끝까지 읽어요.',NULL,1),
+(4048,'읽은 날짜를 독서 기록장에 적어요.',NULL,2),
+(4048,'책을 책꽂이에 꽂아요.',NULL,3),
+(4049,'평평한 곳을 골라요.',NULL,1),
+(4049,'텐트를 펼치고 기둥을 세워요.',NULL,2),
+(4049,'줄을 땅에 단단히 고정해요.',NULL,3),
+(4050,'손에 물을 살짝 묻혀요.',NULL,1),
+(4050,'밥에 김가루를 섞어요.',NULL,2),
+(4050,'동그랗게 꼭꼭 뭉쳐요.',NULL,3),
+(4051,'토끼가 밭에서 큰 당근을 찾았어요.',NULL,1),
+(4051,'혼자 뽑으려니 너무 무거웠어요.',NULL,2),
+(4051,'친구들이 함께 당겨서 쑥 뽑았어요.',NULL,3),
+(4052,'민지는 눈길에서 장갑을 잃어버렸어요.',NULL,1),
+(4052,'발자국을 따라 다시 걸어갔어요.',NULL,2),
+(4052,'눈사람 손에 장갑이 끼워져 있었어요.',NULL,3),
+(4053,'비가 오자 개구리가 신이 났어요.',NULL,1),
+(4053,'웅덩이에서 첨벙첨벙 뛰었어요.',NULL,2),
+(4053,'해가 나자 연잎 위에서 쉬었어요.',NULL,3),
+(4054,'아기 새가 둥지 끝에 섰어요.',NULL,1),
+(4054,'엄마 새가 옆에서 날갯짓을 보여 주었어요.',NULL,2),
+(4054,'아기 새가 용기를 내어 훨훨 날았어요.',NULL,3),
+(4055,'다람쥐가 가을 내내 도토리를 모았어요.',NULL,1),
+(4055,'나무 구멍에 도토리를 숨겼어요.',NULL,2),
+(4055,'겨울에 배고프지 않게 꺼내 먹었어요.',NULL,3),
+(4056,'고양이가 털실 뭉치를 발견했어요.',NULL,1),
+(4056,'이리저리 굴리며 놀았어요.',NULL,2),
+(4056,'털실이 엉켜서 고양이가 꼼짝 못 했어요.',NULL,3),
+(4057,'아이들이 마당에 눈사람을 만들었어요.',NULL,1),
+(4057,'밤새 눈사람은 별을 바라보았어요.',NULL,2),
+(4057,'아침 해가 뜨자 조금씩 작아졌어요.',NULL,3),
+(4058,'거북이와 토끼가 달리기 시합을 했어요.',NULL,1),
+(4058,'토끼는 중간에 낮잠을 잤어요.',NULL,2),
+(4058,'거북이가 쉬지 않고 걸어서 이겼어요.',NULL,3),
+(4059,'아이가 빨간 풍선을 들고 걸었어요.',NULL,1),
+(4059,'바람이 불어 풍선이 날아갔어요.',NULL,2),
+(4059,'풍선은 구름 사이로 멀리 사라졌어요.',NULL,3),
+(4060,'개미는 여름 내내 먹이를 날랐어요.',NULL,1),
+(4060,'베짱이는 노래만 불렀어요.',NULL,2),
+(4060,'겨울이 오자 개미는 따뜻하게 지냈어요.',NULL,3),
+(4061,'지우는 이상한 연필을 주웠어요.',NULL,1),
+(4061,'연필로 그린 꽃이 진짜로 피어났어요.',NULL,2),
+(4061,'지우는 친구들에게 꽃을 나누어 주었어요.',NULL,3),
+(4062,'강아지가 공원에서 길을 잃었어요.',NULL,1),
+(4062,'경찰관이 목걸이의 번호로 전화했어요.',NULL,2),
+(4062,'주인이 달려와 강아지를 꼭 안았어요.',NULL,3),
+(4063,'도토리들이 서로 키가 크다고 다투었어요.',NULL,1),
+(4063,'다람쥐가 와서 키를 재 보았어요.',NULL,2),
+(4063,'모두 키가 거의 똑같았어요.',NULL,3),
+(4064,'해와 바람이 누가 더 센지 내기했어요.',NULL,1),
+(4064,'바람이 세게 불자 나그네는 외투를 꽉 잡았어요.',NULL,2),
+(4064,'해가 따뜻하게 비추자 나그네가 외투를 벗었어요.',NULL,3),
+(4065,'첫째는 짚으로 집을 지었어요.',NULL,1),
+(4065,'둘째는 나무로 집을 지었어요.',NULL,2),
+(4065,'셋째는 벽돌로 튼튼한 집을 지었어요.',NULL,3),
+(4066,'달님이 밤길을 걷는 아이를 보았어요.',NULL,1),
+(4066,'달님은 길을 환하게 비추어 주었어요.',NULL,2),
+(4066,'아이는 무사히 집에 도착했어요.',NULL,3),
+(4067,'작은 씨앗이 땅속에서 잠을 잤어요.',NULL,1),
+(4067,'봄비가 내리자 싹이 돋았어요.',NULL,2),
+(4067,'여름에는 커다란 해바라기가 되었어요.',NULL,3),
+(4068,'개가 고기를 물고 다리를 건넜어요.',NULL,1),
+(4068,'물에 비친 개의 고기도 갖고 싶었어요.',NULL,2),
+(4068,'멍멍 짖는 순간 고기를 물에 빠뜨렸어요.',NULL,3),
+(4069,'사자가 생쥐를 살려 주었어요.',NULL,1),
+(4069,'며칠 뒤 사자가 그물에 걸렸어요.',NULL,2),
+(4069,'생쥐가 그물을 갉아서 사자를 구했어요.',NULL,3),
+(4070,'무지개 물고기는 반짝이는 비늘이 있었어요.',NULL,1),
+(4070,'친구들에게 비늘을 하나씩 나누어 주었어요.',NULL,2),
+(4070,'모두가 반짝여서 함께 행복했어요.',NULL,3),
+(4071,'밤새 소리 없이 눈이 내렸어요.',NULL,1),
+(4071,'아침에 창밖이 온통 하얬어요.',NULL,2),
+(4071,'아이들은 장갑을 끼고 밖으로 달려 나갔어요.',NULL,3),
+(4072,'꿀벌이 아침 일찍 꽃밭으로 날아갔어요.',NULL,1),
+(4072,'꽃마다 꿀을 조금씩 모았어요.',NULL,2),
+(4072,'저녁에는 벌집으로 돌아와 쉬었어요.',NULL,3),
+(4073,'산타 할아버지가 썰매를 탔어요.',NULL,1),
+(4073,'굴뚝으로 들어가 선물을 두었어요.',NULL,2),
+(4073,'아침에 아이들이 선물을 보고 기뻐했어요.',NULL,3),
+(4074,'할머니가 수박 한 통을 사 오셨어요.',NULL,1),
+(4074,'가족이 둘러앉아 수박을 잘랐어요.',NULL,2),
+(4074,'씨 멀리 뱉기 놀이를 하며 웃었어요.',NULL,3),
+(4075,'곰은 겨울 내내 동굴에서 잤어요.',NULL,1),
+(4075,'봄이 되자 배가 고파 일어났어요.',NULL,2),
+(4075,'숲으로 나가 꿀을 찾아 먹었어요.',NULL,3),
+(4076,'아이가 종이배를 냇물에 띄웠어요.',NULL,1),
+(4076,'종이배는 물살을 따라 흘러갔어요.',NULL,2),
+(4076,'오리가 종이배를 따라 헤엄쳤어요.',NULL,3),
+(4077,'마을에 불이 났어요.',NULL,1),
+(4077,'빨간 소방차가 삐뽀삐뽀 달려왔어요.',NULL,2),
+(4077,'소방관들이 불을 끄고 모두를 구했어요.',NULL,3),
+(4078,'숲속 밤이 깜깜했어요.',NULL,1),
+(4078,'반딧불이가 반짝반짝 빛을 냈어요.',NULL,2),
+(4078,'길 잃은 토끼가 빛을 따라 집에 갔어요.',NULL,3),
+(4079,'나무꾼이 도끼를 연못에 빠뜨렸어요.',NULL,1),
+(4079,'산신령이 금도끼와 은도끼를 보여 주었어요.',NULL,2),
+(4079,'정직한 나무꾼은 세 도끼를 모두 받았어요.',NULL,3),
+(4080,'흥부가 다리를 다친 제비를 고쳐 주었어요.',NULL,1),
+(4080,'제비가 봄에 박씨를 물어 왔어요.',NULL,2),
+(4080,'박을 타자 보물이 쏟아졌어요.',NULL,3);
+INSERT IGNORE INTO exercise_items (exercise_id,text_value,emoji,sort_order) VALUES
+(4081,'엄마 오리가 앞장서서 걸었어요.',NULL,1),
+(4081,'아기 오리들이 한 줄로 따라갔어요.',NULL,2),
+(4081,'연못에 도착해 다 함께 헤엄쳤어요.',NULL,3),
+(4082,'비가 갑자기 쏟아졌어요.',NULL,1),
+(4082,'민수는 우산이 없는 친구를 보았어요.',NULL,2),
+(4082,'둘은 한 우산을 쓰고 함께 걸었어요.',NULL,3),
+(4083,'하늘에 구름이 길게 이어졌어요.',NULL,1),
+(4083,'아이는 구름이 기차처럼 보였어요.',NULL,2),
+(4083,'구름 기차는 바람을 타고 천천히 지나갔어요.',NULL,3),
+(4084,'양치기 소년이 늑대가 왔다고 거짓말을 했어요.',NULL,1),
+(4084,'마을 사람들이 몇 번이나 헛걸음했어요.',NULL,2),
+(4084,'진짜 늑대가 왔을 때는 아무도 믿지 않았어요.',NULL,3),
+(4085,'할머니가 요술 냄비를 얻었어요.',NULL,1),
+(4085,'냄비는 끓어라 하면 죽을 끓였어요.',NULL,2),
+(4085,'그만이라고 하면 딱 멈추었어요.',NULL,3),
+(4086,'펭귄들이 빙판으로 소풍을 갔어요.',NULL,1),
+(4086,'배로 미끄러지며 신나게 놀았어요.',NULL,2),
+(4086,'저녁에는 서로 몸을 붙이고 따뜻하게 잤어요.',NULL,3),
+(4087,'호랑이가 고개마다 나타났어요.',NULL,1),
+(4087,'떡 하나 주면 안 잡아먹지 하고 말했어요.',NULL,2),
+(4087,'할머니는 떡을 모두 빼앗겼어요.',NULL,3),
+(4088,'친구들이 몰래 케이크를 준비했어요.',NULL,1),
+(4088,'지호가 문을 열자 불이 켜졌어요.',NULL,2),
+(4088,'모두 함께 생일 노래를 불렀어요.',NULL,3),
+(4089,'아기 별이 하늘에서 떨어졌어요.',NULL,1),
+(4089,'부엉이가 별을 등에 태워 주었어요.',NULL,2),
+(4089,'아기 별은 다시 하늘로 돌아갔어요.',NULL,3),
+(4090,'비가 그치자 지렁이가 땅 위로 나왔어요.',NULL,1),
+(4090,'햇볕에 몸이 마를까 봐 서둘렀어요.',NULL,2),
+(4090,'촉촉한 흙 속으로 다시 들어갔어요.',NULL,3),
+(4091,'사과나무에서 사과가 툭 떨어졌어요.',NULL,1),
+(4091,'고슴도치가 등에 사과를 꽂았어요.',NULL,2),
+(4091,'고슴도치는 사과를 집으로 가져갔어요.',NULL,3),
+(4092,'비 오는 날 하나는 노란 우비를 입었어요.',NULL,1),
+(4092,'물웅덩이마다 폴짝 뛰어넘었어요.',NULL,2),
+(4092,'집에 와서 젖은 우비를 털었어요.',NULL,3),
+(4093,'작은 기차가 큰 산 앞에 섰어요.',NULL,1),
+(4093,'할 수 있다고 몇 번이나 말했어요.',NULL,2),
+(4093,'마침내 산꼭대기를 넘었어요.',NULL,3),
+(4094,'곰 아저씨가 새벽에 빵을 구웠어요.',NULL,1),
+(4094,'고소한 냄새가 숲에 퍼졌어요.',NULL,2),
+(4094,'동물 친구들이 줄을 서서 빵을 샀어요.',NULL,3),
+(4095,'바닷가에서 모래성을 쌓았어요.',NULL,1),
+(4095,'파도가 밀려와 성이 무너졌어요.',NULL,2),
+(4095,'우리는 웃으며 다시 쌓기 시작했어요.',NULL,3),
+(4096,'책상 서랍에서 쪽지를 발견했어요.',NULL,1),
+(4096,'쪽지에는 고맙다는 말이 적혀 있었어요.',NULL,2),
+(4096,'짝꿍이 몰래 넣어 둔 것이었어요.',NULL,3),
+(4097,'아이들이 놀이터에서 놀고 있어요.',NULL,1),
+(4097,'한 아이는 그네를 높이 타요.',NULL,2),
+(4097,'다른 아이는 모래로 성을 쌓아요.',NULL,3),
+(4098,'시장에 사람이 아주 많아요.',NULL,1),
+(4098,'아주머니가 생선을 팔고 있어요.',NULL,2),
+(4098,'할아버지는 과일 값을 물어보세요.',NULL,3),
+(4099,'거리에 비가 내리고 있어요.',NULL,1),
+(4099,'사람들이 알록달록한 우산을 썼어요.',NULL,2),
+(4099,'자동차가 물을 튀기며 지나가요.',NULL,3),
+(4100,'쉬는 시간 종이 울렸어요.',NULL,1),
+(4100,'친구들이 삼삼오오 모여 이야기해요.',NULL,2),
+(4100,'몇몇은 복도로 나가 물을 마셔요.',NULL,3),
+(4101,'식탁 위에 케이크가 놓여 있어요.',NULL,1),
+(4101,'친구들이 고깔모자를 쓰고 있어요.',NULL,2),
+(4101,'주인공이 촛불을 후 하고 불어요.',NULL,3),
+(4102,'바닷가에 파도가 철썩여요.',NULL,1),
+(4102,'아이들이 모래사장에서 조개를 주워요.',NULL,2),
+(4102,'갈매기가 하늘을 빙빙 돌아요.',NULL,3),
+(4103,'동물원에 구경 온 사람이 많아요.',NULL,1),
+(4103,'코끼리가 코로 물을 뿌려요.',NULL,2),
+(4103,'아이들이 신기해서 손뼉을 쳐요.',NULL,3),
+(4104,'엄마가 부엌에서 요리를 하세요.',NULL,1),
+(4104,'냄비에서 김이 모락모락 나요.',NULL,2),
+(4104,'맛있는 냄새가 집 안에 퍼져요.',NULL,3),
+(4105,'운동장에 만국기가 걸려 있어요.',NULL,1),
+(4105,'청팀과 백팀이 줄다리기를 해요.',NULL,2),
+(4105,'응원 소리가 크게 울려 퍼져요.',NULL,3),
+(4106,'대기실에 사람들이 앉아 있어요.',NULL,1),
+(4106,'아기가 엄마 품에서 울고 있어요.',NULL,2),
+(4106,'간호사가 다음 사람 이름을 불러요.',NULL,3),
+(4107,'공원에 하얀 눈이 쌓였어요.',NULL,1),
+(4107,'아이들이 눈싸움을 해요.',NULL,2),
+(4107,'강아지가 눈 위에 발자국을 찍어요.',NULL,3),
+(4108,'버스 안에 사람이 꽉 찼어요.',NULL,1),
+(4108,'학생이 할머니께 자리를 양보해요.',NULL,2),
+(4108,'창밖으로 가게들이 지나가요.',NULL,3),
+(4109,'캠핑장에 텐트가 여러 개 있어요.',NULL,1),
+(4109,'아빠가 장작에 불을 피우세요.',NULL,2),
+(4109,'아이들은 마시멜로를 구워 먹어요.',NULL,3),
+(4110,'도서관은 아주 조용해요.',NULL,1),
+(4110,'사람들이 책장 사이를 천천히 걸어요.',NULL,2),
+(4110,'아이 하나가 그림책을 펼쳐 읽어요.',NULL,3),
+(4111,'빵집 진열대에 빵이 가득해요.',NULL,1),
+(4111,'제빵사가 막 구운 빵을 꺼내요.',NULL,2),
+(4111,'손님이 쟁반에 빵을 담아요.',NULL,3),
+(4112,'학교에서 소방 훈련을 해요.',NULL,1),
+(4112,'비상벨이 울리자 줄을 서서 나가요.',NULL,2),
+(4112,'운동장에 모여 인원을 확인해요.',NULL,3),
+(4113,'산에 단풍이 곱게 들었어요.',NULL,1),
+(4113,'등산객들이 사진을 찍어요.',NULL,2),
+(4113,'다람쥐가 도토리를 물고 지나가요.',NULL,3),
+(4114,'계산대 앞에 줄이 길어요.',NULL,1),
+(4114,'직원이 물건을 하나씩 찍어요.',NULL,2),
+(4114,'아이가 장바구니에 물건을 담아요.',NULL,3),
+(4115,'가족이 식탁에 둘러앉았어요.',NULL,1),
+(4115,'아빠는 신문을 보며 커피를 마셔요.',NULL,2),
+(4115,'동생은 시리얼에 우유를 부어요.',NULL,3),
+(4116,'수영장 물이 파랗게 반짝여요.',NULL,1),
+(4116,'아이들이 튜브를 타고 떠다녀요.',NULL,2),
+(4116,'안전 요원이 높은 의자에서 지켜봐요.',NULL,3),
+(4117,'농장에 소와 닭이 있어요.',NULL,1),
+(4117,'농부가 소에게 여물을 줘요.',NULL,2),
+(4117,'닭들이 모이를 콕콕 쪼아 먹어요.',NULL,3),
+(4118,'공항에 여행 가방을 든 사람이 많아요.',NULL,1),
+(4118,'전광판에 비행기 시간이 떠요.',NULL,2),
+(4118,'창밖으로 비행기가 이륙해요.',NULL,3),
+(4119,'꽃밭에 튤립이 활짝 피었어요.',NULL,1),
+(4119,'나비가 꽃 사이를 날아다녀요.',NULL,2),
+(4119,'할머니가 물뿌리개로 물을 주세요.',NULL,3),
+(4120,'온 가족이 한복을 입었어요.',NULL,1),
+(4120,'할아버지께 세배를 드려요.',NULL,2),
+(4120,'떡국을 먹으며 덕담을 나눠요.',NULL,3),
+(4121,'책상에 물감과 붓이 놓여 있어요.',NULL,1),
+(4121,'친구들이 도화지에 그림을 그려요.',NULL,2),
+(4121,'선생님이 돌아다니며 칭찬해 주세요.',NULL,3),
+(4122,'정류장에 사람들이 줄을 서 있어요.',NULL,1),
+(4122,'저 멀리서 버스가 다가와요.',NULL,2),
+(4122,'사람들이 교통 카드를 꺼내요.',NULL,3),
+(4123,'놀이공원에 음악이 흘러나와요.',NULL,1),
+(4123,'회전목마가 빙글빙글 돌아요.',NULL,2),
+(4123,'아이들이 솜사탕을 들고 웃어요.',NULL,3),
+(4124,'해가 지고 공원에 불이 켜졌어요.',NULL,1),
+(4124,'사람들이 산책로를 따라 걸어요.',NULL,2),
+(4124,'벤치에 앉아 이야기하는 사람도 있어요.',NULL,3),
+(4125,'세차장에서 차를 닦고 있어요.',NULL,1),
+(4125,'큰 솔이 빙글빙글 돌아가요.',NULL,2),
+(4125,'비누 거품이 차를 하얗게 덮어요.',NULL,3),
+(4126,'과학실에 현미경이 놓여 있어요.',NULL,1),
+(4126,'친구들이 양파 껍질을 관찰해요.',NULL,2),
+(4126,'선생님이 실험 방법을 설명해 주세요.',NULL,3),
+(4127,'지난여름에 가족과 바다에 갔어요.',NULL,1),
+(4127,'모래사장에서 조개를 주웠어요.',NULL,2),
+(4127,'저녁에는 맛있는 조개구이를 먹었어요.',NULL,3),
+(4128,'처음에는 자꾸 넘어졌어요.',NULL,1),
+(4128,'아빠가 뒤에서 잡아 주셨어요.',NULL,2),
+(4128,'드디어 혼자 탈 수 있게 되었어요.',NULL,3),
+(4129,'어젯밤에 열이 많이 났어요.',NULL,1),
+(4129,'엄마가 이마에 물수건을 올려 주셨어요.',NULL,2),
+(4129,'약을 먹고 푹 자니 나았어요.',NULL,3),
+(4130,'친구와 장난감 때문에 다투었어요.',NULL,1),
+(4130,'서로 속상해서 말을 안 했어요.',NULL,2),
+(4130,'다음 날 먼저 미안하다고 말했어요.',NULL,3),
+(4131,'운동회에서 이어달리기를 했어요.',NULL,1),
+(4131,'바통을 놓칠까 봐 꼭 잡았어요.',NULL,2),
+(4131,'우리 팀이 일 등을 해서 기뻤어요.',NULL,3),
+(4132,'할머니 댁에서 김장을 했어요.',NULL,1),
+(4132,'배추에 빨간 양념을 발랐어요.',NULL,2),
+(4132,'갓 담근 김치를 맛보니 맛있었어요.',NULL,3),
+(4133,'수업 시간에 처음으로 발표했어요.',NULL,1),
+(4133,'떨려서 목소리가 작아졌어요.',NULL,2),
+(4133,'선생님이 잘했다고 칭찬해 주셨어요.',NULL,3),
+(4134,'우리 집에는 고양이가 있어요.',NULL,1),
+(4134,'아침마다 내가 밥을 챙겨 줘요.',NULL,2),
+(4134,'고양이가 다리에 몸을 비비면 기분이 좋아요.',NULL,3),
+(4135,'우산을 안 가져간 날 비가 왔어요.',NULL,1),
+(4135,'옷이 흠뻑 젖었어요.',NULL,2),
+(4135,'집에 와서 따뜻한 물로 씻었어요.',NULL,3),
+(4136,'가족과 캠핑장에 갔어요.',NULL,1),
+(4136,'텐트 안에서 별을 보며 잤어요.',NULL,2),
+(4136,'아침에 새소리를 듣고 일어났어요.',NULL,3),
+(4137,'엄마와 함께 김밥을 말았어요.',NULL,1),
+(4137,'김이 자꾸 터져서 웃었어요.',NULL,2),
+(4137,'내가 만든 김밥이 가장 맛있었어요.',NULL,3),
+(4138,'그림 그리기 대회에서 상을 받았어요.',NULL,1),
+(4138,'단상에 올라가 상장을 받았어요.',NULL,2),
+(4138,'부모님께 보여 드리니 기뻐하셨어요.',NULL,3),
+(4139,'우리 가족이 새집으로 이사했어요.',NULL,1),
+(4139,'짐 상자가 산처럼 쌓였어요.',NULL,2),
+(4139,'내 방을 꾸미니 마음이 설렜어요.',NULL,3),
+(4140,'이가 아파서 치과에 갔어요.',NULL,1),
+(4140,'의자에 누우니 조금 무서웠어요.',NULL,2),
+(4140,'치료가 끝나고 스티커를 받았어요.',NULL,3),
+(4141,'아침에 일어나니 눈이 쌓여 있었어요.',NULL,1),
+(4141,'동생과 눈사람을 만들었어요.',NULL,2),
+(4141,'손이 시려서 코코아를 마셨어요.',NULL,3),
+(4142,'주말에 도서관에 갔어요.',NULL,1),
+(4142,'공룡 책을 세 권 골랐어요.',NULL,2),
+(4142,'집에 와서 밤늦게까지 읽었어요.',NULL,3),
+(4143,'놀이공원에서 바이킹을 탔어요.',NULL,1),
+(4143,'배가 올라갈 때 소리를 질렀어요.',NULL,2),
+(4143,'내려와서도 다리가 후들거렸어요.',NULL,3),
+(4144,'할머니 생신에 온 가족이 모였어요.',NULL,1),
+(4144,'케이크에 초를 꽂고 노래를 불렀어요.',NULL,2),
+(4144,'할머니께서 환하게 웃으셨어요.',NULL,3),
+(4145,'학교에서 필통을 잃어버렸어요.',NULL,1),
+(4145,'분실물 상자를 찾아보았어요.',NULL,2),
+(4145,'친구가 주워서 보관하고 있었어요.',NULL,3),
+(4146,'수영장에서 처음 수영을 배웠어요.',NULL,1),
+(4146,'물에 얼굴을 넣는 게 무서웠어요.',NULL,2),
+(4146,'조금씩 연습해서 발차기를 할 수 있었어요.',NULL,3),
+(4147,'박물관으로 현장 학습을 갔어요.',NULL,1),
+(4147,'옛날 사람들의 그릇과 옷을 보았어요.',NULL,2),
+(4147,'돌아오는 버스에서 친구와 이야기했어요.',NULL,3),
+(4148,'전학 온 친구와 짝이 되었어요.',NULL,1),
+(4148,'처음에는 서로 어색했어요.',NULL,2),
+(4148,'같이 놀다 보니 금방 친해졌어요.',NULL,3),
+(4149,'아끼던 자동차 장난감이 고장 났어요.',NULL,1),
+(4149,'아빠와 함께 바퀴를 고쳤어요.',NULL,2),
+(4149,'다시 굴러가서 무척 기뻤어요.',NULL,3),
+(4150,'엄마가 두부를 사 오라고 하셨어요.',NULL,1),
+(4150,'가게에서 혼자 계산했어요.',NULL,2),
+(4150,'칭찬을 듣고 어깨가 으쓱했어요.',NULL,3),
+(4151,'창밖에 첫눈이 내렸어요.',NULL,1),
+(4151,'친구에게 첫눈이 온다고 전화했어요.',NULL,2),
+(4151,'우리는 놀이터에서 만나 눈을 맞았어요.',NULL,3),
+(4152,'콧물이 나고 기침을 했어요.',NULL,1),
+(4152,'학교에 가지 못하고 집에서 쉬었어요.',NULL,2),
+(4152,'따뜻한 죽을 먹고 일찍 잤어요.',NULL,3),
+(4153,'베란다에 상추를 심었어요.',NULL,1),
+(4153,'매일 아침 물을 주었어요.',NULL,2),
+(4153,'직접 키운 상추로 쌈을 싸 먹었어요.',NULL,3),
+(4154,'가족과 영화관에 갔어요.',NULL,1),
+(4154,'커다란 화면에 공룡이 나왔어요.',NULL,2),
+(4154,'무서운 장면에서 눈을 꼭 감았어요.',NULL,3),
+(4155,'알람을 못 듣고 늦잠을 잤어요.',NULL,1),
+(4155,'허둥지둥 옷을 입고 뛰어나갔어요.',NULL,2),
+(4155,'다행히 수업 시작 전에 도착했어요.',NULL,3),
+(4156,'바다에서 튜브를 타고 놀았어요.',NULL,1),
+(4156,'파도가 오면 튜브가 둥실 떴어요.',NULL,2),
+(4156,'짠물이 입에 들어가서 퉤 뱉었어요.',NULL,3),
+(4157,'학교가 끝나니 배가 고팠어요.',NULL,1),
+(4157,'그래서 집에 오자마자 간식을 찾았어요.',NULL,2),
+(4157,'그런데 간식이 하나도 없었어요.',NULL,3),
+(4158,'아침에는 비가 많이 왔어요.',NULL,1),
+(4158,'하지만 점심때가 되자 비가 그쳤어요.',NULL,2),
+(4158,'그래서 우리는 운동장에서 놀 수 있었어요.',NULL,3),
+(4159,'집 앞에서 열쇠를 찾았어요.',NULL,1),
+(4159,'그런데 아무리 찾아도 보이지 않았어요.',NULL,2),
+(4159,'결국 엄마가 오실 때까지 기다렸어요.',NULL,3),
+(4160,'날씨가 갑자기 추워졌어요.',NULL,1),
+(4160,'그래서 두꺼운 옷을 꺼내 입었어요.',NULL,2),
+(4160,'그리고 따뜻한 차도 마셨어요.',NULL,3),
+(4161,'피아노 곡이 너무 어려웠어요.',NULL,1),
+(4161,'그래도 날마다 조금씩 연습했어요.',NULL,2),
+(4161,'마침내 끝까지 틀리지 않고 쳤어요.',NULL,3),
+(4162,'버스가 오지 않았어요.',NULL,1),
+(4162,'그래서 학교까지 걸어가기로 했어요.',NULL,2),
+(4162,'다행히 늦지 않게 도착했어요.',NULL,3),
+(4163,'우산을 펴려는데 살이 부러졌어요.',NULL,1),
+(4163,'그래서 친구 우산을 함께 썼어요.',NULL,2),
+(4163,'덕분에 비를 맞지 않았어요.',NULL,3),
+(4164,'내일 받아쓰기 시험이 있어요.',NULL,1),
+(4164,'그래서 오늘 저녁에 열 번 연습했어요.',NULL,2),
+(4164,'이제 자신이 생겼어요.',NULL,3),
+(4165,'미술 시간에 크레파스를 깜빡했어요.',NULL,1),
+(4165,'그런데 짝꿍이 빌려주었어요.',NULL,2),
+(4165,'그래서 그림을 끝까지 그릴 수 있었어요.',NULL,3),
+(4166,'오늘은 아주 더운 날이었어요.',NULL,1),
+(4166,'그래서 시원한 수박을 먹었어요.',NULL,2),
+(4166,'그리고 물총 놀이도 했어요.',NULL,3),
+(4167,'강아지가 밥을 먹지 않았어요.',NULL,1),
+(4167,'그래서 동물 병원에 데려갔어요.',NULL,2),
+(4167,'약을 먹고 나서 다시 기운을 차렸어요.',NULL,3),
+(4168,'갑자기 집 안의 불이 꺼졌어요.',NULL,1),
+(4168,'그래서 촛불을 켜고 모여 앉았어요.',NULL,2),
+(4168,'오히려 가족끼리 이야기를 많이 나눴어요.',NULL,3),
+(4169,'친구가 복도에서 넘어졌어요.',NULL,1),
+(4169,'그래서 나는 친구를 일으켜 주었어요.',NULL,2),
+(4169,'그리고 보건실까지 함께 갔어요.',NULL,3),
+(4170,'며칠 동안 택배를 기다렸어요.',NULL,1),
+(4170,'드디어 오늘 택배가 도착했어요.',NULL,2),
+(4170,'그런데 상자 안에는 다른 물건이 들어 있었어요.',NULL,3),
+(4171,'오늘은 평소보다 일찍 일어났어요.',NULL,1),
+(4171,'그래서 아침 산책을 할 수 있었어요.',NULL,2),
+(4171,'덕분에 하루 종일 기분이 상쾌했어요.',NULL,3),
+(4172,'친구가 던진 공을 놓쳤어요.',NULL,1),
+(4172,'공은 굴러서 화단으로 들어갔어요.',NULL,2),
+(4172,'그래서 꽃이 다치지 않게 조심히 꺼냈어요.',NULL,3),
+(4173,'내일은 기다리던 소풍날이에요.',NULL,1),
+(4173,'그런데 일기 예보에서 비가 온다고 했어요.',NULL,2),
+(4173,'그래서 우리는 맑기를 바라며 잠들었어요.',NULL,3),
+(4174,'우유를 따르다가 식탁에 엎질렀어요.',NULL,1),
+(4174,'그래서 행주로 얼른 닦았어요.',NULL,2),
+(4174,'다음에는 컵을 꼭 잡고 따르기로 했어요.',NULL,3),
+(4175,'퍼즐 한 조각이 끝까지 맞지 않았어요.',NULL,1),
+(4175,'그래서 잠깐 쉬었다가 다시 해 봤어요.',NULL,2),
+(4175,'그러자 알맞은 자리가 눈에 들어왔어요.',NULL,3),
+(4176,'버스에 할머니께서 타셨어요.',NULL,1),
+(4176,'그래서 나는 자리에서 일어났어요.',NULL,2),
+(4176,'할머니께서 고맙다고 웃으셨어요.',NULL,3),
+(4177,'화분에 날마다 물을 주었어요.',NULL,1),
+(4177,'또 햇볕이 잘 드는 곳에 두었어요.',NULL,2),
+(4177,'그래서 예쁜 꽃이 활짝 피었어요.',NULL,3),
+(4178,'어젯밤 늦게까지 만화를 봤어요.',NULL,1),
+(4178,'그래서 아침에 일어나기 힘들었어요.',NULL,2),
+(4178,'오늘은 일찍 자기로 마음먹었어요.',NULL,3),
+(4179,'도서관에서 친구가 크게 웃었어요.',NULL,1),
+(4179,'그러자 사람들이 우리를 쳐다봤어요.',NULL,2),
+(4179,'그래서 우리는 작은 목소리로 이야기했어요.',NULL,3),
+(4180,'새 운동화를 신고 학교에 갔어요.',NULL,1),
+(4180,'그런데 진흙탕을 밟고 말았어요.',NULL,2),
+(4180,'그래서 집에 와서 운동화를 빨았어요.',NULL,3),
+(4181,'처음에는 줄넘기를 한 번도 못 넘었어요.',NULL,1),
+(4181,'하지만 매일 연습했어요.',NULL,2),
+(4181,'이제는 쉬지 않고 오십 번을 넘어요.',NULL,3),
+(4182,'옆집 아주머니가 떡을 가져다주셨어요.',NULL,1),
+(4182,'그래서 엄마가 과일을 답례로 드렸어요.',NULL,2),
+(4182,'이웃끼리 정을 나누니 기분이 좋았어요.',NULL,3),
+(4183,'도로에 차가 많이 막혔어요.',NULL,1),
+(4183,'그래서 약속 시간에 조금 늦었어요.',NULL,2),
+(4183,'친구에게 미리 전화해서 알렸어요.',NULL,3),
+(4184,'서랍에서 오래된 사진을 찾았어요.',NULL,1),
+(4184,'사진 속 아기가 바로 나였어요.',NULL,2),
+(4184,'그래서 엄마에게 그때 이야기를 물어보았어요.',NULL,3),
+(4185,'책을 읽다가 모르는 낱말이 나왔어요.',NULL,1),
+(4185,'그래서 국어사전을 찾아보았어요.',NULL,2),
+(4185,'뜻을 알고 나니 이야기가 더 재미있었어요.',NULL,3),
+(4186,'급식에 싫어하는 반찬이 나왔어요.',NULL,1),
+(4186,'하지만 한 입만 먹어 보기로 했어요.',NULL,2),
+(4186,'생각보다 맛있어서 다 먹었어요.',NULL,3),
+(4187,'간장 공장 공장장은 강 공장장이에요.',NULL,1),
+(4187,'된장 공장 공장장은 공 공장장이에요.',NULL,2),
+(4187,'공장장끼리 인사를 나눠요.',NULL,3),
+(4188,'저기 저 들의 콩깍지는 깐 콩깍지예요.',NULL,1),
+(4188,'이 콩깍지는 안 깐 콩깍지예요.',NULL,2),
+(4188,'콩깍지를 바구니에 담아요.',NULL,3),
+(4189,'경찰청 철창살은 외철창살이에요.',NULL,1),
+(4189,'검찰청 철창살은 쌍철창살이에요.',NULL,2),
+(4189,'철창살 앞에서 또박또박 말해요.',NULL,3),
+(4190,'내가 그린 기린 그림은 목이 긴 기린 그림이에요.',NULL,1),
+(4190,'네가 그린 기린 그림은 목이 짧은 기린 그림이에요.',NULL,2),
+(4190,'두 그림을 나란히 붙여요.',NULL,3),
+(4191,'봄바람이 살랑살랑 불어와요.',NULL,1),
+(4191,'개나리가 노랗게 웃어요.',NULL,2),
+(4191,'나비가 팔랑팔랑 춤을 춰요.',NULL,3),
+(4192,'빗방울이 똑똑 창문을 두드려요.',NULL,1),
+(4192,'우산이 동글동글 피어나요.',NULL,2),
+(4192,'장화가 첨벙첨벙 노래해요.',NULL,3),
+(4193,'파도가 철썩철썩 밀려와요.',NULL,1),
+(4193,'갈매기가 끼룩끼룩 노래해요.',NULL,2),
+(4193,'모래알이 반짝반짝 빛나요.',NULL,3),
+(4194,'기차가 칙칙폭폭 달려가요.',NULL,1),
+(4194,'창밖으로 산과 들이 지나가요.',NULL,2),
+(4194,'다음 역에서 할머니가 기다려요.',NULL,3),
+(4195,'좋은 아침이에요.',NULL,1),
+(4195,'오늘도 힘차게 시작해요.',NULL,2),
+(4195,'웃는 얼굴로 인사해요.',NULL,3),
+(4196,'숲속에서 새가 짹짹 노래해요.',NULL,1),
+(4196,'시냇물이 졸졸 흘러가요.',NULL,2),
+(4196,'바람이 나뭇잎을 사락사락 흔들어요.',NULL,3),
+(4197,'하얀 눈이 펑펑 내려요.',NULL,1),
+(4197,'발자국이 뽀드득 남아요.',NULL,2),
+(4197,'볼이 발갛게 물들어요.',NULL,3),
+(4198,'밤하늘에 별이 반짝여요.',NULL,1),
+(4198,'달님이 둥글게 웃어요.',NULL,2),
+(4198,'나는 별에게 소원을 빌어요.',NULL,3),
+(4199,'시계가 똑딱똑딱 흘러가요.',NULL,1),
+(4199,'바늘이 한 바퀴를 돌아요.',NULL,2),
+(4199,'어느새 점심시간이에요.',NULL,3),
+(4200,'소는 음매 하고 울어요.',NULL,1),
+(4200,'돼지는 꿀꿀 하고 울어요.',NULL,2),
+(4200,'닭은 꼬끼오 하고 울어요.',NULL,3),
+(4201,'보글보글 찌개가 끓어요.',NULL,1),
+(4201,'지글지글 고기가 익어요.',NULL,2),
+(4201,'송송송 파를 썰어요.',NULL,3),
+(4202,'단풍잎이 빨갛게 물들어요.',NULL,1),
+(4202,'은행잎이 노랗게 떨어져요.',NULL,2),
+(4202,'바스락바스락 낙엽을 밟아요.',NULL,3),
+(4203,'쓱싹쓱싹 바닥을 닦아요.',NULL,1),
+(4203,'탁탁탁 이불을 털어요.',NULL,2),
+(4203,'반짝반짝 방이 깨끗해져요.',NULL,3),
+(4204,'둥둥둥 북을 쳐요.',NULL,1),
+(4204,'짝짝짝 손뼉을 쳐요.',NULL,2),
+(4204,'쿵쿵쿵 발을 굴러요.',NULL,3),
+(4205,'오늘 하루도 즐거웠어요.',NULL,1),
+(4205,'포근한 이불을 덮어요.',NULL,2),
+(4205,'좋은 꿈 꾸고 잘 자요.',NULL,3),
+(4206,'도와줘서 고마워요.',NULL,1),
+(4206,'덕분에 일을 빨리 끝냈어요.',NULL,2),
+(4206,'다음에는 내가 도와줄게요.',NULL,3),
+(4207,'안녕하세요, 지우개를 사고 싶어요.',NULL,1),
+(4207,'어디에 있는지 알려 주실 수 있나요?',NULL,2),
+(4207,'찾아 주셔서 감사합니다.',NULL,3),
+(4208,'여기 메뉴판 좀 주세요.',NULL,1),
+(4208,'김치볶음밥 하나 주세요.',NULL,2),
+(4208,'맵지 않게 해 주시면 좋겠어요.',NULL,3),
+(4209,'실례합니다, 도서관에 가려고 해요.',NULL,1),
+(4209,'이 길로 쭉 가면 되나요?',NULL,2),
+(4209,'친절하게 알려 주셔서 고맙습니다.',NULL,3),
+(4210,'여보세요, 저는 민지예요.',NULL,1),
+(4210,'엄마는 지금 집에 안 계세요.',NULL,2),
+(4210,'들어오시면 전화하라고 전할게요.',NULL,3),
+(4211,'안녕하세요, 지호 친구 서연이에요.',NULL,1),
+(4211,'지호랑 같이 숙제하러 왔어요.',NULL,2),
+(4211,'신발은 여기에 벗어 둘게요.',NULL,3),
+(4212,'선생님, 머리가 조금 아파요.',NULL,1),
+(4212,'아침부터 계속 어지러웠어요.',NULL,2),
+(4212,'잠깐 누워 있어도 될까요?',NULL,3),
+(4213,'이 책을 빌리고 싶어요.',NULL,1),
+(4213,'여기 도서 카드가 있어요.',NULL,2),
+(4213,'언제까지 돌려주면 되나요?',NULL,3),
+(4214,'다음 정류장에서 내려요.',NULL,1),
+(4214,'하차 벨을 미리 눌러요.',NULL,2),
+(4214,'버스가 멈추면 천천히 내려요.',NULL,3),
+(4215,'어제 이 옷을 샀어요.',NULL,1),
+(4215,'그런데 크기가 너무 커요.',NULL,2),
+(4215,'한 치수 작은 것으로 바꿀 수 있나요?',NULL,3),
+(4216,'처음 왔는데 접수하고 싶어요.',NULL,1),
+(4216,'이름은 김하늘이고 여덟 살이에요.',NULL,2),
+(4216,'목이 아파서 왔어요.',NULL,3),
+(4217,'선생님, 질문이 있어요.',NULL,1),
+(4217,'이 낱말의 뜻을 잘 모르겠어요.',NULL,2),
+(4217,'한 번만 더 설명해 주세요.',NULL,3),
+(4218,'운동장에서 파란 모자를 잃어버렸어요.',NULL,1),
+(4218,'혹시 분실물 상자에 있나요?',NULL,2),
+(4218,'이름표가 붙어 있어요.',NULL,3),
+(4219,'이번 토요일이 내 생일이야.',NULL,1),
+(4219,'우리 집에서 작은 파티를 해.',NULL,2),
+(4219,'너도 와 줄 수 있니?',NULL,3),
+(4220,'내일 같이 놀이터에서 놀자.',NULL,1),
+(4220,'학교 끝나고 세 시에 만나자.',NULL,2),
+(4220,'늦으면 미리 전화해 줘.',NULL,3),
+(4221,'아까 네 필통을 떨어뜨려서 미안해.',NULL,1),
+(4221,'일부러 그런 건 아니었어.',NULL,2),
+(4221,'다음부터는 더 조심할게.',NULL,3),
+(4222,'이 상자가 너무 무거워요.',NULL,1),
+(4222,'같이 들어 주실 수 있나요?',NULL,2),
+(4222,'도와주셔서 정말 감사해요.',NULL,3),
+(4223,'음식이 정말 맛있었어요.',NULL,1),
+(4223,'그런데 배가 불러서 다 못 먹겠어요.',NULL,2),
+(4223,'남은 건 포장해 주실 수 있나요?',NULL,3),
+(4224,'안녕하세요, 몇 층 가세요?',NULL,1),
+(4224,'제가 버튼을 눌러 드릴게요.',NULL,2),
+(4224,'조심히 내리세요.',NULL,3),
+(4225,'네, 택배 맞아요.',NULL,1),
+(4225,'문 앞에 두고 가셔도 돼요.',NULL,2),
+(4225,'수고하셨습니다.',NULL,3),
+(4226,'밥은 조금만 주세요.',NULL,1),
+(4226,'국은 많이 주셔도 돼요.',NULL,2),
+(4226,'맛있게 먹겠습니다.',NULL,3),
+(4227,'머리를 짧게 자르고 싶어요.',NULL,1),
+(4227,'앞머리는 눈썹 위까지 잘라 주세요.',NULL,2),
+(4227,'뒷머리는 조금만 다듬어 주세요.',NULL,3),
+(4228,'여기가 줄 맨 끝인가요?',NULL,1),
+(4228,'얼마나 기다려야 하나요?',NULL,2),
+(4228,'차례를 지켜서 기다릴게요.',NULL,3),
+(4229,'많이 속상했지?',NULL,1),
+(4229,'나도 그런 적이 있어서 알아.',NULL,2),
+(4229,'다음에는 꼭 잘될 거야.',NULL,3),
+(4230,'늦어서 죄송합니다.',NULL,1),
+(4230,'버스가 늦게 와서 늦었어요.',NULL,2),
+(4230,'다음에는 더 일찍 나올게요.',NULL,3),
+(4231,'와, 정말 고마워.',NULL,1),
+(4231,'내가 갖고 싶던 거야.',NULL,2),
+(4231,'소중하게 잘 쓸게.',NULL,3),
+(4232,'이거 얼마예요?',NULL,1),
+(4232,'카드로 계산할게요.',NULL,2),
+(4232,'봉투도 하나 주세요.',NULL,3),
+(4233,'몸은 좀 괜찮아?',NULL,1),
+(4233,'선생님이 너 걱정 많이 하셨어.',NULL,2),
+(4233,'빨리 나아서 학교에서 보자.',NULL,3),
+(4234,'술래는 가위바위보로 정하자.',NULL,1),
+(4234,'술래는 열까지 세고 찾는 거야.',NULL,2),
+(4234,'울타리 밖으로는 숨지 않기로 해.',NULL,3),
+(4235,'안녕, 나는 지우라고 해.',NULL,1),
+(4235,'우리 반에 온 걸 환영해.',NULL,2),
+(4235,'모르는 게 있으면 나한테 물어봐.',NULL,3),
+(4236,'선생님, 교실 선풍기가 안 돌아가요.',NULL,1),
+(4236,'버튼을 눌러도 아무 소리가 안 나요.',NULL,2),
+(4236,'고쳐 주실 수 있나요?',NULL,3),
+(4237,'우산은 비가 올 때 쓰는 물건이에요.',NULL,1),
+(4237,'접었다 폈다 할 수 있어요.',NULL,2),
+(4237,'펴면 둥근 지붕처럼 머리를 가려 줘요.',NULL,3),
+(4238,'냉장고는 음식을 차갑게 보관해요.',NULL,1),
+(4238,'문을 열면 안이 환하게 불이 켜져요.',NULL,2),
+(4238,'아래 칸은 더 차가운 냉동실이에요.',NULL,3),
+(4239,'시계는 시간을 알려 줘요.',NULL,1),
+(4239,'짧은바늘은 시를 가리켜요.',NULL,2),
+(4239,'긴바늘은 분을 가리켜요.',NULL,3),
+(4240,'가방은 물건을 넣고 다니는 물건이에요.',NULL,1),
+(4240,'어깨에 메는 끈이 두 개 있어요.',NULL,2),
+(4240,'지퍼를 열고 닫을 수 있어요.',NULL,3),
+(4241,'연필은 글씨를 쓰는 도구예요.',NULL,1),
+(4241,'가운데에 까만 심이 들어 있어요.',NULL,2),
+(4241,'심이 닳으면 연필깎이로 깎아요.',NULL,3),
+(4242,'자전거는 바퀴가 두 개 있어요.',NULL,1),
+(4242,'페달을 밟으면 앞으로 나가요.',NULL,2),
+(4242,'손잡이에 있는 브레이크로 멈춰요.',NULL,3),
+(4243,'칫솔은 이를 닦는 물건이에요.',NULL,1),
+(4243,'긴 손잡이 끝에 부드러운 솔이 있어요.',NULL,2),
+(4243,'치약을 짜서 사용해요.',NULL,3),
+(4244,'선풍기는 바람을 만들어 줘요.',NULL,1),
+(4244,'날개가 빙글빙글 돌아가요.',NULL,2),
+(4244,'버튼으로 바람 세기를 바꿀 수 있어요.',NULL,3),
+(4245,'안경은 눈을 잘 보이게 도와줘요.',NULL,1),
+(4245,'동그란 알이 두 개 있어요.',NULL,2),
+(4245,'귀에 걸어서 써요.',NULL,3),
+(4246,'가위는 물건을 자르는 도구예요.',NULL,1),
+(4246,'날이 두 개 있어서 서로 엇갈려요.',NULL,2),
+(4246,'끝이 뾰족해서 조심해서 써요.',NULL,3),
+(4247,'컵은 물을 담아 마시는 그릇이에요.',NULL,1),
+(4247,'손잡이가 달린 컵도 있어요.',NULL,2);
+INSERT IGNORE INTO exercise_items (exercise_id,text_value,emoji,sort_order) VALUES
+(4247,'유리컵은 깨지기 쉬워서 조심해요.',NULL,3),
+(4248,'전화기로 멀리 있는 사람과 이야기해요.',NULL,1),
+(4248,'번호를 누르면 신호가 가요.',NULL,2),
+(4248,'상대가 받으면 목소리가 들려요.',NULL,3),
+(4249,'텔레비전은 영상을 보여 줘요.',NULL,1),
+(4249,'리모컨으로 채널을 바꿔요.',NULL,2),
+(4249,'소리 크기도 조절할 수 있어요.',NULL,3),
+(4250,'신발은 발을 보호해 줘요.',NULL,1),
+(4250,'바닥이 두꺼워서 돌을 밟아도 괜찮아요.',NULL,2),
+(4250,'끈이나 찍찍이로 고정해요.',NULL,3),
+(4251,'책은 종이를 묶어 만든 거예요.',NULL,1),
+(4251,'글과 그림이 들어 있어요.',NULL,2),
+(4251,'한 장씩 넘기며 읽어요.',NULL,3),
+(4252,'의자는 앉을 때 쓰는 가구예요.',NULL,1),
+(4252,'다리가 네 개 있어요.',NULL,2),
+(4252,'등을 기댈 수 있는 등받이가 있어요.',NULL,3),
+(4253,'청소기는 먼지를 빨아들여요.',NULL,1),
+(4253,'긴 관 끝으로 바닥을 밀어요.',NULL,2),
+(4253,'먼지 통이 차면 비워 줘요.',NULL,3),
+(4254,'물뿌리개는 식물에 물을 주는 도구예요.',NULL,1),
+(4254,'긴 주둥이 끝에 작은 구멍이 많아요.',NULL,2),
+(4254,'기울이면 물이 비처럼 뿌려져요.',NULL,3),
+(4255,'손전등은 어두운 곳을 비춰 줘요.',NULL,1),
+(4255,'건전지를 넣어서 써요.',NULL,2),
+(4255,'버튼을 누르면 불이 켜져요.',NULL,3),
+(4256,'달력에는 날짜가 적혀 있어요.',NULL,1),
+(4256,'한 장이 한 달이에요.',NULL,2),
+(4256,'중요한 날에 동그라미를 쳐요.',NULL,3),
+(4257,'열쇠는 문을 열고 잠가요.',NULL,1),
+(4257,'작고 납작한 쇠로 만들어요.',NULL,2),
+(4257,'열쇠 구멍에 넣고 돌려요.',NULL,3),
+(4258,'지우개는 연필 글씨를 지워요.',NULL,1),
+(4258,'말랑말랑하고 작아요.',NULL,2),
+(4258,'문지르면 지우개 가루가 생겨요.',NULL,3),
+(4259,'베개는 잘 때 머리를 받쳐 줘요.',NULL,1),
+(4259,'안에 솜이 들어 있어서 푹신해요.',NULL,2),
+(4259,'베갯잇을 씌워서 깨끗하게 써요.',NULL,3),
+(4260,'돋보기는 작은 것을 크게 보여 줘요.',NULL,1),
+(4260,'둥근 유리에 손잡이가 달렸어요.',NULL,2),
+(4260,'개미를 보면 다리까지 잘 보여요.',NULL,3),
+(4261,'냄비는 음식을 끓이는 그릇이에요.',NULL,1),
+(4261,'양쪽에 손잡이가 있어요.',NULL,2),
+(4261,'뚜껑을 덮으면 빨리 끓어요.',NULL,3),
+(4262,'줄자는 길이를 재는 도구예요.',NULL,1),
+(4262,'길게 뽑았다가 다시 감을 수 있어요.',NULL,2),
+(4262,'눈금을 보고 길이를 읽어요.',NULL,3),
+(4263,'저금통은 돈을 모으는 통이에요.',NULL,1),
+(4263,'위쪽에 동전 넣는 구멍이 있어요.',NULL,2),
+(4263,'가득 차면 은행에 가져가요.',NULL,3),
+(4264,'풍선은 고무로 만들어요.',NULL,1),
+(4264,'바람을 불어 넣으면 커져요.',NULL,2),
+(4264,'끝을 묶어서 바람이 빠지지 않게 해요.',NULL,3),
+(4265,'일곱 시에 일어나서 세수를 했어요.',NULL,1),
+(4265,'엄마가 차려 주신 밥을 먹었어요.',NULL,2),
+(4265,'여덟 시 반에 학교로 출발했어요.',NULL,3),
+(4266,'토요일에는 늦잠을 잤어요.',NULL,1),
+(4266,'아빠와 함께 팬케이크를 구웠어요.',NULL,2),
+(4266,'오전에는 공원에서 배드민턴을 쳤어요.',NULL,3),
+(4267,'점심을 먹고 할머니 댁에 갔어요.',NULL,1),
+(4267,'할머니와 함께 화분에 물을 주었어요.',NULL,2),
+(4267,'저녁에는 집에 돌아와 일기를 썼어요.',NULL,3),
+(4268,'첫째 시간에는 국어를 배웠어요.',NULL,1),
+(4268,'점심시간에는 친구들과 축구를 했어요.',NULL,2),
+(4268,'마지막 시간에는 노래를 불렀어요.',NULL,3),
+(4269,'비가 와서 우비를 입고 학교에 갔어요.',NULL,1),
+(4269,'쉬는 시간에는 교실에서 공기놀이를 했어요.',NULL,2),
+(4269,'집에 와서 젖은 신발을 말렸어요.',NULL,3),
+(4270,'방학 첫날 아침에 늦게 일어났어요.',NULL,1),
+(4270,'오후에는 친구와 수영장에 갔어요.',NULL,2),
+(4270,'밤에는 가족과 영화를 봤어요.',NULL,3),
+(4271,'아침에 가족이 생일 노래를 불러 주었어요.',NULL,1),
+(4271,'학교에서 친구들에게 축하를 받았어요.',NULL,2),
+(4271,'저녁에는 케이크를 먹고 선물을 열었어요.',NULL,3),
+(4272,'아침에 열이 나서 병원에 갔어요.',NULL,1),
+(4272,'약을 먹고 낮잠을 잤어요.',NULL,2),
+(4272,'저녁에는 조금 나아져서 죽을 먹었어요.',NULL,3),
+(4273,'아침부터 온 가족이 대청소를 했어요.',NULL,1),
+(4273,'나는 내 방 책장을 정리했어요.',NULL,2),
+(4273,'청소가 끝나고 다 함께 짜장면을 먹었어요.',NULL,3),
+(4274,'아침 일찍 학교에 모였어요.',NULL,1),
+(4274,'버스를 타고 과학관에 갔어요.',NULL,2),
+(4274,'돌아와서 느낀 점을 공책에 썼어요.',NULL,3),
+(4275,'아침에 창밖을 보니 눈이 쌓였어요.',NULL,1),
+(4275,'오전에 친구들과 눈싸움을 했어요.',NULL,2),
+(4275,'오후에는 집에서 따뜻한 코코아를 마셨어요.',NULL,3),
+(4276,'오전에 엄마와 시장에 갔어요.',NULL,1),
+(4276,'채소 가게에서 오이와 감자를 샀어요.',NULL,2),
+(4276,'점심으로 시장에서 칼국수를 먹었어요.',NULL,3),
+(4277,'아침에 체육복을 입고 등교했어요.',NULL,1),
+(4277,'오전에는 달리기와 공 굴리기를 했어요.',NULL,2),
+(4277,'오후에는 줄다리기에서 우리 반이 이겼어요.',NULL,3),
+(4278,'아침에 짐을 차에 실었어요.',NULL,1),
+(4278,'낮에 캠핑장에 도착해 텐트를 쳤어요.',NULL,2),
+(4278,'밤에는 모닥불 앞에서 노래를 불렀어요.',NULL,3),
+(4279,'아침을 먹고 도서관으로 걸어갔어요.',NULL,1),
+(4279,'공룡 책과 우주 책을 빌렸어요.',NULL,2),
+(4279,'집에 와서 동생에게 책을 읽어 주었어요.',NULL,3),
+(4280,'아침에 한복을 입고 세배를 했어요.',NULL,1),
+(4280,'점심에는 떡국을 먹었어요.',NULL,2),
+(4280,'오후에는 사촌들과 윷놀이를 했어요.',NULL,3),
+(4281,'아침에 차례를 지냈어요.',NULL,1),
+(4281,'낮에는 할머니와 송편을 빚었어요.',NULL,2),
+(4281,'밤에는 보름달을 보며 소원을 빌었어요.',NULL,3),
+(4282,'아침에 이삿짐 트럭이 왔어요.',NULL,1),
+(4282,'짐을 옮기는 동안 동생을 돌봤어요.',NULL,2),
+(4282,'저녁에는 새집에서 처음으로 잠을 잤어요.',NULL,3),
+(4283,'아침 일찍 김밥을 싸서 산에 갔어요.',NULL,1),
+(4283,'정상에서 도시락을 먹었어요.',NULL,2),
+(4283,'내려와서 시원한 계곡물에 발을 담갔어요.',NULL,3),
+(4284,'오후에 수영장에 갔어요.',NULL,1),
+(4284,'선생님께 발차기를 배웠어요.',NULL,2),
+(4284,'끝나고 따뜻한 물로 샤워했어요.',NULL,3),
+(4285,'아침에 차를 타고 바닷가로 갔어요.',NULL,1),
+(4285,'모래사장에서 두꺼비집을 지었어요.',NULL,2),
+(4285,'해 질 무렵 노을을 보고 돌아왔어요.',NULL,3),
+(4286,'아침을 굶고 병원에 갔어요.',NULL,1),
+(4286,'키와 몸무게를 쟀어요.',NULL,2),
+(4286,'검사가 끝나고 맛있는 아침을 먹었어요.',NULL,3),
+(4287,'과학 시간에 화산 실험을 했어요.',NULL,1),
+(4287,'식초를 붓자 거품이 부글부글 올라왔어요.',NULL,2),
+(4287,'실험 결과를 그림으로 그려 정리했어요.',NULL,3),
+(4288,'기차를 타고 할머니 댁에 갔어요.',NULL,1),
+(4288,'할머니와 함께 텃밭에서 고추를 땄어요.',NULL,2),
+(4288,'저녁에는 할머니 옆에서 옛날이야기를 들었어요.',NULL,3),
+(4289,'아침에 정장을 입고 거울을 봤어요.',NULL,1),
+(4289,'무대에서 떨렸지만 끝까지 연주했어요.',NULL,2),
+(4289,'끝나고 가족이 꽃다발을 주었어요.',NULL,3),
+(4290,'아침에 배추를 소금에 절였어요.',NULL,1),
+(4290,'점심때는 양념을 만들었어요.',NULL,2),
+(4290,'오후에 온 가족이 배추에 양념을 발랐어요.',NULL,3),
+(4291,'문이 열리자마자 놀이공원에 들어갔어요.',NULL,1),
+(4291,'오전에는 회전목마와 범퍼카를 탔어요.',NULL,2),
+(4291,'밤에는 퍼레이드를 보고 집에 왔어요.',NULL,3),
+(4292,'아침에 무대 의상을 챙겼어요.',NULL,1),
+(4292,'오후에 친구들과 연극을 발표했어요.',NULL,2),
+(4292,'끝나고 부모님께 박수를 받았어요.',NULL,3),
+(4293,'아침에 텃밭에 물을 주었어요.',NULL,1),
+(4293,'잡초를 뽑고 지지대를 세웠어요.',NULL,2),
+(4293,'오후에는 잘 익은 방울토마토를 땄어요.',NULL,3),
+(4294,'오후에 친구 집에 놀러 갔어요.',NULL,1),
+(4294,'함께 블록으로 큰 성을 만들었어요.',NULL,2),
+(4294,'해가 지기 전에 인사하고 집에 왔어요.',NULL,3),
+(4295,'빵집 문을 열자 고소한 냄새가 났어요.',NULL,1),
+(4295,'빵을 손으로 찢으니 김이 모락모락 났어요.',NULL,2),
+(4295,'한 입 먹으니 겉은 바삭하고 속은 폭신했어요.',NULL,3),
+(4296,'바닷물이 햇빛에 반짝반짝 빛났어요.',NULL,1),
+(4296,'짭조름한 바다 냄새가 코끝에 닿았어요.',NULL,2),
+(4296,'발밑의 모래가 뜨끈뜨끈했어요.',NULL,3),
+(4297,'창문을 여니 차가운 바람이 들어왔어요.',NULL,1),
+(4297,'입김이 하얗게 피어올랐어요.',NULL,2),
+(4297,'손이 시려서 주머니에 넣었어요.',NULL,3),
+(4298,'비가 그친 숲에서 흙냄새가 났어요.',NULL,1),
+(4298,'나뭇잎에서 물방울이 똑똑 떨어졌어요.',NULL,2),
+(4298,'어디선가 개구리 소리가 들렸어요.',NULL,3),
+(4299,'귤껍질을 벗기자 상큼한 향이 퍼졌어요.',NULL,1),
+(4299,'알맹이가 탱글탱글했어요.',NULL,2),
+(4299,'한 입 깨물자 새콤달콤한 즙이 나왔어요.',NULL,3),
+(4300,'밤하늘에 불꽃이 펑 하고 터졌어요.',NULL,1),
+(4300,'빨강 노랑 초록 불빛이 쏟아졌어요.',NULL,2),
+(4300,'사람들이 와 하고 함성을 질렀어요.',NULL,3),
+(4301,'솜사탕이 구름처럼 커다랬어요.',NULL,1),
+(4301,'입에 넣자 사르르 녹았어요.',NULL,2),
+(4301,'손가락이 끈적끈적해졌어요.',NULL,3),
+(4302,'발밑에서 낙엽이 바스락거렸어요.',NULL,1),
+(4302,'빨간 잎과 노란 잎이 섞여 있었어요.',NULL,2),
+(4302,'바람이 불자 잎이 빙글빙글 떨어졌어요.',NULL,3),
+(4303,'욕조에 따뜻한 물을 받았어요.',NULL,1),
+(4303,'몸을 담그자 온몸이 노곤해졌어요.',NULL,2),
+(4303,'비누 거품에서 꽃향기가 났어요.',NULL,3),
+(4304,'아이스크림이 입술에 닿자 차가웠어요.',NULL,1),
+(4304,'딸기 맛이 입안 가득 퍼졌어요.',NULL,2),
+(4304,'더운 날이라 금방 녹아 흘렀어요.',NULL,3),
+(4305,'골목마다 사람들 목소리가 시끌벅적했어요.',NULL,1),
+(4305,'튀김 냄새가 고소하게 났어요.',NULL,2),
+(4305,'알록달록한 과일이 가득 쌓여 있었어요.',NULL,3),
+(4306,'모닥불이 타닥타닥 소리를 냈어요.',NULL,1),
+(4306,'불꽃이 주황빛으로 흔들렸어요.',NULL,2),
+(4306,'얼굴이 따끈따끈해졌어요.',NULL,3),
+(4307,'들판에 노란 유채꽃이 가득했어요.',NULL,1),
+(4307,'벌들이 윙윙거리며 날아다녔어요.',NULL,2),
+(4307,'바람에서 달콤한 꽃향기가 났어요.',NULL,3),
+(4308,'눈을 밟을 때마다 뽀드득 소리가 났어요.',NULL,1),
+(4308,'하얀 눈이 햇빛에 눈부셨어요.',NULL,2),
+(4308,'볼이 차가워서 빨개졌어요.',NULL,3),
+(4309,'빨간 양념이 면에 골고루 묻었어요.',NULL,1),
+(4309,'한 입 먹자 새콤하고 매콤했어요.',NULL,2),
+(4309,'오이가 아삭아삭 씹혔어요.',NULL,3),
+(4310,'새 공책을 펼치니 종이 냄새가 났어요.',NULL,1),
+(4310,'하얀 종이가 매끈매끈했어요.',NULL,2),
+(4310,'첫 장에 내 이름을 또박또박 썼어요.',NULL,3),
+(5001,'나는 김밥을 가장 좋아해요.',NULL,1),
+(5001,'여러 가지 재료가 들어 있어서 맛있어요.',NULL,2),
+(5002,'나는 가을을 가장 좋아해요.',NULL,1),
+(5002,'날씨가 시원하고 단풍이 예쁘기 때문이에요.',NULL,2),
+(5003,'나는 강아지를 좋아해요.',NULL,1),
+(5003,'꼬리를 흔들며 반겨 주는 모습이 귀여워요.',NULL,2),
+(5004,'나는 하늘색을 좋아해요.',NULL,1),
+(5004,'맑은 하늘을 보면 기분이 좋아지거든요.',NULL,2),
+(5005,'나는 숨바꼭질을 좋아해요.',NULL,1),
+(5005,'숨어 있을 때 두근두근해서 재미있어요.',NULL,2),
+(5006,'나는 체육 시간을 가장 좋아해요.',NULL,1),
+(5006,'운동장에서 마음껏 뛸 수 있어서 좋아요.',NULL,2),
+(5007,'나는 공룡 도감을 가장 좋아해요.',NULL,1),
+(5007,'공룡 이름을 하나씩 외우는 게 재미있어요.',NULL,2),
+(5008,'나는 할머니 댁 마당을 좋아해요.',NULL,1),
+(5008,'강아지와 뛰어놀 수 있는 곳이에요.',NULL,2),
+(5009,'나는 곰 세 마리 노래를 좋아해요.',NULL,1),
+(5009,'율동을 하면서 부르면 신나요.',NULL,2),
+(5010,'나는 눈 오는 날을 좋아해요.',NULL,1),
+(5010,'눈사람을 만들 수 있으니까요.',NULL,2),
+(5011,'나는 군고구마를 좋아해요.',NULL,1),
+(5011,'따뜻하고 달콤해서 겨울에 최고예요.',NULL,2),
+(5012,'나는 수영을 좋아해요.',NULL,1),
+(5012,'물속에 있으면 몸이 가벼워져요.',NULL,2),
+(5013,'나는 저녁 먹고 난 뒤가 좋아요.',NULL,1),
+(5013,'가족과 함께 이야기하는 시간이거든요.',NULL,2),
+(5014,'나는 딸기를 제일 좋아해요.',NULL,1),
+(5014,'새콤달콤하고 향기가 좋아요.',NULL,2),
+(5015,'나는 블록을 가장 아껴요.',NULL,1),
+(5015,'무엇이든 만들 수 있어서 좋아요.',NULL,2),
+(5016,'내 친한 친구는 지호예요.',NULL,1),
+(5016,'항상 나를 웃게 해 주는 친구예요.',NULL,2),
+(5017,'나는 바닷속 모험 영화를 좋아해요.',NULL,1),
+(5017,'물고기들이 힘을 합치는 장면이 멋졌어요.',NULL,2),
+(5018,'나는 가족과 캠핑 가는 게 좋아요.',NULL,1),
+(5018,'밤에 별을 보며 이야기할 수 있거든요.',NULL,2),
+(5019,'나는 해바라기를 좋아해요.',NULL,1),
+(5019,'해를 따라 고개를 돌리는 게 신기해요.',NULL,2),
+(5020,'나는 금요일을 가장 좋아해요.',NULL,1),
+(5020,'다음 날 쉴 수 있어서 마음이 편해요.',NULL,2),
+(5021,'나는 달걀말이를 좋아해요.',NULL,1),
+(5021,'부드럽고 고소해서 밥이랑 잘 어울려요.',NULL,2),
+(5022,'나는 바다 그림을 즐겨 그려요.',NULL,1),
+(5022,'파란색을 여러 가지로 칠하는 게 재미있어요.',NULL,2),
+(5023,'나는 비행기를 타 보고 싶어요.',NULL,1),
+(5023,'구름 위를 날아 보고 싶거든요.',NULL,2),
+(5024,'나는 트리케라톱스를 좋아해요.',NULL,1),
+(5024,'뿔이 세 개나 있어서 멋있어요.',NULL,2),
+(5025,'나는 노란 우비를 좋아해요.',NULL,1),
+(5025,'비 오는 날 입으면 기분이 밝아져요.',NULL,2),
+(5026,'나는 빗소리를 좋아해요.',NULL,1),
+(5026,'창문에 톡톡 부딪히는 소리가 편안해요.',NULL,2),
+(5027,'나는 가지를 싫어해요.',NULL,1),
+(5027,'물컹물컹한 느낌이 싫어요.',NULL,2),
+(5028,'나는 바람이 세게 부는 날이 싫어요.',NULL,1),
+(5028,'우산이 뒤집히고 춥거든요.',NULL,2),
+(5029,'나는 칠판 긁는 소리가 싫어요.',NULL,1),
+(5029,'소름이 돋아서 귀를 막게 돼요.',NULL,2),
+(5030,'나는 모기가 싫어요.',NULL,1),
+(5030,'물리면 가렵고 잠을 못 자요.',NULL,2),
+(5031,'나는 설거지가 싫어요.',NULL,1),
+(5031,'손이 미끄럽고 그릇이 무거워요.',NULL,2),
+(5032,'친구가 약속을 안 지키면 속상해요.',NULL,1),
+(5032,'기다린 시간이 아까운 생각이 들어요.',NULL,2),
+(5033,'나는 치과에 가는 게 싫어요.',NULL,1),
+(5033,'기계 소리가 무섭게 들려요.',NULL,2),
+(5034,'나는 담배 냄새가 싫어요.',NULL,1),
+(5034,'머리가 아프고 기침이 나요.',NULL,2),
+(5035,'친구가 내 물건을 말없이 가져가면 싫어요.',NULL,1),
+(5035,'먼저 물어봐 주면 좋겠어요.',NULL,2),
+(5036,'나는 아침에 일어나는 시간이 싫어요.',NULL,1),
+(5036,'더 자고 싶은데 일어나야 하니까요.',NULL,2),
+(5037,'나는 높이 올라가는 놀이기구가 싫어요.',NULL,1),
+(5037,'아래를 내려다보면 다리가 떨려요.',NULL,2),
+(5038,'나는 일기 쓰기가 가끔 싫어요.',NULL,1),
+(5038,'무엇을 써야 할지 생각이 안 날 때가 있어요.',NULL,2),
+(5039,'나는 너무 쓴맛이 싫어요.',NULL,1),
+(5039,'약을 먹을 때 그 맛이 떠올라요.',NULL,2),
+(5040,'나는 목이 따끔거리는 스웨터가 싫어요.',NULL,1),
+(5040,'하루 종일 목을 긁게 돼요.',NULL,2),
+(5041,'재미있게 놀다가 그만해야 할 때가 싫어요.',NULL,1),
+(5041,'조금만 더 놀고 싶거든요.',NULL,2),
+(5042,'나는 한여름이 조금 싫어요.',NULL,1),
+(5042,'땀이 많이 나고 모기가 많아요.',NULL,2),
+(5043,'나는 바보라는 말을 듣기 싫어요.',NULL,1),
+(5043,'마음이 아프고 속상해져요.',NULL,2),
+(5044,'병원에서 차례를 기다리는 게 힘들어요.',NULL,1),
+(5044,'시간이 너무 느리게 가는 것 같아요.',NULL,2),
+(5045,'나는 레고 조각 정리가 싫어요.',NULL,1),
+(5045,'조각이 너무 작고 많아서요.',NULL,2),
+(5046,'나는 사람이 꽉 찬 버스가 싫어요.',NULL,1),
+(5046,'밀리고 덥고 답답해요.',NULL,2),
+(5047,'나는 상처에 약 바르는 게 싫어요.',NULL,1),
+(5047,'따끔따끔해서 눈물이 나요.',NULL,2),
+(5048,'나는 공사장 옆 길이 싫어요.',NULL,1),
+(5048,'쿵쾅거리는 소리에 깜짝깜짝 놀라요.',NULL,2),
+(5049,'나는 반칙해서 이기는 게 싫어요.',NULL,1),
+(5049,'정정당당하게 해야 재미있어요.',NULL,2),
+(5050,'나는 아침부터 매운 음식은 싫어요.',NULL,1),
+(5050,'배가 아플 때가 있거든요.',NULL,2),
+(5051,'나는 혼자 남겨진 기분이 싫어요.',NULL,1),
+(5051,'외롭고 쓸쓸해져요.',NULL,2),
+(5052,'나는 바다에 가고 싶어요.',NULL,1),
+(5052,'모래성을 쌓고 수영을 할 수 있으니까요.',NULL,2),
+(5053,'나는 겨울이 더 좋아요.',NULL,1),
+(5053,'눈썰매를 탈 수 있기 때문이에요.',NULL,2),
+(5054,'나는 고양이를 키우고 싶어요.',NULL,1),
+(5054,'조용하고 부드러운 털이 좋아요.',NULL,2),
+(5055,'나는 밥을 먹고 싶어요.',NULL,1),
+(5055,'든든해서 점심까지 배가 고프지 않아요.',NULL,2),
+(5056,'나는 책으로 읽고 싶어요.',NULL,1),
+(5056,'내 마음대로 상상할 수 있으니까요.',NULL,2),
+(5057,'나는 자전거를 탈래요.',NULL,1),
+(5057,'멀리까지 빨리 갈 수 있어요.',NULL,2),
+(5058,'나는 그림을 보여 주고 싶어요.',NULL,1),
+(5058,'노래보다 덜 떨릴 것 같아요.',NULL,2),
+(5059,'나는 친구와 함께 하고 싶어요.',NULL,1),
+(5059,'모르는 것을 서로 물어볼 수 있으니까요.',NULL,2),
+(5060,'나는 치킨을 고를래요.',NULL,1),
+(5060,'바삭한 껍질이 정말 맛있어요.',NULL,2),
+(5061,'나는 일찍 자고 일찍 일어나는 게 좋아요.',NULL,1),
+(5061,'아침 시간이 상쾌하거든요.',NULL,2),
+(5062,'나는 보드게임을 하고 싶어요.',NULL,1),
+(5062,'가족과 다 같이 웃을 수 있어요.',NULL,2),
+(5063,'나는 장난감을 받고 싶어요.',NULL,1),
+(5063,'친구와 함께 가지고 놀 수 있으니까요.',NULL,2),
+(5064,'나는 수족관에 가고 싶어요.',NULL,1),
+(5064,'커다란 상어를 직접 보고 싶어요.',NULL,2),
+(5065,'나는 밖에 나가고 싶어요.',NULL,1),
+(5065,'공원에서 뛰어놀면 기분이 좋아져요.',NULL,2),
+(5066,'나는 짧은 머리가 좋아요.',NULL,1),
+(5066,'머리 감고 말리기가 편해요.',NULL,2),
+(5067,'나는 하늘을 나는 능력을 갖고 싶어요.',NULL,1),
+(5067,'가고 싶은 곳에 금방 갈 수 있으니까요.',NULL,2),
+(5068,'나는 우유를 마실래요.',NULL,1),
+(5068,'키가 쑥쑥 크고 싶어요.',NULL,2),
+(5069,'나는 지하철을 타고 싶어요.',NULL,1),
+(5069,'길이 막히지 않아서 빨리 가요.',NULL,2),
+(5070,'나는 밤이 더 좋아요.',NULL,1),
+(5070,'반짝이는 별을 볼 수 있으니까요.',NULL,2),
+(5071,'나는 색연필을 쓸래요.',NULL,1),
+(5071,'알록달록하게 칠할 수 있어요.',NULL,2),
+(5072,'나는 축구를 하고 싶어요.',NULL,1),
+(5072,'친구들과 넓은 운동장을 달릴 수 있어요.',NULL,2),
+(5073,'나는 공원이 좋아요.',NULL,1),
+(5073,'돗자리를 펴고 도시락을 먹고 싶어요.',NULL,2),
+(5074,'나는 사과나무를 심고 싶어요.',NULL,1),
+(5074,'나중에 사과를 따 먹을 수 있으니까요.',NULL,2),
+(5075,'나는 신나는 놀이가 좋아요.',NULL,1),
+(5075,'몸을 움직이면 스트레스가 풀려요.',NULL,2),
+(5076,'나는 편지를 쓸래요.',NULL,1),
+(5076,'오래 간직할 수 있으니까요.',NULL,2),
+(5077,'받아쓰기에서 다 맞아서 정말 기뻤어요.',NULL,1),
+(5077,'엄마가 꼭 안아 주셨어요.',NULL,2),
+(5078,'아끼던 화분이 시들어서 슬펐어요.',NULL,1),
+(5078,'다음에는 물을 잘 주기로 했어요.',NULL,2),
+(5079,'동생이 내 그림에 낙서해서 화가 났어요.',NULL,1),
+(5079,'그래도 차분하게 말로 이야기했어요.',NULL,2),
+(5080,'천둥이 크게 쳐서 무서웠어요.',NULL,1),
+(5080,'이불 속에 들어가 엄마 손을 잡았어요.',NULL,2),
+(5081,'문을 열었는데 친구들이 와 하고 소리쳐서 놀랐어요.',NULL,1),
+(5081,'깜짝 생일 파티였어요.',NULL,2),
+(5082,'혼자서 신발 끈을 묶어서 뿌듯했어요.',NULL,1),
+(5082,'여러 번 연습한 덕분이에요.',NULL,2),
+(5083,'발표하다가 말을 더듬어서 부끄러웠어요.',NULL,1),
+(5083,'친구들이 박수를 쳐 줘서 힘이 났어요.',NULL,2),
+(5084,'달리기에서 넘어져서 속상했어요.',NULL,1),
+(5084,'그래도 끝까지 달려서 결승선을 통과했어요.',NULL,2),
+(5085,'여행 가기 전날 밤 설레서 잠이 안 왔어요.',NULL,1),
+(5085,'가방을 몇 번이나 다시 열어 봤어요.',NULL,2),
+(5086,'우산이 없을 때 친구가 같이 써 줘서 고마웠어요.',NULL,1),
+(5086,'다음에는 내가 도와주고 싶어요.',NULL,2),
+(5087,'부모님이 늦게 오셔서 혼자 있을 때 외로웠어요.',NULL,1),
+(5087,'인형을 꼭 안고 기다렸어요.',NULL,2),
+(5088,'강아지가 밥을 안 먹어서 걱정했어요.',NULL,1),
+(5088,'병원에 다녀와서 마음이 놓였어요.',NULL,2),
+(5089,'피아노 대회 무대에 올라갈 때 긴장했어요.',NULL,1),
+(5089,'심호흡을 하고 천천히 시작했어요.',NULL,2),
+(5090,'친구 장난감을 망가뜨려서 미안했어요.',NULL,1),
+(5090,'진심으로 사과하고 같이 고쳤어요.',NULL,2),
+(5091,'놀이공원에서 롤러코스터를 타고 신났어요.',NULL,1),
+(5091,'소리를 지르며 두 손을 번쩍 들었어요.',NULL,2),
+(5092,'내가 안 그랬는데 오해를 받아서 억울했어요.',NULL,1),
+(5092,'차근차근 설명해서 오해를 풀었어요.',NULL,2),
+(5093,'가족과 둘러앉아 밥을 먹을 때 행복해요.',NULL,1),
+(5093,'이야기하며 웃는 시간이 좋아요.',NULL,2),
+(5094,'따뜻한 이불 속에서 책을 읽을 때 편안해요.',NULL,1),
+(5094,'아무 걱정이 없어지는 것 같아요.',NULL,2),
+(5095,'심심할 때는 그림을 그려요.',NULL,1),
+(5095,'그리다 보면 시간이 금방 가요.',NULL,2),
+(5096,'친구가 새 자전거를 타서 부러웠어요.',NULL,1),
+(5096,'나도 용돈을 모아서 사고 싶어요.',NULL,2),
+(5097,'기분이 나쁠 때는 좋아하는 노래를 들어요.',NULL,1),
+(5097,'노래를 따라 부르면 마음이 풀려요.',NULL,2),
+(5098,'오늘은 기분이 아주 좋아요.',NULL,1),
+(5098,'아침에 좋아하는 반찬이 나왔거든요.',NULL,2),
+(5099,'화가 나면 숨을 크게 쉬고 열까지 세어요.',NULL,1),
+(5099,'그러면 마음이 조금 차분해져요.',NULL,2),
+(5100,'울고 싶을 때는 엄마에게 이야기해요.',NULL,1),
+(5100,'이야기하고 나면 마음이 가벼워져요.',NULL,2),
+(5101,'할머니가 내 그림을 액자에 넣어 주셔서 감동했어요.',NULL,1),
+(5101,'소중하게 여겨 주셔서 고마웠어요.',NULL,2),
+(5102,'음식을 남기지 않는 게 좋다고 생각해요.',NULL,1),
+(5102,'음식을 만든 분들의 수고가 들어 있으니까요.',NULL,2),
+(5103,'숙제는 조금 있는 게 좋다고 생각해요.',NULL,1),
+(5103,'배운 것을 다시 생각해 볼 수 있으니까요.',NULL,2),
+(5104,'끝까지 책임지는 마음이 필요하다고 생각해요.',NULL,1),
+(5104,'동물도 가족이니까요.',NULL,2),
+(5105,'시간을 정해서 쓰는 게 좋다고 생각해요.',NULL,1),
+(5105,'너무 오래 보면 눈이 나빠지니까요.',NULL,2),
+(5106,'일회용품을 줄여야 한다고 생각해요.',NULL,1),
+(5106,'쓰레기가 많아지면 지구가 아프니까요.',NULL,2),
+(5107,'친구 말을 끝까지 듣는 규칙이 필요해요.',NULL,1),
+(5107,'그래야 서로 기분이 상하지 않아요.',NULL,2),
+(5108,'지금 방학 기간이 알맞다고 생각해요.',NULL,1),
+(5108,'너무 길면 친구들이 보고 싶어지니까요.',NULL,2),
+(5109,'필요한 것과 갖고 싶은 것을 나눠서 써야 해요.',NULL,1),
+(5109,'그래야 꼭 필요할 때 돈이 남아요.',NULL,2),
+(5110,'좌우를 살피는 것이 가장 중요해요.',NULL,1),
+(5110,'차가 갑자기 나타날 수 있으니까요.',NULL,2),
+(5111,'생각하는 힘이 커진다고 생각해요.',NULL,1),
+(5111,'다른 사람의 마음도 알 수 있으니까요.',NULL,2),
+(5112,'먼저 사과하는 용기가 필요하다고 생각해요.',NULL,1),
+(5112,'그래야 다시 사이좋게 지낼 수 있어요.',NULL,2),
+(5113,'아침밥은 꼭 먹어야 한다고 생각해요.',NULL,1),
+(5113,'힘이 나야 공부에 집중할 수 있으니까요.',NULL,2),
+(5114,'조금씩이라도 매일 운동하는 게 좋아요.',NULL,1),
+(5114,'몸이 튼튼해지고 기분도 좋아지니까요.',NULL,2),
+(5115,'깨끗한 물은 한정되어 있다고 생각해요.',NULL,1),
+(5115,'양치할 때 컵을 쓰면 물을 아낄 수 있어요.',NULL,2),
+(5116,'넓은 공간이 있으면 더 행복할 것 같아요.',NULL,1),
+(5116,'원래 살던 곳과 비슷하게 해 주면 좋겠어요.',NULL,2),
+(5117,'하루에 삼십 분 정도가 알맞다고 생각해요.',NULL,1),
+(5117,'다른 놀이도 해야 하니까요.',NULL,2),
+(5118,'양보하면 모두가 기분 좋게 지낼 수 있어요.',NULL,1),
+(5118,'나도 언젠가 양보를 받게 되니까요.',NULL,2),
+(5119,'내가 버린 게 아니어도 주우면 좋다고 생각해요.',NULL,1),
+(5119,'우리 동네가 깨끗해지니까요.',NULL,2),
+(5120,'인사는 서로를 존중하는 표현이라고 생각해요.',NULL,1),
+(5120,'인사를 받으면 기분이 좋아지니까요.',NULL,2),
+(5121,'꿈이 있으면 열심히 노력하게 된다고 생각해요.',NULL,1),
+(5121,'하루하루가 더 즐거워지니까요.',NULL,2),
+(5122,'실수를 인정하고 다시 해 보면 된다고 생각해요.',NULL,1),
+(5122,'실수하면서 배우는 거니까요.',NULL,2),
+(5123,'나무를 많이 심어야 한다고 생각해요.',NULL,1),
+(5123,'공기가 맑아지고 그늘도 생기니까요.',NULL,2),
+(5124,'다른 사람이 책에 집중할 수 있게 하기 위해서예요.',NULL,1),
+(5124,'모두가 함께 쓰는 곳이니까요.',NULL,2),
+(5125,'줄을 서면 차례대로 공평하게 할 수 있어요.',NULL,1),
+(5125,'새치기하면 다른 사람이 속상해요.',NULL,2),
+(5126,'골고루 먹어야 몸이 튼튼해진다고 생각해요.',NULL,1),
+(5126,'음식마다 다른 영양소가 있으니까요.',NULL,2),
+(5127,'사과는 빨갛고 배는 노래요.',NULL,1),
+(5127,'둘 다 둥글고 달콤한 과일이에요.',NULL,2),
+(5128,'강아지는 멍멍 짖고 고양이는 야옹 울어요.',NULL,1),
+(5128,'둘 다 사람과 함께 사는 동물이에요.',NULL,2),
+(5129,'여름은 덥고 겨울은 추워요.',NULL,1),
+(5129,'여름에는 수영을, 겨울에는 썰매를 타요.',NULL,2),
+(5130,'버스는 도로로 다니고 기차는 선로로 다녀요.',NULL,1),
+(5130,'둘 다 많은 사람을 태울 수 있어요.',NULL,2),
+(5131,'연필 글씨는 지울 수 있지만 볼펜 글씨는 잘 안 지워져요.',NULL,1),
+(5131,'둘 다 글씨를 쓰는 도구예요.',NULL,2),
+(5132,'바닷물은 짜고 강물은 짜지 않아요.',NULL,1),
+(5132,'강물은 흘러서 결국 바다로 가요.',NULL,2),
+(5133,'해는 낮에 뜨고 달은 밤에 떠요.',NULL,1),
+(5133,'해는 스스로 빛을 내지만 달은 햇빛을 받아 빛나요.',NULL,2),
+(5134,'비는 물방울이고 눈은 얼음 알갱이예요.',NULL,1),
+(5134,'날씨가 추우면 비 대신 눈이 내려요.',NULL,2),
+(5135,'책은 글을 읽고 텔레비전은 영상을 봐요.',NULL,1),
+(5135,'둘 다 새로운 것을 알려 줘요.',NULL,2),
+(5136,'학교에서는 친구들과 공부해요.',NULL,1),
+(5136,'집에서는 가족과 쉬어요.',NULL,2),
+(5137,'새는 날개를 퍼덕이고 비행기는 엔진으로 날아요.',NULL,1),
+(5137,'둘 다 하늘을 날 수 있어요.',NULL,2),
+(5138,'토끼는 빠르고 거북이는 느려요.',NULL,1),
+(5138,'거북이는 등에 단단한 등딱지가 있어요.',NULL,2),
+(5139,'아침에는 해가 뜨고 저녁에는 해가 져요.',NULL,1),
+(5139,'아침에는 학교에 가고 저녁에는 집에서 쉬어요.',NULL,2),
+(5140,'나무는 크고 오래 살아요.',NULL,1),
+(5140,'꽃은 작고 예쁜 빛깔로 피어요.',NULL,2),
+(5141,'우유는 하얗고 물은 투명해요.',NULL,1),
+(5141,'둘 다 몸에 꼭 필요한 마실 거리예요.',NULL,2),
+(5142,'자전거는 발로 굴리고 자동차는 기름이나 전기로 움직여요.',NULL,1),
+(5142,'자동차가 훨씬 빠르게 달려요.',NULL,2),
+(5143,'시장은 여러 가게가 모여 있어요.',NULL,1),
+(5143,'마트는 한 건물 안에서 다 살 수 있어요.',NULL,2),
+(5144,'의자는 딱딱하고 한 사람이 앉아요.',NULL,1),
+(5144,'소파는 푹신하고 여러 사람이 앉을 수 있어요.',NULL,2),
+(5145,'산은 높이 솟아 있어요.',NULL,1),
+(5145,'들은 넓고 평평해요.',NULL,2),
+(5146,'편지는 종이에 쓰고 우체국으로 보내요.',NULL,1),
+(5146,'문자는 휴대 전화로 바로 보낼 수 있어요.',NULL,2),
+(5147,'어제는 비가 왔지만 오늘은 맑아요.',NULL,1),
+(5147,'그래서 오늘은 밖에서 놀 수 있어요.',NULL,2),
+(5148,'나는 키가 크고 동생은 키가 작아요.',NULL,1),
+(5148,'우리 둘 다 웃는 얼굴이 닮았어요.',NULL,2),
+(5149,'봄에는 꽃이 피고 가을에는 단풍이 들어요.',NULL,1),
+(5149,'둘 다 날씨가 선선해서 놀기 좋아요.',NULL,2),
+(5150,'피아노는 건반을 누르고 기타는 줄을 튕겨요.',NULL,1),
+(5150,'둘 다 멋진 소리를 내는 악기예요.',NULL,2),
+(5151,'냉장고는 시원하게, 냉동실은 꽁꽁 얼려요.',NULL,1),
+(5151,'아이스크림은 냉동실에 넣어야 해요.',NULL,2),
+(5152,'미안한데 연필 한 자루만 빌려줄 수 있어?',NULL,1),
+(5152,'수업 끝나면 바로 돌려줄게.',NULL,2),
+(5153,'이 문제가 잘 안 풀려서 그러는데 같이 봐 줄래?',NULL,1),
+(5153,'어디서부터 막혔는지 보여 줄게.',NULL,2),
+(5154,'선생님, 칠판이 잘 안 보여요.',NULL,1),
+(5154,'앞자리로 옮겨도 될까요?',NULL,2),
+(5155,'죄송한데 사진 한 장만 찍어 주실 수 있나요?',NULL,1),
+(5155,'여기 버튼을 누르시면 돼요.',NULL,2);
+INSERT IGNORE INTO exercise_items (exercise_id,text_value,emoji,sort_order) VALUES
+(5156,'미안한데 조금만 작게 말해 줄 수 있어?',NULL,1),
+(5156,'책을 읽는 중이라 집중이 안 돼서 그래.',NULL,2),
+(5157,'엄마, 물 한 잔만 떠다 주실 수 있어요?',NULL,1),
+(5157,'목이 너무 말라요.',NULL,2),
+(5158,'손이 바빠서 그러는데 문 좀 열어 주세요.',NULL,1),
+(5158,'도와주셔서 고맙습니다.',NULL,2),
+(5159,'나도 같이 놀아도 돼?',NULL,1),
+(5159,'술래는 내가 먼저 할게.',NULL,2),
+(5160,'죄송합니다, 잠깐 지나가도 될까요?',NULL,1),
+(5160,'비켜 주셔서 감사합니다.',NULL,2),
+(5161,'선생님, 방금 설명을 잘 못 들었어요.',NULL,1),
+(5161,'한 번만 더 말씀해 주시겠어요?',NULL,2),
+(5162,'그 블록 나도 조금 써 봐도 될까?',NULL,1),
+(5162,'다 쓰면 깨끗하게 정리할게.',NULL,2),
+(5163,'아빠, 자기 전에 이 책 읽어 주세요.',NULL,1),
+(5163,'딱 한 권만 읽어 주시면 바로 잘게요.',NULL,2),
+(5164,'신발 끈이 풀려서 그래, 잠깐만 기다려 줘.',NULL,1),
+(5164,'금방 묶고 따라갈게.',NULL,2),
+(5165,'여행 가는 동안 우리 화분에 물 좀 줄 수 있어?',NULL,1),
+(5165,'이틀에 한 번만 주면 돼.',NULL,2),
+(5166,'가방이 너무 무거운데 같이 들어 줄 수 있어?',NULL,1),
+(5166,'계단까지만 도와주면 돼.',NULL,2),
+(5167,'우리 연락하고 지내자, 전화번호 알려 줄래?',NULL,1),
+(5167,'내 번호도 알려 줄게.',NULL,2),
+(5168,'조금만 천천히 말씀해 주실 수 있나요?',NULL,1),
+(5168,'잘 알아듣고 싶어서요.',NULL,2),
+(5169,'그 과자 하나만 먹어 봐도 될까?',NULL,1),
+(5169,'다음에는 내가 간식을 가져올게.',NULL,2),
+(5170,'교실 청소를 같이 해 줄 수 있어?',NULL,1),
+(5170,'빨리 끝내고 같이 놀자.',NULL,2),
+(5171,'비가 오는데 우산을 같이 써도 될까?',NULL,1),
+(5171,'버스 정류장까지만 같이 가자.',NULL,2),
+(5172,'제 차례가 되면 불러 주실 수 있나요?',NULL,1),
+(5172,'저쪽 의자에 앉아 있을게요.',NULL,2),
+(5173,'화장실 다녀올 동안 내 자리 좀 맡아 줄래?',NULL,1),
+(5173,'금방 돌아올게.',NULL,2),
+(5174,'이 낱말이 무슨 뜻인지 알려 주실 수 있나요?',NULL,1),
+(5174,'사전을 찾아도 잘 모르겠어요.',NULL,2),
+(5175,'이제 자려고 하는데 불 좀 꺼 주세요.',NULL,1),
+(5175,'안녕히 주무세요.',NULL,2),
+(5176,'아까 찍은 사진 나한테도 보내 줄 수 있어?',NULL,1),
+(5176,'정말 잘 나온 것 같아.',NULL,2),
+(5177,'미안하지만 그건 위험해서 안 할래.',NULL,1),
+(5177,'대신 다른 놀이를 하자.',NULL,2),
+(5178,'고마운데 지금은 배가 불러서 괜찮아.',NULL,1),
+(5178,'나중에 먹고 싶을 때 말할게.',NULL,2),
+(5179,'오늘은 일찍 들어가야 해서 안 될 것 같아.',NULL,1),
+(5179,'내일 학교 끝나고 놀자.',NULL,2),
+(5180,'베끼는 건 도움이 안 될 것 같아.',NULL,1),
+(5180,'대신 모르는 문제를 같이 풀어 보자.',NULL,2),
+(5181,'싫어요, 저는 따라가지 않을 거예요.',NULL,1),
+(5181,'부모님께 먼저 여쭤봐야 해요.',NULL,2),
+(5182,'미안해, 이건 내가 아끼는 거라서 빌려주기 어려워.',NULL,1),
+(5182,'대신 다른 걸 빌려줄게.',NULL,2),
+(5183,'오늘은 약속한 시간이 끝나서 그만할게.',NULL,1),
+(5183,'내일 다시 같이 하자.',NULL,2),
+(5184,'나는 친구를 놀리고 싶지 않아.',NULL,1),
+(5184,'놀림을 받으면 마음이 아프니까.',NULL,2),
+(5185,'줄을 서서 차례를 기다리자.',NULL,1),
+(5185,'새치기하면 다른 사람이 속상해.',NULL,2),
+(5186,'그건 친구와 약속한 비밀이라 말할 수 없어.',NULL,1),
+(5186,'네 비밀도 나는 지켜 줄 거야.',NULL,2),
+(5187,'나는 매운 걸 잘 못 먹어서 괜찮아요.',NULL,1),
+(5187,'덜 매운 음식으로 먹을게요.',NULL,2),
+(5188,'이제 잘 시간이라 내일 이야기하자.',NULL,1),
+(5188,'잘 자고 내일 학교에서 봐.',NULL,2),
+(5189,'그건 나 혼자 하기에는 너무 어려워.',NULL,1),
+(5189,'같이 나눠서 하면 좋겠어.',NULL,2),
+(5190,'마음은 정말 고마운데 너무 비싼 것 같아.',NULL,1),
+(5190,'마음만 받을게.',NULL,2),
+(5191,'쓰레기는 쓰레기통에 버리자.',NULL,1),
+(5191,'조금만 들고 가면 쓰레기통이 있어.',NULL,2),
+(5192,'지금은 수업 시간이니까 나중에 하자.',NULL,1),
+(5192,'쉬는 시간에 같이 놀자.',NULL,2),
+(5193,'부모님께 먼저 말씀드려야 해.',NULL,1),
+(5193,'허락받고 나서 같이 가자.',NULL,2),
+(5194,'고맙지만 이번에는 괜찮아요.',NULL,1),
+(5194,'다음에 한번 먹어 볼게요.',NULL,2),
+(5195,'오늘은 나도 할 일이 있어서 어려워.',NULL,1),
+(5195,'다음에 내가 바쁠 때 서로 바꿔 하자.',NULL,2),
+(5196,'거기는 위험해서 들어가면 안 돼.',NULL,1),
+(5196,'안전한 놀이터로 가자.',NULL,2),
+(5197,'이건 날짜가 지나서 먹으면 안 될 것 같아.',NULL,1),
+(5197,'배탈 날 수 있어.',NULL,2),
+(5198,'그 친구가 없는 데서 흉보고 싶지 않아.',NULL,1),
+(5198,'직접 이야기해 보는 게 좋겠어.',NULL,2),
+(5199,'미안해, 일기장은 나만 보는 거야.',NULL,1),
+(5199,'대신 그림책을 같이 보자.',NULL,2),
+(5200,'이번에는 내 차례야.',NULL,1),
+(5200,'돌아가면서 하자.',NULL,2),
+(5201,'이미 이를 닦아서 안 먹을래.',NULL,1),
+(5201,'내일 낮에 같이 먹자.',NULL,2),
+(5202,'길을 잃어버렸어요, 도와주세요.',NULL,1),
+(5202,'엄마 전화번호는 알고 있어요.',NULL,2),
+(5203,'선생님, 화장실에 다녀와도 될까요?',NULL,1),
+(5203,'금방 다녀오겠습니다.',NULL,2),
+(5204,'이 반찬 조금만 더 주실 수 있나요?',NULL,1),
+(5204,'정말 맛있어요.',NULL,2),
+(5205,'조용히 책 읽을 자리가 있을까요?',NULL,1),
+(5205,'창가 쪽이면 좋겠어요.',NULL,2),
+(5206,'풀은 어느 쪽에 있나요?',NULL,1),
+(5206,'막대 풀을 찾고 있어요.',NULL,2),
+(5207,'이 옷 한 치수 큰 걸로 있나요?',NULL,1),
+(5207,'조금 끼는 것 같아요.',NULL,2),
+(5208,'조금 어지러워서 쉬고 싶어요.',NULL,1),
+(5208,'잠깐 앉아 있어도 될까요?',NULL,2),
+(5209,'아이가 먹을 거라 맵지 않게 해 주세요.',NULL,1),
+(5209,'고춧가루는 빼 주세요.',NULL,2),
+(5210,'부모님께 전화 좀 해 주실 수 있나요?',NULL,1),
+(5210,'휴대 전화 배터리가 다 됐어요.',NULL,2),
+(5211,'다음 차례는 저인가요?',NULL,1),
+(5211,'아까부터 기다리고 있었어요.',NULL,2),
+(5212,'이 게임은 어떻게 하는 거야?',NULL,1),
+(5212,'처음이라 잘 몰라.',NULL,2),
+(5213,'가위가 하나 더 필요해요.',NULL,1),
+(5213,'친구와 같이 오리려고요.',NULL,2),
+(5214,'조금만 더 시간을 주실 수 있나요?',NULL,1),
+(5214,'마지막 문제만 남았어요.',NULL,2),
+(5215,'어제 빌려준 책을 돌려줄 수 있어?',NULL,1),
+(5215,'오늘 숙제에 필요해서 그래.',NULL,2),
+(5216,'친구와 화해하고 싶은데 어떻게 하면 좋을까요?',NULL,1),
+(5216,'용기를 내고 싶어요.',NULL,2),
+(5217,'선반 위의 공을 내려 주실 수 있나요?',NULL,1),
+(5217,'손이 닿지 않아요.',NULL,2),
+(5218,'조립하는 순서를 같이 봐 주세요.',NULL,1),
+(5218,'이 부분이 잘 안 끼워져요.',NULL,2),
+(5219,'미안한데 약속을 한 시간 늦출 수 있을까?',NULL,1),
+(5219,'병원에 다녀와야 해서 그래.',NULL,2),
+(5220,'선생님, 숙제가 몇 쪽까지인가요?',NULL,1),
+(5220,'알림장에 잘못 적은 것 같아요.',NULL,2),
+(5221,'내 그림 어때 보여?',NULL,1),
+(5221,'솔직하게 말해 줘.',NULL,2),
+(5222,'이 공책은 얼마예요?',NULL,1),
+(5222,'두 권 사면 얼마인가요?',NULL,2),
+(5223,'화장실 좀 써도 될까요?',NULL,1),
+(5223,'손 씻고 나올게요.',NULL,2),
+(5224,'이 크림빵 두 개 주세요.',NULL,1),
+(5224,'하나는 따로 포장해 주세요.',NULL,2),
+(5225,'공룡 전시관은 어디로 가면 되나요?',NULL,1),
+(5225,'지도를 봐도 잘 모르겠어요.',NULL,2),
+(5226,'아빠, 자전거 체인이 빠졌어요.',NULL,1),
+(5226,'같이 고쳐 주실 수 있어요?',NULL,2),
+(5227,'안녕, 나는 하늘이고 여덟 살이야.',NULL,1),
+(5227,'그림 그리기를 좋아하고 꿈은 화가야.',NULL,2),
+(5228,'우리 가족은 엄마, 아빠, 동생 그리고 나예요.',NULL,1),
+(5228,'주말마다 함께 공원에 가요.',NULL,2),
+(5229,'우리 동네에는 큰 공원이 있어요.',NULL,1),
+(5229,'공원 옆에 맛있는 빵집도 있어요.',NULL,2),
+(5230,'내 방에는 침대와 책상이 있어요.',NULL,1),
+(5230,'창가에 작은 화분이 놓여 있어요.',NULL,2),
+(5231,'우리 반은 모두 스물다섯 명이에요.',NULL,1),
+(5231,'서로 돕고 사이좋게 지내요.',NULL,2),
+(5232,'우리 집 강아지 이름은 콩이예요.',NULL,1),
+(5232,'산책을 아주 좋아해요.',NULL,2),
+(5233,'내 보물은 할머니가 주신 손수건이에요.',NULL,1),
+(5233,'볼 때마다 할머니가 생각나요.',NULL,2),
+(5234,'우리 학교에는 넓은 운동장이 있어요.',NULL,1),
+(5234,'도서실에는 재미있는 책이 많아요.',NULL,2),
+(5235,'내 친구 민수는 축구를 잘해요.',NULL,1),
+(5235,'어려울 때 항상 도와줘요.',NULL,2),
+(5236,'무궁화 꽃이 피었습니다는 술래가 벽을 보고 외쳐요.',NULL,1),
+(5236,'움직이다 들키면 술래에게 잡혀요.',NULL,2),
+(5237,'토스트는 빵을 노릇하게 구워요.',NULL,1),
+(5237,'그 위에 잼을 발라 먹어요.',NULL,2),
+(5238,'집에서 나와 오른쪽으로 걸어가요.',NULL,1),
+(5238,'횡단보도를 건너면 바로 학교예요.',NULL,2),
+(5239,'내 꿈은 수의사예요.',NULL,1),
+(5239,'아픈 동물을 치료해 주고 싶어요.',NULL,2),
+(5240,'내 취미는 종이접기예요.',NULL,1),
+(5240,'요즘은 공룡 접기를 연습하고 있어요.',NULL,2),
+(5241,'떡볶이는 떡과 어묵을 넣고 끓여요.',NULL,1),
+(5241,'빨간 양념이 잘 배면 완성이에요.',NULL,2),
+(5242,'나는 추석을 좋아해요.',NULL,1),
+(5242,'가족과 송편을 빚고 보름달을 봐요.',NULL,2),
+(5243,'눈썰매는 언덕 위에서 썰매를 타요.',NULL,1),
+(5243,'미끄러져 내려올 때 아주 신나요.',NULL,2),
+(5244,'우산은 비를 막아 줘요.',NULL,1),
+(5244,'햇볕이 뜨거울 때 양산으로도 써요.',NULL,2),
+(5245,'펭귄은 날지 못하는 새예요.',NULL,1),
+(5245,'대신 헤엄을 아주 잘 쳐요.',NULL,2),
+(5246,'아침에 학교에 가고 오후에는 학원에 가요.',NULL,1),
+(5246,'저녁에는 가족과 밥을 먹어요.',NULL,2),
+(5247,'발표할 때는 손을 들어요.',NULL,1),
+(5247,'선생님이 이름을 부르면 말해요.',NULL,2),
+(5248,'이번 방학에는 수영을 배울 거예요.',NULL,1),
+(5248,'책도 열 권 읽을 계획이에요.',NULL,2),
+(5249,'불이 나면 젖은 수건으로 코와 입을 막아요.',NULL,1),
+(5249,'자세를 낮추고 밖으로 나가요.',NULL,2),
+(5250,'식물은 햇볕이 드는 곳에 두어요.',NULL,1),
+(5250,'흙이 마르면 물을 주어요.',NULL,2),
+(5251,'줄넘기는 줄을 돌려서 뛰어넘어요.',NULL,1),
+(5251,'박자를 맞추면 오래 넘을 수 있어요.',NULL,2),
+(5252,'하늘을 날 수 있다면 구름 위를 걸어 보고 싶어요.',NULL,1),
+(5252,'멀리 사는 친구 집에도 날아가고 싶어요.',NULL,2),
+(5253,'우리 집 강아지와 이야기하고 싶어요.',NULL,1),
+(5253,'무엇을 좋아하는지 물어보고 싶어요.',NULL,2),
+(5254,'몰래 친구를 도와주고 싶어요.',NULL,1),
+(5254,'친구가 깜짝 놀라며 웃을 것 같아요.',NULL,2),
+(5255,'가족이 늘 건강하게 해 달라고 빌고 싶어요.',NULL,1),
+(5255,'그리고 강아지 한 마리와 큰 놀이터를 갖고 싶어요.',NULL,2),
+(5256,'밖에서 하는 과학 수업을 하고 싶어요.',NULL,1),
+(5256,'나뭇잎과 곤충을 직접 관찰하게 할 거예요.',NULL,2),
+(5257,'공룡이 살던 시대로 가고 싶어요.',NULL,1),
+(5257,'진짜 공룡을 멀리서 보고 싶어요.',NULL,2),
+(5258,'개미집 안을 구경하고 싶어요.',NULL,1),
+(5258,'개미들이 어떻게 일하는지 보고 싶어요.',NULL,2),
+(5259,'아픈 사람들을 낫게 해 주고 싶어요.',NULL,1),
+(5259,'쓰레기도 한 번에 사라지게 하고 싶어요.',NULL,2),
+(5260,'돌고래를 만나서 같이 헤엄치고 싶어요.',NULL,1),
+(5260,'산호초 사이에 숨은 물고기도 보고 싶어요.',NULL,2),
+(5261,'달에서 폴짝폴짝 뛰어 보고 싶어요.',NULL,1),
+(5261,'지구를 멀리서 사진 찍고 싶어요.',NULL,2),
+(5262,'직접 운전해서 가족과 여행을 가고 싶어요.',NULL,1),
+(5262,'맛있는 저녁도 내가 사 드리고 싶어요.',NULL,2),
+(5263,'방 정리를 도와 달라고 하고 싶어요.',NULL,1),
+(5263,'같이 축구도 하면 재미있을 것 같아요.',NULL,2),
+(5264,'아침마다 해가 뜨는 걸 바로 볼 수 있을 거예요.',NULL,1),
+(5264,'비가 오면 구름 아래를 내려다보고 싶어요.',NULL,2),
+(5265,'밤마다 무슨 꿈을 꿨는지 이야기해 줄 것 같아요.',NULL,1),
+(5265,'나는 인형에게 학교 이야기를 들려줄 거예요.',NULL,2),
+(5266,'나는 동네에 작은 빵집을 열고 싶어요.',NULL,1),
+(5266,'아침마다 갓 구운 빵 냄새가 나게 할 거예요.',NULL,2),
+(5267,'나는 독수리가 되고 싶어요.',NULL,1),
+(5267,'높은 하늘에서 세상을 내려다보고 싶어요.',NULL,2),
+(5268,'우산을 거꾸로 들고 사탕을 받을 거예요.',NULL,1),
+(5268,'친구들과 나누어 먹으면 신날 것 같아요.',NULL,2),
+(5269,'아기 돼지 삼 형제의 벽돌집에 가 보고 싶어요.',NULL,1),
+(5269,'늑대가 오면 같이 막아 줄 거예요.',NULL,2),
+(5270,'채소를 싫어하는 아이도 좋아하는 요리를 만들고 싶어요.',NULL,1),
+(5270,'당근으로 달콤한 케이크를 만들 거예요.',NULL,2),
+(5271,'소풍 가는 날에는 꼭 맑게 할 거예요.',NULL,1),
+(5271,'여름에는 가끔 시원한 소나기를 내리게 할래요.',NULL,2),
+(5272,'숙제를 같이 고민해 주는 연필을 만들고 싶어요.',NULL,1),
+(5272,'답은 알려 주지 않고 힌트만 줘요.',NULL,2),
+(5273,'해바라기와 방울토마토를 심고 싶어요.',NULL,1),
+(5273,'나비가 놀러 오게 꽃도 많이 심을래요.',NULL,2),
+(5274,'밤에 부엉이 소리를 들으며 잠들고 싶어요.',NULL,1),
+(5274,'아침에는 이슬 맺힌 풀잎을 보고 싶어요.',NULL,2),
+(5275,'공룡 등에 타고 학교에 가고 싶어요.',NULL,1),
+(5275,'친구들이 깜짝 놀라겠지요.',NULL,2),
+(5276,'반짝이는 지도 한 장이 들어 있으면 좋겠어요.',NULL,1),
+(5276,'그 지도를 따라 또 모험을 떠날 거예요.',NULL,2),
+(5277,'너는 그림을 정말 잘 그리는구나.',NULL,1),
+(5277,'색깔을 고르는 솜씨가 멋져.',NULL,2),
+(5278,'선생님, 친절하게 가르쳐 주셔서 감사합니다.',NULL,1),
+(5278,'덕분에 받아쓰기를 잘하게 되었어요.',NULL,2),
+(5279,'엄마 아빠, 항상 사랑해 주셔서 고마워요.',NULL,1),
+(5279,'저도 말 잘 듣는 아이가 될게요.',NULL,2),
+(5280,'오늘 혼자서 밥을 다 먹었구나.',NULL,1),
+(5280,'정말 잘했어.',NULL,2),
+(5281,'할머니, 김치찌개가 정말 맛있어요.',NULL,1),
+(5281,'한 그릇 더 먹고 싶어요.',NULL,2),
+(5282,'아까 넘어졌을 때 일으켜 줘서 고마워.',NULL,1),
+(5282,'너 덕분에 덜 아팠어.',NULL,2),
+(5283,'기사님, 안전하게 데려다주셔서 감사합니다.',NULL,1),
+(5283,'좋은 하루 보내세요.',NULL,2),
+(5284,'네가 청소해서 교실이 반짝반짝해졌어.',NULL,1),
+(5284,'정말 수고했어.',NULL,2),
+(5285,'발표할 때 목소리가 또렷해서 잘 들렸어.',NULL,1),
+(5285,'나도 너처럼 하고 싶어.',NULL,2),
+(5286,'아저씨, 늘 우리 동네를 지켜 주셔서 감사해요.',NULL,1),
+(5286,'추운데 감기 조심하세요.',NULL,2),
+(5287,'치료해 주셔서 감사합니다.',NULL,1),
+(5287,'이제 하나도 안 아파요.',NULL,2),
+(5288,'자리를 양보해 주셔서 감사합니다.',NULL,1),
+(5288,'덕분에 편하게 갔어요.',NULL,2),
+(5289,'선물 정말 고마워.',NULL,1),
+(5289,'소중하게 잘 쓸게.',NULL,2),
+(5290,'매일 연습하더니 줄넘기를 정말 잘하게 됐구나.',NULL,1),
+(5290,'너의 노력이 대단해.',NULL,2),
+(5291,'순서를 양보해 줘서 고마워.',NULL,1),
+(5291,'너는 정말 마음이 따뜻해.',NULL,2),
+(5292,'할머니, 맛있는 떡을 해 주셔서 감사해요.',NULL,1),
+(5292,'다음에 또 놀러 갈게요.',NULL,2),
+(5293,'소방관님, 우리를 지켜 주셔서 감사합니다.',NULL,1),
+(5293,'항상 다치지 마세요.',NULL,2),
+(5294,'오늘 입은 옷 색깔이 정말 예쁘다.',NULL,1),
+(5294,'너한테 잘 어울려.',NULL,2),
+(5295,'네 글씨는 또박또박해서 읽기 쉬워.',NULL,1),
+(5295,'나도 연습해야겠어.',NULL,2),
+(5296,'아빠, 자전거 타는 법을 가르쳐 주셔서 고마워요.',NULL,1),
+(5296,'이제 혼자서도 잘 타요.',NULL,2),
+(5297,'찾던 책을 찾아 주셔서 감사합니다.',NULL,1),
+(5297,'다 읽고 제때 돌려드릴게요.',NULL,2),
+(5298,'처음인데 무대에 올라가다니 정말 용감했어.',NULL,1),
+(5298,'떨렸을 텐데 멋있었어.',NULL,2),
+(5299,'맛있는 점심을 만들어 주셔서 감사합니다.',NULL,1),
+(5299,'오늘 반찬이 정말 맛있었어요.',NULL,2),
+(5300,'너는 항상 준비물을 잘 챙겨서 대단해.',NULL,1),
+(5300,'나한테도 빌려줘서 고마워.',NULL,2),
+(5301,'택배를 맡아 주셔서 정말 감사합니다.',NULL,1),
+(5301,'다음에 맛있는 걸 가져다 드릴게요.',NULL,2),
+(6001,'할머니가 꽃에 물을 주셨어요.',NULL,1),
+(6002,'민지가 그림을 그려 드렸어요.',NULL,1),
+(6003,'삼촌이 자전거를 고쳐 주셨어요.',NULL,1),
+(6004,'서연이와 하준이가 교실을 청소했어요.',NULL,1),
+(6005,'형이 강아지를 산책시켜요.',NULL,1),
+(6006,'수아가 지갑을 가져다주었어요.',NULL,1),
+(6007,'엄마가 김밥을 싸 주셨어요.',NULL,1),
+(6008,'다은이가 일 등을 했어요.',NULL,1),
+(6009,'누나가 책을 읽어 주었어요.',NULL,1),
+(6010,'소방관 아저씨가 고양이를 구해 주셨어요.',NULL,1),
+(6011,'이모가 편지를 보냈어요.',NULL,1),
+(6012,'아빠가 이불을 덮어 주셨어요.',NULL,1),
+(6013,'준호가 반장이 되었어요.',NULL,1),
+(6014,'동생이 컵을 깨뜨렸어요.',NULL,1),
+(6015,'할아버지가 반죽을 하셨어요.',NULL,1),
+(6016,'민수가 골을 넣었어요.',NULL,1),
+(6017,'선생님이 화분을 나눠 주셨어요.',NULL,1),
+(6018,'유나가 장갑을 찾아 주었어요.',NULL,1),
+(6019,'아빠가 설거지를 하셨어요.',NULL,1),
+(6020,'경찰관이 모셔다드렸어요.',NULL,1),
+(6021,'언니가 피아노를 연주했어요.',NULL,1),
+(6022,'아빠가 구덩이를 팠어요.',NULL,1),
+(6023,'녹색 어머니가 깃발을 들고 계셨어요.',NULL,1),
+(6024,'이모가 케이크를 사 오셨어요.',NULL,1),
+(6025,'사서 선생님이 책을 꽂고 계셨어요.',NULL,1),
+(6026,'지우가 모이를 주었어요.',NULL,1),
+(6027,'아침 일곱 시에 줄넘기를 해요.',NULL,1),
+(6028,'겨울 방학에 스키장에 갔어요.',NULL,1),
+(6029,'점심시간 종이 울렸을 때 갔어요.',NULL,1),
+(6030,'토요일 오후에 있었어요.',NULL,1),
+(6031,'어제 비가 내렸어요.',NULL,1),
+(6032,'추석날 밤에 떴어요.',NULL,1),
+(6033,'다음 주 화요일에 가요.',NULL,1),
+(6034,'새벽 다섯 시에 가세요.',NULL,1),
+(6035,'사월에 갔어요.',NULL,1),
+(6036,'잠자기 전에 이를 닦아요.',NULL,1),
+(6037,'십이월 첫날에 내렸어요.',NULL,1),
+(6038,'학교가 끝나면 가요.',NULL,1),
+(6039,'팔월에 갔어요.',NULL,1),
+(6040,'일요일 아침에 구워 주세요.',NULL,1),
+(6041,'저녁을 먹고 나서 걸어요.',NULL,1),
+(6042,'시월 둘째 주 금요일이에요.',NULL,1),
+(6043,'한여름 낮에 울어요.',NULL,1),
+(6044,'설날 아침에 드렸어요.',NULL,1),
+(6045,'점심을 먹고 나서 자요.',NULL,1),
+(6046,'매주 월요일에 쉬어요.',NULL,1),
+(6047,'시월 말에 들었어요.',NULL,1),
+(6048,'아홉 시에 시작돼요.',NULL,1),
+(6049,'크리스마스 전날 밤에 걸었어요.',NULL,1),
+(6050,'매일 아침 일곱 시 반에 울려요.',NULL,1),
+(6051,'칠월에 시작되었어요.',NULL,1),
+(6052,'이월에 있어요.',NULL,1),
+(6053,'도서관에서 숙제를 했어요.',NULL,1),
+(6054,'놀이터에서 만났어요.',NULL,1),
+(6055,'바닷가에서 주웠어요.',NULL,1),
+(6056,'버스에 두고 내렸어요.',NULL,1),
+(6057,'창가에서 낮잠을 자요.',NULL,1),
+(6058,'집 뒤 텃밭에서 기르세요.',NULL,1),
+(6059,'동네 수영장에서 배워요.',NULL,1),
+(6060,'소파 쿠션 밑에 있었어요.',NULL,1),
+(6061,'강가 캠핑장에 쳤어요.',NULL,1),
+(6062,'학교 뒤 소나무에 있어요.',NULL,1),
+(6063,'동물원에서 보았어요.',NULL,1),
+(6064,'키즈 카페에서 열렸어요.',NULL,1),
+(6065,'아파트 앞마당에서 연습해요.',NULL,1),
+(6066,'식당에 두고 왔어요.',NULL,1),
+(6067,'복도 게시판에 걸렸어요.',NULL,1),
+(6068,'학교 화단에서 발견했어요.',NULL,1),
+(6069,'시장 안의 작은 식당에서 먹었어요.',NULL,1),
+(6070,'강변 공원에서 날렸어요.',NULL,1),
+(6071,'세탁기 안에 있었어요.',NULL,1),
+(6072,'영화관에서 봤어요.',NULL,1),
+(6073,'논에서 울어요.',NULL,1),
+(6074,'학교 도서실 반납함에 넣었어요.',NULL,1),
+(6075,'마을 뒷산 언덕에서 탔어요.',NULL,1),
+(6076,'사진관에서 찍었어요.',NULL,1),
+(6077,'과학실에서 했어요.',NULL,1),
+(6078,'잔디밭에서 먹었어요.',NULL,1),
+(6079,'아빠와 함께 연을 만들었어요.',NULL,1),
+(6080,'달걀말이를 먹었어요.',NULL,1),
+(6081,'공룡 인형을 받았어요.',NULL,1),
+(6082,'두부와 콩나물을 사 오라고 하셨어요.',NULL,1),
+(6083,'찰흙으로 만들었어요.',NULL,1),
+(6084,'우산을 더 넣었어요.',NULL,1),
+(6085,'매일 일기를 썼어요.',NULL,1),
+(6086,'귤을 나누어 주셨어요.',NULL,1),
+(6087,'공기놀이를 했어요.',NULL,1),
+(6088,'강낭콩을 심었어요.',NULL,1),
+(6089,'털목도리를 떠 주셨어요.',NULL,1),
+(6090,'김치볶음밥을 만드셨어요.',NULL,1),
+(6091,'당근을 주었어요.',NULL,1),
+(6092,'필통을 잃어버렸어요.',NULL,1),
+(6093,'공원에서 체조를 하세요.',NULL,1),
+(6094,'우주에 관한 책을 빌렸어요.',NULL,1),
+(6095,'사과를 골랐어요.',NULL,1),
+(6096,'합창을 하기로 했어요.',NULL,1),
+(6097,'개구리를 접었어요.',NULL,1),
+(6098,'귤 모양 열쇠고리를 샀어요.',NULL,1),
+(6099,'과자 공장에 가서 과자 만드는 모습을 보았어요.',NULL,1),
+(6100,'붕어빵을 사 오셨어요.',NULL,1),
+(6101,'빨래를 개 달라고 부탁하셨어요.',NULL,1),
+(6102,'색종이와 풀을 가져가야 해요.',NULL,1),
+(6103,'편지를 주었어요.',NULL,1),
+(6104,'과일을 준비해 주셨어요.',NULL,1),
+(6105,'하늘에 먹구름이 잔뜩 끼었기 때문이에요.',NULL,1),
+(6106,'늦게까지 만화를 봤기 때문이에요.',NULL,1),
+(6107,'열이 나고 기침을 했기 때문이에요.',NULL,1),
+(6108,'날씨가 더워졌기 때문이에요.',NULL,1),
+(6109,'친구 발을 밟았기 때문이에요.',NULL,1),
+(6110,'흙이 바싹 말라 있었기 때문이에요.',NULL,1),
+(6111,'차가운 바람이 불어 들어왔기 때문이에요.',NULL,1),
+(6112,'받아쓰기에서 백 점을 받았기 때문이에요.',NULL,1),
+(6113,'아이스크림을 바닥에 떨어뜨렸기 때문이에요.',NULL,1),
+(6114,'내일 아침 일찍 소풍을 가기 때문이에요.',NULL,1),
+(6115,'손이 흙투성이였기 때문이에요.',NULL,1),
+(6116,'햇빛이 너무 눈부셨기 때문이에요.',NULL,1),
+(6117,'아기가 자고 있었기 때문이에요.',NULL,1),
+(6118,'버스가 오지 않아서 한참 기다렸기 때문이에요.',NULL,1),
+(6119,'다음 주가 엄마 생신이기 때문이에요.',NULL,1),
+(6120,'누군가 초인종을 눌렀기 때문이에요.',NULL,1),
+(6121,'정전이 되어서 선풍기가 꺼졌기 때문이에요.',NULL,1),
+(6122,'교실 에어컨이 고장 났기 때문이에요.',NULL,1),
+(6123,'오전 내내 운동회 연습을 했기 때문이에요.',NULL,1),
+(6124,'길에 물웅덩이가 많았기 때문이에요.',NULL,1),
+(6125,'신문 글씨가 잘 안 보이셨기 때문이에요.',NULL,1),
+(6126,'황사 때문에 공기가 흐렸기 때문이에요.',NULL,1),
+(6127,'친구가 우스꽝스러운 표정을 지었기 때문이에요.',NULL,1),
+(6128,'햇볕이 잘 들지 않았기 때문이에요.',NULL,1),
+(6129,'친구가 간식을 집에 두고 왔기 때문이에요.',NULL,1),
+(6130,'다음 주에 피아노 발표회가 있기 때문이에요.',NULL,1),
+(6131,'옷을 입었어요.',NULL,1),
+(6132,'껍질을 벗기셨어요.',NULL,1),
+(6133,'문구점에 먼저 들렀어요.',NULL,1),
+(6134,'새싹이 돋아요.',NULL,1),
+(6135,'도시락을 먹었어요.',NULL,1),
+(6136,'먼저 접수를 해요.',NULL,1),
+(6137,'우체통에 넣었어요.',NULL,1),
+(6138,'달걀을 넣었어요.',NULL,1),
+(6139,'관람차를 탔어요.',NULL,1),
+(6140,'몸을 씻어요.',NULL,1),
+(6141,'번데기가 돼요.',NULL,1),
+(6142,'이름을 썼어요.',NULL,1),
+(6143,'과일을 골랐어요.',NULL,1),
+(6144,'시작 버튼을 눌렀어요.',NULL,1),
+(6145,'큰 눈덩이를 굴렸어요.',NULL,1),
+(6146,'숙제를 했어요.',NULL,1),
+(6147,'초를 꽂았어요.',NULL,1),
+(6148,'사진을 찍었어요.',NULL,1),
+(6149,'열대 식물관에 갔어요.',NULL,1),
+(6150,'점퍼를 입었어요.',NULL,1),
+(6151,'창문을 닫았어요.',NULL,1),
+(6152,'대출을 했어요.',NULL,1),
+(6153,'치즈를 올렸어요.',NULL,1),
+(6154,'휴게소에서 쉬었어요.',NULL,1),
+(6155,'바닥을 닦았어요.',NULL,1),
+(6156,'올챙이가 태어나요.',NULL,1),
+(6157,'얼음이 녹아서 물이 되었어요.',NULL,1),
+(6158,'며칠 동안 물을 주지 않았기 때문이에요.',NULL,1),
+(6159,'길이 얼어서 미끄러웠기 때문이에요.',NULL,1),
+(6160,'찬 아이스크림을 세 개나 먹었기 때문이에요.',NULL,1),
+(6161,'쉬는 시간마다 쓰레기를 주웠기 때문이에요.',NULL,1),
+(6162,'소나기가 쏟아졌는데 우산이 없었기 때문이에요.',NULL,1),
+(6163,'내 키보다 크게 자랐어요.',NULL,1),
+(6164,'전구가 다 닳아서 꺼졌기 때문이에요.',NULL,1),
+(6165,'한 달 동안 매일 연습했기 때문이에요.',NULL,1),
+(6166,'비 오는 마당에 오래 두었기 때문이에요.',NULL,1),
+(6167,'추운 날 얇은 옷을 입고 나갔기 때문이에요.',NULL,1),
+(6168,'바람이 세게 불었기 때문이에요.',NULL,1),
+(6169,'냉장고에 넣지 않고 밖에 두었기 때문이에요.',NULL,1),
+(6170,'넘어진 친구를 보건실에 데려다주었기 때문이에요.',NULL,1),
+(6171,'사거리에서 자동차 사고가 났기 때문이에요.',NULL,1),
+(6172,'강아지가 꼬리로 물그릇을 쳤기 때문이에요.',NULL,1),
+(6173,'비가 그치고 해가 나온 뒤에 떴어요.',NULL,1),
+(6174,'바람을 계속 불어 넣었기 때문이에요.',NULL,1),
+(6175,'선생님이 손가락을 입에 대셨기 때문이에요.',NULL,1),
+(6176,'텔레비전에 정신이 팔려서 너무 오래 구웠기 때문이에요.',NULL,1),
+(6177,'바닥에 사탕을 떨어뜨렸기 때문이에요.',NULL,1),
+(6178,'용돈을 받을 때마다 저금했기 때문이에요.',NULL,1),
+(6179,'뜨거운 물로 샤워를 했기 때문이에요.',NULL,1),
+(6180,'우유를 잘 마시고 일찍 잤기 때문이에요.',NULL,1),
+(6181,'엄마가 자장가를 불러 주었기 때문이에요.',NULL,1),
+(6182,'밤새 비가 내렸기 때문이에요.',NULL,1),
+(6183,'크레파스와 도화지예요.',NULL,1),
+(6184,'놀이터에서 만나기로 했어요.',NULL,1),
+(6185,'짜장면을 먹고 싶어 해요.',NULL,1),
+(6186,'천 원이에요.',NULL,1),
+(6187,'목이 아파요.',NULL,1),
+(6188,'은행 옆에 있어요.',NULL,1),
+(6189,'우산을 챙기기로 했어요.',NULL,1),
+(6190,'그림책을 받고 싶어 해요.',NULL,1),
+(6191,'수학 숙제를 두고 왔어요.',NULL,1),
+(6192,'시장에 가셨어요.',NULL,1),
+(6193,'비가 오기 때문이에요.',NULL,1),
+(6194,'사물함 위에 있었어요.',NULL,1),
+(6195,'딸기 우유 두 개를 주문했어요.',NULL,1),
+(6196,'부산에 가요.',NULL,1),
+(6197,'발표를 잘해서 칭찬받았기 때문이에요.',NULL,1),
+(6198,'다음 버스를 타야 해요.',NULL,1),
+(6199,'다음 주 월요일까지 반납해야 해요.',NULL,1),
+(6200,'창문을 닦기로 했어요.',NULL,1),
+(6201,'고구마를 골랐어요.',NULL,1),
+(6202,'배드민턴을 좋아해요.',NULL,1),
+(6203,'까치예요.',NULL,1),
+(6204,'여섯 시 반이에요.',NULL,1),
+(6205,'자리를 양보했어요.',NULL,1),
+(6206,'하늘색이에요.',NULL,1),
+(6207,'다은이가 물을 주었어요.',NULL,1),
+(6208,'공룡이 나오는 영화예요.',NULL,1);
+INSERT IGNORE INTO exercise_items (exercise_id,text_value,emoji,sort_order) VALUES
+(6209,'밤사이에 비가 내렸을 거예요.',NULL,1),
+(6210,'동생이 과자를 먹었을 거예요.',NULL,1),
+(6211,'민수는 졸리고 피곤한 상태예요.',NULL,1),
+(6212,'수영장에 가려는 거예요.',NULL,1),
+(6213,'엄마의 생일일 거예요.',NULL,1),
+(6214,'강아지일 거예요.',NULL,1),
+(6215,'줄넘기를 하고 왔을 거예요.',NULL,1),
+(6216,'체육관에 있을 거예요.',NULL,1),
+(6217,'오랫동안 두어서 식었기 때문이에요.',NULL,1),
+(6218,'배가 고팠을 거예요.',NULL,1),
+(6219,'바닷가로 여행을 갈 거예요.',NULL,1),
+(6220,'서연이는 긴장했을 거예요.',NULL,1),
+(6221,'운동장에서 축구를 하다 왔을 거예요.',NULL,1),
+(6222,'비가 오기 시작했을 거예요.',NULL,1),
+(6223,'맛있는 빵집일 거예요.',NULL,1),
+(6224,'생일 선물일 거예요.',NULL,1),
+(6225,'장난감과 블록을 가지고 놀았을 거예요.',NULL,1),
+(6226,'해가 일찍 지는 겨울일 거예요.',NULL,1),
+(6227,'시험을 잘 봤을 거예요.',NULL,1),
+(6228,'다 자라서 날아갔을 거예요.',NULL,1),
+(6229,'딸기 케이크를 만드시려는 거예요.',NULL,1),
+(6230,'정전이 되었을 거예요.',NULL,1),
+(6231,'머리를 감았을 거예요.',NULL,1),
+(6232,'버스를 놓치지 않으려고 뛰어갔을 거예요.',NULL,1),
+(6233,'날씨가 아주 추울 거예요.',NULL,1),
+(6234,'아무도 없을 거예요.',NULL,1),
+(6235,'꿀벌이 하는 일에 대한 이야기예요.',NULL,1),
+(6236,'밥을 먹고 꼭 이를 닦아야 한다는 것이에요.',NULL,1),
+(6237,'나무가 주는 고마움을 말하고 있어요.',NULL,1),
+(6238,'줄다리기에서 이겼어요.',NULL,1),
+(6239,'양치할 때 컵을 쓰면 물을 아낄 수 있어요.',NULL,1),
+(6240,'헤엄을 아주 잘 쳐요.',NULL,1),
+(6241,'신호등을 보고 좌우를 살피며 건너야 해요.',NULL,1),
+(6242,'배추를 소금에 절인 뒤 양념을 버무려 만들어요.',NULL,1),
+(6243,'불을 끄고 위험에 빠진 사람을 구해요.',NULL,1),
+(6244,'먹이가 부족한 겨울을 견디기 위해서예요.',NULL,1),
+(6245,'다시 쓸 수 있는 물건이 많아져요.',NULL,1),
+(6246,'초승달에서 점점 커져 보름달이 돼요.',NULL,1),
+(6247,'음식을 골고루 먹어야 한다는 것이에요.',NULL,1),
+(6248,'백성들이 글을 쉽게 읽고 쓰게 하려고 만드셨어요.',NULL,1),
+(6249,'여러 마리가 힘을 합쳐 옮겨요.',NULL,1),
+(6250,'도서관에서는 조용히 해야 해요.',NULL,1),
+(6251,'몸이 자라고 기억력이 좋아져요.',NULL,1),
+(6252,'네 계절이 있어요.',NULL,1),
+(6253,'감기를 막을 수 있어요.',NULL,1),
+(6254,'바람을 타고 멀리 날아가요.',NULL,1),
+(6255,'뜨거운 용암이 흘러내려요.',NULL,1),
+(6256,'떡국을 먹어요.',NULL,1),
+(6257,'물 위로 올라와요.',NULL,1),
+(6258,'서로 양보하는 것이에요.',NULL,1),
+(6259,'비가 내려요.',NULL,1),
+(6260,'몸을 받쳐 주고 기관을 보호해요.',NULL,1);

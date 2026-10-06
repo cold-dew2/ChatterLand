@@ -13,6 +13,7 @@ export function mapExercise(exercise: Row, fallbackColor = 'var(--brand-primary)
     color: String(exercise.color ?? fallbackColor),
     instruction: String(exercise.instruction ?? '화면을 보고 따라 말해보세요.'),
     inputType: exercise.inputType === 'read' || exercise.inputType === 'speak' ? exercise.inputType : 'mic',
+    ...(exercise.categoryId == null ? {} : { categoryId: String(exercise.categoryId) }),
     items: entries.map((entry, index) => {
       const value = entry && typeof entry === 'object' ? entry as Row : { word: entry }
       return { id: String(value.itemId ?? `${exerciseId}-${index}`), word: String(value.word ?? value.text ?? ''), emoji: String(value.emoji ?? '') }

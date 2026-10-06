@@ -141,6 +141,13 @@ public class StudentServiceImpl implements StudentService {
         return PageResponse.of(rows,mapper.countExercises(categoryId),p);
     }
 
+    @Override public PageResponse<Map<String,Object>> practicedExercises(TokenPrincipal principal,String categoryId,int page,int size) {
+        long studentId=studentId(principal); PageResponse.Window p=PageResponse.window(page,size);
+        List<Map<String,Object>> rows=mapper.findPracticedExercises(studentId,categoryId,p.size(),p.offset());
+        for(Map<String,Object> exercise:rows) attachItems(exercise);
+        return PageResponse.of(rows,mapper.countPracticedExercises(studentId,categoryId),p);
+    }
+
     @Override @Transactional public Map<String,Object> saveAttempt(TokenPrincipal principal,AttemptRequest request) {
         long studentId=studentId(principal); long exerciseId=parseId(request.exerciseId());
         if(mapper.findExercise(exerciseId)==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"연습 문제를 찾을 수 없습니다.");

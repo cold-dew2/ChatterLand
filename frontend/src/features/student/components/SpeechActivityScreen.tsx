@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { CheckCircle, RotateCcw } from "lucide-react";
+import { CheckCircle, ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
 import { studentApi } from "@/features/student/api/studentApi";
 import { useAudioRecorder } from "@/features/student/hooks/useAudioRecorder";
 import { isConsentRequired } from "@/features/student/utils/speechErrors";
@@ -44,8 +44,32 @@ export function averageMatchRate(items: ItemResult[]) {
   return rates.length ? Math.round(rates.reduce((sum, rate) => sum + rate, 0) / rates.length) : null;
 }
 
-export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onBack, onOpenConsent, homeworkId, lessonSessionId }: {
+/** 연습 흐름의 이전/다음 세트 이동(뒤로 가기와 별개). 없으면 그 방향 버튼이 비활성이다. */
+export type PracticeNavigation = { onPrev?: () => void; onNext?: () => void };
+
+function PracticeNavBar({ navigation, disabled }: { navigation: PracticeNavigation; disabled: boolean }) {
+  return (
+    <nav aria-label="연습 세트 이동" className="flex shrink-0 items-center justify-between gap-3 px-5 pt-1 pb-6">
+      <Button variant="line" onClick={navigation.onPrev} disabled={disabled || !navigation.onPrev} aria-label="이전 문제" className="min-w-[7.5rem]">
+        <ChevronLeft size={18} aria-hidden="true" />이전
+      </Button>
+      <Button variant="line" onClick={navigation.onNext} disabled={disabled || !navigation.onNext} aria-label="다음 문제" className="min-w-[7.5rem]">
+        다음<ChevronRight size={18} aria-hidden="true" />
+      </Button>
+    </nav>
+  );
+}
+
+export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onBack, onOpenConsent, homeworkId, lessonSessionId, subtitle, backLabel, completeLabel, navigation }: {
   exercises: Exercise[]; exIdx: number; onComplete: (result: ExerciseResult) => void; onBack: () => void; onOpenConsent: () => void;
+  /** 머리글 보조 문구(기본: 활동 n/전체). 영역 연속 연습에서는 진행률을 넣는다 */
+  subtitle?: string;
+  /** 뒤로 가기 버튼 이름(기본: 뒤로 가기). 뒤로 가기는 연습을 끝내고 직전 화면으로 돌아간다 */
+  backLabel?: string;
+  /** 세트를 마친 뒤 넘어가는 버튼 문구(기본: 다음 활동/결과 보기) */
+  completeLabel?: string;
+  /** 영역 연속 연습의 이전/다음 세트 이동. 주면 화면 아래에 이전·다음 버튼을 둔다 */
+  navigation?: PracticeNavigation;
   /** 숙제로 하는 연습이면 숙제 ID(기록이 숙제 연습으로 저장된다). 없으면 자율 연습 */
   homeworkId?: number;
   /** 수업(세션)에서 하는 연습이면 수업 ID(수업 연습 LESSON으로 저장). 숙제도 수업도 아니면 자율 연습 SELF */
@@ -61,21 +85,26 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
   const [consentNeeded, setConsentNeeded] = useState(false);
   const [itemResults, setItemResults] = useState<ItemResult[]>([]);
   const [finished, setFinished] = useState(false);
+  const [answerShown, setAnswerShown] = useState(false);
   const busyRef = useRef(false);
   // 녹음 한 개당 요청 키 하나. 같은 녹음의 재시도(다시 분석하기·응답 유실)는 같은 키로 보내 서버가 한 번만 분석한다.
   const requestKeyRef = useRef<{ recording: Blob; key: string } | null>(null);
 
   if (!exercise || exercise.items.length === 0) {
     return (
-      <div className="min-h-screen">
-        <PageHeader title={exercise?.label ?? "말하기 연습"} onBack={onBack} />
-        <div className="px-5 py-6"><EmptyState title="연습할 문항이 없어요" description="선생님이 문항을 등록하면 연습할 수 있어요." icon={<Mascot size={64} />} /></div>
+      <div className="flex min-h-screen flex-col">
+        <PageHeader title={exercise?.label ?? "말하기 연습"} subtitle={subtitle} onBack={onBack} backLabel={backLabel} />
+        <div className="flex-1 px-5 py-6"><EmptyState title="연습할 문항이 없어요" description="선생님이 문항을 등록하면 연습할 수 있어요." icon={<Mascot size={64} />} /></div>
+        {navigation && <PracticeNavBar navigation={navigation} disabled={false} />}
       </div>
     );
   }
 
   const total = exercise.items.length;
   const item = exercise.items[itemIdx];
+  const headerSubtitle = subtitle ?? `활동 ${exIdx + 1}/${exercises.length}`;
+  // 이해력: 이야기·질문을 보여 주고, 모범 답은 학생이 먼저 말해 본 뒤 열어 볼 수 있게 가린다.
+  const comprehension = exercise.categoryId === "comprehension";
   const busy = phase === "converting" || phase === "analyzing" || saveState === "saving";
 
   const saveAttempt = async (result: SpeechAnalysis) => {
@@ -122,6 +151,7 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
     setAnalysis(null);
     setAnalysisError("");
     setSaveState("idle");
+    setAnswerShown(false);
   };
 
   const handleNext = () => {
@@ -145,7 +175,7 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
     const unsaved = itemResults.filter((result) => !result.saved).length;
     return (
       <div className="flex min-h-screen flex-col">
-        <PageHeader title={exercise.label} subtitle={`활동 ${exIdx + 1}/${exercises.length}`} onBack={onBack} />
+        <PageHeader title={exercise.label} subtitle={headerSubtitle} onBack={onBack} backLabel={backLabel} />
         <div className="flex flex-1 flex-col items-center justify-center gap-5 px-5 py-6">
           <span className="flex h-[84px] w-[84px] items-center justify-center rounded-full bg-[var(--meadow-100)]" aria-hidden="true">
             <CheckCircle size={40} className="text-[var(--meadow-700)]" />
@@ -170,9 +200,10 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
         </div>
         <div className="shrink-0 px-5 pt-3 pb-8">
           <Button size="lg" fullWidth onClick={() => onComplete({ exerciseId: exercise.id, label: exercise.label, items: itemResults })}>
-            {exIdx < exercises.length - 1 ? "다음 활동" : "결과 보기"}
+            {completeLabel ?? (exIdx < exercises.length - 1 ? "다음 활동" : "결과 보기")}
           </Button>
         </div>
+        {navigation && <PracticeNavBar navigation={navigation} disabled={false} />}
       </div>
     );
   }
@@ -182,19 +213,34 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
   const longText = item.word.length > 6;
   return (
     <div className="flex min-h-screen flex-col">
-      <PageHeader title={exercise.label} subtitle={`활동 ${exIdx + 1}/${exercises.length}`} onBack={onBack}
+      <PageHeader title={exercise.label} subtitle={headerSubtitle} onBack={onBack} backLabel={backLabel}
         action={<Badge tone="neutral" className="px-3 py-1 text-[13px] font-bold">{itemIdx + 1}/{total}</Badge>} />
       <div className="px-5"><ProgressBar value={(itemIdx / total) * 100} label={`문항 진행률 ${itemIdx}/${total}`} size="md" /></div>
 
       <div className="flex flex-1 flex-col items-center gap-4 px-5 pt-5 pb-8">
-        <p className="text-center text-[15px] leading-relaxed text-[var(--ink-600)]">{exercise.instruction}</p>
+        {/* 안내문: 여러 줄(뜻·질문·이야기)이면 줄을 살려 왼쪽 정렬 카드로 보여 준다 */}
+        {exercise.instruction.includes("\n") ? (
+          <Card tone={comprehension ? "sky" : "butter"} padding="md" className="w-full whitespace-pre-line text-[15px] leading-relaxed text-[var(--ink-800)]">
+            {exercise.instruction}
+          </Card>
+        ) : (
+          <p className="text-center text-[15px] leading-relaxed text-[var(--ink-600)]">{exercise.instruction}</p>
+        )}
         {/* 문항 그림과 목표 낱말·문장 */}
-        <div className={`flex w-full flex-col items-center gap-3 rounded-[var(--radius-sheet)] border border-[var(--line-soft)] bg-white text-center shadow-[var(--shadow-card-lg)] ${compact ? "px-5 py-5" : "px-5 pt-6 pb-7"}`}>
-          {item.emoji && (
-            <div className={`flex items-center justify-center rounded-[var(--radius-card-lg)] bg-[repeating-linear-gradient(135deg,var(--butter-50)_0_10px,var(--butter-100)_10px_20px)] ${compact ? "h-[110px] w-[110px] text-6xl" : "h-[150px] w-[150px] text-7xl"}`} aria-hidden="true">{item.emoji}</div>
-          )}
-          <p className={`break-keep font-display leading-[1.15] tracking-[-0.02em] text-[var(--ink-900)] ${longText ? "text-[30px]" : compact ? "text-[44px]" : "text-[52px]"}`}>{item.word}</p>
-        </div>
+        {comprehension && !answerShown && phase !== "done" ? (
+          <div className="flex w-full flex-col items-center gap-2 rounded-[var(--radius-sheet)] border border-dashed border-[var(--line-control)] bg-white/70 px-5 py-5 text-center">
+            <p className="text-[15px] font-semibold text-[var(--ink-800)]">질문에 대한 내 대답을 말해 보세요.</p>
+            <Button variant="line" size="sm" onClick={() => setAnswerShown(true)} aria-expanded={false}>모범 답 보기</Button>
+          </div>
+        ) : (
+          <div className={`flex w-full flex-col items-center gap-3 rounded-[var(--radius-sheet)] border border-[var(--line-soft)] bg-white text-center shadow-[var(--shadow-card-lg)] ${compact ? "px-5 py-5" : "px-5 pt-6 pb-7"}`}>
+            {comprehension && <p className="text-xs font-semibold text-[var(--sky-800)]">모범 답</p>}
+            {item.emoji && (
+              <div className={`flex items-center justify-center rounded-[var(--radius-card-lg)] bg-[repeating-linear-gradient(135deg,var(--butter-50)_0_10px,var(--butter-100)_10px_20px)] ${compact ? "h-[110px] w-[110px] text-6xl" : "h-[150px] w-[150px] text-7xl"}`} aria-hidden="true">{item.emoji}</div>
+            )}
+            <p className={`break-keep font-display leading-[1.15] tracking-[-0.02em] text-[var(--ink-900)] ${longText ? "text-[30px]" : compact ? "text-[44px]" : "text-[52px]"}`}>{item.word}</p>
+          </div>
+        )}
 
         <div className="mt-auto flex w-full flex-col items-center gap-3 pt-2">
           {(phase === "none" || phase === "failed") && recorder.status !== "recorded" && (
@@ -249,6 +295,8 @@ export default function SpeechActivityScreen({ exercises, exIdx, onComplete, onB
         {analysisError && <Notice tone="error" className="w-full text-center">{analysisError}</Notice>}
         {consentNeeded && <Button variant="secondary" fullWidth onClick={onOpenConsent}>마이페이지에서 동의 관리하기</Button>}
       </div>
+      {/* 녹음·분석 중에는 다른 세트로 옮기지 않는다(진행 중인 분석·저장을 잃지 않게) */}
+      {navigation && <PracticeNavBar navigation={navigation} disabled={busy || recording || recorder.status === "requesting"} />}
     </div>
   );
 }

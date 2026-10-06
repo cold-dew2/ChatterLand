@@ -33,7 +33,7 @@ export default function PracticeTypeScreen({ onSelect, onBack }: {
           icon={<span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[30px] bg-[var(--meadow-100)] text-[var(--meadow-800)]" aria-hidden="true"><Search size={28} /></span>} />
         <TypeCard onClick={() => onSelect("ai")} title="AI 대화하기" description="AI 로봇과 대화를 연습해요"
           icon={<Mascot size={64} />} />
-        <TypeCard onClick={() => onSelect("word")} title="단어 말하기" description="그림을 보고 단어를 말해요"
+        <TypeCard onClick={() => onSelect("word")} title="단어 말하기" description="발음·어휘력·유창성·표현력·이해력을 영역별로 연습해요"
           icon={<span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[30px] bg-[var(--coral-100)] text-[var(--coral-600)]" aria-hidden="true"><Apple size={30} /></span>} />
       </div>
     </div>

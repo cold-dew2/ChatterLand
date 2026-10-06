@@ -24,6 +24,9 @@ public interface StudentMapper {
     List<Map<String,Object>> findCategories();
     List<Map<String,Object>> findExercises(@Param("categoryId") String categoryId, @Param("limit") int limit, @Param("offset") int offset);
     long countExercises(@Param("categoryId") String categoryId);
+    List<Map<String,Object>> findPracticedExercises(@Param("studentId") long studentId, @Param("categoryId") String categoryId,
+            @Param("limit") int limit, @Param("offset") int offset);
+    long countPracticedExercises(@Param("studentId") long studentId, @Param("categoryId") String categoryId);
     Map<String,Object> findExercise(@Param("exerciseId") long exerciseId);
     List<Map<String,Object>> findExerciseItems(@Param("exerciseId") long exerciseId);
     Map<String,Object> findExerciseItem(@Param("exerciseId") long exerciseId, @Param("itemId") long itemId);

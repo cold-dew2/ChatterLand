@@ -11,6 +11,7 @@ import PracticeBrowseScreen, { asPracticeCategory } from "@/features/student/com
 import PracticeCategoryScreen from "@/features/student/components/PracticeCategoryScreen";
 import PracticeListScreen from "@/features/student/components/PracticeListScreen";
 import PracticeResultScreen from "@/features/student/components/PracticeResultScreen";
+import PracticeRunScreen from "@/features/student/components/PracticeRunScreen";
 import PracticeTypeScreen from "@/features/student/components/PracticeTypeScreen";
 import SessionExercisesScreen from "@/features/student/components/SessionExercisesScreen";
 import SessionListScreen from "@/features/student/components/SessionListScreen";
@@ -128,16 +129,29 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
       onSelect={(cat) => setScreen({ kind: "practice-cat", category: cat })} />;
   }
   if (screen.kind === "practice-cat") {
-    return <PracticeCategoryScreen category={screen.category}
+    return <PracticeCategoryScreen key={screen.category.id} category={screen.category} focusIndex={screen.focusIndex}
       onBack={() => setScreen({ kind: "practice-list" })}
-      onSelect={(i, exercises) => setScreen({ kind: "practice-activity", category: { ...screen.category, exercises }, exIdx: i, results: [] })} />;
+      onStart={(mode, index, order) => setScreen({ kind: "practice-run", category: screen.category, mode, index, order, results: [] })} />;
+  }
+  if (screen.kind === "practice-run") {
+    const run = screen;
+    // 뒤로 가기: 흐름을 끝내고 영역 화면으로(전체 순서 연습이면 보던 위치를 목록에서 보여 준다). 이전 세트로 가지 않는다.
+    const exitRun = () => setScreen({ kind: "practice-cat", category: run.category, focusIndex: run.mode === "sequential" ? run.index : undefined });
+    return <PracticeRunScreen category={run.category} mode={run.mode} index={run.index} order={run.order}
+      onIndexChange={(index) => setScreen({ ...run, index })}
+      onExit={exitRun}
+      onOpenConsent={() => setScreen({ kind: "tabs", tab: "mypage" })}
+      onComplete={(result, last) => {
+        const results = [...run.results, result];
+        setScreen(last ? { kind: "practice-result", category: run.category, results } : { ...run, index: run.index + 1, results });
+      }} />;
   }
   if (screen.kind === "practice-activity") {
     const { category, exIdx, results, origin, homeworkId } = screen;
     const backToStart = () => origin === "browse" ? setScreen({ kind: "practice-browse" }) : origin === "homework" ? setScreen({ kind: "homework-list" }) : setScreen({ kind: "practice-cat", category });
     return <SpeechActivityScreen key={`${category.id}-${exIdx}`} onOpenConsent={() => setScreen({ kind: "tabs", tab: "mypage" })} exercises={category.exercises} exIdx={exIdx}
       homeworkId={homeworkId}
-      onBack={() => exIdx === 0 ? backToStart() : setScreen({ kind: "practice-activity", category, exIdx: exIdx - 1, results: results.slice(0, -1), origin, homeworkId })}
+      onBack={backToStart}
       onComplete={(result) => handleActivityComplete(category.exercises, null, category, origin, homeworkId)(exIdx, results, result)} />;
   }
   if (screen.kind === "practice-result") {
@@ -163,7 +177,7 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
     const { session, exIdx, results } = screen;
     return <SpeechActivityScreen key={`${session.id}-${exIdx}`} onOpenConsent={() => setScreen({ kind: "tabs", tab: "mypage" })} exercises={session.exercises} exIdx={exIdx}
       lessonSessionId={session.id}
-      onBack={() => exIdx === 0 ? setScreen({ kind: "session-exercises", session }) : setScreen({ kind: "activity", session, exIdx: exIdx - 1, results: results.slice(0, -1) })}
+      onBack={() => setScreen({ kind: "session-exercises", session })}
       onComplete={(result) => handleActivityComplete(session.exercises, session, null)(exIdx, results, result)} />;
   }
   if (screen.kind === "session-result") {

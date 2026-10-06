@@ -36,7 +36,7 @@ export const teacherApi = {
   speechAnalyses: (studentId: number, reviewStatus?: string, page = 0, size = 10) => apiClient.get<{ content: TeacherSpeechAnalysis[]; totalPages: number; totalElements: number }>(`/api/v1/teachers/me/students/${studentId}/speech-analyses${queryString({ reviewStatus, page, size })}`),
   speechAnalysisAudio: (analysisId: string) => apiClient.get<Blob>(`/api/v1/teachers/me/speech-analyses/${encodeURIComponent(analysisId)}/audio`),
   /** 연습 콘텐츠 검색(숙제로 낼 연습 세트 고르기) */
-  practiceContents: (params: { keyword?: string; rule?: string; difficulty?: string; contentType?: string; page?: number; size?: number }) =>
+  practiceContents: (params: { keyword?: string; categoryId?: string; rule?: string; difficulty?: string; contentType?: string; page?: number; size?: number }) =>
     apiClient.get<{ content: Record<string, unknown>[]; totalElements: number }>(`/api/v1/practice-contents${queryString({ ...params })}`),
   /** 담당 학생의 연습 기록(type: SELF 자율·LESSON 수업·HOMEWORK 숙제·PRACTICE 이전 기록) */
   studentAttempts: (studentId: number, type?: 'SELF' | 'LESSON' | 'HOMEWORK' | 'PRACTICE', page = 0, size = 20) =>

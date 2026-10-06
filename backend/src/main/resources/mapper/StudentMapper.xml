@@ -66,11 +66,25 @@
     FROM practice_categories WHERE active=TRUE ORDER BY sort_order
   </select>
   <select id="findExercises" resultType="map">
-    SELECT exercise_id AS id,exercise_id AS exerciseId,title,title AS label,instruction,input_type AS inputType,c.color
+    SELECT exercise_id AS id,exercise_id AS exerciseId,title,title AS label,instruction,input_type AS inputType,c.color,e.category_id AS categoryId
     FROM exercises e JOIN practice_categories c ON c.category_id=e.category_id
-    WHERE e.category_id=#{categoryId} AND e.active=TRUE ORDER BY e.sort_order LIMIT #{limit} OFFSET #{offset}
+    WHERE e.category_id=#{categoryId} AND e.active=TRUE ORDER BY e.sort_order,e.exercise_id LIMIT #{limit} OFFSET #{offset}
   </select>
   <select id="countExercises" resultType="long">SELECT COUNT(*) FROM exercises WHERE category_id=#{categoryId} AND active=TRUE</select>
+  <!-- 다시 연습: 학생이 이 영역에서 연습한 적 있는 세트(세트당 한 줄, 최근 연습 순). 기록은 읽기만 한다. -->
+  <select id="findPracticedExercises" resultType="map">
+    SELECT e.exercise_id AS id,e.exercise_id AS exerciseId,e.title,e.title AS label,e.instruction,e.input_type AS inputType,c.color,
+      e.category_id AS categoryId,p.attemptCount,DATE_FORMAT(p.lastPracticedAt,'%Y-%m-%d %H:%i') AS lastPracticedAt
+    FROM (SELECT exercise_id,COUNT(*) AS attemptCount,MAX(created_at) AS lastPracticedAt FROM practice_attempts
+          WHERE student_id=#{studentId} GROUP BY exercise_id) p
+    JOIN exercises e ON e.exercise_id=p.exercise_id JOIN practice_categories c ON c.category_id=e.category_id
+    WHERE e.category_id=#{categoryId} AND e.active=TRUE
+    ORDER BY p.lastPracticedAt DESC,e.exercise_id LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="countPracticedExercises" resultType="long">
+    SELECT COUNT(DISTINCT pa.exercise_id) FROM practice_attempts pa JOIN exercises e ON e.exercise_id=pa.exercise_id
+    WHERE pa.student_id=#{studentId} AND e.category_id=#{categoryId} AND e.active=TRUE
+  </select>
   <select id="findExercise" resultType="map">
     SELECT exercise_id AS exerciseId,category_id AS categoryId,title,instruction,input_type AS inputType,target_phonemes AS targetPhonemes
     FROM exercises WHERE exercise_id=#{exerciseId} AND active=TRUE

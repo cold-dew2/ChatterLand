@@ -7,6 +7,8 @@ export type Exercise = {
   instruction: string
   items: ExerciseItem[]
   inputType: 'mic' | 'read' | 'speak'
+  /** 연습 영역(articulation·vocabulary·fluency·expression·comprehension). 영역 목록에서 받은 세트에만 있다 */
+  categoryId?: string
 }
 
 export type Session = { id: string; title: string; date: string; done: boolean; exercises: Exercise[] }
@@ -16,6 +18,8 @@ export type Homework = { id: number; title: string; type: string; description: s
   exerciseId?: number | null; exerciseTitle?: string | null; attemptCount?: number }
 
 export type PracticeCategory = { id: string; label: string; color: string; desc: string; exercises: Exercise[] }
+
+export type PracticeRunMode = 'sequential' | 'random' | 'retry'
 
 export type EvaluationMode = 'SENTENCE_MATCH' | 'PRONUNCIATION_REVIEW' | 'EXTERNAL_PROVIDER'
 
@@ -183,7 +187,13 @@ export type AppScreen =
   | { kind: "tabs"; tab: "home" | "history" | "mypage" }
   | { kind: "practice-type" }
   | { kind: "practice-list" }
-  | { kind: "practice-cat"; category: PracticeCategory }
+  /** focusIndex: 연속 연습에서 돌아왔을 때 목록에서 보여 줄 위치(전체 순서 기준) */
+  | { kind: "practice-cat"; category: PracticeCategory; focusIndex?: number }
+  /**
+   * 영역 연습 흐름. sequential: 영역 전체를 순서대로, random: 시작할 때 정한 무작위 순서(order: 전체 순서의 위치 목록),
+   * retry: 이 영역에서 연습했던 세트(최근 연습 순). index는 이 흐름 안의 위치이고, 이전/다음 버튼만 바꾼다.
+   */
+  | { kind: "practice-run"; category: PracticeCategory; mode: PracticeRunMode; index: number; order?: number[]; results: ExerciseResult[] }
   /** origin: 전체 연습 찾기(browse)·숙제(homework)에서 시작했으면 뒤로 가기가 그 화면으로 간다. homeworkId가 있으면 숙제 연습으로 저장 */
   | { kind: "practice-activity"; category: PracticeCategory; exIdx: number; results: ExerciseResult[]; origin?: "browse" | "homework"; homeworkId?: number }
   | { kind: "practice-browse" }

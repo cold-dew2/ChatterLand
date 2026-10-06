@@ -12,6 +12,9 @@ export const contentTypeLabel: Record<ContentType, string> = { WORD: '낱말', S
 export type AttemptType = 'SELF' | 'LESSON' | 'HOMEWORK' | 'PRACTICE'
 export const attemptTypeLabel: Record<AttemptType, string> = { SELF: '자율 연습', LESSON: '수업 연습', HOMEWORK: '숙제 연습', PRACTICE: '이전 기록' }
 
+/** 연습 영역(practice_categories.category_id) 표시 이름. 서버 목록을 쓸 수 없는 선생님 화면의 검색 필터에서 쓴다 */
+export const practiceCategoryLabel: Record<string, string> = { articulation: '발음', vocabulary: '어휘력', fluency: '유창성', expression: '표현력', comprehension: '이해력' }
+export const practiceCategoryOptions = Object.entries(practiceCategoryLabel).map(([value, label]) => ({ value, label }))
 export const ruleOptions = Object.entries(ruleLabel).map(([value, label]) => ({ value, label }))
 export const difficultyOptions = Object.entries(difficultyLabel).map(([value, label]) => ({ value, label }))
 export const contentTypeOptions = Object.entries(contentTypeLabel).map(([value, label]) => ({ value, label }))

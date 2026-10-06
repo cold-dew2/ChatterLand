@@ -589,3 +589,7 @@ PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_st
 SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='practice_attempts' AND COLUMN_NAME='attempt_type' AND COLUMN_TYPE LIKE '%''LESSON''%')=0,
   'ALTER TABLE practice_attempts MODIFY attempt_type ENUM(''PRACTICE'',''HOMEWORK'',''AI_CHAT'',''SELF'',''LESSON'') NOT NULL DEFAULT ''PRACTICE''', 'SELECT 1');
 PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+
+-- ── 연습 영역 표시 이름: '어휘' → '어휘력'(발음·어휘력·유창성·표현력·이해력) ──────────────
+-- category_id(vocabulary)는 그대로 두고, 운영자가 이미 다른 이름으로 바꾼 경우에는 건드리지 않는다.
+UPDATE practice_categories SET name='어휘력' WHERE category_id='vocabulary' AND name='어휘';
