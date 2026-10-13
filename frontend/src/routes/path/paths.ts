@@ -11,6 +11,13 @@ export const paths = {
     sessions: '/student/sessions',
     history: '/student/history',
     myPage: '/student/mypage',
+    myProfile: '/student/mypage/profile',
+    myConsents: '/student/mypage/consents',
+    myGuardians: '/student/mypage/guardians',
+  },
+  guardian: {
+    home: '/guardian',
+    child: '/guardian/children',
   },
   teacher: {
     home: '/teacher',

@@ -26,6 +26,13 @@ describe('apiClient', () => {
     await expect(apiClient.get('/api/v1/centers')).rejects.toMatchObject({ status: 0, code: 'NETWORK_ERROR' })
   })
 
+  it('reports a body read cut off mid-response (e.g. navigating away) as NETWORK_ERROR, not a generic error', async () => {
+    const aborted = json(200, { userId: 1 })
+    vi.spyOn(aborted, 'json').mockRejectedValue(new TypeError('Failed to fetch'))
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(aborted))
+    await expect(apiClient.get('/api/v1/auth/me')).rejects.toMatchObject({ status: 0, code: 'NETWORK_ERROR' })
+  })
+
   it('refreshes once on 401 and retries with the new token', async () => {
     window.sessionStorage.setItem('chatterland.accessToken', 'old')
     window.sessionStorage.setItem('chatterland.refreshToken', 'refresh-1')

@@ -8,6 +8,7 @@ import { isConsentRequired } from "@/features/student/utils/speechErrors";
 import { toWav16k } from "@/features/student/utils/wavEncoder";
 import { aiConversationTopics } from "@/features/student/utils/aiTopics";
 import RecordButton from "@/features/student/components/RecordButton";
+import type { PracticeTarget } from "@/features/student/components/RecommendationSection";
 import { errorMessage } from "@/shared/api/client";
 import Badge from "@/shared/components/badge/Badge";
 import Button from "@/shared/components/button/Button";
@@ -17,6 +18,35 @@ import Mascot from "@/shared/components/mascot/Mascot";
 import PageHeader from "@/shared/components/pageHeader/PageHeader";
 
 type ChatMsg = { role: "ai" | "user"; text: string };
+/** 대화 낱말·주제와 연결된 실제 활성 연습 콘텐츠(서버가 DB에서 찾음) */
+type RelatedContent = PracticeTarget & { keyword: string; reason: string };
+type Summary = { summary: string; studentTurns: number; relatedContents: RelatedContent[]; nextActivities: { type: string; label: string }[] };
+
+function mapRelated(value: unknown): RelatedContent[] {
+  return (Array.isArray(value) ? value as Record<string, unknown>[] : []).map((row) => ({
+    exerciseId: Number(row.exerciseId), title: String(row.title ?? ""), categoryId: String(row.categoryId ?? ""), categoryName: String(row.categoryName ?? ""),
+    color: String(row.color ?? "var(--brand-primary)"), keyword: String(row.keyword ?? ""), reason: String(row.reason ?? ""),
+  }));
+}
+
+function RelatedList({ items, onPractice }: { items: RelatedContent[]; onPractice: (item: RelatedContent) => void }) {
+  return (
+    <ul className="space-y-2" aria-label="대화와 관련된 연습">
+      {items.map((item) => (
+        <li key={item.exerciseId}>
+          <button type="button" onClick={() => onPractice(item)} aria-label={`${item.title} 연습하기, ${item.reason}`}
+            className="flex min-h-12 w-full items-center gap-2 rounded-[var(--radius-lg)] border border-[var(--line-soft)] bg-white px-3 py-2 text-left hover:border-[var(--meadow-200)]">
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-bold text-[var(--ink-900)]">{item.title}</span>
+              <span className="block truncate text-xs text-[var(--ink-600)]">{item.categoryName} · {item.reason}</span>
+            </span>
+            <span className="shrink-0 text-xs font-semibold text-[var(--brand-primary)]">연습하기</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
 function useTimer() {
   const [seconds, setSeconds] = useState(0);
   const ref = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -29,7 +59,18 @@ function useTimer() {
   return `${mm}:${ss}`;
 }
 
-export default function AiChatScreen({ onBack, topic, onOpenConsent }: { onBack: () => void; topic: string; onOpenConsent: () => void }) {
+/**
+ * AI 대화 학습. 주제를 고르면 AI가 학생 말에 이어 후속 질문을 하고(어려워하면 더 쉽게 다시 설명),
+ * 대화에 나온 낱말로 실제 연습 콘텐츠를 이어 주며, 끝낼 때 실제 대화로 만든 요약과 다음 활동을 보여 준다.
+ * AI는 발음을 평가하지 않는다. AI가 실패하면 요약·메시지를 저장하지 않고 다시 시도할 수 있다.
+ */
+export default function AiChatScreen({ onBack, topic, onOpenConsent, onPractice, onNewTopic }: {
+  onBack: () => void; topic: string; onOpenConsent: () => void;
+  /** 관련 연습 콘텐츠를 기존 연습 흐름으로 연다 */
+  onPractice?: (item: PracticeTarget) => void;
+  /** 다른 주제 고르기 */
+  onNewTopic?: () => void;
+}) {
   const timer = useTimer();
   const starter = aiConversationTopics.find((item) => item.label === topic)?.starter ?? "안녕! 오늘은 어떤 이야기를 나눠볼까요?";
   const [messages, setMessages] = useState<ChatMsg[]>([{ role: "ai", text: starter }]);
@@ -38,6 +79,11 @@ export default function AiChatScreen({ onBack, topic, onOpenConsent }: { onBack:
   const [messageText, setMessageText] = useState("");
   const [chatError, setChatError] = useState("");
   const [consentNeeded, setConsentNeeded] = useState(false);
+  const [related, setRelated] = useState<RelatedContent[]>([]);
+  const [relatedError, setRelatedError] = useState(false);
+  const [summary, setSummary] = useState<Summary | null>(null);
+  const [ending, setEnding] = useState(false);
+  const [endError, setEndError] = useState("");
   const recorder = useAudioRecorder();
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -64,6 +110,10 @@ export default function AiChatScreen({ onBack, topic, onOpenConsent }: { onBack:
       if (!aiText) throw new Error("AI 응답을 받지 못했어요. 잠시 뒤 다시 시도해 주세요.");
       setMessages((prev) => [...prev, { role: "ai", text: aiText }]);
       setPhase("idle");
+      // 대화가 이어질 때마다 관련 연습을 다시 찾는다(실패해도 대화는 계속, 짧게 안내만)
+      studentApi.conversationContents(conversationId)
+        .then((row) => { setRelated(mapRelated(row.items)); setRelatedError(false); })
+        .catch(() => { setRelated([]); setRelatedError(true); });
       return true;
     } catch (error) {
       setConsentNeeded(isConsentRequired(error));
@@ -93,6 +143,54 @@ export default function AiChatScreen({ onBack, topic, onOpenConsent }: { onBack:
       setChatError(errorMessage(error, "녹음을 보내지 못했어요. 다시 시도해 주세요."));
     }
   };
+
+  const spoke = messages.some((message) => message.role === "user");
+  /** 끝내기: 나눈 이야기가 있으면 실제 대화로 요약을 만든다(실패하면 대화는 그대로, 다시 시도 가능) */
+  const endConversation = async () => {
+    if (!conversationId || !spoke) { onBack(); return; }
+    setEnding(true); setEndError("");
+    try {
+      const row = await studentApi.endConversation(conversationId);
+      setSummary({
+        summary: String(row.summary ?? ""), studentTurns: Number(row.studentTurns ?? 0) || 0, relatedContents: mapRelated(row.relatedContents),
+        nextActivities: Array.isArray(row.nextActivities) ? row.nextActivities as Summary["nextActivities"] : [],
+      });
+    } catch (error) {
+      setConsentNeeded(isConsentRequired(error));
+      setEndError(errorMessage(error, "대화 요약을 만들지 못했어요. 잠시 뒤 다시 시도해 주세요."));
+    } finally {
+      setEnding(false);
+    }
+  };
+
+  if (summary) {
+    const canPractice = Boolean(onPractice) && summary.relatedContents.length > 0;
+    return (
+      <div className="flex min-h-screen flex-col pb-8">
+        <PageHeader title={`AI 대화 · ${topic}`} subtitle="대화를 마쳤어요" onBack={onBack} backLabel="연습하기로 돌아가기" />
+        <div className="space-y-4 px-5 pt-2">
+          <section aria-labelledby="chat-summary-title" className="space-y-2 rounded-[var(--radius-card)] border border-[var(--line-soft)] bg-white p-5">
+            <div className="flex items-center gap-2">
+              <Mascot size={40} />
+              <h3 id="chat-summary-title" className="text-base font-bold text-[var(--ink-900)]">오늘 나눈 이야기</h3>
+            </div>
+            <p className="text-[15px] leading-relaxed text-[var(--ink-800)]">{summary.summary}</p>
+            <p className="text-xs text-[var(--ink-500)]">내가 한 말 {summary.studentTurns}번 · 대화 내용으로 AI가 만든 요약이에요. 발음은 평가하지 않아요.</p>
+          </section>
+          {canPractice && (
+            <section aria-labelledby="chat-practice-title" className="space-y-2">
+              <h3 id="chat-practice-title" className="text-[15px] font-bold text-[var(--ink-900)]">다음 활동: 대화와 관련된 연습</h3>
+              <RelatedList items={summary.relatedContents} onPractice={(item) => onPractice?.(item)} />
+            </section>
+          )}
+          <div className="grid gap-2 sm:grid-cols-2">
+            {onNewTopic && <Button variant="secondary" onClick={onNewTopic}>다른 주제로 이야기하기</Button>}
+            <Button variant="line" onClick={onBack}>나가기</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen flex-col">
@@ -124,13 +222,20 @@ export default function AiChatScreen({ onBack, topic, onOpenConsent }: { onBack:
           </div>
         )}
 
+        {related.length > 0 && onPractice && phase === "idle" && (
+          <section aria-labelledby="chat-related-title" className="space-y-2 rounded-[var(--radius-card)] bg-[var(--surface-sunken)] p-3">
+            <h3 id="chat-related-title" className="text-[13px] font-bold text-[var(--ink-800)]">대화와 관련된 연습</h3>
+            <RelatedList items={related} onPractice={onPractice} />
+          </section>
+        )}
+        {relatedError && phase === "idle" && <p className="text-center text-xs text-[var(--ink-500)]">관련 연습을 불러오지 못했어요. 대화는 계속할 수 있어요.</p>}
         <div ref={bottomRef} />
       </div>
 
       {/* Bottom bar */}
       <div className="shrink-0 rounded-t-[var(--radius-card-lg)] border-t border-[var(--line-soft)] bg-white px-5 pt-4 pb-6">
         {chatError && <Notice tone="error" className="mb-3 text-center">{chatError}</Notice>}
-        {consentNeeded && <Button size="sm" variant="secondary" fullWidth onClick={onOpenConsent} className="mb-3">마이페이지에서 동의 관리하기</Button>}
+        {consentNeeded && <Button size="sm" variant="secondary" fullWidth onClick={onOpenConsent} className="mb-3">동의 관리로 가기</Button>}
         <form onSubmit={sendText} className="mb-4 flex items-end gap-2">
           <Input label="대화 메시지" hideLabel size="sm" fieldClassName="min-w-0 flex-1" className="min-h-11" value={messageText}
             onChange={(event) => setMessageText(event.target.value)} disabled={!conversationId || phase !== "idle"} placeholder="하고 싶은 말을 적어보세요" />
@@ -161,7 +266,10 @@ export default function AiChatScreen({ onBack, topic, onOpenConsent }: { onBack:
           {recorder.error && <Notice tone="error" className="w-full text-center">{recorder.error}</Notice>}
         </div>
 
-        <Button variant="neutral" fullWidth onClick={onBack}>대화 종료</Button>
+        {endError && <Notice tone="error" className="mb-3 text-center">{endError}</Notice>}
+        <Button variant="neutral" fullWidth loading={ending} loadingLabel="요약을 만들고 있어요…" disabled={phase === "thinking"} onClick={() => void endConversation()}>
+          {spoke ? (endError ? "다시 시도: 대화 끝내고 요약 보기" : "대화 끝내고 요약 보기") : "대화 종료"}
+        </Button>
       </div>
     </div>
   );

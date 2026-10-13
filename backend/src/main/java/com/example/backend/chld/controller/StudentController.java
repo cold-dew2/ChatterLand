@@ -50,7 +50,12 @@ public class StudentController {
     public Map<String,Object> sendMessage(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable String conversationId,@Valid @RequestBody MessageRequest request) { return students.sendMessage(principal,conversationId,request); }
     @PostMapping(value="/ai/conversations/{conversationId}/messages",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
     public Map<String,Object> sendAudio(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable String conversationId,@RequestPart("audio") MultipartFile audio) { return students.sendAudio(principal,conversationId,audio); }
+    @GetMapping("/ai/conversations/{conversationId}/contents") public Map<String,Object> conversationContents(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable String conversationId) { return students.conversationContents(principal,conversationId); }
+    @PostMapping("/ai/conversations/{conversationId}/end") public Map<String,Object> endConversation(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable String conversationId) { return students.endConversation(principal,conversationId); }
     @GetMapping("/ai/conversations") public PageResponse<Map<String,Object>> conversations(@AuthenticationPrincipal TokenPrincipal principal,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size) { return students.conversations(principal,page,size); }
+    @GetMapping("/students/me/recommendations") public Map<String,Object> recommendations(@AuthenticationPrincipal TokenPrincipal principal) { return students.recommendations(principal); }
+    @GetMapping("/students/me/learning-status") public Map<String,Object> learningStatus(@AuthenticationPrincipal TokenPrincipal principal,
+            @RequestParam(required=false) String period) { return students.learningStatus(principal,period); }
     @GetMapping("/students/me/history") public PageResponse<Map<String,Object>> history(@AuthenticationPrincipal TokenPrincipal principal,@RequestParam(required=false) String type,
             @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="10") int size) { return students.history(principal,type,page,size); }
 }

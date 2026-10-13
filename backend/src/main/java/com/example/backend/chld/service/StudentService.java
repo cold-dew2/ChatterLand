@@ -30,4 +30,13 @@ public interface StudentService {
     Map<String,Object> sendAudio(TokenPrincipal principal, String conversationId, MultipartFile audio);
     PageResponse<Map<String,Object>> conversations(TokenPrincipal principal, int page, int size);
     PageResponse<Map<String,Object>> history(TokenPrincipal principal, String type, int page, int size);
+    /** 학습 상태: 연습 횟수·연습한 콘텐츠 수·영역별 학습량·다시 연습한 콘텐츠·최근 14일 추이(저장된 기록만) */
+    /** period: 7d·30d·all(없으면 all) */
+    Map<String,Object> learningStatus(TokenPrincipal principal,String period);
+    /** 저장된 연습 기록 기반 규칙형 추천(이유 포함) */
+    Map<String,Object> recommendations(TokenPrincipal principal);
+    /** 대화에 나온 낱말·주제와 연결되는 활성 연습 콘텐츠 */
+    Map<String,Object> conversationContents(TokenPrincipal principal,String conversationId);
+    /** 대화 끝내기: 실제 대화로 만든 요약·관련 연습·다음 활동 */
+    Map<String,Object> endConversation(TokenPrincipal principal,String conversationId);
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.chld.mapper.RecommendationMapper">
+  <select id="findAreas" resultType="map">
+    SELECT c.category_id AS categoryId,c.name,c.color,COALESCE(a.attempts,0) AS attempts
+    FROM practice_categories c
+    LEFT JOIN (
+      SELECT e.category_id,COUNT(*) AS attempts FROM practice_attempts pa JOIN exercises e ON e.exercise_id=pa.exercise_id
+      WHERE pa.student_id=#{studentId} GROUP BY e.category_id
+    ) a ON a.category_id=c.category_id
+    WHERE c.active=TRUE ORDER BY c.sort_order
+  </select>
+  <select id="findLastPracticed" resultType="map">
+    SELECT e.exercise_id AS exerciseId,e.category_id AS categoryId,e.sort_order AS sortOrder
+    FROM practice_attempts pa JOIN exercises e ON e.exercise_id=pa.exercise_id
+    WHERE pa.student_id=#{studentId} ORDER BY pa.created_at DESC,pa.attempt_id DESC LIMIT 1
+  </select>
+  <select id="findPendingHomeworkExerciseIds" resultType="long">
+    SELECT DISTINCT he.exercise_id FROM homework_exercises he JOIN homeworks h ON h.homework_id=he.homework_id
+    WHERE h.student_id=#{studentId} AND h.status&lt;&gt;'COMPLETED'
+  </select>
+  <select id="countPendingHomeworks" resultType="long">
+    SELECT COUNT(*) FROM homeworks WHERE student_id=#{studentId} AND status&lt;&gt;'COMPLETED'
+  </select>
+  <select id="findFirstUnpracticed" resultType="map">
+    SELECT e.exercise_id AS exerciseId,e.title,e.category_id AS categoryId
+    FROM exercises e
+    WHERE e.category_id=#{categoryId} AND e.active=TRUE
+      AND NOT EXISTS (SELECT 1 FROM practice_attempts pa WHERE pa.student_id=#{studentId} AND pa.exercise_id=e.exercise_id)
+      <if test="afterSortOrder != null">
+        AND (e.sort_order &gt; #{afterSortOrder} OR (e.sort_order = #{afterSortOrder} AND e.exercise_id &gt; #{afterExerciseId}))
+      </if>
+      <if test="exclude != null and !exclude.isEmpty()">
+        AND e.exercise_id NOT IN <foreach collection="exclude" item="id" open="(" separator="," close=")">#{id}</foreach>
+      </if>
+    ORDER BY e.sort_order,e.exercise_id LIMIT 1
+  </select>
+  <select id="findContentsMentioning" resultType="map">
+    SELECT e.exercise_id AS exerciseId,e.title,e.category_id AS categoryId,c.name AS categoryName,c.color,
+      (SELECT i.text_value FROM exercise_items i WHERE i.exercise_id=e.exercise_id AND i.text_value LIKE CONCAT('%',#{keyword},'%')
+        ORDER BY i.sort_order LIMIT 1) AS matched
+    FROM exercises e JOIN practice_categories c ON c.category_id=e.category_id
+    WHERE e.active=TRUE AND c.active=TRUE
+      AND (e.title LIKE CONCAT('%',#{keyword},'%')
+        OR EXISTS (SELECT 1 FROM exercise_items i WHERE i.exercise_id=e.exercise_id AND i.text_value LIKE CONCAT('%',#{keyword},'%')))
+      <if test="exclude != null and !exclude.isEmpty()">
+        AND e.exercise_id NOT IN <foreach collection="exclude" item="id" open="(" separator="," close=")">#{id}</foreach>
+      </if>
+    ORDER BY EXISTS (SELECT 1 FROM practice_attempts pa WHERE pa.student_id=#{studentId} AND pa.exercise_id=e.exercise_id),c.sort_order,e.sort_order,e.exercise_id
+    LIMIT #{limit}
+  </select>
+</mapper>

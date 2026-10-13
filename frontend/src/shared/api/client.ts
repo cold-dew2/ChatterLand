@@ -85,11 +85,24 @@ async function request<T>(path: string, init: RequestInit = {}, retried = false)
   if (response.status === 204) return undefined as T
   const contentType = response.headers.get('content-type') ?? ''
   if (!response.ok) {
-    const body = contentType.includes('json') ? await response.json() as ApiErrorBody : { message: await response.text() }
+    const body = contentType.includes('json') ? await readBody(() => response.json() as Promise<ApiErrorBody>) : { message: await readBody(() => response.text()) }
     throw new ApiError(body.message ?? `요청에 실패했습니다. (${response.status})`, response.status, body.code)
   }
-  if (contentType.includes('application/pdf') || contentType.startsWith('audio/')) return await response.blob() as T
-  return await response.json() as T
+  if (contentType.includes('application/pdf') || contentType.startsWith('audio/')) return await readBody(() => response.blob()) as T
+  return await readBody(() => response.json()) as T
+}
+
+/**
+ * 응답 본문을 읽다가 연결이 끊긴 경우(예: 응답 도중 다른 화면으로 이동)도 네트워크 오류로 다룬다.
+ * 그대로 두면 일반 TypeError가 되어, 인증 확인 화면이 이를 로그인 실패로 보고 저장된 로그인을 지워 버린다.
+ */
+async function readBody<T>(read: () => Promise<T>): Promise<T> {
+  try {
+    return await read()
+  } catch (cause) {
+    if (cause instanceof TypeError) throw new ApiError('서버에 연결할 수 없어요. 네트워크 연결을 확인한 뒤 다시 시도해 주세요.', 0, 'NETWORK_ERROR')
+    throw cause
+  }
 }
 
 export const queryString = (params: Record<string, string | number | undefined>) => {

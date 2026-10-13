@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Clock, Home, User } from "lucide-react";
-import { authApi } from "@/features/auth/api/authApi";
+import { useLogout } from "@/features/auth/hooks/useLogout";
 import { studentApi } from "@/features/student/api/studentApi";
 import AiChatScreen from "@/features/student/components/AiChatScreen";
 import AiTopicScreen from "@/features/student/components/AiTopicScreen";
+import { practiceScreenFor } from "@/features/student/components/RecommendationSection";
 import PracticeBrowseScreen, { asPracticeCategory } from "@/features/student/components/PracticeBrowseScreen";
 import PracticeCategoryScreen from "@/features/student/components/PracticeCategoryScreen";
 import PracticeListScreen from "@/features/student/components/PracticeListScreen";
@@ -20,11 +21,16 @@ import StudentHistoryScreen from "@/features/student/components/StudentHistorySc
 import StudentHomeScreen from "@/features/student/components/StudentHomeScreen";
 import StudentHomeworkScreen from "@/features/student/components/StudentHomeworkScreen";
 import StudentMyPageScreen from "@/features/student/components/StudentMyPageScreen";
+import LearningStatusScreen from "@/features/student/components/LearningStatusScreen";
+import StudentConsentScreen from "@/features/student/components/StudentConsentScreen";
+import StudentGuardianScreen from "@/features/student/components/StudentGuardianScreen";
+import StudentProfileEditScreen from "@/features/student/components/StudentProfileEditScreen";
 import { useStudentHome } from "@/features/student/hooks/useStudentHome";
 import type { AppScreen, Exercise, ExerciseResult, PracticeCategory, Session } from "@/features/student/types";
 import { mapSession } from "@/features/student/utils/mappers";
-import { clearAuth } from "@/shared/api/client";
 import PageLayout from "@/layouts/components/PageLayout";
+import { paths } from "@/routes/path/paths";
+import type { SelectedContent } from "@/features/practiceContent/utils/selection";
 
 function initialStudentScreen(route: string, sessionId?: string): AppScreen {
   if (route === "practice") return { kind: "practice-type" };
@@ -33,6 +39,9 @@ function initialStudentScreen(route: string, sessionId?: string): AppScreen {
   if (route === "session-detail") return { kind: "session-exercises", session: { id: sessionId ?? "", title: "세션", date: "", done: false, exercises: [] } };
   if (route === "history") return { kind: "tabs", tab: "history" };
   if (route === "mypage") return { kind: "tabs", tab: "mypage" };
+  if (route === "mypage-profile") return { kind: "my-profile" };
+  if (route === "mypage-consents") return { kind: "my-consents" };
+  if (route === "mypage-guardians") return { kind: "my-guardians" };
   return { kind: "tabs", tab: "home" };
 }
 
@@ -42,7 +51,9 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
   const router = useRouter();
   const [screen, setScreen] = useState<AppScreen>(() => initialStudentScreen(initialRoute, sessionId));
   const home = useStudentHome();
-  const [loggingOut, setLoggingOut] = useState(false);
+  const { logout, loggingOut } = useLogout();
+  // 영역별로 고른 콘텐츠(연습하고 돌아와도 유지). ID와 이름만 둔다.
+  const [selections, setSelections] = useState<Record<string, SelectedContent[]>>({});
 
   useEffect(() => {
     if (initialRoute !== "session-detail" || !sessionId) return;
@@ -54,11 +65,9 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
   }, [initialRoute, sessionId]);
 
   const goHome = () => { setScreen({ kind: "tabs", tab: "home" }); home.reload(); };
-  const logout = async () => {
-    if (loggingOut) return;
-    setLoggingOut(true);
-    try { await authApi.logout(); } catch { /* always clear the local session */ } finally { clearAuth(); router.push("/"); }
-  };
+  // 마이페이지 하위 화면은 주소가 있는 별도 페이지다(새로고침·뒤로 가기가 그 화면 기준으로 동작)
+  const openConsents = () => router.push(paths.student.myConsents);
+  const backToMyPage = () => router.push(paths.student.myPage);
 
   const handleActivityComplete = (exercises: Exercise[], session: Session | null, category: PracticeCategory | null,
     origin?: "browse" | "homework", homeworkId?: number) =>
@@ -73,7 +82,9 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
       }
     };
 
-  return <PageLayout bottomNav={screen.kind === "tabs" ? renderNav(screen.tab) : undefined}>{renderScreen()}</PageLayout>;
+  // 목록·탭 화면은 넓은 열, 연습·결과·설정처럼 한 가지 일에 집중하는 화면은 PC에서도 읽기 좋은 좁은 열
+  const wideScreens: AppScreen["kind"][] = ["tabs", "practice-type", "practice-list", "practice-cat", "practice-browse", "session-list", "homework-list", "session-exercises", "learning-status"];
+  return <PageLayout bottomNav={screen.kind === "tabs" ? renderNav(screen.tab) : undefined} width={wideScreens.includes(screen.kind) ? "wide" : "focused"}>{renderScreen()}</PageLayout>;
 
   function renderNav(tab: "home" | "history" | "mypage") {
     const navTabs = [
@@ -82,7 +93,7 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
       { id: "mypage" as const, label: "마이페이지", icon: User },
     ];
     return (
-      <nav aria-label="학생 메뉴" className="grid grid-cols-3 border-t border-[var(--line-soft)] bg-white px-2 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <nav aria-label="학생 메뉴" className="grid grid-cols-3 bg-white px-2 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
         {navTabs.map((t) => {
           const active = tab === t.id;
           return (
@@ -103,7 +114,21 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
   function renderScreen() {
   // Full-screen flows
   if (screen.kind === "ai-chat") {
-    return <AiChatScreen topic={screen.topic} onBack={() => setScreen({ kind: "ai-topic" })} onOpenConsent={() => setScreen({ kind: "tabs", tab: "mypage" })} />;
+    return <AiChatScreen key={screen.topic} topic={screen.topic} onBack={() => setScreen({ kind: "ai-topic" })} onOpenConsent={openConsents}
+      onPractice={(item) => setScreen(practiceScreenFor(item))} onNewTopic={() => setScreen({ kind: "ai-topic" })} />;
+  }
+  if (screen.kind === "my-profile") {
+    return <StudentProfileEditScreen age={home.student.age} onBack={backToMyPage} onProfileChanged={home.reload} />;
+  }
+  if (screen.kind === "my-consents") {
+    return <StudentConsentScreen onBack={backToMyPage} />;
+  }
+  if (screen.kind === "my-guardians") {
+    return <StudentGuardianScreen onBack={backToMyPage} />;
+  }
+  if (screen.kind === "learning-status") {
+    const from = screen.from;
+    return <LearningStatusScreen onBack={() => setScreen({ kind: "tabs", tab: from })} backLabel={from === "home" ? "홈으로 돌아가기" : "마이페이지로 돌아가기"} />;
   }
   if (screen.kind === "ai-topic") {
     return <AiTopicScreen onBack={() => setScreen({ kind: "practice-type" })} onSelect={(topic) => setScreen({ kind: "ai-chat", topic })} />;
@@ -129,18 +154,24 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
       onSelect={(cat) => setScreen({ kind: "practice-cat", category: cat })} />;
   }
   if (screen.kind === "practice-cat") {
-    return <PracticeCategoryScreen key={screen.category.id} category={screen.category} focusIndex={screen.focusIndex}
+    const categoryId = screen.category.id;
+    return <PracticeCategoryScreen key={categoryId} category={screen.category} focusIndex={screen.focusIndex}
+      selection={selections[categoryId] ?? []} onSelectionChange={(next) => setSelections((current) => ({ ...current, [categoryId]: next }))}
       onBack={() => setScreen({ kind: "practice-list" })}
-      onStart={(mode, index, order) => setScreen({ kind: "practice-run", category: screen.category, mode, index, order, results: [] })} />;
+      onStart={(mode, index, order, extra) => setScreen({ kind: "practice-run", category: screen.category, mode, index, order, results: [],
+        keyword: extra?.keyword, selection: extra?.selection, origin: "category" })} />;
   }
   if (screen.kind === "practice-run") {
     const run = screen;
-    // 뒤로 가기: 흐름을 끝내고 영역 화면으로(전체 순서 연습이면 보던 위치를 목록에서 보여 준다). 이전 세트로 가지 않는다.
-    const exitRun = () => setScreen({ kind: "practice-cat", category: run.category, focusIndex: run.mode === "sequential" ? run.index : undefined });
+    // 뒤로 가기: 흐름을 끝내고 직전 목록으로(숙제면 숙제 목록, 전체 순서 연습이면 영역 목록의 보던 위치). 이전 세트로 가지 않는다.
+    const exitRun = () => run.origin === "homework"
+      ? setScreen({ kind: "homework-list" })
+      : setScreen({ kind: "practice-cat", category: run.category, focusIndex: run.mode === "sequential" ? run.index : undefined });
     return <PracticeRunScreen category={run.category} mode={run.mode} index={run.index} order={run.order}
+      selection={run.selection} keyword={run.keyword} homeworkId={run.homeworkId}
       onIndexChange={(index) => setScreen({ ...run, index })}
       onExit={exitRun}
-      onOpenConsent={() => setScreen({ kind: "tabs", tab: "mypage" })}
+      onOpenConsent={openConsents}
       onComplete={(result, last) => {
         const results = [...run.results, result];
         setScreen(last ? { kind: "practice-result", category: run.category, results } : { ...run, index: run.index + 1, results });
@@ -149,7 +180,7 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
   if (screen.kind === "practice-activity") {
     const { category, exIdx, results, origin, homeworkId } = screen;
     const backToStart = () => origin === "browse" ? setScreen({ kind: "practice-browse" }) : origin === "homework" ? setScreen({ kind: "homework-list" }) : setScreen({ kind: "practice-cat", category });
-    return <SpeechActivityScreen key={`${category.id}-${exIdx}`} onOpenConsent={() => setScreen({ kind: "tabs", tab: "mypage" })} exercises={category.exercises} exIdx={exIdx}
+    return <SpeechActivityScreen key={`${category.id}-${exIdx}`} onOpenConsent={openConsents} exercises={category.exercises} exIdx={exIdx}
       homeworkId={homeworkId}
       onBack={backToStart}
       onComplete={(result) => handleActivityComplete(category.exercises, null, category, origin, homeworkId)(exIdx, results, result)} />;
@@ -163,8 +194,10 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
   }
   if (screen.kind === "homework-list") {
     return <StudentHomeworkScreen onBack={goHome}
-      onStartPractice={(homework, content) => content
-        ? setScreen({ kind: "practice-activity", category: asPracticeCategory(content), exIdx: 0, results: [], origin: "homework", homeworkId: homework.id })
+      onStartPractice={(homework) => homework.exercises && homework.exercises.length > 0
+        // 숙제 콘텐츠(한 개 이상)를 선생님이 정한 순서로 연습하고, 기록은 숙제 연습으로 저장한다.
+        ? setScreen({ kind: "practice-run", category: { id: "homework", label: homework.title, color: "var(--brand-primary)", desc: "", exercises: [] },
+            mode: "selected", index: 0, selection: homework.exercises, homeworkId: homework.id, origin: "homework", results: [] })
         : setScreen({ kind: "practice-type" })}
       onCompleteHomework={home.markHomeworkDone} />;
   }
@@ -175,7 +208,7 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
   }
   if (screen.kind === "activity") {
     const { session, exIdx, results } = screen;
-    return <SpeechActivityScreen key={`${session.id}-${exIdx}`} onOpenConsent={() => setScreen({ kind: "tabs", tab: "mypage" })} exercises={session.exercises} exIdx={exIdx}
+    return <SpeechActivityScreen key={`${session.id}-${exIdx}`} onOpenConsent={openConsents} exercises={session.exercises} exIdx={exIdx}
       lessonSessionId={session.id}
       onBack={() => setScreen({ kind: "session-exercises", session })}
       onComplete={(result) => handleActivityComplete(session.exercises, session, null)(exIdx, results, result)} />;
@@ -189,10 +222,15 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
     <main className="flex-1 overflow-y-auto pb-4 [scrollbar-width:none]">
       {tab === "home" && (
         <StudentHomeScreen student={home.student} nextSession={home.nextSession} homeworks={home.homeworks} homeworkState={home.homeworkState}
-          profileState={home.profileState} recent={home.recent} recentState={home.recentState} onRetry={home.reload} onNavigate={(target) => setScreen(target)} />
+          profileState={home.profileState} recent={home.recent} recentState={home.recentState} onRetry={home.reload} onNavigate={(target) => setScreen(target)}
+          notificationSettings={home.notificationSettings} />
       )}
       {tab === "history" && <StudentHistoryScreen />}
-      {tab === "mypage" && <StudentMyPageScreen student={home.student} loggingOut={loggingOut} onLogout={() => void logout()} />}
+      {tab === "mypage" && <StudentMyPageScreen student={home.student} loggingOut={loggingOut} onLogout={() => void logout()}
+        onOpenLearningStatus={() => setScreen({ kind: "learning-status", from: "mypage" })}
+        onOpenProfile={() => router.push(paths.student.myProfile)} onOpenConsents={openConsents}
+        onOpenGuardians={() => router.push(paths.student.myGuardians)}
+        onNotificationSettingsSaved={home.setNotificationSettings} />}
     </main>
   );
   }

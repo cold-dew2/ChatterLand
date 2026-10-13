@@ -13,6 +13,7 @@ import ErrorState from "@/shared/components/feedback/ErrorState";
 import LoadingState from "@/shared/components/feedback/LoadingState";
 import PageHeader from "@/shared/components/pageHeader/PageHeader";
 import Tabs from "@/shared/components/tabs/Tabs";
+import CardGrid from "@/shared/components/cardGrid/CardGrid";
 
 export default function HomeworkView({ students, homeworks, loadState, onRetry, onBack, onAssignHw, onEdit, onToggle, onDelete }: {
   students: Student[]; homeworks: Homework[]; loadState: "loading" | "ready" | "error"; onRetry: () => void; onBack: () => void;
@@ -52,37 +53,42 @@ export default function HomeworkView({ students, homeworks, loadState, onRetry, 
             icon={<span className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--coral-100)] text-[var(--coral-700)]"><ClipboardList size={22} aria-hidden="true" /></span>}
             action={<Button onClick={onAssignHw}>{filter === "all" ? "첫 숙제 등록" : "숙제 등록"}</Button>} />
         )}
-        {loadState === "ready" && filtered.map((hw) => {
-          const student = students.find((s) => s.id === hw.studentId);
-          const overdue = !hw.done && Boolean(hw.dueDate) && hw.dueDate < today;
-          return (
-            <Card as="article" key={hw.id} className={hw.done ? "bg-[var(--ink-50)]" : ""}>
-              <div className="flex items-start gap-3">
-                <button type="button" onClick={async () => { setTogglingId(hw.id); await onToggle(hw.id); setTogglingId(null); }} disabled={togglingId !== null}
-                  role="checkbox" aria-checked={hw.done} aria-label={`${hw.title} 완료 상태 변경`}
-                  className={`-m-2.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors disabled:opacity-50`}>
-                  <span className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${hw.done ? "border-[var(--meadow-600)] bg-[var(--meadow-600)]" : "border-[var(--ink-300)] bg-white hover:border-[var(--meadow-600)]"}`}>
-                    {hw.done && <Check size={14} strokeWidth={3} className="text-white" aria-hidden="true" />}
-                  </span>
-                </button>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-1">
-                    <p className={`text-[15px] font-bold ${hw.done ? "text-[var(--ink-500)] line-through" : "text-[var(--ink-900)]"}`}>{hw.title}</p>
-                    <Badge tone="neutral">{hw.type}</Badge>
-                    {hw.done && <Badge tone="success">완료</Badge>}
+        {loadState === "ready" && filtered.length > 0 && <CardGrid gap="md">
+          {filtered.map((hw) => {
+            const student = students.find((s) => s.id === hw.studentId);
+            const overdue = !hw.done && Boolean(hw.dueDate) && hw.dueDate < today;
+            return (
+              <Card as="article" key={hw.id} className={hw.done ? "bg-[var(--ink-50)]" : ""}>
+                <div className="flex items-start gap-3">
+                  <button type="button" onClick={async () => { setTogglingId(hw.id); await onToggle(hw.id); setTogglingId(null); }} disabled={togglingId !== null}
+                    role="checkbox" aria-checked={hw.done} aria-label={`${hw.title} 완료 상태 변경`}
+                    className={`-m-2.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors disabled:opacity-50`}>
+                    <span className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${hw.done ? "border-[var(--meadow-600)] bg-[var(--meadow-600)]" : "border-[var(--ink-300)] bg-white hover:border-[var(--meadow-600)]"}`}>
+                      {hw.done && <Check size={14} strokeWidth={3} className="text-white" aria-hidden="true" />}
+                    </span>
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <p className={`text-[15px] font-bold ${hw.done ? "text-[var(--ink-500)] line-through" : "text-[var(--ink-900)]"}`}>{hw.title}</p>
+                      <Badge tone="neutral">{hw.type}</Badge>
+                      {hw.done && <Badge tone="success">완료</Badge>}
+                    </div>
+                    {student && <p className="mb-1 text-xs font-semibold text-[var(--ink-600)]">{student.name}</p>}
+                    {hw.description && <p className="mb-1.5 text-xs leading-relaxed text-[var(--ink-600)]">{hw.description}</p>}
+                    {hw.exercises && hw.exercises.length > 0 && (
+                      <p className="mb-1.5 text-xs text-[var(--ink-700)]">연습: <b>{hw.exercises[0].label}</b>{hw.exercises.length > 1 ? ` 외 ${hw.exercises.length - 1}개` : ""}</p>
+                    )}
+                    <p className={`text-xs font-medium ${overdue ? "text-[var(--coral-600)]" : "text-[var(--ink-500)]"}`}>마감: {hw.dueDate}{overdue ? " (기한 초과)" : ""}</p>
                   </div>
-                  {student && <p className="mb-1 text-xs font-semibold text-[var(--ink-600)]">{student.name}</p>}
-                  {hw.description && <p className="mb-1.5 text-xs leading-relaxed text-[var(--ink-600)]">{hw.description}</p>}
-                  <p className={`text-xs font-medium ${overdue ? "text-[var(--coral-600)]" : "text-[var(--ink-500)]"}`}>마감: {hw.dueDate}{overdue ? " (기한 초과)" : ""}</p>
+                  <div className="flex shrink-0 items-center gap-1">
+                    <Button variant="ghost" size="icon" aria-label={`${hw.title} 숙제 수정`} onClick={() => onEdit(hw)} className="hover:enabled:text-[var(--meadow-800)]"><Pencil size={16} /></Button>
+                    <Button variant="ghost" size="icon" aria-label={`${hw.title} 숙제 삭제`} onClick={() => setDeleteTarget(hw)} className="hover:enabled:bg-[var(--coral-50)] hover:enabled:text-[var(--coral-600)]"><Trash2 size={16} /></Button>
+                  </div>
                 </div>
-                <div className="flex shrink-0 items-center gap-1">
-                  <Button variant="ghost" size="icon" aria-label={`${hw.title} 숙제 수정`} onClick={() => onEdit(hw)} className="hover:enabled:text-[var(--meadow-800)]"><Pencil size={16} /></Button>
-                  <Button variant="ghost" size="icon" aria-label={`${hw.title} 숙제 삭제`} onClick={() => setDeleteTarget(hw)} className="hover:enabled:bg-[var(--coral-50)] hover:enabled:text-[var(--coral-600)]"><Trash2 size={16} /></Button>
-                </div>
-              </div>
-            </Card>
-          );
-        })}
+              </Card>
+            );
+          })}
+        </CardGrid>}
       </div>
     </div>
   );

@@ -593,3 +593,78 @@ PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_st
 -- ── 연습 영역 표시 이름: '어휘' → '어휘력'(발음·어휘력·유창성·표현력·이해력) ──────────────
 -- category_id(vocabulary)는 그대로 두고, 운영자가 이미 다른 이름으로 바꾼 경우에는 건드리지 않는다.
 UPDATE practice_categories SET name='어휘력' WHERE category_id='vocabulary' AND name='어휘';
+
+-- ── 숙제 하나에 연습 콘텐츠 여러 개(공통 연습 콘텐츠를 참조만 하고 복제하지 않는다) ──────────────
+-- homeworks.exercise_id는 기존 호출과 호환을 위해 첫 번째 콘텐츠로 계속 유지한다.
+CREATE TABLE IF NOT EXISTS homework_exercises (
+  homework_id BIGINT NOT NULL,
+  exercise_id BIGINT NOT NULL,
+  sort_order SMALLINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (homework_id, exercise_id),
+  KEY idx_homework_exercise_order (homework_id, sort_order),
+  CONSTRAINT fk_homework_exercises_homework FOREIGN KEY (homework_id) REFERENCES homeworks(homework_id) ON DELETE CASCADE,
+  CONSTRAINT fk_homework_exercises_exercise FOREIGN KEY (exercise_id) REFERENCES exercises(exercise_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- 기존 숙제의 단일 콘텐츠를 연결 표에 옮긴다(이미 있으면 그대로). exercise_id는 항상 연결 표의 첫 콘텐츠이므로 지운 콘텐츠가 되살아나지 않는다.
+INSERT IGNORE INTO homework_exercises (homework_id, exercise_id, sort_order)
+  SELECT homework_id, exercise_id, 0 FROM homeworks WHERE exercise_id IS NOT NULL;
+
+-- ── 알림 설정(사용자별). 행이 없으면 모두 켜짐으로 본다. 실제로 일어나는 숙제 이벤트만 다룬다 ──────────────
+CREATE TABLE IF NOT EXISTS notification_settings (
+  user_id BIGINT PRIMARY KEY,
+  homework_assigned BOOLEAN NOT NULL DEFAULT TRUE,
+  homework_changed BOOLEAN NOT NULL DEFAULT TRUE,
+  homework_due_soon BOOLEAN NOT NULL DEFAULT TRUE,
+  homework_overdue BOOLEAN NOT NULL DEFAULT TRUE,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_notification_settings_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ── 보호자 계정과 자녀(학생) 계정 연결 ──────────────
+-- 법정대리인 동의 기록(user_consents.GUARDIAN)과는 별개다. 연결은 자녀 계정에서 만든 1회용 코드를 보호자가 입력해야 생긴다
+-- (자녀 계정 접근을 확인할 뿐, 보호자 본인 확인·법정대리인 증명은 아니다). 기존 사용자·역할 값은 바꾸지 않고 ENUM에 값만 더한다.
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='users' AND COLUMN_NAME='role' AND COLUMN_TYPE LIKE '%''GUARDIAN''%')=0,
+  'ALTER TABLE users MODIFY role ENUM(''STUDENT'',''TEACHER'',''GUARDIAN'') NOT NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+-- 연결 해제해도 행은 남기고 status=UNLINKED(이력). 조회 권한은 ACTIVE일 때만 준다.
+CREATE TABLE IF NOT EXISTS guardian_students (
+  guardian_id BIGINT NOT NULL,
+  student_id BIGINT NOT NULL,
+  status ENUM('ACTIVE','UNLINKED') NOT NULL DEFAULT 'ACTIVE',
+  linked_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  unlinked_at DATETIME NULL,
+  unlinked_by ENUM('GUARDIAN','STUDENT') NULL,
+  PRIMARY KEY (guardian_id, student_id),
+  KEY idx_guardian_students_student (student_id, status),
+  CONSTRAINT fk_guardian_students_guardian FOREIGN KEY (guardian_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  CONSTRAINT fk_guardian_students_student FOREIGN KEY (student_id) REFERENCES student_profiles(student_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- 자녀 계정이 만든 연결 코드. 원문은 저장하지 않고 SHA-256 해시만 둔다. 10분 유효, 1회용.
+CREATE TABLE IF NOT EXISTS guardian_link_codes (
+  code_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  student_id BIGINT NOT NULL,
+  code_hash CHAR(64) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  used_at DATETIME NULL,
+  used_by BIGINT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_guardian_link_code_hash (code_hash),
+  KEY idx_guardian_link_code_student (student_id, created_at),
+  CONSTRAINT fk_guardian_link_code_student FOREIGN KEY (student_id) REFERENCES student_profiles(student_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- 잘못된 코드 입력(추측 방지: 보호자별 10분에 5회까지)
+CREATE TABLE IF NOT EXISTS guardian_link_failures (
+  failure_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  guardian_id BIGINT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_guardian_link_failure (guardian_id, created_at),
+  CONSTRAINT fk_guardian_link_failure_user FOREIGN KEY (guardian_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ── AI 대화 종료 요약(실제 대화 내용으로 만든 요약만 저장. AI 실패 시 저장하지 않는다) ──────────────
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='conversations' AND COLUMN_NAME='summary')=0,
+  'ALTER TABLE conversations ADD COLUMN summary TEXT NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;
+SET @ddl := IF((SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='conversations' AND COLUMN_NAME='ended_at')=0,
+  'ALTER TABLE conversations ADD COLUMN ended_at DATETIME NULL', 'SELECT 1');
+PREPARE schema_stmt FROM @ddl; EXECUTE schema_stmt; DEALLOCATE PREPARE schema_stmt;

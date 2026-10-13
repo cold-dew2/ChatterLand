@@ -17,6 +17,7 @@ import Input from "@/shared/components/input/Input";
 import Mascot from "@/shared/components/mascot/Mascot";
 import PageHeader from "@/shared/components/pageHeader/PageHeader";
 import Select from "@/shared/components/select/Select";
+import CardGrid from "@/shared/components/cardGrid/CardGrid";
 
 const PAGE_SIZE = 20;
 type Filters = { keyword: string; categoryId: string; difficulty: string; rule: string; contentType: string };
@@ -111,7 +112,7 @@ export default function PracticeBrowseScreen({ onBack, onStart }: { onBack: () =
           <>
             <p className="text-[13px] font-semibold text-[var(--ink-600)]" aria-live="polite">연습 세트 {total}개</p>
             {items.length === 0 && <EmptyState title="조건에 맞는 연습이 없어요" description="검색어를 바꾸거나 필터를 '전체'로 바꿔 보세요." variant="plain" icon={<Mascot size={64} />} />}
-            <ul className="space-y-2">
+            <CardGrid as="ul" gap="sm">
               {items.map((content) => (
                 <li key={content.id}>
                   <Card tone="raised" padding="none" className="space-y-2.5 px-4 py-4">
@@ -129,7 +130,7 @@ export default function PracticeBrowseScreen({ onBack, onStart }: { onBack: () =
                   </Card>
                 </li>
               ))}
-            </ul>
+            </CardGrid>
             {items.length < total && <Button variant="line" fullWidth loading={loadingMore} loadingLabel="불러오는 중…" onClick={() => void loadMore()}>더 보기</Button>}
           </>
         )}

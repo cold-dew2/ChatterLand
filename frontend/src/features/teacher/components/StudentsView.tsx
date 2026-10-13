@@ -19,6 +19,7 @@ import Notice from "@/shared/components/feedback/Notice";
 import Input from "@/shared/components/input/Input";
 import PageHeader from "@/shared/components/pageHeader/PageHeader";
 import Tabs from "@/shared/components/tabs/Tabs";
+import CardGrid from "@/shared/components/cardGrid/CardGrid";
 
 export default function StudentsView({ revision, onBack, onAddStudent, onAssignHw, onEditStudent, onDeleteStudent, initialStudentId = null }: {
   revision: number; onBack: () => void; onAddStudent: () => void; onAssignHw: (studentId: number) => void; onEditStudent: (student: Student) => void;
@@ -99,33 +100,35 @@ export default function StudentsView({ revision, onBack, onAddStudent, onAssignH
         items={STATUS_FILTERS.map((option) => ({ value: option.value, label: option.value ? option.label : "전체" }))}
         onChange={(value) => { setStatusFilter(value); setPage(0); setListState("loading"); }} />
 
-      <ul className="flex-1 space-y-2 px-4 pb-4 sm:px-6">
-        {listState === "loading" && <li><LoadingState label="학생 목록을 불러오고 있어요…" /></li>}
-        {listState === "error" && <li><ErrorState message={listError} onRetry={() => { setListState("loading"); setRetryKey((value) => value + 1); }} /></li>}
-        {listState === "ready" && rows.length === 0 && <li><EmptyState title={search || statusFilter ? "조건에 맞는 학생이 없어요" : "등록된 제자가 없어요"}
-          icon={<span className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--sky-100)] text-[var(--sky-800)]"><Users size={22} aria-hidden="true" /></span>}
-          action={!search && !statusFilter ? <Button size="sm" onClick={onAddStudent}>제자 추가</Button> : undefined} /></li>}
-        {listState === "ready" && rows.map((s, i) => (
-          <Card as="li" key={s.id} padding="none" className={`flex items-center gap-3 rounded-[var(--radius-2xl)] px-3.5 py-3 transition-colors hover:border-[var(--meadow-200)] ${checked.includes(s.id) ? "border-[var(--meadow-300)] bg-[var(--meadow-50)]" : ""}`}>
-            <input type="checkbox" checked={checked.includes(s.id)} onChange={() => toggleCheck(s.id)} aria-label={`${s.name} 선택`}
-              className="h-5 w-5 shrink-0 cursor-pointer rounded accent-[var(--brand-primary)]" />
-            <button type="button" onClick={() => setSelectedId(s.id)} className="flex min-h-11 min-w-0 flex-1 items-center gap-3 rounded-[var(--radius-md)] text-left">
-              <span className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: avatarColors[i % avatarColors.length] }} aria-hidden="true">
-                <span className="text-[15px] font-extrabold text-[var(--ink-900)]">{s.name[0]}</span>
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="flex flex-wrap items-center gap-x-1.5">
-                  <span className="text-[15px] font-bold text-[var(--ink-900)]">{s.name}</span>
-                  <span className="text-xs text-[var(--ink-500)]">({s.age}세)</span>
-                  {s.learnerType === "THERAPY" && <Badge tone="info" className="rounded-md">언어재활</Badge>}
+      <div className="flex-1 px-4 pb-4 sm:px-6">
+        <CardGrid as="ul" gap="sm">
+          {listState === "loading" && <li className="@2xl:col-span-2"><LoadingState label="학생 목록을 불러오고 있어요…" /></li>}
+          {listState === "error" && <li className="@2xl:col-span-2"><ErrorState message={listError} onRetry={() => { setListState("loading"); setRetryKey((value) => value + 1); }} /></li>}
+          {listState === "ready" && rows.length === 0 && <li className="@2xl:col-span-2"><EmptyState title={search || statusFilter ? "조건에 맞는 학생이 없어요" : "등록된 제자가 없어요"}
+            icon={<span className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--sky-100)] text-[var(--sky-800)]"><Users size={22} aria-hidden="true" /></span>}
+            action={!search && !statusFilter ? <Button size="sm" onClick={onAddStudent}>제자 추가</Button> : undefined} /></li>}
+          {listState === "ready" && rows.map((s, i) => (
+            <Card as="li" key={s.id} padding="none" className={`flex items-center gap-3 rounded-[var(--radius-2xl)] px-3.5 py-3 transition-colors hover:border-[var(--meadow-200)] ${checked.includes(s.id) ? "border-[var(--meadow-300)] bg-[var(--meadow-50)]" : ""}`}>
+              <input type="checkbox" checked={checked.includes(s.id)} onChange={() => toggleCheck(s.id)} aria-label={`${s.name} 선택`}
+                className="h-5 w-5 shrink-0 cursor-pointer rounded accent-[var(--brand-primary)]" />
+              <button type="button" onClick={() => setSelectedId(s.id)} className="flex min-h-11 min-w-0 flex-1 items-center gap-3 rounded-[var(--radius-md)] text-left">
+                <span className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: avatarColors[i % avatarColors.length] }} aria-hidden="true">
+                  <span className="text-[15px] font-extrabold text-[var(--ink-900)]">{s.name[0]}</span>
                 </span>
-                <span className="mt-0.5 block truncate text-xs text-[var(--ink-500)]">최근 활동: {s.lastSession}</span>
-              </span>
-              <ChevronRight size={18} className="shrink-0 text-[var(--ink-300)]" aria-hidden="true" />
-            </button>
-          </Card>
-        ))}
-      </ul>
+                <span className="min-w-0 flex-1">
+                  <span className="flex flex-wrap items-center gap-x-1.5">
+                    <span className="text-[15px] font-bold text-[var(--ink-900)]">{s.name}</span>
+                    <span className="text-xs text-[var(--ink-500)]">({s.age}세)</span>
+                    {s.learnerType === "THERAPY" && <Badge tone="info" className="rounded-md">언어재활</Badge>}
+                  </span>
+                  <span className="mt-0.5 block truncate text-xs text-[var(--ink-500)]">최근 활동: {s.lastSession}</span>
+                </span>
+                <ChevronRight size={18} className="shrink-0 text-[var(--ink-300)]" aria-hidden="true" />
+              </button>
+            </Card>
+          ))}
+        </CardGrid>
+      </div>
 
       <div className="px-4 pb-6 pt-2 sm:px-6">
         {totalPages > 1 && <nav aria-label="학생 목록 페이지" className="mb-3 flex items-center justify-center gap-3 text-[13px] font-medium text-[var(--ink-600)]">

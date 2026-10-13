@@ -15,6 +15,7 @@ import LoadingState from "@/shared/components/feedback/LoadingState";
 import Notice from "@/shared/components/feedback/Notice";
 import Mascot from "@/shared/components/mascot/Mascot";
 import PageHeader from "@/shared/components/pageHeader/PageHeader";
+import CardGrid from "@/shared/components/cardGrid/CardGrid";
 
 export default function StudentHomeworkScreen({ onBack, onCompleteHomework, onStartPractice }: {
   onBack: () => void; onCompleteHomework: (id: number) => void;
@@ -93,36 +94,43 @@ export default function StudentHomeworkScreen({ onBack, onCompleteHomework, onSt
         {!loading && !error && homeworks.length > 0 && <>
           <p className="text-xs font-bold text-[var(--ink-600)]">진행 중 {pending.length}</p>
           {pending.length === 0 && <EmptyState title="남은 숙제가 없어요" description="모든 숙제를 완료했어요." variant="plain" />}
-          {pending.map((homework) => {
-            const overdue = isOverdue(homework.dueDate, homework.done);
-            return <Card as="article" tone="raised" key={homework.id}>
-              <div className="flex items-start gap-3">
-                <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${overdue ? "bg-[var(--coral-100)] text-[var(--coral-700)]" : "bg-[var(--butter-100)] text-[var(--butter-800)]"}`} aria-hidden="true">
-                  <ClipboardList size={19} />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-base font-bold text-[var(--ink-900)]">{homework.title}</h3>
-                  <p className="mt-1 text-xs text-gray-500">{homework.type}{homework.targetMinutes > 0 ? ` · ${homework.targetMinutes}분` : ""}</p>
-                  {homework.description && <p className="mt-2 text-sm leading-relaxed text-gray-600">{homework.description}</p>}
-                  {homework.exerciseTitle && <p className="mt-2 text-xs text-gray-600">연습: <b>{homework.exerciseTitle}</b>{homework.attemptCount ? ` · ${homework.attemptCount}번 연습함` : ""}</p>}
-                  <p className={`mt-2 text-xs font-semibold ${overdue ? "text-[var(--coral-600)]" : "text-[var(--ink-500)]"}`}>마감 {homework.dueDate || "미정"}{overdue ? " · 기한 지남" : ""}</p>
+          {pending.length > 0 && <CardGrid>
+            {pending.map((homework) => {
+              const overdue = isOverdue(homework.dueDate, homework.done);
+              return <Card as="article" tone="raised" key={homework.id}>
+                <div className="flex items-start gap-3">
+                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${overdue ? "bg-[var(--coral-100)] text-[var(--coral-700)]" : "bg-[var(--butter-100)] text-[var(--butter-800)]"}`} aria-hidden="true">
+                    <ClipboardList size={19} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-base font-bold text-[var(--ink-900)]">{homework.title}</h3>
+                    <p className="mt-1 text-xs text-gray-500">{homework.type}{homework.targetMinutes > 0 ? ` · ${homework.targetMinutes}분` : ""}</p>
+                    {homework.description && <p className="mt-2 text-sm leading-relaxed text-gray-600">{homework.description}</p>}
+                    {homework.exercises && homework.exercises.length > 0 && (
+                      <p className="mt-2 text-xs text-gray-600">연습: <b>{homework.exercises[0].label}</b>
+                        {homework.exercises.length > 1 ? ` 외 ${homework.exercises.length - 1}개` : ""}{homework.attemptCount ? ` · ${homework.attemptCount}번 연습함` : ""}</p>
+                    )}
+                    <p className={`mt-2 text-xs font-semibold ${overdue ? "text-[var(--coral-600)]" : "text-[var(--ink-500)]"}`}>마감 {homework.dueDate || "미정"}{overdue ? " · 기한 지남" : ""}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                <Button variant="secondary" fullWidth loading={startingId === homework.id} loadingLabel="불러오는 중…"
-                  onClick={() => void startPractice(homework)}><Mic size={14} aria-hidden="true" />연습하러 가기</Button>
-                <Button fullWidth disabled={busyId !== null} loading={busyId === homework.id} loadingLabel="저장 중…"
-                  onClick={() => void completeHomework(homework.id)}>완료</Button>
-              </div>
-            </Card>;
-          })}
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <Button variant="secondary" fullWidth loading={startingId === homework.id} loadingLabel="불러오는 중…"
+                    onClick={() => void startPractice(homework)}><Mic size={14} aria-hidden="true" />연습하러 가기</Button>
+                  <Button fullWidth disabled={busyId !== null} loading={busyId === homework.id} loadingLabel="저장 중…"
+                    onClick={() => void completeHomework(homework.id)}>완료</Button>
+                </div>
+              </Card>;
+            })}
+          </CardGrid>}
           {completed.length > 0 && <>
             <p className="pt-3 text-xs font-bold text-[var(--ink-600)]">완료 {completed.length}</p>
-            {completed.map((homework) => <Card key={homework.id} tone="muted" className="flex items-center gap-3 text-[var(--ink-500)]">
-              <CheckCircle size={20} className="shrink-0 text-[var(--meadow-600)]" aria-hidden="true" />
-              <span className="min-w-0 flex-1 truncate text-sm font-semibold line-through">{homework.title}</span>
-              <Badge tone="success">완료</Badge>
-            </Card>)}
+            <CardGrid gap="sm">
+              {completed.map((homework) => <Card key={homework.id} tone="muted" className="flex items-center gap-3 text-[var(--ink-500)]">
+                <CheckCircle size={20} className="shrink-0 text-[var(--meadow-600)]" aria-hidden="true" />
+                <span className="min-w-0 flex-1 truncate text-sm font-semibold line-through">{homework.title}</span>
+                <Badge tone="success">완료</Badge>
+              </Card>)}
+            </CardGrid>
           </>}
         </>}
       </div>

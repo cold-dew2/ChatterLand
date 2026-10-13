@@ -52,7 +52,7 @@ describe('PracticeRunScreen 이전/다음과 뒤로 가기', () => {
   it('첫 세트에서는 이전이 비활성이고, 다음은 바로 뒤 세트로 간다', async () => {
     const { onIndexChange } = renderRun({ index: 0 })
     expect(await screen.findByText('낱말1')).toBeTruthy()
-    expect(screen.getByText(`발음 1 / ${TOTAL}`)).toBeTruthy()
+    expect(screen.getByText(`전체 발음 연습 1 / ${TOTAL}`)).toBeTruthy() // 흐름 이름을 함께 표시(요청 9번 형식)
     expect((screen.getByRole('button', { name: '이전 문제' }) as HTMLButtonElement).disabled).toBe(true)
     fireEvent.click(screen.getByRole('button', { name: '다음 문제' }))
     expect(onIndexChange).toHaveBeenCalledWith(1)
@@ -99,7 +99,7 @@ describe('PracticeRunScreen 이전/다음과 뒤로 가기', () => {
     const order = [30, 4, 17]
     const { rerender, onIndexChange, onExit, onComplete, onOpenConsent } = renderRun({ mode: 'random', index: 0, order })
     expect(await screen.findByText('낱말31')).toBeTruthy()
-    expect(screen.getByText('랜덤 1 / 3')).toBeTruthy()
+    expect(screen.getByText('랜덤 연습 1 / 3')).toBeTruthy()
     rerender(<PracticeRunScreen category={category} mode="random" index={1} order={order} onIndexChange={onIndexChange} onExit={onExit} onComplete={onComplete} onOpenConsent={onOpenConsent} />)
     expect(await screen.findByText('낱말5')).toBeTruthy()
     rerender(<PracticeRunScreen category={category} mode="random" index={0} order={order} onIndexChange={onIndexChange} onExit={onExit} onComplete={onComplete} onOpenConsent={onOpenConsent} />)

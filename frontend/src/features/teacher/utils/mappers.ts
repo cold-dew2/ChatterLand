@@ -1,4 +1,5 @@
 import type { Homework, LearnerType, Student } from '@/features/teacher/types'
+import { mapHomeworkExercises } from '@/features/student/utils/mappers'
 
 type Row = Record<string, unknown>
 
@@ -25,6 +26,7 @@ export function mapHomework(item: Row, index = 0): Homework {
     version: typeof item.version === 'number' ? item.version : undefined,
     exerciseId: item.exerciseId == null ? null : Number(item.exerciseId),
     exerciseTitle: item.exerciseTitle == null ? null : String(item.exerciseTitle),
+    exercises: mapHomeworkExercises(item),
   }
 }
 

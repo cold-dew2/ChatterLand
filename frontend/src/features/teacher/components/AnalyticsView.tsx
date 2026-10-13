@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BarChart2, Download, Printer } from "lucide-react";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import LearningReportView from "@/features/learningReport/components/LearningReportView";
 import { teacherApi } from "@/features/teacher/api/teacherApi";
 import PentagonRadar from "@/features/teacher/components/PentagonRadar";
 import type { Student } from "@/features/teacher/types";
@@ -23,8 +24,8 @@ import ProgressBar from "@/shared/components/progressBar/ProgressBar";
 import Select from "@/shared/components/select/Select";
 import Tabs from "@/shared/components/tabs/Tabs";
 
-export type AnalyticsTab = "종합 분석" | "영역별 분석" | "상세 리포트";
-const ANALYTICS_TABS: AnalyticsTab[] = ["종합 분석", "영역별 분석", "상세 리포트"];
+export type AnalyticsTab = "종합 분석" | "영역별 분석" | "누적 학습" | "상세 리포트";
+const ANALYTICS_TABS: AnalyticsTab[] = ["종합 분석", "영역별 분석", "누적 학습", "상세 리포트"];
 
 export default function AnalyticsView({ students, onBack, initialStudentId, initialTab = "종합 분석" }: { students: Student[]; onBack: () => void; initialStudentId?: number | null; initialTab?: AnalyticsTab }) {
   const router = useRouter();
@@ -95,13 +96,13 @@ export default function AnalyticsView({ students, onBack, initialStudentId, init
     <div className="flex flex-col min-h-screen">
       <PageHeader tone="bar" title="상세 분석 및 리포트" onBack={onBack} className="print:hidden" />
 
-      <div className="grid shrink-0 gap-2 bg-white px-4 py-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] sm:px-6 print:hidden">
+      <div className="grid shrink-0 grid-cols-1 gap-2 bg-white px-4 py-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] sm:px-6 print:hidden">
         <Select label="학생 선택" hideLabel size="sm" value={String(effectiveId)} options={students.map((s) => ({ value: String(s.id), label: s.name }))}
           onChange={(e) => refreshAnalytics(() => setSelectedId(Number(e.target.value)))} />
         <div className="flex items-center gap-2">
-          <Input label="시작일" hideLabel size="sm" type="date" value={startDate} max={endDate} fieldClassName="min-w-0 flex-1" onChange={(event) => refreshAnalytics(() => setStartDate(event.target.value))} />
+          <Input label="시작일" hideLabel size="sm" type="date" className="min-w-0" value={startDate} max={endDate} fieldClassName="min-w-0 flex-1" onChange={(event) => refreshAnalytics(() => setStartDate(event.target.value))} />
           <span className="text-[var(--ink-400)]" aria-hidden="true">~</span>
-          <Input label="종료일" hideLabel size="sm" type="date" value={endDate} min={startDate} fieldClassName="min-w-0 flex-1" onChange={(event) => refreshAnalytics(() => setEndDate(event.target.value))} />
+          <Input label="종료일" hideLabel size="sm" type="date" className="min-w-0" value={endDate} min={startDate} fieldClassName="min-w-0 flex-1" onChange={(event) => refreshAnalytics(() => setEndDate(event.target.value))} />
         </div>
       </div>
 
@@ -109,7 +110,12 @@ export default function AnalyticsView({ students, onBack, initialStudentId, init
         items={ANALYTICS_TABS.map((tab) => ({ value: tab, label: tab }))} />
 
       <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4 [scrollbar-width:none] sm:px-6">
-        {analyticsLoading ? <LoadingState label="학습 분석을 불러오고 있어요…" /> : analysisError ? <ErrorState message={analysisError} onRetry={retryAnalytics} /> : <>
+        {/* 누적 학습: 학생 본인 화면과 같은 집계(기간은 이 탭 안에서 고른다. 위 날짜 범위는 다른 탭용) */}
+        {activeTab === "누적 학습" ? (effectiveId === null ? null : <>
+          <p className="text-xs text-[var(--ink-500)]">학생 화면의 &apos;학습 상태&apos;와 같은 기준으로 센 숫자예요. 기간은 아래에서 골라요.</p>
+          <LearningReportView load={(period) => teacherApi.learningReport(effectiveId, period)} reloadKey={effectiveId}
+            emptyDescription="학생이 연습을 녹음해 저장하면 여기에 쌓여요." />
+        </>) : analyticsLoading ? <LoadingState label="학습 분석을 불러오고 있어요…" /> : analysisError ? <ErrorState message={analysisError} onRetry={retryAnalytics} /> : <>
           {totalAttempts === 0 && <Notice tone="info">선택한 기간에 저장된 연습 기록이 없어요. 기록이 없으면 통계를 만들지 않아요.</Notice>}
 
           {activeTab === "종합 분석" && (<>

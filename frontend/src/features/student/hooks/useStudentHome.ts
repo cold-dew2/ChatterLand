@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from 'react'
+import { accountApi, DEFAULT_NOTIFICATION_SETTINGS, type NotificationSettings } from '@/features/account/api/accountApi'
 import { studentApi } from '@/features/student/api/studentApi'
 import type { HistoryItem, Homework, LoadState, Session, StudentSummary } from '@/features/student/types'
 import { mapHistoryItem, mapHomework, mapSession, toNumberOrNull } from '@/features/student/utils/mappers'
@@ -19,6 +20,8 @@ export function useStudentHome() {
   const [recent, setRecent] = useState<HistoryItem[]>([])
   const [recentState, setRecentState] = useState<LoadState>('loading')
   const [revision, setRevision] = useState(0)
+  // 숙제 알림 설정(홈의 종 아이콘). 불러오지 못하면 기본값(모두 켜짐)으로 보여 준다.
+  const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>(DEFAULT_NOTIFICATION_SETTINGS)
 
   useEffect(() => {
     let active = true
@@ -28,9 +31,12 @@ export function useStudentHome() {
         name: String(result.name ?? '학생'), grade: String(result.level ?? '학습 중'),
         averageMatchRate: toNumberOrNull(result.averageMatchRate), totalAttempts: Number(result.totalAttempts ?? 0),
         sessionsTotal: Number(result.totalSessions ?? 0), sessionsDone: Number(result.completedSessions ?? 0), streak: Number(result.streak ?? 0),
+        age: toNumberOrNull(result.age),
+        teachers: Array.isArray(result.teachers) ? (result.teachers as Record<string, unknown>[]).map((teacher) => String(teacher.name ?? '')).filter(Boolean) : [],
       })
       setProfileState('ready')
     }).catch(() => { if (active) setProfileState('error') })
+    accountApi.notificationSettings().then((settings) => { if (active) setNotificationSettings(settings) }).catch(() => undefined)
     studentApi.sessions(0, 1, 'UPCOMING').then((response) => {
       const row = (response as { content?: Record<string, unknown>[] }).content?.[0]
       if (active) setNextSession(row ? mapSession(row) : null)
@@ -58,5 +64,5 @@ export function useStudentHome() {
     setHomeworks((current) => current.map((homework) => homework.id === id ? { ...homework, done: true } : homework))
   }, [])
 
-  return { student, profileState, nextSession, homeworks, homeworkState, recent, recentState, reload, markHomeworkDone }
+  return { student, profileState, nextSession, homeworks, homeworkState, recent, recentState, reload, markHomeworkDone, notificationSettings, setNotificationSettings }
 }

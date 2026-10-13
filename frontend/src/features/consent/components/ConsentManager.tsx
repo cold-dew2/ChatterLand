@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { consentApi, type Consent } from "@/features/consent/api/consentApi";
 import ConsentDocumentModal from "@/features/consent/components/ConsentDocumentModal";
-import { CONSENT_POLICY_VERSION, consentLabels, type ConsentType } from "@/features/consent/consentPolicy";
+import { ChevronDown } from "lucide-react";
+import { CONSENT_POLICY_VERSION, consentDocuments, consentLabels, type ConsentType } from "@/features/consent/consentPolicy";
 import { errorMessage } from "@/shared/api/client";
 import Badge from "@/shared/components/badge/Badge";
 import Button from "@/shared/components/button/Button";
@@ -16,7 +17,8 @@ import Input from "@/shared/components/input/Input";
 import Modal from "@/shared/components/modal/Modal";
 
 /** 마이페이지 동의 관리: 동의 내역 확인, 선택 동의 변경·철회 */
-export default function ConsentManager() {
+/** hideTitle: 화면 제목이 이미 '동의 관리'일 때 같은 제목을 눈으로는 숨긴다(스크린리더 이름은 유지) */
+export default function ConsentManager({ hideTitle = false }: { hideTitle?: boolean } = {}) {
   const [consents, setConsents] = useState<Consent[]>([]);
   const [state, setState] = useState<"loading" | "ready" | "error">("loading");
   const [error, setError] = useState("");
@@ -24,6 +26,7 @@ export default function ConsentManager() {
   const [detail, setDetail] = useState<ConsentType | null>(null);
   const [withdrawTarget, setWithdrawTarget] = useState<ConsentType | null>(null);
   const [agreeTarget, setAgreeTarget] = useState<ConsentType | null>(null);
+  const [guideOpen, setGuideOpen] = useState(false);
   const [guardian, setGuardian] = useState({ name: "", relation: "", confirmed: false });
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<{ tone: "success" | "error"; text: string } | null>(null);
@@ -56,7 +59,7 @@ export default function ConsentManager() {
 
   return (
     <section aria-labelledby="consent-manager-title" className="space-y-3">
-      <h3 id="consent-manager-title" className="text-base font-bold text-[var(--ink-900)]">동의 관리</h3>
+      <h3 id="consent-manager-title" className={hideTitle ? "sr-only" : "text-base font-bold text-[var(--ink-900)]"}>동의 관리</h3>
       {detail && <ConsentDocumentModal type={detail} onClose={() => setDetail(null)} />}
       {withdrawTarget && <ConfirmDialog title="동의를 철회할까요?" confirmLabel="철회" pending={pending}
         description={withdrawTarget === "VOICE" ? "보관 중인 녹음이 즉시 삭제되고, 말하기 연습과 음성 대화를 사용할 수 없어요."
@@ -66,7 +69,25 @@ export default function ConsentManager() {
         <Modal title={`${consentLabels[agreeTarget]} 동의`} onClose={() => setAgreeTarget(null)} closeDisabled={pending}
           footer={<Button fullWidth loading={pending} loadingLabel="저장 중…" onClick={() => void update(agreeTarget, true)}
             disabled={needsGuardian && (!guardian.confirmed || !guardian.name.trim() || !guardian.relation.trim())}>동의하기</Button>}>
-          <Button size="sm" variant="secondary" onClick={() => setDetail(agreeTarget)}>안내 내용 보기</Button>
+          {/* 안내 내용은 별도 팝업을 겹쳐 띄우지 않고 같은 창 안에서 펼친다(문구는 안내문 그대로) */}
+          <button type="button" onClick={() => setGuideOpen((open) => !open)} aria-expanded={guideOpen} aria-controls="consent-guide"
+            className="flex min-h-11 w-full items-center justify-between rounded-[var(--radius-lg)] border border-[var(--line-soft)] bg-white px-3.5 text-sm font-semibold text-[var(--ink-900)] hover:bg-[var(--ink-25)]">
+            안내 내용 보기<ChevronDown size={18} aria-hidden="true" className={`transition-transform ${guideOpen ? "rotate-180" : ""}`} />
+          </button>
+          {guideOpen && (
+            <div id="consent-guide" className="space-y-3 rounded-[var(--radius-lg)] bg-[var(--surface-sunken)] px-3.5 py-3">
+              <p className="text-sm leading-relaxed text-[var(--ink-700)]">{consentDocuments[agreeTarget].summary}</p>
+              {consentDocuments[agreeTarget].sections.map((section) => (
+                <section key={section.heading}>
+                  <h3 className="mb-1 text-[14px] font-bold text-[var(--ink-900)]">{section.heading}</h3>
+                  <ul className="list-disc space-y-1 pl-5 text-sm leading-relaxed text-[var(--ink-700)] marker:text-[var(--meadow-400)]">
+                    {section.items.map((item) => <li key={item}>{item}</li>)}
+                  </ul>
+                </section>
+              ))}
+              <p className="text-xs text-[var(--ink-500)]">안내문 버전 {CONSENT_POLICY_VERSION}</p>
+            </div>
+          )}
           {needsGuardian && <>
             <Notice tone="warning">만 14세 미만 학생은 보호자가 직접 동의해야 해요.</Notice>
             <div className="grid grid-cols-2 gap-2">
@@ -100,7 +121,7 @@ export default function ConsentManager() {
                 ? <button type="button" onClick={() => setDetail(consent.type)} className="min-h-10 rounded-md px-1.5 text-[13px] font-semibold text-[var(--brand-primary)] hover:underline">보기</button>
                 : consent.agreed && consent.currentVersion
                   ? <Button size="sm" variant="line" onClick={() => setWithdrawTarget(consent.type)}>철회</Button>
-                  : <Button size="sm" onClick={() => { setMessage(null); setAgreeTarget(consent.type); }}>동의</Button>}
+                  : <Button size="sm" onClick={() => { setMessage(null); setGuideOpen(false); setAgreeTarget(consent.type); }}>동의</Button>}
             </div>
           ))}
         </Card>

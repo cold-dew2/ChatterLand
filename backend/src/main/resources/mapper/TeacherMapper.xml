@@ -116,6 +116,11 @@
     WHERE h.teacher_id=#{teacherId} AND h.student_id=#{studentId} AND h.title=#{title}
     ORDER BY h.homework_id DESC LIMIT 1
   </select>
+  <insert id="insertHomeworkExercises">
+    INSERT IGNORE INTO homework_exercises(homework_id,exercise_id,sort_order) VALUES
+    <foreach collection="exerciseIds" item="exerciseId" index="index" separator=",">(#{homeworkId},#{exerciseId},#{index})</foreach>
+  </insert>
+  <delete id="deleteHomeworkExercises">DELETE FROM homework_exercises WHERE homework_id=#{homeworkId}</delete>
   <select id="findHomework" resultType="map">
     SELECT homework_id AS homeworkId,student_id AS studentId,title,type,description,target_minutes AS targetMinutes,
       due_date AS dueDate,status,(status='COMPLETED') AS done,version,exercise_id AS exerciseId FROM homeworks
@@ -131,6 +136,8 @@
         <if test="dueDate != null">due_date=#{dueDate},</if>
         <if test="status != null">status=#{status},</if>
         <if test="done != null">status=CASE WHEN #{done}=TRUE THEN 'COMPLETED' ELSE 'PENDING' END,</if>
+        <!-- 콘텐츠를 바꾸면 기존 호환 열(exercise_id)도 첫 콘텐츠로 맞춘다(빈 목록이면 NULL) -->
+        <if test="exerciseIdSet">exercise_id=#{exerciseId},</if>
         version=version+1,
       </trim>
     WHERE teacher_id=#{teacherId} AND homework_id=#{homeworkId}

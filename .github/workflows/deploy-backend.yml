@@ -1,0 +1,127 @@
+# ChatterLand 백엔드 자동 배포(Cloud Run).
+# - main 브랜치 push로 실행된 CI(ci.yml: 단위·통합·프런트·E2E)가 성공했을 때만 실행된다. 다른 브랜치 push·PR은 배포하지 않는다.
+# - Google Cloud 인증은 Workload Identity Federation(키 JSON 없음). 프로젝트·리전 등은 저장소 Variables로 받는다(하드코딩 없음).
+# - 새 리비전은 트래픽 없이 배포 → 태그 주소로 점검 → 통과하면 트래픽 100% 전환. 실패하면 이전 리비전이 계속 서비스한다.
+# - DB 스키마 변경은 이 workflow에서 하지 않는다(운영 SQL_INIT_MODE=never). 절차: docs/deploy/gcp-cloud-run.md
+name: deploy-backend
+
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+    branches: [main]
+  # 수동 재배포(main의 현재 커밋만). 다른 브랜치에서 실행하면 job 조건에서 막힌다.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write   # Workload Identity Federation 토큰 발급
+
+# 운영 배포는 한 번에 하나씩. 진행 중인 배포를 취소하지 않고 다음 배포는 기다린다.
+concurrency:
+  group: deploy-backend-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: >-
+      (github.event_name == 'workflow_run'
+        && github.event.workflow_run.conclusion == 'success'
+        && github.event.workflow_run.event == 'push'
+        && github.event.workflow_run.head_branch == 'main')
+      || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    # GitHub Environment 'production'에 보호 규칙(승인자)을 걸면 배포 전 사람 승인을 받을 수 있다.
+    environment: production
+    timeout-minutes: 45
+    env:
+      COMMIT_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+      PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      REGION: ${{ vars.GCP_REGION }}
+      REPOSITORY: ${{ vars.GCP_ARTIFACT_REPOSITORY }}
+      SERVICE: ${{ vars.CLOUD_RUN_SERVICE }}
+    steps:
+      - name: 필수 설정 확인(값은 출력하지 않음)
+        run: |
+          missing=""
+          for name in PROJECT_ID REGION REPOSITORY SERVICE; do [ -n "${!name}" ] || missing="$missing $name"; done
+          [ -n "${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}" ] || missing="$missing GCP_WORKLOAD_IDENTITY_PROVIDER"
+          [ -n "${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}" ] || missing="$missing GCP_DEPLOY_SERVICE_ACCOUNT"
+          if [ -n "$missing" ]; then echo "::error::저장소 Variables가 없습니다:$missing (docs/deploy/gcp-cloud-run.md 참고)"; exit 1; fi
+
+      - uses: actions/checkout@v4
+        with: { ref: "${{ env.COMMIT_SHA }}" }
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: 같은 커밋이 이미 서비스 중이면 건너뛰기
+        id: current
+        run: |
+          serving=$(gcloud run services describe "$SERVICE" --region "$REGION" --format='value(status.latestReadyRevisionName)' 2>/dev/null || true)
+          label=""
+          [ -n "$serving" ] && label=$(gcloud run revisions describe "$serving" --region "$REGION" --format='value(metadata.labels.commit-sha)' 2>/dev/null || true)
+          echo "previous_revision=$serving" >> "$GITHUB_OUTPUT"
+          if [ "$label" = "$COMMIT_SHA" ]; then echo "skip=true" >> "$GITHUB_OUTPUT"; echo "이미 배포된 커밋입니다: $COMMIT_SHA"; else echo "skip=false" >> "$GITHUB_OUTPUT"; fi
+
+      - name: 이미지 빌드·업로드(태그 = 커밋 SHA)
+        if: steps.current.outputs.skip != 'true'
+        id: image
+        run: |
+          image="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/backend"
+          gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
+          docker build --label "org.opencontainers.image.revision=$COMMIT_SHA" -t "$image:$COMMIT_SHA" backend
+          docker push "$image:$COMMIT_SHA"
+          digest=$(gcloud artifacts docker images describe "$image:$COMMIT_SHA" --format='value(image_summary.digest)')
+          echo "ref=$image@$digest" >> "$GITHUB_OUTPUT"
+
+      - name: 새 리비전 배포(트래픽 없음)
+        if: steps.current.outputs.skip != 'true'
+        id: deploy
+        run: |
+          short="${COMMIT_SHA:0:7}"
+          # 이미지만 바꾼다. 환경변수·비밀값·Cloud SQL 연결·리소스 설정은 최초 승인된 서비스 설정을 그대로 쓴다.
+          gcloud run deploy "$SERVICE" --region "$REGION" --image "${{ steps.image.outputs.ref }}" \
+            --no-traffic --tag "sha-$short" --revision-suffix "$short-${{ github.run_attempt }}" \
+            --update-labels "commit-sha=$COMMIT_SHA" --quiet
+          url=$(gcloud run services describe "$SERVICE" --region "$REGION" --format=json \
+            | python3 -c "import json,sys; t=[x for x in json.load(sys.stdin)['status'].get('traffic',[]) if x.get('tag')=='sha-$short']; print(t[0]['url'] if t else '')")
+          echo "tag_url=$url" >> "$GITHUB_OUTPUT"
+          echo "revision=$SERVICE-$short-${{ github.run_attempt }}" >> "$GITHUB_OUTPUT"
+
+      - name: 새 리비전 점검(트래픽 전환 전)
+        if: steps.current.outputs.skip != 'true'
+        run: |
+          url="${{ steps.deploy.outputs.tag_url }}"
+          [ -n "$url" ] || { echo "::error::태그 주소를 찾지 못했습니다"; exit 1; }
+          check() { # 기대 상태코드 경로 [메서드 본문]
+            for _ in $(seq 1 10); do
+              code=$(curl -s -o /dev/null -w '%{http_code}' -X "${3:-GET}" -H 'Content-Type: application/json' ${4:+-d "$4"} "$url$2" || true)
+              [ "$code" = "$1" ] && { echo "OK $2 → $code"; return 0; }; sleep 6
+            done
+            echo "::error::$2 기대 $1, 실제 $code"; return 1
+          }
+          check 200 /api/v1/centers                                  # DB 연결 포함
+          check 401 /api/v1/students/me                              # 인증 필요
+          check 400 /api/v1/auth/login POST '{"email":"","password":""}'  # 입력 검증
+
+      - name: 트래픽 전환(100%)
+        if: steps.current.outputs.skip != 'true'
+        run: gcloud run services update-traffic "$SERVICE" --region "$REGION" --to-revisions "${{ steps.deploy.outputs.revision }}=100" --quiet
+
+      - name: 결과 기록
+        if: always()
+        run: |
+          {
+            echo "### 백엔드 배포"
+            echo "- 커밋: \`$COMMIT_SHA\`"
+            echo "- 이미지: \`${{ steps.image.outputs.ref || '(빌드 안 함)' }}\`"
+            echo "- 새 리비전: \`${{ steps.deploy.outputs.revision || '(배포 안 함)' }}\`"
+            echo "- 이전 리비전(되돌리기 대상): \`${{ steps.current.outputs.previous_revision || '(없음)' }}\`"
+            echo "- 되돌리기: \`gcloud run services update-traffic $SERVICE --region $REGION --to-revisions <이전 리비전>=100\`"
+          } >> "$GITHUB_STEP_SUMMARY"

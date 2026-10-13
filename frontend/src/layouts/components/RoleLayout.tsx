@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { authApi } from '@/features/auth/api/authApi'
+import { authApi, type UserRole } from '@/features/auth/api/authApi'
+import { homePathFor } from '@/features/auth/utils/returnPath'
 import { ApiError, clearAuth, SESSION_EXPIRED_EVENT } from '@/shared/api/client'
 import ErrorState from '@/shared/components/feedback/ErrorState'
 import LoadingState from '@/shared/components/feedback/LoadingState'
@@ -14,7 +15,7 @@ export function loginAfterExpiry(currentPath: string) {
   return `${paths.login}?expired=1&next=${encodeURIComponent(currentPath)}`
 }
 
-export default function RoleLayout({ role, children }: { role: 'STUDENT' | 'TEACHER'; children: React.ReactNode }) {
+export default function RoleLayout({ role, children }: { role: UserRole; children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
   const [ready, setReady] = useState(false)
@@ -28,7 +29,7 @@ export default function RoleLayout({ role, children }: { role: 'STUDENT' | 'TEAC
     authApi.me().then((user) => {
       if (!active) return
       if (user.role !== role) {
-        router.replace(user.role === 'TEACHER' ? paths.teacher.home : paths.student.home)
+        router.replace(homePathFor(user.role))
         return
       }
       setReady(true)

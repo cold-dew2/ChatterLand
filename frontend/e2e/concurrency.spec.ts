@@ -124,23 +124,31 @@ test('E2E-20 로그아웃하면 이 기기의 access 토큰은 만료 전이어�
   expect((await fetch('http://localhost:8080/api/v1/auth/me', { headers: { Authorization: `Bearer ${student.token}` } })).status).toBe(200)
 })
 
-test('E2E-21 마이페이지에서 비밀번호를 바꾸면 이 기기는 로그인을 유지하고 다른 기기는 끊긴다', async ({ page }) => {
+test('E2E-21 내 정보 수정에서 비밀번호를 바꾸면 이 기기는 로그인을 유지하고 다른 기기는 끊긴다', async ({ page }) => {
   const student = await createStudent('pw-change', '비번변경학생')
   await loginUi(page, student.email)
+  // 비밀번호 변경은 마이페이지가 아니라 내 정보 수정 화면에 있다
   await page.goto('/student/mypage')
+  await expect(page.getByRole('button', { name: '로그아웃' })).toBeVisible()
+  await expect(page.getByRole('button', { name: '비밀번호 변경' })).toHaveCount(0)
+  await page.getByRole('button', { name: /내 정보 수정/ }).click()
+  await expect(page).toHaveURL(/\/student\/mypage\/profile$/)
+  await expect(page.getByRole('heading', { name: '비밀번호 변경' })).toBeVisible()
   const form = page.locator('form').filter({ has: page.getByRole('button', { name: '비밀번호 변경' }) })
   await form.getByLabel(/현재 비밀번호/).fill('Wrong-Pass!000')
   await form.getByLabel(/^새 비밀번호(\s*\*)?$/).fill('Changed-Pass!789')
   await form.getByLabel(/새 비밀번호 확인/).fill('Changed-Pass!789')
   await form.getByRole('button', { name: '비밀번호 변경' }).click()
   await expect(form.getByText('현재 비밀번호가 올바르지 않아요. (남은 시도 4회)')).toBeVisible()
-  await expect(page).toHaveURL(/\/student\/mypage/) // 틀려도 로그아웃되지 않는다
+  await expect(page).toHaveURL(/\/student\/mypage\/profile$/) // 틀려도 로그아웃되지 않는다
 
   await form.getByLabel(/현재 비밀번호/).fill(PASSWORD)
   await form.getByRole('button', { name: '비밀번호 변경' }).click()
   await expect(form.getByText(/비밀번호를 변경했어요/)).toBeVisible()
-  // 이 기기: 새로고침해도 로그인 유지
+  // 이 기기: 새로고침해도 로그인 유지(같은 화면에 남고, 마이페이지의 로그아웃 버튼도 그대로)
   await page.reload()
+  await expect(page.getByRole('heading', { name: '비밀번호 변경' })).toBeVisible()
+  await page.goto('/student/mypage')
   await expect(page.getByRole('button', { name: '로그아웃' })).toBeVisible()
   // 다른 기기(테스트 시작 때 받은 토큰): 거절
   expect((await fetch('http://localhost:8080/api/v1/auth/me', { headers: { Authorization: `Bearer ${student.token}` } })).status).toBe(401)

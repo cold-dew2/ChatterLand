@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public UserResponse signup(SignupRequest request) {
         String role = request.role().toUpperCase(Locale.ROOT);
-        if (!role.equals("STUDENT") && !role.equals("TEACHER")) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "역할을 확인해 주세요.");
+        if (!role.equals("STUDENT") && !role.equals("TEACHER") && !role.equals("GUARDIAN")) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "역할을 확인해 주세요.");
         if (!Boolean.TRUE.equals(request.termsAgreed())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "약관 동의가 필요합니다.");
         if (role.equals("STUDENT") && (request.age() == null || request.age() < 1 || request.age() > 18))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "학생 나이를 확인해 주세요.");
@@ -76,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
         consents.validateSignupConsents(role, request.age(), request.consents());
         if (users.findByEmail(request.email()) != null) throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다.");
         int inserted = users.insertUser(role, request.centerId(), request.name().trim(), request.email().trim(),
-                passwordEncoder.encode(request.password()), request.age(), true);
+                passwordEncoder.encode(request.password()), role.equals("GUARDIAN") ? null : request.age(), true); // 보호자 계정은 나이를 받지 않는다
         if (inserted != 1) throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "계정을 생성하지 못했습니다.");
         Map<String, Object> user = users.findByEmail(request.email());
         long userId = number(user, "userId");

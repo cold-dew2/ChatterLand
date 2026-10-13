@@ -38,5 +38,15 @@ export const studentApi = {
     return apiClient.upload<Record<string, unknown>>(path, body)
   },
   conversations: (page = 0, size = 10) => apiClient.get<Record<string, unknown>>(`/api/v1/ai/conversations${queryString({ page, size })}`),
+  /** 학습 상태(저장된 연습 기록 집계. 점수·진단 없음) */
+  /** period: 7d·30d·all(누적 학습 리포트, 선생님·보호자 화면과 같은 집계) */
+  learningStatus: (period?: '7d' | '30d' | 'all') => apiClient.get<Record<string, unknown>>(`/api/v1/students/me/learning-status${queryString({ period })}`),
+  /** 저장된 연습 기록 기반 규칙형 추천(이유 포함) */
+  recommendations: () => apiClient.get<Record<string, unknown>>('/api/v1/students/me/recommendations'),
+  conversationContents: (id: string) => apiClient.get<Record<string, unknown>>(`/api/v1/ai/conversations/${encodeURIComponent(id)}/contents`),
+  endConversation: (id: string) => apiClient.post<Record<string, unknown>>(`/api/v1/ai/conversations/${encodeURIComponent(id)}/end`),
+  createGuardianLinkCode: () => apiClient.post<{ code: string; expiresAt: string; validMinutes: number }>('/api/v1/students/me/guardian-link-codes'),
+  guardians: () => apiClient.get<{ guardianId: number; name: string; linkedOn: string }[]>('/api/v1/students/me/guardians'),
+  unlinkGuardian: (guardianId: number) => apiClient.delete<void>(`/api/v1/students/me/guardians/${guardianId}`),
   history: (type?: string, page = 0, size = 10) => apiClient.get<Record<string, unknown>>(`/api/v1/students/me/history${queryString({ type, page, size })}`),
 }

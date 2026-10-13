@@ -43,6 +43,8 @@ public class TeacherController {
             @PathVariable long studentId,@RequestParam(required=false) String type,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") int size) {
         return teachers.studentAttempts(principal,studentId,type,page,size);
     }
+    @GetMapping("/students/{studentId}/learning-report") public Map<String,Object> learningReport(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable long studentId,
+            @RequestParam(required=false) String period) { return teachers.learningReport(principal,studentId,period); }
     @GetMapping("/students/{studentId}/practice-summary") public Map<String,Object> studentAttemptSummary(@AuthenticationPrincipal TokenPrincipal principal,@PathVariable long studentId) {
         return teachers.studentAttemptSummary(principal,studentId);
     }

@@ -24,6 +24,10 @@ public interface StudentMapper {
     List<Map<String,Object>> findCategories();
     List<Map<String,Object>> findExercises(@Param("categoryId") String categoryId, @Param("limit") int limit, @Param("offset") int offset);
     long countExercises(@Param("categoryId") String categoryId);
+    List<Map<String,Object>> findHomeworkExercises(@Param("homeworkIds") List<Long> homeworkIds);
+    List<Map<String,Object>> findAssignedTeachers(@Param("studentId") long studentId);
+    List<Map<String,Object>> findLearningTrend(@Param("studentId") long studentId, @Param("days") int days);
+    int countHomeworkExercisesNotDone(@Param("homeworkId") long homeworkId);
     List<Map<String,Object>> findPracticedExercises(@Param("studentId") long studentId, @Param("categoryId") String categoryId,
             @Param("limit") int limit, @Param("offset") int offset);
     long countPracticedExercises(@Param("studentId") long studentId, @Param("categoryId") String categoryId);
@@ -74,5 +78,7 @@ public interface StudentMapper {
                       @Param("content") String content, @Param("feedback") String feedback, @Param("audioPath") String audioPath);
     List<Map<String,Object>> findRecentMessages(@Param("conversationId") String conversationId, @Param("limit") int limit);
     int closeConversation(@Param("id") String id, @Param("studentId") long studentId);
+    int endConversation(@Param("id") String id, @Param("studentId") long studentId, @Param("summary") String summary);
+    long countStudentMessages(@Param("id") String id);
     int touchConversation(@Param("id") String id);
 }

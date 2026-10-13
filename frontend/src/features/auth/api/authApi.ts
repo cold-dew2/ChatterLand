@@ -1,6 +1,6 @@
 import { apiClient } from '@/shared/api/client'
 
-export type UserRole = 'STUDENT' | 'TEACHER'
+export type UserRole = 'STUDENT' | 'TEACHER' | 'GUARDIAN'
 export type User = { userId: number; role: UserRole; name: string; email: string; centerId?: number; centerName?: string }
 export type AuthResult = { accessToken: string; refreshToken: string; user: User }
 

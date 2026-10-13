@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.chld.mapper.GuardianMapper">
+  <!-- 새 코드를 만들면 이전에 만든 미사용 코드는 바로 만료(한 번에 하나만 유효) -->
+  <update id="expireOpenCodes">
+    UPDATE guardian_link_codes SET expires_at=NOW() WHERE student_id=#{studentId} AND used_at IS NULL AND expires_at &gt; NOW()
+  </update>
+  <insert id="insertLinkCode">
+    INSERT INTO guardian_link_codes(student_id,code_hash,expires_at) VALUES(#{studentId},#{codeHash},DATE_ADD(NOW(),INTERVAL #{minutes} MINUTE))
+  </insert>
+  <select id="findCodeExpiry" resultType="string">
+    SELECT DATE_FORMAT(expires_at,'%Y-%m-%dT%H:%i:%s') FROM guardian_link_codes WHERE code_hash=#{codeHash}
+  </select>
+  <select id="findStudentByOpenCode" resultType="long">
+    SELECT student_id FROM guardian_link_codes WHERE code_hash=#{codeHash} AND used_at IS NULL AND expires_at &gt; NOW() FOR UPDATE
+  </select>
+  <update id="markCodeUsed">
+    UPDATE guardian_link_codes SET used_at=NOW(),used_by=#{guardianId} WHERE code_hash=#{codeHash} AND used_at IS NULL
+  </update>
+
+  <insert id="insertLinkFailure">INSERT INTO guardian_link_failures(guardian_id) VALUES(#{guardianId})</insert>
+  <select id="countRecentLinkFailures" resultType="long">
+    SELECT COUNT(*) FROM guardian_link_failures WHERE guardian_id=#{guardianId} AND created_at &gt; DATE_SUB(NOW(),INTERVAL #{minutes} MINUTE)
+  </select>
+
+  <insert id="upsertLink">
+    INSERT INTO guardian_students(guardian_id,student_id,status) VALUES(#{guardianId},#{studentId},'ACTIVE')
+    ON DUPLICATE KEY UPDATE status='ACTIVE',linked_at=CURRENT_TIMESTAMP,unlinked_at=NULL,unlinked_by=NULL
+  </insert>
+  <update id="unlink">
+    UPDATE guardian_students SET status='UNLINKED',unlinked_at=NOW(),unlinked_by=#{by}
+    WHERE guardian_id=#{guardianId} AND student_id=#{studentId} AND status='ACTIVE'
+  </update>
+  <select id="countActiveChildren" resultType="long">
+    SELECT COUNT(*) FROM guardian_students WHERE guardian_id=#{guardianId} AND status='ACTIVE'
+  </select>
+
+  <sql id="childColumns">
+    sp.student_id AS studentId,sp.name,sp.age,c.name AS centerName,DATE_FORMAT(gs.linked_at,'%Y-%m-%d') AS linkedOn,gs.status AS linkStatus
+  </sql>
+  <!-- 보호자 ID·학생 ID·ACTIVE를 모두 확인한다(다른 보호자나 해제된 연결이면 결과 없음) -->
+  <select id="findActiveChild" resultType="map">
+    SELECT <include refid="childColumns"/>
+    FROM guardian_students gs JOIN student_profiles sp ON sp.student_id=gs.student_id JOIN centers c ON c.center_id=sp.center_id
+    WHERE gs.guardian_id=#{guardianId} AND gs.student_id=#{studentId} AND gs.status='ACTIVE'
+  </select>
+  <select id="findActiveChildren" resultType="map">
+    SELECT <include refid="childColumns"/>
+    FROM guardian_students gs JOIN student_profiles sp ON sp.student_id=gs.student_id JOIN centers c ON c.center_id=sp.center_id
+    WHERE gs.guardian_id=#{guardianId} AND gs.status='ACTIVE' ORDER BY gs.linked_at,sp.student_id
+  </select>
+  <select id="findActiveGuardians" resultType="map">
+    SELECT u.user_id AS guardianId,u.name,DATE_FORMAT(gs.linked_at,'%Y-%m-%d') AS linkedOn
+    FROM guardian_students gs JOIN users u ON u.user_id=gs.guardian_id
+    WHERE gs.student_id=#{studentId} AND gs.status='ACTIVE' AND u.status='ACTIVE' ORDER BY gs.linked_at
+  </select>
+  <select id="findChildConsents" resultType="map">
+    SELECT uc.consent_type AS type,uc.agreed,uc.policy_version AS policyVersion,
+      DATE_FORMAT(COALESCE(uc.withdrawn_at,uc.agreed_at),'%Y-%m-%d') AS changedOn
+    FROM student_profiles sp JOIN user_consents uc ON uc.user_id=sp.user_id
+    WHERE sp.student_id=#{studentId} ORDER BY uc.consent_type
+  </select>
+</mapper>

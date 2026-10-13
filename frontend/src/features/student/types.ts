@@ -15,11 +15,19 @@ export type Session = { id: string; title: string; date: string; done: boolean; 
 
 export type Homework = { id: number; title: string; type: string; description: string; dueDate: string; done: boolean; targetMinutes: number
   /** 선생님이 지정한 연습 세트(없으면 자유 숙제) */
-  exerciseId?: number | null; exerciseTitle?: string | null; attemptCount?: number }
+  exerciseId?: number | null; exerciseTitle?: string | null; attemptCount?: number
+  /** 숙제로 낸 연습 콘텐츠들(지정 순서). 없으면 자유 숙제 */
+  exercises?: PracticeSelection[]
+  /** 숙제 버전(선생님이 수정하면 늘어난다)·등록일. 숙제 알림에 쓴다 */
+  version?: number; createdAt?: string }
 
 export type PracticeCategory = { id: string; label: string; color: string; desc: string; exercises: Exercise[] }
 
-export type PracticeRunMode = 'sequential' | 'random' | 'retry'
+/** sequential: 영역 전체 순서 · random: 랜덤 · retry: 다시 연습 · selected: 고른 콘텐츠(고른 순서, 숙제 콘텐츠 포함) · search: 검색 결과 순서 */
+export type PracticeRunMode = 'sequential' | 'random' | 'retry' | 'selected' | 'search'
+
+/** 선택 연습에 쓰는 최소 정보(ID와 이름만) */
+export type PracticeSelection = { id: string; label: string; categoryName?: string }
 
 export type EvaluationMode = 'SENTENCE_MATCH' | 'PRONUNCIATION_REVIEW' | 'EXTERNAL_PROVIDER'
 
@@ -193,7 +201,9 @@ export type AppScreen =
    * 영역 연습 흐름. sequential: 영역 전체를 순서대로, random: 시작할 때 정한 무작위 순서(order: 전체 순서의 위치 목록),
    * retry: 이 영역에서 연습했던 세트(최근 연습 순). index는 이 흐름 안의 위치이고, 이전/다음 버튼만 바꾼다.
    */
-  | { kind: "practice-run"; category: PracticeCategory; mode: PracticeRunMode; index: number; order?: number[]; results: ExerciseResult[] }
+  | { kind: "practice-run"; category: PracticeCategory; mode: PracticeRunMode; index: number; order?: number[]; results: ExerciseResult[];
+      /** selected: 고른 콘텐츠 순서 · search: 검색어 · homeworkId: 숙제 연습이면 숙제 ID(숙제 연습으로 저장) · origin: 뒤로 가기가 돌아갈 화면 */
+      selection?: PracticeSelection[]; keyword?: string; homeworkId?: number; origin?: "category" | "homework" }
   /** origin: 전체 연습 찾기(browse)·숙제(homework)에서 시작했으면 뒤로 가기가 그 화면으로 간다. homeworkId가 있으면 숙제 연습으로 저장 */
   | { kind: "practice-activity"; category: PracticeCategory; exIdx: number; results: ExerciseResult[]; origin?: "browse" | "homework"; homeworkId?: number }
   | { kind: "practice-browse" }
@@ -203,11 +213,19 @@ export type AppScreen =
   | { kind: "session-exercises"; session: Session }
   | { kind: "activity"; session: Session; exIdx: number; results: ExerciseResult[] }
   | { kind: "session-result"; session: Session; results: ExerciseResult[] }
+  /** 학습 상태(마이페이지·홈에서 들어온다. 돌아갈 탭) */
+  | { kind: "learning-status"; from: "home" | "mypage" }
+  /** 마이페이지 하위 화면(각각 /student/mypage/profile, /student/mypage/consents) */
+  | { kind: "my-profile" }
+  | { kind: "my-consents" }
+  | { kind: "my-guardians" }
   | { kind: "ai-topic" }
   | { kind: "ai-chat"; topic: string };
 
 export type StudentSummary = {
   name: string; grade: string; averageMatchRate: number | null; totalAttempts: number;
   sessionsTotal: number; sessionsDone: number; streak: number;
+  /** 나이(학생 프로필)·담당 선생님 이름(실제 담당 연결이 있을 때만, 없으면 개인 학습) */
+  age?: number | null; teachers?: string[];
 };
 

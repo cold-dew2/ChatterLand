@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.chld.mapper.AccountMapper">
+  <update id="updateUserName">UPDATE users SET name=#{name} WHERE user_id=#{userId}</update>
+  <!-- 학생 계정이면 학습 프로필 이름도 같이 맞춘다(선생님 화면의 학생 이름) -->
+  <update id="updateStudentProfileName">UPDATE student_profiles SET name=#{name} WHERE user_id=#{userId}</update>
+  <select id="findNotificationSettings" resultType="map">
+    SELECT homework_assigned AS homeworkAssigned,homework_changed AS homeworkChanged,
+      homework_due_soon AS homeworkDueSoon,homework_overdue AS homeworkOverdue
+    FROM notification_settings WHERE user_id=#{userId}
+  </select>
+  <insert id="upsertNotificationSettings">
+    INSERT INTO notification_settings(user_id,homework_assigned,homework_changed,homework_due_soon,homework_overdue)
+    VALUES(#{userId},#{homeworkAssigned},#{homeworkChanged},#{homeworkDueSoon},#{homeworkOverdue})
+    ON DUPLICATE KEY UPDATE homework_assigned=VALUES(homework_assigned),homework_changed=VALUES(homework_changed),
+      homework_due_soon=VALUES(homework_due_soon),homework_overdue=VALUES(homework_overdue)
+  </insert>
+</mapper>

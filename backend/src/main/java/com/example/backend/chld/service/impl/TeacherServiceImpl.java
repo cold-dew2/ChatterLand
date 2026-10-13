@@ -11,6 +11,7 @@ import com.example.backend.chld.mapper.StudentMapper;
 import com.example.backend.chld.mapper.StudentProfileCommand;
 import com.example.backend.chld.mapper.TeacherMapper;
 import com.example.backend.chld.mapper.UserMapper;
+import com.example.backend.chld.service.LearningReportService;
 import com.example.backend.chld.service.SpeechAnalysisService;
 import com.example.backend.chld.service.SpeechFeedbackService;
 import com.example.backend.chld.service.TeacherService;
@@ -35,10 +36,12 @@ public class TeacherServiceImpl implements TeacherService {
     private final ReportPdfGenerator pdfGenerator;
     private final SpeechFeedbackService speechFeedback;
     private final PracticeContentMapper contents;
+    private final LearningReportService learningReports;
+
     public TeacherServiceImpl(TeacherMapper teachers, StudentMapper students, UserMapper users,
                               SpeechAnalysisService speechAnalysis, AudioStorageService audioStorage, ReportPdfGenerator pdfGenerator,
-                              SpeechFeedbackService speechFeedback, PracticeContentMapper contents) {
-        this.speechFeedback=speechFeedback; this.contents=contents;
+                              SpeechFeedbackService speechFeedback, PracticeContentMapper contents, LearningReportService learningReports) {
+        this.speechFeedback=speechFeedback; this.contents=contents; this.learningReports=learningReports;
         this.teachers=teachers; this.students=students; this.users=users; this.speechAnalysis=speechAnalysis; this.audioStorage=audioStorage; this.pdfGenerator=pdfGenerator;
     }
 
@@ -104,7 +107,9 @@ public class TeacherServiceImpl implements TeacherService {
     @Override public PageResponse<Map<String,Object>> homeworks(TokenPrincipal principal,Long studentId,String status,int page,int size) {
         long teacherId=requireTeacher(principal); if(studentId!=null) assignedStudent(teacherId,studentId);
         String normalized=normalizeHomeworkStatus(status); PageResponse.Window p=PageResponse.window(page,size);
-        return PageResponse.of(teachers.findHomeworks(teacherId,studentId,normalized,p.size(),p.offset()),teachers.countHomeworks(teacherId,studentId,normalized),p);
+        List<Map<String,Object>> rows=teachers.findHomeworks(teacherId,studentId,normalized,p.size(),p.offset());
+        attachHomeworkExercises(rows);
+        return PageResponse.of(rows,teachers.countHomeworks(teacherId,studentId,normalized),p);
     }
 
     /**
@@ -118,33 +123,62 @@ public class TeacherServiceImpl implements TeacherService {
     @Override public Map<String,Object> addHomework(TokenPrincipal principal,HomeworkCreateRequest request,String idempotencyKey) {
         long teacherId=requireTeacher(principal); assignedStudent(teacherId,request.studentId());
         String title=request.title().trim(), description=blankToNull(request.description());
-        // 숙제로 낼 연습 세트: 운영 중인(active) 콘텐츠만. 담당 학생 확인은 위 assignedStudent가 서버에서 한다.
-        Long exerciseId=request.exerciseId();
-        if(exerciseId!=null&&contents.findActiveExercise(exerciseId)==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"숙제로 낼 연습 콘텐츠를 찾을 수 없습니다.");
+        // 숙제로 낼 연습 세트(여러 개 가능): 운영 중인(active) 공통 콘텐츠만 참조한다. 담당 학생 확인은 위 assignedStudent가 서버에서 한다.
+        List<Long> exerciseIds=homeworkExerciseIds(request.exerciseIds(),request.exerciseId());
+        Long exerciseId=exerciseIds.isEmpty()?null:exerciseIds.get(0);
         String key=IdempotencyKeys.normalize(idempotencyKey);
         if(key==null) {
             teachers.insertHomework(teacherId,request.studentId(),title,request.type(),description,request.targetMinutes(),request.dueDate(),null,null,exerciseId);
             Map<String,Object> latest=teachers.findLatestHomework(teacherId,request.studentId(),title);
             if(latest==null) throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"숙제를 저장하지 못했습니다.");
-            return latest;
+            return linkHomeworkExercises(latest,exerciseIds);
         }
-        // 연습 세트를 지정한 경우에만 지문에 넣는다(기존 키의 지문은 그대로 유지).
+        // 연습 세트를 지정한 경우에만 지문에 넣는다(기존 키의 지문은 그대로 유지). 여러 개면 목록 전체를 넣는다.
         String hash=exerciseId==null?IdempotencyKeys.fingerprint(request.studentId(),title,request.type(),description,request.targetMinutes(),request.dueDate())
-                :IdempotencyKeys.fingerprint(request.studentId(),title,request.type(),description,request.targetMinutes(),request.dueDate(),exerciseId);
+                :exerciseIds.size()==1?IdempotencyKeys.fingerprint(request.studentId(),title,request.type(),description,request.targetMinutes(),request.dueDate(),exerciseId)
+                :IdempotencyKeys.fingerprint(request.studentId(),title,request.type(),description,request.targetMinutes(),request.dueDate(),exerciseIds.toString());
         Map<String,Object> existing=teachers.findHomeworkByRequestKey(teacherId,key);
-        if(existing!=null) return replayHomework(existing,hash);
+        if(existing!=null) return linkHomeworkExercises(replayHomework(existing,hash),exerciseIds);
         try {
             teachers.insertHomework(teacherId,request.studentId(),title,request.type(),description,request.targetMinutes(),request.dueDate(),key,hash,exerciseId);
         } catch(DuplicateKeyException concurrent) {
             // 같은 키의 요청이 동시에 도착해 다른 요청이 먼저 저장했다.
             existing=teachers.findHomeworkByRequestKey(teacherId,key);
             if(existing==null) throw new ResponseStatusException(HttpStatus.CONFLICT,"같은 숙제 등록 요청을 처리하고 있어요. 목록을 새로 불러와 확인해 주세요.");
-            return replayHomework(existing,hash);
+            return linkHomeworkExercises(replayHomework(existing,hash),exerciseIds);
         }
         Map<String,Object> saved=teachers.findHomeworkByRequestKey(teacherId,key);
         if(saved==null) throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"숙제를 저장하지 못했습니다.");
         saved.remove("requestHash");
-        return saved;
+        return linkHomeworkExercises(saved,exerciseIds);
+    }
+
+    /** 숙제 콘텐츠 목록: exerciseIds(여러 개)가 우선, 없으면 기존 단일 exerciseId. 중복은 처음 순서대로 한 번만, 운영 중인 콘텐츠만. */
+    private List<Long> homeworkExerciseIds(List<Long> exerciseIds,Long exerciseId) {
+        List<Long> ids=new ArrayList<>(new LinkedHashSet<>(exerciseIds!=null&&!exerciseIds.isEmpty()?exerciseIds:exerciseId==null?List.of():List.of(exerciseId)));
+        ids.removeIf(Objects::isNull);
+        for(Long id:ids) if(contents.findActiveExercise(id)==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"숙제로 낼 연습 콘텐츠를 찾을 수 없습니다.");
+        return ids;
+    }
+
+    /** 숙제-콘텐츠 연결을 저장(이미 있으면 그대로: 재전송·부분 저장 복구)하고 응답에 콘텐츠 목록을 붙인다. */
+    private Map<String,Object> linkHomeworkExercises(Map<String,Object> homework,List<Long> exerciseIds) {
+        if(!exerciseIds.isEmpty()) teachers.insertHomeworkExercises(((Number)homework.get("homeworkId")).longValue(),exerciseIds);
+        attachHomeworkExercises(List.of(homework));
+        return homework;
+    }
+
+    /** 숙제 응답에 연결된 연습 콘텐츠 목록(exercises: exerciseId·title·categoryId·categoryName)을 붙인다. 기존 exerciseId·exerciseTitle 필드는 그대로 둔다. */
+    private void attachHomeworkExercises(List<Map<String,Object>> homeworks) {
+        if(homeworks.isEmpty()) return;
+        List<Long> ids=homeworks.stream().map(row->((Number)row.get("homeworkId")).longValue()).toList();
+        Map<Long,List<Map<String,Object>>> byHomework=new LinkedHashMap<>();
+        // 조회 결과(세션 캐시에서 같은 객체가 다시 올 수 있음)는 바꾸지 않고 복사본에서 숙제 ID를 뺀다.
+        for(Map<String,Object> row:students.findHomeworkExercises(ids)) {
+            Map<String,Object> exercise=new LinkedHashMap<>(row);
+            byHomework.computeIfAbsent(((Number)exercise.remove("homeworkId")).longValue(),k->new ArrayList<>()).add(exercise);
+        }
+        for(Map<String,Object> homework:homeworks) homework.put("exercises",byHomework.getOrDefault(((Number)homework.get("homeworkId")).longValue(),List.of()));
     }
 
     private Map<String,Object> replayHomework(Map<String,Object> existing,String hash) {
@@ -164,17 +198,28 @@ public class TeacherServiceImpl implements TeacherService {
     @Override public Map<String,Object> updateHomework(TokenPrincipal principal,long homeworkId,HomeworkUpdateRequest request) {
         long teacherId=requireTeacher(principal); Map<String,Object> existing=teachers.findHomework(teacherId,homeworkId);
         if(existing==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"숙제를 찾을 수 없습니다.");
-        if(request.title()==null&&request.type()==null&&request.description()==null&&request.targetMinutes()==null&&request.dueDate()==null&&request.status()==null&&request.done()==null)
+        if(request.title()==null&&request.type()==null&&request.description()==null&&request.targetMinutes()==null&&request.dueDate()==null&&request.status()==null&&request.done()==null
+                &&request.exerciseIds()==null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"변경할 내용이 없습니다.");
         String status=request.status()==null?null:normalizeHomeworkStatus(request.status());
         if(request.done()!=null) status=null;
-        int updated=teachers.updateHomework(teacherId,homeworkId,request.title(),request.type(),request.description(),request.targetMinutes(),request.dueDate(),status,request.done(),request.version());
+        // 콘텐츠 변경(선택): 보내면 그 목록으로 바꾸고, 보내지 않으면 기존 콘텐츠를 그대로 둔다.
+        List<Long> exerciseIds=request.exerciseIds()==null?null:homeworkExerciseIds(request.exerciseIds(),null);
+        int updated=teachers.updateHomework(teacherId,homeworkId,request.title(),request.type(),request.description(),request.targetMinutes(),request.dueDate(),status,request.done(),request.version(),
+                exerciseIds!=null,exerciseIds==null||exerciseIds.isEmpty()?null:exerciseIds.get(0));
         if(updated!=1) {
             if(teachers.findHomework(teacherId,homeworkId)==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"숙제를 찾을 수 없습니다.");
             // 화면이 조회한 뒤 다른 곳(다른 탭·학생 완료 처리 등)에서 먼저 바뀌었다. 덮어쓰지 않는다.
             throw new ConflictException(ConflictException.VERSION_CONFLICT,"다른 곳에서 먼저 바뀐 숙제예요. 최신 내용을 불러왔으니 확인한 뒤 다시 저장해 주세요.");
         }
-        return teachers.findHomework(teacherId,homeworkId);
+        // 버전 확인을 통과한 수정에서만 연결을 바꾼다(지운 콘텐츠의 지난 숙제 연습 기록은 그대로 남는다).
+        if(exerciseIds!=null) {
+            teachers.deleteHomeworkExercises(homeworkId);
+            if(!exerciseIds.isEmpty()) teachers.insertHomeworkExercises(homeworkId,exerciseIds);
+        }
+        Map<String,Object> saved=teachers.findHomework(teacherId,homeworkId);
+        attachHomeworkExercises(List.of(saved));
+        return saved;
     }
 
     /** 조건부 DELETE 한 문장(version 비교)으로 지운다. 수정과 같은 이유(MariaDB 스냅샷 충돌)로 트랜잭션으로 묶지 않는다. */
@@ -280,6 +325,12 @@ public class TeacherServiceImpl implements TeacherService {
         if(t!=null&&!Set.of("PRACTICE","SELF","LESSON","HOMEWORK").contains(t)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"연습 종류는 SELF·LESSON·HOMEWORK·PRACTICE(구분 전 기록)입니다.");
         PageResponse.Window p=PageResponse.window(page,size);
         return PageResponse.of(teachers.findStudentAttempts(studentId,t,p.size(),p.offset()),teachers.countStudentAttempts(studentId,t),p);
+    }
+
+    /** 담당 학생의 누적 학습 리포트. 학생 본인 화면(학습 현황)과 같은 집계를 쓴다. 담당이 아니면 403 */
+    @Override public Map<String,Object> learningReport(TokenPrincipal principal,long studentId,String period) {
+        long teacherId=requireTeacher(principal); assignedStudent(teacherId,studentId);
+        return learningReports.report(studentId,period);
     }
 
     @Override public Map<String,Object> studentAttemptSummary(TokenPrincipal principal,long studentId) {

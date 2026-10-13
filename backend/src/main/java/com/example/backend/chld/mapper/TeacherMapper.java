@@ -45,7 +45,14 @@ public interface TeacherMapper {
                        @Param("title") String title, @Param("type") String type, @Param("description") String description,
                        @Param("targetMinutes") Integer targetMinutes, @Param("dueDate") LocalDate dueDate,
                        @Param("status") String status, @Param("done") Boolean done,
-                       @Param("version") Integer version);
+                       @Param("version") Integer version, @Param("exerciseIdSet") boolean exerciseIdSet, @Param("exerciseId") Long exerciseId);
+    /** 콘텐츠를 바꾸지 않는 기존 호출 */
+    default int updateHomework(long teacherId, long homeworkId, String title, String type, String description, Integer targetMinutes, LocalDate dueDate,
+                               String status, Boolean done, Integer version) {
+        return updateHomework(teacherId, homeworkId, title, type, description, targetMinutes, dueDate, status, done, version, false, null);
+    }
+    int insertHomeworkExercises(@Param("homeworkId") long homeworkId, @Param("exerciseIds") List<Long> exerciseIds);
+    int deleteHomeworkExercises(@Param("homeworkId") long homeworkId);
     int deleteHomework(@Param("teacherId") long teacherId, @Param("homeworkId") long homeworkId, @Param("version") int version);
     Map<String,Object> analytics(@Param("studentId") long studentId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
     List<Map<String,Object>> areaAnalytics(@Param("studentId") long studentId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);

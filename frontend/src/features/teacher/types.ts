@@ -1,4 +1,5 @@
 import type { SpeechAnalysis } from '@/features/student/types'
+import type { SelectedContent } from '@/features/practiceContent/utils/selection'
 
 export type TeacherView = 'home' | 'students' | 'homework' | 'analytics'
 
@@ -18,6 +19,10 @@ export type Homework = {
   /** 숙제로 낸 연습 세트(없으면 자유 숙제) */
   exerciseId?: number | null
   exerciseTitle?: string | null
+  /** 숙제로 낸 연습 콘텐츠들(지정 순서, 공통 콘텐츠 참조) */
+  exercises?: SelectedContent[]
+  /** 등록·수정할 때 보내는 콘텐츠 ID 목록(응답에는 없다) */
+  exerciseIds?: number[]
 }
 
 export type StudentFormValues = {

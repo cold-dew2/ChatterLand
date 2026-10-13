@@ -27,7 +27,7 @@ export function validateSignupConsents(values: SignupConsentValues, needsGuardia
 
 /** 회원가입 동의 영역. 학생은 음성·AI 선택 동의와 (만 14세 미만) 법정대리인 확인을 함께 받는다. */
 export default function SignupConsentFields({ role, needsGuardian, values, errors, onChange }: {
-  role: "student" | "teacher"; needsGuardian: boolean; values: SignupConsentValues; errors: SignupConsentErrors;
+  role: "student" | "teacher" | "guardian"; needsGuardian: boolean; values: SignupConsentValues; errors: SignupConsentErrors;
   onChange: (values: SignupConsentValues) => void;
 }) {
   const [detail, setDetail] = useState<ConsentType | null>(null);

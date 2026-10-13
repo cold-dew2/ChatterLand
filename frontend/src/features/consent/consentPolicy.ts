@@ -72,6 +72,6 @@ export const consentLabels: Record<ConsentType, string> = {
   AI_FEEDBACK: '[선택] AI 학습 피드백 외부 전송',
 }
 
-export function guardianRequired(role: 'student' | 'teacher', age: number | null) {
+export function guardianRequired(role: 'student' | 'teacher' | 'guardian', age: number | null) {
   return role === 'student' && (age === null || age < GUARDIAN_REQUIRED_UNDER_AGE)
 }

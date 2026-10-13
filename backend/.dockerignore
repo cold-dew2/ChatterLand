@@ -1,0 +1,12 @@
+# 비밀값·로컬 데이터·빌드 산출물은 이미지 빌드 컨텍스트에서 제외한다.
+.env
+.env.*
+!.env.example
+storage/
+build/
+bin/
+.gradle/
+.idea/
+.apt_generated*
+*.log
+scripts/

@@ -32,6 +32,8 @@ export const teacherApi = {
   /** version(필수): 화면이 불러온 숙제 버전. 그 사이 수정·완료되었으면 지우지 않고 409(VERSION_CONFLICT). */
   deleteHomework: (id: number, version: number) => apiClient.delete<void>(`/api/v1/teachers/me/homeworks/${id}${queryString({ version })}`),
   analytics: (id: number, startDate: string, endDate: string) => apiClient.get<Record<string, unknown>>(`/api/v1/teachers/me/students/${id}/analytics${queryString({ startDate, endDate })}`),
+  /** 누적 학습 리포트(학생 본인 학습 현황과 같은 집계). period: 7d·30d·all */
+  learningReport: (id: number, period?: '7d' | '30d' | 'all') => apiClient.get<Record<string, unknown>>(`/api/v1/teachers/me/students/${id}/learning-report${queryString({ period })}`),
   report: (id: number, startDate: string, endDate: string) => apiClient.get<Record<string, unknown>>(`/api/v1/teachers/me/students/${id}/report${queryString({ startDate, endDate })}`),
   speechAnalyses: (studentId: number, reviewStatus?: string, page = 0, size = 10) => apiClient.get<{ content: TeacherSpeechAnalysis[]; totalPages: number; totalElements: number }>(`/api/v1/teachers/me/students/${studentId}/speech-analyses${queryString({ reviewStatus, page, size })}`),
   speechAnalysisAudio: (analysisId: string) => apiClient.get<Blob>(`/api/v1/teachers/me/speech-analyses/${encodeURIComponent(analysisId)}/audio`),

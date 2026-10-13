@@ -15,6 +15,7 @@ import ErrorState from "@/shared/components/feedback/ErrorState";
 import LoadingState from "@/shared/components/feedback/LoadingState";
 import Mascot from "@/shared/components/mascot/Mascot";
 import Tabs from "@/shared/components/tabs/Tabs";
+import CardGrid from "@/shared/components/cardGrid/CardGrid";
 
 type HistoryFilter = "전체" | "대화" | "단어" | "숙제";
 
@@ -91,17 +92,19 @@ export default function StudentHistoryScreen() {
       <div className="px-5 space-y-2 flex-1">
         {loading && history.length === 0 && <LoadingState label="기록을 불러오고 있어요…" />}
         {error && <ErrorState message={error} onRetry={retry} />}
-        {visibleHistory.map((item) => (
-          <Card key={`${item.type}-${item.id}`} className="flex min-h-[72px] items-center gap-3 px-4 py-3.5" padding="none">
-            <HistoryItemIcon type={item.type} />
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-900 truncate">{item.title}</p>
-              {item.attemptType && <p className="mt-0.5"><Badge tone={item.attemptType === "HOMEWORK" ? "info" : "neutral"}>{attemptTypeLabel[item.attemptType]}</Badge></p>}
-              <p className="text-xs text-gray-400 mt-0.5">{item.date}{item.time ? ` · ${item.time}` : ""}</p>
-            </div>
-            <div className="shrink-0 text-right"><HistoryResult item={item} /></div>
-          </Card>
-        ))}
+        {visibleHistory.length > 0 && <CardGrid gap="sm">
+          {visibleHistory.map((item) => (
+            <Card key={`${item.type}-${item.id}`} className="flex min-h-[72px] items-center gap-3 px-4 py-3.5" padding="none">
+              <HistoryItemIcon type={item.type} />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-900 truncate">{item.title}</p>
+                {item.attemptType && <p className="mt-0.5"><Badge tone={item.attemptType === "HOMEWORK" ? "info" : "neutral"}>{attemptTypeLabel[item.attemptType]}</Badge></p>}
+                <p className="text-xs text-gray-400 mt-0.5">{item.date}{item.time ? ` · ${item.time}` : ""}</p>
+              </div>
+              <div className="shrink-0 text-right"><HistoryResult item={item} /></div>
+            </Card>
+          ))}
+        </CardGrid>}
 
         {!loading && !error && visibleHistory.length === 0 && (
           filter === "전체"

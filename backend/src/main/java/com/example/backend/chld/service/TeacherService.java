@@ -27,6 +27,8 @@ public interface TeacherService {
     PageResponse<Map<String,Object>> studentAttempts(TokenPrincipal principal,long studentId,String type,int page,int size);
     /** 담당 학생의 연습 횟수 요약(전체·자율·숙제·연습한 세트 수·최근 연습 시각) */
     Map<String,Object> studentAttemptSummary(TokenPrincipal principal,long studentId);
+    /** 담당 학생의 누적 학습 리포트(period: 7d·30d·all) */
+    Map<String,Object> learningReport(TokenPrincipal principal,long studentId,String period);
     /** 담당 학생 분석의 AI 학습 피드백(학생과 같은 저장 결과, AI 호출 없음). 담당이 아니면 404. */
     Map<String,Object> speechFeedback(TokenPrincipal principal,String analysisId);
     void deleteHomework(TokenPrincipal principal,long homeworkId,int version);

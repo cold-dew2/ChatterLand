@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.chld.mapper.LearningReportMapper">
+  <!-- 기간 조건(모든 집계 공통). from이 없으면 전체 기간 -->
+  <sql id="range"><if test="from != null">AND pa.created_at &gt;= #{from} </if>AND pa.created_at &lt; #{to}</sql>
+  <!--
+    반복 연습한 콘텐츠: 같은 문항을 두 번 이상 녹음했거나(재시도), 서로 다른 날 다시 연습한 콘텐츠.
+    문항이 여러 개인 콘텐츠를 한 번 연습하면 기록이 여러 행이므로 행 수만으로는 반복으로 보지 않는다.
+  -->
+  <sql id="repeatedCondition">COUNT(*) &gt; COUNT(DISTINCT pa.item_id) OR COUNT(DISTINCT DATE(pa.created_at)) &gt; 1</sql>
+
+  <select id="findTotals" resultType="map">
+    SELECT COUNT(*) AS totalAttempts,
+      COUNT(DISTINCT pa.exercise_id) AS practicedExercises,
+      COUNT(DISTINCT CASE WHEN e.active=TRUE THEN pa.exercise_id END) AS practicedActiveExercises,
+      COUNT(DISTINCT DATE(pa.created_at)) AS practiceDays,
+      COALESCE(SUM(pa.attempt_type='HOMEWORK'),0) AS homeworkAttempts,
+      (SELECT COUNT(*) FROM (
+        SELECT pa.exercise_id FROM practice_attempts pa WHERE pa.student_id=#{studentId} <include refid="range"/>
+        GROUP BY pa.exercise_id HAVING <include refid="repeatedCondition"/>) r) AS retriedExercises,
+      DATE_FORMAT(MIN(pa.created_at),'%Y-%m-%d') AS firstPracticedOn,
+      DATE_FORMAT(MAX(pa.created_at),'%Y-%m-%d') AS lastPracticedOn
+    FROM practice_attempts pa JOIN exercises e ON e.exercise_id=pa.exercise_id
+    WHERE pa.student_id=#{studentId} <include refid="range"/>
+  </select>
+
+  <!-- 활성 영역 전부(기록이 없어도 0으로 나온다). 진행 현황은 활성 콘텐츠 기준 -->
+  <select id="findByCategory" resultType="map">
+    SELECT c.category_id AS categoryId,c.name,
+      COALESCE(a.attempts,0) AS attempts,COALESCE(a.practicedExercises,0) AS practicedExercises,
+      (SELECT COUNT(*) FROM exercises x WHERE x.category_id=c.category_id AND x.active=TRUE) AS totalExercises
+    FROM practice_categories c
+    LEFT JOIN (
+      SELECT e.category_id,COUNT(*) AS attempts,COUNT(DISTINCT CASE WHEN e.active=TRUE THEN pa.exercise_id END) AS practicedExercises
+      FROM practice_attempts pa JOIN exercises e ON e.exercise_id=pa.exercise_id
+      WHERE pa.student_id=#{studentId} <include refid="range"/>
+      GROUP BY e.category_id
+    ) a ON a.category_id=c.category_id
+    WHERE c.active=TRUE ORDER BY c.sort_order
+  </select>
+
+  <!-- 일별 추이(기록이 있는 날만). SELECT·GROUP BY 식을 같게 둬 MySQL ONLY_FULL_GROUP_BY에서도 동작한다 -->
+  <select id="findDaily" resultType="map">
+    SELECT DATE_FORMAT(pa.created_at,'%Y-%m-%d') AS date,COUNT(*) AS attempts,COUNT(DISTINCT pa.exercise_id) AS exercises
+    FROM practice_attempts pa WHERE pa.student_id=#{studentId} <include refid="range"/>
+    GROUP BY DATE_FORMAT(pa.created_at,'%Y-%m-%d') ORDER BY DATE_FORMAT(pa.created_at,'%Y-%m-%d')
+  </select>
+
+  <select id="findRepeated" resultType="map">
+    SELECT pa.exercise_id AS exerciseId,e.title,e.category_id AS categoryId,c.name AS categoryName,
+      COUNT(*) AS attempts,COUNT(DISTINCT DATE(pa.created_at)) AS days,
+      DATE_FORMAT(MAX(pa.created_at),'%Y-%m-%d') AS lastPracticedOn
+    FROM practice_attempts pa JOIN exercises e ON e.exercise_id=pa.exercise_id JOIN practice_categories c ON c.category_id=e.category_id
+    WHERE pa.student_id=#{studentId} <include refid="range"/>
+    GROUP BY pa.exercise_id,e.title,e.category_id,c.name
+    HAVING <include refid="repeatedCondition"/>
+    ORDER BY COUNT(*) DESC,MAX(pa.created_at) DESC LIMIT #{limit}
+  </select>
+
+  <!-- 최근 기록. 텍스트 일치율은 넣지 않는다(리포트는 학습량만 다룬다) -->
+  <select id="findRecent" resultType="map">
+    SELECT pa.attempt_id AS attemptId,pa.exercise_id AS exerciseId,e.title,e.category_id AS categoryId,c.name AS categoryName,
+      pa.attempt_type AS attemptType,DATE_FORMAT(pa.created_at,'%Y-%m-%d %H:%i') AS practicedAt
+    FROM practice_attempts pa JOIN exercises e ON e.exercise_id=pa.exercise_id JOIN practice_categories c ON c.category_id=e.category_id
+    WHERE pa.student_id=#{studentId} <include refid="range"/>
+    ORDER BY pa.created_at DESC,pa.attempt_id DESC LIMIT #{limit}
+  </select>
+
+  <select id="countActiveExercises" resultType="long">SELECT COUNT(*) FROM exercises WHERE active=TRUE</select>
+</mapper>

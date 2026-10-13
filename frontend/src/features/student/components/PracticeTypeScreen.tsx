@@ -4,6 +4,7 @@ import BackButton from "@/shared/components/backButton/BackButton";
 import { cardClassName } from "@/shared/components/card/Card";
 import Mascot from "@/shared/components/mascot/Mascot";
 import { PageTitle } from "@/shared/components/pageHeader/PageHeader";
+import CardGrid from "@/shared/components/cardGrid/CardGrid";
 
 function TypeCard({ icon, title, description, onClick }: { icon: ReactNode; title: string; description: string; onClick: () => void }) {
   return (
@@ -28,14 +29,14 @@ export default function PracticeTypeScreen({ onSelect, onBack }: {
 
       <PageTitle title="연습 유형 선택" description="어떤 연습을 할까요?" className="mt-5 mb-6" />
 
-      <div className="space-y-3">
+      <CardGrid columns={3}>
         <TypeCard onClick={() => onSelect("browse")} title="전체 연습 찾기" description="발음 유형·난이도로 골라서 스스로 연습해요"
           icon={<span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[30px] bg-[var(--meadow-100)] text-[var(--meadow-800)]" aria-hidden="true"><Search size={28} /></span>} />
         <TypeCard onClick={() => onSelect("ai")} title="AI 대화하기" description="AI 로봇과 대화를 연습해요"
           icon={<Mascot size={64} />} />
         <TypeCard onClick={() => onSelect("word")} title="단어 말하기" description="발음·어휘력·유창성·표현력·이해력을 영역별로 연습해요"
           icon={<span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[30px] bg-[var(--coral-100)] text-[var(--coral-600)]" aria-hidden="true"><Apple size={30} /></span>} />
-      </div>
+      </CardGrid>
     </div>
   );
 }

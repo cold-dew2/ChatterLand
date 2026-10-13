@@ -10,6 +10,7 @@ import ErrorState from "@/shared/components/feedback/ErrorState";
 import LoadingState from "@/shared/components/feedback/LoadingState";
 import MenuCard from "@/shared/components/menuCard/MenuCard";
 import PageHeader from "@/shared/components/pageHeader/PageHeader";
+import CardGrid from "@/shared/components/cardGrid/CardGrid";
 
 export default function PracticeListScreen({ onSelect, onBack }: { onSelect: (c: PracticeCategory) => void; onBack: () => void }) {
   const [categories, setCategories] = useState<PracticeCategory[]>([]);
@@ -35,9 +36,13 @@ export default function PracticeListScreen({ onSelect, onBack }: { onSelect: (c:
         {state === "loading" && <LoadingState label="연습 목록을 불러오고 있어요…" />}
         {state === "error" && <ErrorState message={error} onRetry={() => { setState("loading"); setRetryKey((value) => value + 1); }} />}
         {state === "ready" && categories.length === 0 && <EmptyState title="준비된 연습이 없어요" />}
-        {categories.map((cat) => (
-          <MenuCard key={cat.id} icon={Mic} color={cat.color} title={cat.label} description={cat.desc} onClick={() => onSelect(cat)} />
-        ))}
+        {categories.length > 0 && (
+          <CardGrid columns={3}>
+            {categories.map((cat) => (
+              <MenuCard key={cat.id} icon={Mic} color={cat.color} title={cat.label} description={cat.desc} onClick={() => onSelect(cat)} />
+            ))}
+          </CardGrid>
+        )}
       </div>
     </div>
   );

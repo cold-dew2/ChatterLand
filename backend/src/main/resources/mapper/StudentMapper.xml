@@ -12,6 +12,17 @@
     FROM student_profiles sp
     WHERE sp.user_id=#{userId}
   </select>
+  <!-- 담당 선생님(담당 연결이 살아 있는 경우만) -->
+  <select id="findAssignedTeachers" resultType="map">
+    SELECT u.user_id AS teacherId,u.name FROM teacher_students ts JOIN users u ON u.user_id=ts.teacher_id
+    WHERE ts.student_id=#{studentId} AND ts.status='ACTIVE' AND u.status='ACTIVE' ORDER BY ts.created_at
+  </select>
+  <!-- 학습 상태 최근 14일 추이(기존 응답 키 trend). 기간별 집계는 LearningReportMapper -->
+  <select id="findLearningTrend" resultType="map">
+    SELECT DATE_FORMAT(created_at,'%Y-%m-%d') AS date,COUNT(*) AS attempts FROM practice_attempts
+    WHERE student_id=#{studentId} AND created_at &gt;= DATE_SUB(CURDATE(),INTERVAL #{days} DAY)
+    GROUP BY DATE_FORMAT(created_at,'%Y-%m-%d') ORDER BY DATE_FORMAT(created_at,'%Y-%m-%d')
+  </select>
   <select id="findActivityDates" resultType="java.time.LocalDate">
     SELECT activity_date FROM (
       SELECT DATE(created_at) AS activity_date FROM practice_attempts WHERE student_id=#{studentId}
@@ -34,6 +45,7 @@
   <select id="findHomeworks" resultType="map">
     SELECT h.homework_id AS homeworkId,h.homework_id AS id,h.title,h.type,h.description,h.target_minutes AS targetMinutes,
       DATE_FORMAT(h.due_date,'%Y-%m-%d') AS dueDate,h.status,(h.status='COMPLETED') AS done,h.exercise_id AS exerciseId,e.title AS exerciseTitle,
+      h.version,DATE_FORMAT(h.created_at,'%Y-%m-%d') AS createdAt,
       (SELECT COUNT(*) FROM practice_attempts pa WHERE pa.homework_id=h.homework_id) AS attemptCount
     FROM homeworks h LEFT JOIN exercises e ON e.exercise_id=h.exercise_id WHERE h.student_id=#{studentId}
     ORDER BY CASE WHEN status='COMPLETED' THEN 1 ELSE 0 END,due_date,homework_id DESC
@@ -46,6 +58,20 @@
     UPDATE homeworks SET status='COMPLETED',version=version+1
     WHERE student_id=#{studentId} AND homework_id=#{homeworkId} AND status&lt;&gt;'COMPLETED'
   </update>
+  <!-- 숙제에 연결된 연습 콘텐츠(숙제별 지정 순서) -->
+  <select id="findHomeworkExercises" resultType="map">
+    SELECT he.homework_id AS homeworkId,e.exercise_id AS exerciseId,e.title,e.category_id AS categoryId,c.name AS categoryName
+    FROM homework_exercises he JOIN exercises e ON e.exercise_id=he.exercise_id JOIN practice_categories c ON c.category_id=e.category_id
+    WHERE he.homework_id IN <foreach collection="homeworkIds" item="id" open="(" separator="," close=")">#{id}</foreach>
+    ORDER BY he.homework_id,he.sort_order,e.exercise_id
+  </select>
+  <!-- 숙제 자동 완료 판단: 아직 정상 완료(COMPLETED, 판정 보류 아님)된 숙제 연습이 없는 연결 콘텐츠 수 -->
+  <select id="countHomeworkExercisesNotDone" resultType="int">
+    SELECT COUNT(*) FROM homework_exercises he WHERE he.homework_id=#{homeworkId} AND NOT EXISTS (
+      SELECT 1 FROM practice_attempts pa JOIN speech_analyses sa ON sa.analysis_id=pa.analysis_id
+      WHERE pa.homework_id=he.homework_id AND pa.exercise_id=he.exercise_id AND sa.status='COMPLETED'
+        AND (sa.assessment_status IS NULL OR sa.assessment_status&lt;&gt;'HOLD'))
+  </select>
   <select id="findHomework" resultType="map">
     SELECT homework_id AS homeworkId,homework_id AS id,title,type,description,target_minutes AS targetMinutes,
       DATE_FORMAT(due_date,'%Y-%m-%d') AS dueDate,status,(status='COMPLETED') AS done,exercise_id AS exerciseId
@@ -200,11 +226,11 @@
     INSERT INTO conversations(conversation_id,student_id,topic) VALUES(#{id},#{studentId},#{topic})
   </insert>
   <select id="findConversation" resultType="map">
-    SELECT conversation_id AS conversationId,student_id AS studentId,topic,status,created_at AS createdAt
+    SELECT conversation_id AS conversationId,student_id AS studentId,topic,status,summary,created_at AS createdAt
     FROM conversations WHERE conversation_id=#{id} AND student_id=#{studentId}
   </select>
   <select id="findConversations" resultType="map">
-    SELECT c.conversation_id AS conversationId,c.topic,c.status,c.created_at AS createdAt,c.updated_at AS updatedAt,
+    SELECT c.conversation_id AS conversationId,c.topic,c.status,c.summary,c.created_at AS createdAt,c.updated_at AS updatedAt,
       (SELECT content FROM conversation_messages m WHERE m.conversation_id=c.conversation_id ORDER BY m.message_id DESC LIMIT 1) AS lastMessage
     FROM conversations c WHERE c.student_id=#{studentId} ORDER BY c.updated_at DESC LIMIT #{limit} OFFSET #{offset}
   </select>
@@ -218,6 +244,13 @@
       SELECT message_id,speaker,content,feedback,created_at FROM conversation_messages
       WHERE conversation_id=#{conversationId} ORDER BY message_id DESC LIMIT #{limit}
     ) recent ORDER BY message_id ASC
+  </select>
+  <!-- 요약을 만든 뒤에만 종료(ACTIVE일 때만) -->
+  <update id="endConversation">
+    UPDATE conversations SET status='CLOSED',summary=#{summary},ended_at=NOW() WHERE conversation_id=#{id} AND student_id=#{studentId} AND status='ACTIVE'
+  </update>
+  <select id="countStudentMessages" resultType="long">
+    SELECT COUNT(*) FROM conversation_messages WHERE conversation_id=#{id} AND speaker='STUDENT'
   </select>
   <update id="closeConversation">UPDATE conversations SET status='CLOSED' WHERE conversation_id=#{id} AND student_id=#{studentId}</update>
   <update id="touchConversation">UPDATE conversations SET updated_at=CURRENT_TIMESTAMP WHERE conversation_id=#{id}</update>

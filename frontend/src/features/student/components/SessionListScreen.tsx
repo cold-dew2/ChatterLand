@@ -12,6 +12,7 @@ import ErrorState from "@/shared/components/feedback/ErrorState";
 import LoadingState from "@/shared/components/feedback/LoadingState";
 import MenuCard from "@/shared/components/menuCard/MenuCard";
 import PageHeader from "@/shared/components/pageHeader/PageHeader";
+import CardGrid from "@/shared/components/cardGrid/CardGrid";
 
 export default function SessionListScreen({ onSelect, onBack }: { onSelect: (s: Session) => void; onBack: () => void }) {
   const [sessionItems, setSessionItems] = useState<Session[]>([]);
@@ -45,16 +46,22 @@ export default function SessionListScreen({ onSelect, onBack }: { onSelect: (s: 
         {loading && sessionItems.length === 0 && <LoadingState label="수업 일정을 불러오고 있어요…" />}
         {!loading && !error && sessionItems.length === 0 && <EmptyState title="예정된 수업이 없어요" description="새 수업이 배정되면 이곳에 표시돼요." />}
         {!error && upcoming.length > 0 && <p className="text-xs font-bold text-[var(--ink-600)]">예정된 수업</p>}
-        {upcoming.map((s) => (
-          <MenuCard key={s.id} icon={ClipboardList} color="var(--brand-blue)" title={s.title}
-            description={`${s.date} · 활동 ${s.exercises.length}개`} onClick={() => onSelect(s)} />
-        ))}
+        {upcoming.length > 0 && (
+          <CardGrid>
+            {upcoming.map((s) => (
+              <MenuCard key={s.id} icon={ClipboardList} color="var(--brand-blue)" title={s.title}
+                description={`${s.date} · 활동 ${s.exercises.length}개`} onClick={() => onSelect(s)} />
+            ))}
+          </CardGrid>
+        )}
         {completed.length > 0 && (
           <>
             <p className="pt-3 text-xs font-bold text-[var(--ink-600)]">완료된 세션</p>
-            {completed.map((s) => (
-              <MenuCard key={s.id} icon={CheckCircle} color="var(--ink-400)" title={s.title} description={s.date} muted onClick={() => onSelect(s)} />
-            ))}
+            <CardGrid>
+              {completed.map((s) => (
+                <MenuCard key={s.id} icon={CheckCircle} color="var(--ink-400)" title={s.title} description={s.date} muted onClick={() => onSelect(s)} />
+              ))}
+            </CardGrid>
           </>
         )}
         {hasMore && !error && <Button variant="secondary" fullWidth loading={loading} onClick={() => { setLoading(true); setPage((current) => current + 1); }}>더 보기</Button>}

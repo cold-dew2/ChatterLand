@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { PracticeContent } from "@/features/student/types";
-import PracticeContentPicker from "@/features/teacher/components/PracticeContentPicker";
+import type { SelectedContent } from "@/features/practiceContent/utils/selection";
+import PracticeContentPicker, { SelectedContentList } from "@/features/teacher/components/PracticeContentPicker";
 import type { Homework, Student } from "@/features/teacher/types";
 import { localDateInput } from "@/features/teacher/utils/mappers";
 import Button from "@/shared/components/button/Button";
@@ -34,11 +34,18 @@ export default function HomeworkModal({ students, preStudentId, initialHomework,
   const [minutes, setMinutes] = useState(String(initialHomework?.targetMinutes ?? 10));
   const [dueDate, setDueDate] = useState(initialHomework?.dueDate ?? defaultDueDate());
   const [submitting, setSubmitting] = useState(false);
-  const [content, setContentChoice] = useState<PracticeContent | null>(null);
+  // 숙제 콘텐츠(여러 개, 고른 순서). 수정이면 지금 연결된 콘텐츠로 시작한다.
+  const initialContents: SelectedContent[] = initialHomework?.exercises
+    ?? (initialHomework?.exerciseId ? [{ id: String(initialHomework.exerciseId), label: initialHomework.exerciseTitle ?? "연습" }] : []);
+  const [contents, setContents] = useState<SelectedContent[]>(initialContents);
+  const [editingContents, setEditingContents] = useState(!initialHomework);
+  const [confirmRemoval, setConfirmRemoval] = useState(false);
+  const removedOriginals = initialContents.filter((item) => !contents.some((content) => content.id === item.id));
+  const contentsChanged = contents.map((item) => item.id).join(",") !== initialContents.map((item) => item.id).join(",");
   const [errors, setErrors] = useState<HomeworkErrors>({});
   const today = localDateInput(new Date());
 
-  const submit = async () => {
+  const submit = async (confirmed = false) => {
     if (submitting) return;
     const minuteValue = Number(minutes);
     const nextErrors: HomeworkErrors = {
@@ -49,12 +56,18 @@ export default function HomeworkModal({ students, preStudentId, initialHomework,
     };
     setErrors(nextErrors);
     if (Object.values(nextErrors).some(Boolean)) return;
+    // 이미 숙제에 연결된 콘텐츠를 빼면 한 번 더 확인한다(같은 모달 안에서).
+    if (initialHomework && removedOriginals.length > 0 && !confirmed) { setConfirmRemoval(true); return; }
+    setConfirmRemoval(false);
     setSubmitting(true);
-    const title = contentText.trim() || (content ? content.label : `${hwType} 숙제`);
+    const first = contents[0];
+    const title = contentText.trim() || (first ? `${first.label}${contents.length > 1 ? ` 외 ${contents.length - 1}개` : ""}` : `${hwType} 숙제`);
     const description = `${hwType} · 목표 ${minuteValue}분`;
+    const exerciseIds = contents.map((item) => Number(item.id));
     const saved = initialHomework
-      ? await onUpdate(initialHomework.id, { title, type: hwType, dueDate, targetMinutes: minuteValue, description })
-      : await onAssign({ studentId: Number(studentId), title, type: hwType, dueDate, description, targetMinutes: minuteValue, ...(content ? { exerciseId: Number(content.id) } : {}) });
+      ? await onUpdate(initialHomework.id, { title, type: hwType, dueDate, targetMinutes: minuteValue, description, ...(contentsChanged ? { exerciseIds } : {}) })
+      : await onAssign({ studentId: Number(studentId), title, type: hwType, dueDate, description, targetMinutes: minuteValue,
+          ...(first ? { exerciseId: exerciseIds[0], exerciseIds } : {}) });
     setSubmitting(false);
     if (saved) onClose();
   };
@@ -64,6 +77,17 @@ export default function HomeworkModal({ students, preStudentId, initialHomework,
       footer={<>
         {students.length === 0 && <Notice tone="warning" className="mb-3">먼저 학생을 등록해 주세요.</Notice>}
         {error && !submitting && <Notice tone="error" className="mb-3">{error}</Notice>}
+        {confirmRemoval && (
+          <div role="alertdialog" aria-label="숙제 콘텐츠 빼기 확인" className="mb-3 space-y-2 rounded-[var(--radius-lg)] bg-[var(--butter-100)] p-3">
+            <p className="text-[13px] leading-relaxed text-[var(--butter-800)]">
+              이미 숙제에 들어 있던 콘텐츠 {removedOriginals.length}개({removedOriginals.map((item) => item.label).join(", ")})를 빼요. 학생이 이미 한 숙제 연습 기록은 그대로 남아요.
+            </p>
+            <div className="flex gap-2">
+              <Button size="sm" variant="line" onClick={() => setConfirmRemoval(false)}>다시 확인할게요</Button>
+              <Button size="sm" variant="dangerLine" onClick={() => void submit(true)}>빼고 저장</Button>
+            </div>
+          </div>
+        )}
         <div className="flex gap-2">
           <Button variant="neutral" size="lg" fullWidth disabled={submitting} onClick={onClose}>취소</Button>
           <Button size="lg" fullWidth loading={submitting} loadingLabel="저장 중…" disabled={students.length === 0} onClick={() => void submit()}>
@@ -89,8 +113,17 @@ export default function HomeworkModal({ students, preStudentId, initialHomework,
         </div>
       </fieldset>
 
-      {!initialHomework && <PracticeContentPicker selected={content} onSelect={setContentChoice} />}
-      {initialHomework?.exerciseTitle && <p className="rounded-[var(--radius-lg)] bg-[var(--surface-sunken)] px-3.5 py-2.5 text-xs text-[var(--ink-600)]">연습 콘텐츠: <b>{initialHomework.exerciseTitle}</b> (수정할 수 없어요)</p>}
+      {editingContents
+        ? <PracticeContentPicker selected={contents} onChange={(next) => { setContents(next); setConfirmRemoval(false); }} />
+        : (
+          <section aria-label="숙제 연습 콘텐츠" className="space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[13px] font-semibold text-[var(--ink-900)]">연습 콘텐츠 {contents.length}개</p>
+              <Button size="sm" variant="line" onClick={() => setEditingContents(true)}>콘텐츠 바꾸기</Button>
+            </div>
+            {contents.length > 0 ? <SelectedContentList selected={contents} /> : <p className="text-xs text-[var(--ink-500)]">지정한 연습 콘텐츠가 없는 자유 숙제예요.</p>}
+          </section>
+        )}
 
       <Input label="숙제 내용" value={contentText} maxLength={160} onChange={(event) => { setContent(event.target.value); setErrors((current) => ({ ...current, title: undefined })); }}
         placeholder="ㄹ 말 연습하기" hint="비워 두면 숙제 유형으로 제목을 만들어요." error={errors.title} />

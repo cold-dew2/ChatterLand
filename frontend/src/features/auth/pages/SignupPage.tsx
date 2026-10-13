@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Eye, EyeOff, GraduationCap, BookOpen } from "lucide-react";
+import { Eye, EyeOff, GraduationCap, BookOpen, HeartHandshake } from "lucide-react";
 import { authApi } from "@/features/auth/api/authApi";
 import AuthPageShell from "@/features/auth/components/AuthPageShell";
 import { validateEmail, validateName, validatePassword } from "@/features/auth/utils/validation";
@@ -21,7 +21,7 @@ import { useCenters } from "@/features/center/hooks/useCenters";
 import SignupConsentFields, { emptySignupConsents, validateSignupConsents, type SignupConsentErrors, type SignupConsentValues } from "@/features/consent/components/SignupConsentFields";
 import { CONSENT_POLICY_VERSION, guardianRequired } from "@/features/consent/consentPolicy";
 
-type Role = "student" | "teacher";
+type Role = "student" | "teacher" | "guardian";
 type SignupForm = { name: string; email: string; password: string; age: string; center: string };
 type FieldErrors = Partial<Record<keyof SignupForm, string>>;
 
@@ -30,6 +30,7 @@ const ages = Array.from({ length: 13 }, (_, i) => ({ value: String(i + 4), label
 const roleTabs = [
   { value: "student" as Role, label: <><BookOpen size={14} aria-hidden="true" /> 학생</> },
   { value: "teacher" as Role, label: <><GraduationCap size={14} aria-hidden="true" /> 선생님</> },
+  { value: "guardian" as Role, label: <><HeartHandshake size={14} aria-hidden="true" /> 보호자</> },
 ];
 
 const emptyForm: SignupForm = { name: "", email: "", password: "", age: "", center: "" };
@@ -74,7 +75,7 @@ export default function SignupPage() {
     setLoading(true);
     try {
       await authApi.signup({
-        role: role === "student" ? "STUDENT" : "TEACHER",
+        role: role === "student" ? "STUDENT" : role === "teacher" ? "TEACHER" : "GUARDIAN",
         name: form.name.trim(),
         email: form.email.trim(),
         password: form.password,
@@ -100,10 +101,10 @@ export default function SignupPage() {
   if (done) {
     const centerName = centers.options.find((center) => center.value === form.center)?.label ?? "";
     const rows = [
-      { label: "역할", value: role === "student" ? "학생" : "선생님" },
+      { label: "역할", value: role === "student" ? "학생" : role === "teacher" ? "선생님" : "보호자" },
       ...(role === "student" ? [{ label: "나이", value: `${form.age}세` }] : []),
       { label: "센터", value: centerName },
-      ...(role === "teacher" ? [{ label: "이메일", value: form.email }] : []),
+      ...(role !== "student" ? [{ label: "이메일", value: form.email }] : []),
     ];
     return (
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col surface-student px-6 pt-16 pb-8 shadow-[0_0_0_1px_var(--line-soft)]">
@@ -164,7 +165,7 @@ export default function SignupPage() {
             <Select id="signup-age" label="나이" required value={form.age} onChange={update("age")}
               placeholder="나이 선택" options={ages} error={fieldErrors.age} />
           )}
-          <Select id="signup-center" label={role === "student" ? "언어재활센터" : "소속 언어재활센터"} required value={form.center}
+          <Select id="signup-center" label={role === "student" ? "언어재활센터" : role === "teacher" ? "소속 언어재활센터" : "자녀가 다니는 언어재활센터"} required value={form.center}
             onChange={update("center")} placeholder={centers.state === "loading" ? "센터 목록을 불러오는 중…" : "센터를 선택하세요"}
             options={centers.options} disabled={centers.state !== "ready" || centers.options.length === 0}
             error={fieldErrors.center ?? (centers.state === "ready" && centers.options.length === 0 ? "가입할 수 있는 센터가 없어요. 센터에 문의해 주세요." : undefined)} />

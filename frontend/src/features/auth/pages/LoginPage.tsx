@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Eye, EyeOff, GraduationCap, BookOpen } from "lucide-react";
+import { Eye, EyeOff, GraduationCap, BookOpen, HeartHandshake } from "lucide-react";
 import { errorMessage, saveAuthTokens } from "@/shared/api/client";
-import { authApi } from "@/features/auth/api/authApi";
+import { authApi, type UserRole } from "@/features/auth/api/authApi";
 import AuthPageShell from "@/features/auth/components/AuthPageShell";
 import { paths } from "@/routes/path/paths";
 import Button, { buttonClassName } from "@/shared/components/button/Button";
@@ -13,22 +13,23 @@ import Input from "@/shared/components/input/Input";
 import Notice from "@/shared/components/feedback/Notice";
 import Mascot from "@/shared/components/mascot/Mascot";
 import Tabs from "@/shared/components/tabs/Tabs";
-import { safeReturnPath } from "@/features/auth/utils/returnPath";
+import { homePathFor, safeReturnPath } from "@/features/auth/utils/returnPath";
 import { validateEmail } from "@/features/auth/utils/validation";
 
-type Role = "teacher" | "student";
+type Role = "teacher" | "student" | "guardian";
 type Step = "splash" | "login";
 type FieldErrors = { email?: string; password?: string };
 
 const roleTabs = [
   { value: "student" as Role, label: <><BookOpen size={14} aria-hidden="true" /> 학생</> },
   { value: "teacher" as Role, label: <><GraduationCap size={14} aria-hidden="true" /> 선생님</> },
+  { value: "guardian" as Role, label: <><HeartHandshake size={14} aria-hidden="true" /> 보호자</> },
 ];
 
 /** 로그인 후 이동할 곳: 검증된 복귀 경로가 있으면 그곳, 아니면 역할별 홈 */
 function destinationFor(userRole: string, returnTo?: string) {
-  const role = userRole === "TEACHER" ? "TEACHER" : "STUDENT";
-  return safeReturnPath(returnTo, role) ?? (role === "TEACHER" ? paths.teacher.home : paths.student.home);
+  const role: UserRole = userRole === "TEACHER" ? "TEACHER" : userRole === "GUARDIAN" ? "GUARDIAN" : "STUDENT";
+  return safeReturnPath(returnTo, role) ?? homePathFor(role);
 }
 
 export default function LoginPage({ initialStep = "splash", sessionExpired = false, returnTo }: { initialStep?: Step; sessionExpired?: boolean; returnTo?: string }) {
@@ -63,7 +64,7 @@ export default function LoginPage({ initialStep = "splash", sessionExpired = fal
       if (result.user.role !== role.toUpperCase()) {
         // 선택한 역할과 다른 계정이면 발급된 토큰을 저장하지 않고 즉시 폐기한다.
         await authApi.revoke(result.refreshToken).catch(() => undefined);
-        setError(`선택한 ${role === "student" ? "학생" : "선생님"} 계정이 아닙니다. 역할을 확인해 주세요.`);
+        setError(`선택한 ${role === "student" ? "학생" : role === "teacher" ? "선생님" : "보호자"} 계정이 아닙니다. 역할을 확인해 주세요.`);
         return;
       }
       saveAuthTokens(result.accessToken, result.refreshToken);

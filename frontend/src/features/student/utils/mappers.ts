@@ -1,4 +1,4 @@
-import type { Exercise, Homework, HistoryItem, Session, PracticeContent } from '@/features/student/types'
+import type { Exercise, Homework, HistoryItem, Session, PracticeContent, PracticeSelection } from '@/features/student/types'
 
 type Row = Record<string, unknown>
 
@@ -44,7 +44,21 @@ export function mapHomework(item: Row): Homework {
     exerciseId: item.exerciseId == null ? null : Number(item.exerciseId),
     exerciseTitle: item.exerciseTitle == null ? null : String(item.exerciseTitle),
     attemptCount: Number(item.attemptCount ?? 0),
+    exercises: mapHomeworkExercises(item),
+    ...(typeof item.version === 'number' ? { version: item.version } : {}),
+    ...(item.createdAt ? { createdAt: String(item.createdAt) } : {}),
   }
+}
+
+/** 숙제 연습 콘텐츠 목록: 서버의 exercises(여러 개)를 쓰고, 없으면 기존 단일 exerciseId·exerciseTitle */
+export function mapHomeworkExercises(item: Row): PracticeSelection[] {
+  if (Array.isArray(item.exercises)) {
+    return (item.exercises as Row[]).map((row) => ({
+      id: String(row.exerciseId ?? row.id), label: String(row.title ?? row.label ?? '연습'),
+      ...(row.categoryName ? { categoryName: String(row.categoryName) } : {}),
+    }))
+  }
+  return item.exerciseId == null ? [] : [{ id: String(item.exerciseId), label: String(item.exerciseTitle ?? '연습') }]
 }
 
 export function mapHistoryItem(item: Row): HistoryItem {
