@@ -265,8 +265,10 @@ class SpeechFeedbackIntegrationTest {
 
     @Test
     void approvedTeacherExamplesAreUsedAsTheirOwnSourceType() throws Exception {
+        // 승인자는 실제로 있는 계정이어야 한다. 빈 테스트 DB(CI)에서도 사용자가 생긴 뒤에 고른다(먼저 고르면 NULL → 승인자 없음).
+        long studentId = signupStudentId();
         insertTestTeacherExample(jdbc.queryForObject("SELECT MIN(user_id) FROM users", Long.class));
-        String analysisId = insertAnalysis(signupStudentId(), "라디오", "나디오", "ONSET", "ㄹ", "ㄴ", "라");
+        String analysisId = insertAnalysis(studentId, "라디오", "나디오", "ONSET", "ㄹ", "ㄴ", "라");
         when(ai.isConfigured()).thenReturn(true);
         when(ai.modelName()).thenReturn("gemini-flash-latest");
         when(ai.generate(anyString(), anyList(), anyDouble(), anyInt())).thenReturn("'라디오'를 끝까지 말해 봤어요! ㄹ 첫소리 낱말을 천천히 따라 말해 봐요 [S1].");
