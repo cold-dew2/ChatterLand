@@ -18,3 +18,9 @@
 - **발음 정확도 평가는 하지 않는다.** 텍스트 일치율(100%)은 음성 인식 글자 비교이며 발음 점수가 아니다(화면에 '발음 점수 아님', 발음 정확도 '미평가' 표시).
 - 외부 AI(Gemini) 호출 없음. 학생 결과 아래 'AI 설명 · 근거 자료 부족'은 조회 결과다(승인된 RAG 자료가 없어 생성하지 않음).
 - 자막(오른쪽 아래)은 화면 위에 덧씌운 설명이다. 자막 속 결과 값은 실제 화면에서 읽은 값이다. Next.js 개발 서버 배지는 가렸다.
+
+## 공모전 60초 영상 (2026-10-15)
+
+- `chatterland-contest-60s.mp4`(53.0초)와 보조 클립 `chatterland-contest-ai-chat-clip.mp4`(20.7초, 실제 Gemini 응답 1회). 장면·경로·자막·제외 기능은 `contest-60s.md`.
+- 녹화 스크립트: `frontend/e2e-demo/contest-60s.demo.ts`(외부 AI 호출 없음), `contest-ai-chat.demo.ts`(Gemini 1회).
+
