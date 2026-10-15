@@ -5,6 +5,7 @@ import { Play } from "lucide-react";
 import type { ConfirmedError, PhonemeCandidate } from "@/features/student/types";
 import { candidateText, errorTypeLabel, textMatchRate } from "@/features/student/utils/speechAssessment";
 import { teacherApi } from "@/features/teacher/api/teacherApi";
+import SpeechMetricList from "@/features/speechMetrics/components/SpeechMetricList";
 import SpeechAssessmentDetails from "@/features/teacher/components/SpeechAssessmentDetails";
 import TeacherAiFeedback from "@/features/teacher/components/TeacherAiFeedback";
 import type { SpeechJudgement, TeacherSpeechAnalysis } from "@/features/teacher/types";
@@ -201,8 +202,9 @@ export default function SpeechReviewPanel({ studentId }: { studentId: number }) 
               <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">목표</dt><dd className="font-semibold text-gray-800">{analysis.targetText ?? "-"}</dd></div>
               <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">AI 인식 결과</dt><dd className="font-semibold text-gray-800">{analysis.transcript || "인식 결과 없음"}</dd></div>
               {textMatchRate(analysis) !== null && <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">텍스트 일치율</dt><dd className="font-semibold text-gray-800">{Math.round(textMatchRate(analysis) ?? 0)}%</dd></div>}
-              <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">발음 평가</dt><dd>{typeof analysis.pronunciationScore === "number" ? `${analysis.pronunciationScore}점 (외부 제공자)` : <Badge tone="neutral">미평가</Badge>}</dd></div>
+              {typeof analysis.pronunciationScore === "number" && <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">발음 평가</dt><dd>{analysis.pronunciationScore}점 (외부 제공자)</dd></div>}
             </dl>
+            {typeof analysis.pronunciationScore !== "number" && <SpeechMetricList metrics={analysis.speechMetrics} audience="teacher" analysisStatus={analysis.status} />}
             <SpeechAssessmentDetails analysis={analysis} />
             {analysis.status === "COMPLETED" && <TeacherAiFeedback analysisId={analysis.analysisId} />}
             {analysis.reviewStatus === "REVIEWED" && analysis.teacherJudgement && (

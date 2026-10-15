@@ -30,6 +30,9 @@ public interface SpeechAnalysisService {
     /** DB에 저장된 비교 결과 JSON을 응답용 객체로 바꾼다. */
     Map<String,Object> toResponse(Map<String,Object> row);
 
+    /** 저장된 분석 결과 JSON(assessment_json)의 말하기 측정값(metrics). 이 기능 이전 분석이거나 없으면 null(소급 계산하지 않음). */
+    Object speechMetrics(Object assessmentJson);
+
     /** 검토 결과 등 구조화된 값을 DB 저장용 JSON으로 바꾼다. */
     String toJson(Object value);
 }

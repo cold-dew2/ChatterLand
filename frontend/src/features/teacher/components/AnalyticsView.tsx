@@ -24,6 +24,9 @@ import ProgressBar from "@/shared/components/progressBar/ProgressBar";
 import Select from "@/shared/components/select/Select";
 import Tabs from "@/shared/components/tabs/Tabs";
 
+/** 기록이 없거나 비교할 만큼 쌓이지 않았을 때(서버 리포트와 같은 문구) */
+const NOT_ENOUGH_RECORDS = "기록이 부족해 아직 판단하기 어려워요";
+
 export type AnalyticsTab = "종합 분석" | "영역별 분석" | "누적 학습" | "상세 리포트";
 const ANALYTICS_TABS: AnalyticsTab[] = ["종합 분석", "영역별 분석", "누적 학습", "상세 리포트"];
 
@@ -188,12 +191,12 @@ export default function AnalyticsView({ students, onBack, initialStudentId, init
                 {[
                   { label: "연습 기록", value: `${totalAttempts}건` },
                   { label: "평균 텍스트 일치율", value: averageMatchRate === null ? "기록 없음" : `${averageMatchRate}%` },
-                  { label: "발음 평가 점수", value: externalScore === null ? "미평가" : `${externalScore}점 (외부 제공자)` },
+                  { label: "발음 평가 점수", value: externalScore === null ? "발음 분석 준비 중(제공하지 않음)" : `${externalScore}점 (외부 제공자)` },
                   { label: "음성 검토 대기", value: `${pendingReviews}건` },
                   { label: "숙제 수행", value: homeworkTotal ? `${homeworkCompleted}/${homeworkTotal}건 완료` : "마감 숙제 없음" },
                   { label: "완료 세션", value: `${analysis?.completedSessions ?? 0}회` },
-                  { label: "강점 영역", value: String(reportData?.strength ?? "분석 기록 없음") },
-                  { label: "연습 영역", value: String(reportData?.practiceFocus ?? "분석 기록 없음") },
+                  { label: "기록상 점수가 높은 영역", value: String(reportData?.strength ?? NOT_ENOUGH_RECORDS) },
+                  { label: "함께 살펴볼 영역", value: String(reportData?.practiceFocus ?? NOT_ENOUGH_RECORDS) },
                 ].map((row) => (
                   <div key={row.label} className="flex items-center justify-between gap-3 border-t border-[var(--ink-100)] py-2.5">
                     <dt className="shrink-0 text-sm text-[var(--ink-500)]">{row.label}</dt>
@@ -201,7 +204,7 @@ export default function AnalyticsView({ students, onBack, initialStudentId, init
                   </div>
                 ))}
               </dl>
-              <Notice tone="info">조회 기간에 저장된 실제 연습 기록만 표시합니다. 강점/연습 영역은 외부 분석 점수가 있을 때만 계산돼요.</Notice>
+              <Notice tone="info">조회 기간에 저장된 실제 연습 기록만 표시합니다. 두 영역은 진단이 아니라 관찰된 기록 비교예요. 외부 분석 점수가 있고 기록이 5회 이상인 영역이 2개 이상일 때만 비교하고, 그렇지 않으면 &apos;{NOT_ENOUGH_RECORDS}&apos;로 표시해요.</Notice>
               {reportError && <ErrorState message={reportError} onRetry={retryAnalytics} />}
             </Card>
           )}

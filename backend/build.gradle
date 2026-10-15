@@ -116,7 +116,10 @@ tasks.withType(Test).configureEach {
     environment 'LIVE_AI_TEST', System.getenv('LIVE_AI_TEST') ?: ''
 }
 
-tasks.named('test') { useTestDatabase(it) }
+// 말하기 측정값 검증 실행(SpeechValidationRun)은 일반 테스트에 넣지 않고 speechValidation 작업으로만 실행한다.
+def validationRunPattern = '**/SpeechValidationRun.class'
+
+tasks.named('test') { useTestDatabase(it); exclude validationRunPattern }
 
 tasks.register('unitTest', Test) {
     description = 'DB가 필요 없는 단위 테스트'
@@ -124,6 +127,7 @@ tasks.register('unitTest', Test) {
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
     exclude integrationPatterns
+    exclude validationRunPattern
 }
 
 tasks.register('integrationTest', Test) {
@@ -135,4 +139,17 @@ tasks.register('integrationTest', Test) {
     // 실제 외부 AI 호출 검증은 LIVE_AI_TEST=1 일 때만 포함한다(비용·외부 의존).
     if (System.getenv('LIVE_AI_TEST') != '1') exclude '**/LiveAiIntegrationTest.class'
     useTestDatabase(it)
+}
+
+tasks.register('speechValidation', Test) {
+    description = '말하기 측정값(속도·멈춤) 검증: SPEECH_VALIDATION_MANIFEST=<매니페스트.tsv> [SPEECH_VALIDATION_AUDIO_ROOT=<녹음 폴더>] sh gradlew speechValidation (DB 불필요, 결과는 build/speech-validation)'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    include validationRunPattern
+    environment 'SPEECH_VALIDATION_MANIFEST', System.getenv('SPEECH_VALIDATION_MANIFEST') ?: ''
+    environment 'SPEECH_VALIDATION_AUDIO_ROOT', System.getenv('SPEECH_VALIDATION_AUDIO_ROOT') ?: ''
+    environment 'SPEECH_VALIDATION_INCLUDE_TRANSCRIPT', System.getenv('SPEECH_VALIDATION_INCLUDE_TRANSCRIPT') ?: ''
+    testLogging { showStandardStreams = true; events 'failed'; exceptionFormat 'full'; showCauses = false; showStackTraces = false }
+    outputs.upToDateWhen { false }
 }

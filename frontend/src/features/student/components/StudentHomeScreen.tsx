@@ -3,7 +3,9 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { DEFAULT_NOTIFICATION_SETTINGS, type NotificationSettings } from "@/features/account/api/accountApi";
+import { guardianNotices, type GuardianEvent, type GuardianNotice } from "@/features/student/utils/guardianNotifications";
 import { homeworkNotices, type HomeworkNotice } from "@/features/student/utils/homeworkNotifications";
+import Notice from "@/shared/components/feedback/Notice";
 import Modal from "@/shared/components/modal/Modal";
 import { ChevronRight, ClipboardList, Clock, Bell, Mic, User } from "lucide-react";
 import RecommendationSection from "@/features/student/components/RecommendationSection";
@@ -43,18 +45,28 @@ function SectionHeader({ id, title, onMore }: { id: string; title: ReactNode; on
   );
 }
 
-function HomeworkNoticesSheet({ notices, onClose, onOpenHomework }: { notices: HomeworkNotice[]; onClose: () => void; onOpenHomework: () => void }) {
+type AppNotice = HomeworkNotice | GuardianNotice;
+const noticeDot: Record<AppNotice["kind"], string> = {
+  homeworkOverdue: "bg-[var(--coral-500)]", homeworkDueSoon: "bg-[var(--butter-500)]", homeworkAssigned: "bg-[var(--meadow-500)]",
+  homeworkChanged: "bg-[var(--meadow-500)]", guardianLinked: "bg-[var(--sky-500)]", guardianUnlinked: "bg-[var(--ink-400)]",
+};
+
+/** 앱 안 알림: 보호자 연결·해제(항상 표시) + 숙제(알림 설정에 따라). 누르면 관련 화면으로 간다 */
+function NoticesSheet({ notices, guardianError, onClose, onOpenHomework, onOpenGuardians }: {
+  notices: AppNotice[]; guardianError: boolean; onClose: () => void; onOpenHomework: () => void; onOpenGuardians: () => void;
+}) {
   return (
-    <Modal title="숙제 알림" description="숙제 상태로 알려 드려요. 받을 알림은 마이페이지 › 알림 설정에서 바꿀 수 있어요." onClose={onClose}
+    <Modal title="알림" description="숙제와 보호자 연결 소식을 알려 드려요. 숙제 알림은 마이페이지 › 알림 설정에서 바꿀 수 있어요." onClose={onClose}
       footer={<Button fullWidth variant="line" onClick={onClose}>닫기</Button>}>
+      {guardianError && <Notice tone="error" className="mb-3">보호자 연결 알림을 불러오지 못했어요. 마이페이지 › 보호자 연결에서 확인할 수 있어요.</Notice>}
       {notices.length === 0
         ? <EmptyState title="새 알림이 없어요" description="새 숙제가 오거나 마감이 다가오면 여기에서 알려 드려요." icon={<Mascot size={56} />} />
         : <ul className="space-y-2">
             {notices.map((notice) => (
               <li key={notice.key}>
-                <button type="button" onClick={onOpenHomework}
+                <button type="button" onClick={notice.kind.startsWith("guardian") ? onOpenGuardians : onOpenHomework}
                   className="flex min-h-14 w-full items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--line-soft)] bg-white px-3.5 py-2.5 text-left hover:bg-[var(--ink-25)]">
-                  <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${notice.kind === "homeworkOverdue" ? "bg-[var(--coral-500)]" : notice.kind === "homeworkDueSoon" ? "bg-[var(--butter-500)]" : "bg-[var(--meadow-500)]"}`} aria-hidden="true" />
+                  <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${noticeDot[notice.kind]}`} aria-hidden="true" />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[15px] font-semibold text-[var(--ink-900)]">{notice.title}</span>
                     <span className="block text-xs text-[var(--ink-600)]">{notice.message}</span>
@@ -68,24 +80,28 @@ function HomeworkNoticesSheet({ notices, onClose, onOpenHomework }: { notices: H
   );
 }
 
-export default function StudentHomeScreen({ onNavigate, student, nextSession, homeworks, homeworkState, profileState, recent, recentState, onRetry, notificationSettings = DEFAULT_NOTIFICATION_SETTINGS }: {
+export default function StudentHomeScreen({ onNavigate, student, nextSession, homeworks, homeworkState, profileState, recent, recentState, onRetry, notificationSettings = DEFAULT_NOTIFICATION_SETTINGS, guardianEvents = [] }: {
   onNavigate: (target: AppScreen) => void; student: StudentSummary; nextSession: Session | null;
   homeworks: Homework[]; homeworkState: LoadState; profileState: LoadState; recent: HistoryItem[]; recentState: LoadState; onRetry: () => void;
   notificationSettings?: NotificationSettings;
+  /** 보호자 연결·해제 사건(null이면 불러오지 못함) */
+  guardianEvents?: GuardianEvent[] | null;
 }) {
   const [noticesOpen, setNoticesOpen] = useState(false);
-  const notices = homeworkState === "ready" ? homeworkNotices(homeworks, notificationSettings) : [];
+  const notices: AppNotice[] = [...guardianNotices(guardianEvents ?? []), ...(homeworkState === "ready" ? homeworkNotices(homeworks, notificationSettings) : [])];
   const doneCount = homeworks.filter((homework) => homework.done).length;
   const dueHomeworks = homeworks.filter((homework) => !homework.done).slice(0, 2);
   const sessionRate = student.sessionsTotal ? (student.sessionsDone / student.sessionsTotal) * 100 : 0;
   return (
     <div className="space-y-5 px-5 pt-8 pb-2 md:px-8 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8 lg:gap-y-6 lg:space-y-0">
-      {noticesOpen && <HomeworkNoticesSheet notices={notices} onClose={() => setNoticesOpen(false)} onOpenHomework={() => { setNoticesOpen(false); onNavigate({ kind: "homework-list" }); }} />}
+      {noticesOpen && <NoticesSheet notices={notices} guardianError={guardianEvents === null} onClose={() => setNoticesOpen(false)}
+        onOpenHomework={() => { setNoticesOpen(false); onNavigate({ kind: "homework-list" }); }}
+        onOpenGuardians={() => { setNoticesOpen(false); onNavigate({ kind: "my-guardians" }); }} />}
       {/* Greeting */}
       <div className="relative min-h-[132px] overflow-hidden rounded-[var(--radius-card-lg)] bg-[var(--sky-100)] p-5 lg:col-span-2">
         <span className="absolute -right-4 -bottom-12 h-36 w-36 rounded-full bg-white/40" aria-hidden="true" />
         <span className="absolute right-20 -bottom-6 h-16 w-16 rounded-full bg-[var(--meadow-400)]/35" aria-hidden="true" />
-        <button type="button" onClick={() => setNoticesOpen(true)} aria-label={`숙제 알림 ${notices.length}개`}
+        <button type="button" onClick={() => setNoticesOpen(true)} aria-label={`알림 ${notices.length}개`}
           className="absolute right-3.5 top-3.5 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/80 text-[var(--ink-700)] hover:bg-white">
           <Bell size={18} aria-hidden="true" />
           {notices.length > 0 && <span className="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--coral-500)] px-1 font-number text-[11px] font-extrabold text-white" aria-hidden="true">{notices.length}</span>}

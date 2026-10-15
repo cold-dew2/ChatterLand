@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { api, createStudent, createTeacher, loginUi, mic, recordAndAnalyze } from './helpers'
+import { api, createStudent, createTeacher, layoutProblems, loginUi, mic, recordAndAnalyze } from './helpers'
 
 test.use({ launchOptions: { args: mic('mic-radio.wav') }, permissions: ['microphone'] })
 
@@ -50,6 +50,10 @@ test('E2E-25 숙제 없이 연습 찾기 → 녹음·분석·저장(자율 연�
   await expect(panel.locator('article').filter({ hasText: '숙제 연습' })).toHaveCount(1)
   await expect(panel.locator('article').filter({ hasText: '자율 연습' })).toHaveCount(1)
   await expect(panel.getByText('(발음 점수 아님)').first()).toBeVisible()
+  // 학생 화면과 같은 상태: 발음 분석 준비 중, 미평가 문구 없음, 모바일 폭에서 넘치지 않음
+  await expect(panel.getByText(/발음 분석 준비 중/).first()).toBeVisible()
+  await expect(panel.getByText('미평가')).toHaveCount(0)
+  expect(await layoutProblems(teacherPage)).toEqual([])
   await panel.getByRole('tab', { name: '숙제 연습' }).click()
   await expect(panel.locator('article')).toHaveCount(1)
 

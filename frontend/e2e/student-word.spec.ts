@@ -12,7 +12,12 @@ test('E2E-02/03 낱말 녹음 → 분석 결과 → 학습 기록 저장 → 새
   await recordAndAnalyze(page, 2500)
   await expect(page.getByText('텍스트 일치율').first()).toBeVisible({ timeout: 90_000 })
   await expect(page.getByText('낱말', { exact: true })).toBeVisible()
-  await expect(page.getByText('미평가')).toHaveCount(3)
+  // 낱말 문항: 발음 분석은 준비 중(평가 모델 없음), 말하기 속도·멈춤은 해당 없음. 점수로 표시하지 않는다.
+  await expect(page.getByText('준비 중', { exact: true })).toHaveCount(1)
+  await expect(page.getByText('발음을 분석하는 기능을 준비하고 있어요.')).toBeVisible()
+  await expect(page.getByText('해당 없음')).toHaveCount(2)
+  await expect(page.getByText('낱말 하나는 재지 않아요')).toHaveCount(2)
+  await expect(page.getByText('미평가')).toHaveCount(0)
   await expect(page.getByText('학습 기록에 저장했어요.')).toBeVisible()
   const shown = Number((await page.locator('text=텍스트 일치율').first().locator('xpath=../..').innerText()).match(/(\d+)\s*%/)?.[1])
 
@@ -142,5 +147,7 @@ test('E2E-24 AI 설명 화면 흐름: 요청할 때만 생성, AI 오류 후 다
   await expect(panel.getByText('점수 아님')).toBeVisible()
   await expect(panel.getByText(/제4장 제8항/)).toBeVisible()
   await expect(panel.getByText(/발음 정확도는 평가하지 않았어요/)).toBeVisible()
-  await expect(page.getByText('미평가')).toHaveCount(3) // 측정값(발음·속도·유창성)은 미평가 그대로
+  // 측정 상태(발음 분석 준비 중·속도·멈춤 해당 없음)는 AI 설명과 섞이지 않고 그대로
+  await expect(page.getByText('준비 중', { exact: true })).toHaveCount(1)
+  await expect(page.getByText('해당 없음')).toHaveCount(2)
 })

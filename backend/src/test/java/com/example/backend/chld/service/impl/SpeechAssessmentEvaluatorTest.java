@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 녹음 측정값에 따른 판정 보류(HOLD) 규칙과 발화 시간 계산을 확인한다. */
+/** 녹음 측정값에 따른 판정 보류(HOLD) 규칙, 발화 시간 계산, 말하기 속도·멈춤 측정값(점수 아님)을 확인한다. */
 class SpeechAssessmentEvaluatorTest {
     private final SpeechAssessmentEvaluator evaluator = new SpeechAssessmentEvaluator(new HangulPhonemeAnalyzer());
 
@@ -73,5 +73,89 @@ class SpeechAssessmentEvaluatorTest {
         assertEquals(2, a.repetition().previousAttempts());
         assertEquals(1, a.repetition().sameTranscriptCount());
         assertEquals(List.of("SUBSTITUTION:ONSET:ㄹ>ㄷ"), a.repetition().recurringCandidates());
+    }
+
+    private static final String SENTENCE = "오늘은 날씨가 좋아요"; // 9음절
+    private static final List<SpeechSegment> PAUSED = List.of(new SpeechSegment(500, 1500), new SpeechSegment(1800, 2600), new SpeechSegment(2700, 3500));
+
+    private SpeechAssessment.SpeechMetrics metrics(String target, String transcript, long audioMs, List<SpeechSegment> segments) {
+        return evaluator.evaluate(target, transcript, result(audioMs, segments, 20000, 0), null, List.of()).metrics();
+    }
+
+    @Test
+    void speakingRateAndPausesAreMeasuredWithinTheUtteranceOnly() {
+        SpeechAssessment.SpeechMetrics m = metrics(SENTENCE, SENTENCE, 4000, PAUSED);
+        assertEquals("speech-metrics-v1", m.version());
+        // 발화 구간 500~3500ms = 3000ms, 말소리 1000+800+800 = 2600ms
+        assertEquals("MEASURED", m.speakingRate().status());
+        assertEquals(9, m.speakingRate().syllables());
+        assertEquals("ASR_TRANSCRIPT_SYLLABLES", m.speakingRate().syllableBasis());
+        assertEquals(3000L, m.speakingRate().utteranceMs());
+        assertEquals(2600L, m.speakingRate().speechMs());
+        assertEquals(new BigDecimal("3.00"), m.speakingRate().syllablesPerSecond());
+        assertEquals(new BigDecimal("3.46"), m.speakingRate().articulationRate());
+        // 무음 300ms는 멈춤, 100ms는 멈춤 아님(기준 250ms)
+        assertEquals("MEASURED", m.pauses().status());
+        assertEquals(1, m.pauses().pauseCount());
+        assertEquals(300L, m.pauses().totalPauseMs());
+        assertEquals(300L, m.pauses().longestPauseMs());
+        assertEquals(new BigDecimal("0.100"), m.pauses().pauseRatio());
+        assertEquals(3, m.pauses().speechSegmentCount());
+        assertEquals(250L, m.pauses().pauseThresholdMs());
+    }
+
+    @Test
+    void recordingMarginsBeforeAndAfterSpeechDoNotChangeTheMeasurements() {
+        List<SpeechSegment> shifted = PAUSED.stream().map(s -> new SpeechSegment(s.startMs() + 1500, s.endMs() + 1500)).toList();
+        SpeechAssessment.SpeechMetrics base = metrics(SENTENCE, SENTENCE, 4000, PAUSED);
+        SpeechAssessment.SpeechMetrics later = metrics(SENTENCE, SENTENCE, 9000, shifted); // 앞 2초·뒤 3.5초 여유
+        assertEquals(base.speakingRate(), later.speakingRate());
+        assertEquals(base.pauses(), later.pauses());
+    }
+
+    @Test
+    void pauseThresholdAndRateMinimumsAreInclusiveBoundaries() {
+        List<SpeechSegment> at250 = List.of(new SpeechSegment(500, 1000), new SpeechSegment(1250, 2000));
+        List<SpeechSegment> at249 = List.of(new SpeechSegment(500, 1000), new SpeechSegment(1249, 2000));
+        assertEquals(1, metrics(SENTENCE, SENTENCE, 3000, at250).pauses().pauseCount());
+        assertEquals(0, metrics(SENTENCE, SENTENCE, 3000, at249).pauses().pauseCount());
+        assertEquals(0L, metrics(SENTENCE, SENTENCE, 3000, at249).pauses().totalPauseMs());
+        // 발화 구간 1000ms·4음절은 측정, 999ms·3음절은 측정하지 않음
+        assertEquals("MEASURED", metrics("사과 주스", "사과 주스", 3000, List.of(new SpeechSegment(500, 1500))).speakingRate().status());
+        SpeechAssessment.SpeakingRateMetric short999 = metrics("사과 주스", "사과 주스", 3000, List.of(new SpeechSegment(500, 1499))).speakingRate();
+        assertEquals("UNAVAILABLE", short999.status());
+        assertEquals("UTTERANCE_TOO_SHORT", short999.reason());
+        assertNull(short999.syllablesPerSecond());
+        SpeechAssessment.SpeechMetrics three = metrics("새 공", "새 공", 3000, List.of(new SpeechSegment(500, 1800)));
+        assertEquals("UNAVAILABLE", three.speakingRate().status());
+        assertEquals("MEASURED", three.pauses().status(), "멈춤은 짧은 문장에서도 잰다");
+    }
+
+    @Test
+    void wordItemsVadMissingAndHeldRecordingsAreNotMeasured() {
+        SpeechAssessment.SpeechMetrics word = metrics("라디오", "라디오", 1500, List.of(new SpeechSegment(500, 1000)));
+        assertEquals("NOT_SUPPORTED", word.speakingRate().status());
+        assertEquals("WORD_ITEM", word.speakingRate().reason());
+        assertEquals("NOT_SUPPORTED", word.pauses().status());
+        SpeechAssessment.SpeechMetrics noVad = metrics(SENTENCE, SENTENCE, 4000, null);
+        assertEquals("UNAVAILABLE", noVad.speakingRate().status());
+        assertEquals("VAD_UNAVAILABLE", noVad.pauses().reason());
+        assertNull(noVad.pauses().pauseCount());
+        // 말소리가 녹음 끝까지 이어짐(잘린 녹음) → 판정 보류 → 측정하지 않음
+        SpeechAssessment held = evaluator.evaluate(SENTENCE, SENTENCE, result(3550, PAUSED, 20000, 0), null, List.of());
+        assertEquals("HOLD", held.assessmentStatus());
+        assertEquals("UNAVAILABLE", held.metrics().speakingRate().status());
+        assertEquals("ASSESSMENT_HOLD", held.metrics().pauses().reason());
+    }
+
+    @Test
+    void pronunciationAccuracyIsNeverScoredFromTheTranscript() {
+        for (String transcript : List.of(SENTENCE, "오늘은 날씨가 조아요", "오늘"))
+            for (List<SpeechSegment> segments : java.util.Arrays.asList(PAUSED, null)) {
+                SpeechAssessment.PronunciationMetric p = evaluator.evaluate(SENTENCE, transcript, result(4000, segments, 20000, 0), null, List.of())
+                        .metrics().pronunciation();
+                assertEquals("NOT_SUPPORTED", p.status());
+                assertEquals("NO_PRONUNCIATION_MODEL", p.reason());
+            }
     }
 }

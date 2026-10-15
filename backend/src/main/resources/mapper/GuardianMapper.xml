@@ -25,7 +25,8 @@
 
   <insert id="upsertLink">
     INSERT INTO guardian_students(guardian_id,student_id,status) VALUES(#{guardianId},#{studentId},'ACTIVE')
-    ON DUPLICATE KEY UPDATE status='ACTIVE',linked_at=CURRENT_TIMESTAMP,unlinked_at=NULL,unlinked_by=NULL
+    <!-- 이미 연결된 상태면 연결 시각을 그대로 둔다(같은 연결에 알림이 다시 생기지 않게). 대입은 왼쪽부터 적용되므로 linked_at을 먼저 정한다 -->
+    ON DUPLICATE KEY UPDATE linked_at=IF(status='ACTIVE',linked_at,CURRENT_TIMESTAMP),status='ACTIVE',unlinked_at=NULL,unlinked_by=NULL
   </insert>
   <update id="unlink">
     UPDATE guardian_students SET status='UNLINKED',unlinked_at=NOW(),unlinked_by=#{by}
@@ -53,6 +54,13 @@
     SELECT u.user_id AS guardianId,u.name,DATE_FORMAT(gs.linked_at,'%Y-%m-%d') AS linkedOn
     FROM guardian_students gs JOIN users u ON u.user_id=gs.guardian_id
     WHERE gs.student_id=#{studentId} AND gs.status='ACTIVE' AND u.status='ACTIVE' ORDER BY gs.linked_at
+  </select>
+  <select id="findRecentLinkChanges" resultType="map">
+    SELECT gs.guardian_id AS guardianId,u.name AS guardianName,gs.status,
+      DATE_FORMAT(gs.linked_at,'%Y-%m-%d %H:%i:%s') AS linkedAt,DATE_FORMAT(gs.unlinked_at,'%Y-%m-%d %H:%i:%s') AS unlinkedAt,gs.unlinked_by AS unlinkedBy
+    FROM guardian_students gs JOIN users u ON u.user_id=gs.guardian_id
+    WHERE gs.student_id=#{studentId}
+      AND (gs.linked_at &gt;= DATE_SUB(NOW(),INTERVAL #{days} DAY) OR gs.unlinked_at &gt;= DATE_SUB(NOW(),INTERVAL #{days} DAY))
   </select>
   <select id="findChildConsents" resultType="map">
     SELECT uc.consent_type AS type,uc.agreed,uc.policy_version AS policyVersion,

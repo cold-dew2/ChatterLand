@@ -32,9 +32,9 @@
       AND ((#{status}='진행중' AND sp.status='ACTIVE') OR (#{status}='예정' AND sp.status='PAUSED') OR (#{status}='완료' AND sp.status='COMPLETED') OR (#{status}=sp.status))
     </if>
   </select>
+  <!-- 담당 전 학생 목록: 고르는 데 필요한 최소 정보만(보호자 연락처·메모·치료 영역·세션 수는 담당 관계가 생긴 뒤 상세 조회에서만) -->
   <select id="findAvailableStudents" resultType="map">
-    SELECT sp.student_id AS studentId,sp.name,sp.age,sp.parent_phone AS parentPhone,sp.focus_areas AS focusAreas,
-      sp.sessions_limit AS sessionsTotal,sp.memo,c.name AS centerName
+    SELECT sp.student_id AS studentId,sp.name,sp.age,c.name AS centerName
     FROM student_profiles sp JOIN centers c ON c.center_id=sp.center_id
     LEFT JOIN teacher_students ts ON ts.student_id=sp.student_id AND ts.teacher_id=#{teacherId} AND ts.status='ACTIVE'
     WHERE sp.center_id=#{centerId} AND sp.user_id IS NOT NULL AND ts.student_id IS NULL
@@ -150,7 +150,7 @@
       pa.exercise_id AS exerciseId,e.title AS exerciseTitle,e.pronunciation_rule AS pronunciationRule,e.content_type AS contentType,
       pa.analysis_id AS analysisId,sa.status AS analysisStatus,sa.assessment_status AS assessmentStatus,sa.evaluation_mode AS evaluationMode,
       sa.target_text AS targetText,sa.transcript,pa.match_rate AS textMatchRate,sa.review_status AS reviewStatus,
-      DATE_FORMAT(pa.created_at,'%Y-%m-%d %H:%i') AS createdAt
+      sa.assessment_json AS assessmentJson,DATE_FORMAT(pa.created_at,'%Y-%m-%d %H:%i') AS createdAt
     FROM practice_attempts pa JOIN exercises e ON e.exercise_id=pa.exercise_id
       LEFT JOIN homeworks h ON h.homework_id=pa.homework_id
       LEFT JOIN speech_analyses sa ON sa.analysis_id=pa.analysis_id

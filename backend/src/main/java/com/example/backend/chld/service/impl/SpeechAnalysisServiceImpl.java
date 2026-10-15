@@ -218,6 +218,8 @@ public class SpeechAnalysisServiceImpl implements SpeechAnalysisService {
         response.put("phonemeCandidates", assessment == null ? List.of() : assessment.get("candidates"));
         response.put("speechTiming", assessment == null ? null : assessment.get("timing"));
         response.put("repetition", assessment == null ? null : assessment.get("repetition"));
+        // 말하기 속도·멈춤 측정값과 발음 정확도 지원 여부(점수 아님). 이 기능 이전 분석·실패·처리 중이면 null이다.
+        response.put("speechMetrics", assessment == null ? null : assessment.get("metrics"));
         response.put("teacherConfirmedErrors", readJson(response.remove("teacherConfirmedJson"), List.class));
         if (response.get("hasAudio") instanceof Number flag) response.put("hasAudio", flag.intValue() != 0);
         response.remove("audioPath");
@@ -286,6 +288,12 @@ public class SpeechAnalysisServiceImpl implements SpeechAnalysisService {
                 throw error;
             }
         }
+    }
+
+    @Override
+    public Object speechMetrics(Object assessmentJson) {
+        Map<?,?> assessment = readJson(assessmentJson, Map.class);
+        return assessment == null ? null : assessment.get("metrics");
     }
 
     @Override

@@ -125,10 +125,10 @@ export default function StudentDetailView({ student, onBack, onEdit, onDelete, o
             <StudentPracticePanel studentId={student.id} />
             <Card className="flex items-center gap-4">
               <div>
-                <p className="text-xs font-medium text-[var(--ink-500)]">외부 분석 점수</p>
                 {student.score !== null
-                  ? <p className="font-number text-3xl font-black text-[var(--ink-900)]">{student.score}<span className="ml-1 text-base text-[var(--ink-400)]">점</span></p>
-                  : <p className="pt-1"><Badge tone="neutral">미평가</Badge></p>}
+                  ? <><p className="text-xs font-medium text-[var(--ink-500)]">외부 분석 점수</p>
+                    <p className="font-number text-3xl font-black text-[var(--ink-900)]">{student.score}<span className="ml-1 text-base text-[var(--ink-400)]">점</span></p></>
+                  : <><p className="text-xs font-medium text-[var(--ink-500)]">발음 분석</p><p className="pt-1"><Badge tone="info">준비 중</Badge></p></>}
               </div>
               <div className="flex-1">
                 <ProgressBar value={student.sessionsTotal ? (student.sessionsDone / student.sessionsTotal) * 100 : 0} label={`세션 진행 ${student.sessionsDone}/${student.sessionsTotal}회`} />

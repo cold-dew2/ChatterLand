@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { studentApi } from "@/features/student/api/studentApi";
+import { GUARDIAN_LINK_LIMITS, GUARDIAN_LINK_SCOPE } from "@/features/guardian/utils/linkPolicy";
 import { errorMessage } from "@/shared/api/client";
 import Button from "@/shared/components/button/Button";
 import Card from "@/shared/components/card/Card";
@@ -70,6 +71,7 @@ export default function StudentGuardianScreen({ onBack }: { onBack: () => void }
         <Card as="section" padding="lg" aria-labelledby="link-code-title" className="space-y-3">
           <h3 id="link-code-title" className="text-base font-bold text-[var(--ink-900)]">연결 코드 만들기</h3>
           <p className="text-sm leading-relaxed text-[var(--ink-700)]">코드를 보호자에게 알려 주세요. 보호자가 보호자 계정에서 10분 안에 입력하면 연결돼요. 새 코드를 만들면 이전 코드는 쓸 수 없어요.</p>
+          <Notice tone="info">{GUARDIAN_LINK_SCOPE} {GUARDIAN_LINK_LIMITS} 모르는 사람에게는 코드를 알려 주지 마세요.</Notice>
           {code && (
             <div className="rounded-[var(--radius-lg)] bg-[var(--surface-sunken)] px-4 py-3 text-center" aria-live="polite">
               <p className="font-number text-3xl font-black tracking-[0.15em] text-[var(--ink-900)]" aria-label={`연결 코드 ${code.code.split("").join(" ")}`}>{code.code}</p>

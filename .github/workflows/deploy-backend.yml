@@ -43,8 +43,12 @@ jobs:
     steps:
       - name: 필수 설정 확인(값은 출력하지 않음)
         run: |
+          # 저장소 Settings → Secrets and variables → Actions → Variables 에 등록할 이름으로 알려 준다.
           missing=""
-          for name in PROJECT_ID REGION REPOSITORY SERVICE; do [ -n "${!name}" ] || missing="$missing $name"; done
+          [ -n "$PROJECT_ID" ] || missing="$missing GCP_PROJECT_ID"
+          [ -n "$REGION" ] || missing="$missing GCP_REGION"
+          [ -n "$REPOSITORY" ] || missing="$missing GCP_ARTIFACT_REPOSITORY"
+          [ -n "$SERVICE" ] || missing="$missing CLOUD_RUN_SERVICE"
           [ -n "${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}" ] || missing="$missing GCP_WORKLOAD_IDENTITY_PROVIDER"
           [ -n "${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}" ] || missing="$missing GCP_DEPLOY_SERVICE_ACCOUNT"
           if [ -n "$missing" ]; then echo "::error::저장소 Variables가 없습니다:$missing (docs/deploy/gcp-cloud-run.md 참고)"; exit 1; fi
@@ -123,5 +127,7 @@ jobs:
             echo "- 이미지: \`${{ steps.image.outputs.ref || '(빌드 안 함)' }}\`"
             echo "- 새 리비전: \`${{ steps.deploy.outputs.revision || '(배포 안 함)' }}\`"
             echo "- 이전 리비전(되돌리기 대상): \`${{ steps.current.outputs.previous_revision || '(없음)' }}\`"
-            echo "- 되돌리기: \`gcloud run services update-traffic $SERVICE --region $REGION --to-revisions <이전 리비전>=100\`"
+            if [ -n "${{ steps.deploy.outputs.revision }}" ] && [ -n "${{ steps.current.outputs.previous_revision }}" ]; then
+              echo "- 되돌리기: \`gcloud run services update-traffic $SERVICE --region $REGION --to-revisions ${{ steps.current.outputs.previous_revision }}=100\`"
+            fi
           } >> "$GITHUB_STEP_SUMMARY"

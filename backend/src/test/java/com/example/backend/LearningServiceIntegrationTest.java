@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -260,6 +261,41 @@ class LearningServiceIntegrationTest {
     private int homeworkVersion(long homeworkId) { return jdbc.queryForObject("SELECT version FROM homeworks WHERE homework_id=?", Integer.class, homeworkId); }
 
     // ── 선생님: 자율·숙제 연습 기록 ─────────────────
+
+    @Test
+    void teacherPracticeRecordsCarryTheSameStoredSpeechMetricsAsTheStudentResult() throws Exception {
+        Student student = signupStudent();
+        String teacher = signupTeacher();
+        link(teacher, student.studentId);
+        long[] content = seededContent(0);
+        String measured = completedAnalysis(student.studentId, content[0], content[1]);
+        jdbc.update("UPDATE speech_analyses SET assessment_json=? WHERE analysis_id=?", "{\"metrics\":{\"version\":\"speech-metrics-v1\","
+                + "\"pronunciation\":{\"status\":\"NOT_SUPPORTED\",\"reason\":\"NO_PRONUNCIATION_MODEL\"},"
+                + "\"speakingRate\":{\"status\":\"MEASURED\",\"syllables\":9,\"utteranceMs\":2300,\"speechMs\":1720,\"syllablesPerSecond\":3.91,\"articulationRate\":5.23},"
+                + "\"pauses\":{\"status\":\"MEASURED\",\"pauseCount\":1,\"totalPauseMs\":580,\"longestPauseMs\":580,\"pauseThresholdMs\":250}}}", measured);
+        String older = completedAnalysis(student.studentId, content[0], content[1]); // 측정 기능 이전 형식('{}')
+        for (String id : List.of(older, measured))
+            mvc.perform(post("/api/v1/practice/attempts").header("Authorization", bearer(student.token)).contentType(MediaType.APPLICATION_JSON)
+                    .content(attempt(content, id, null))).andExpect(status().isOk());
+
+        JsonNode rows = json(mvc.perform(get("/api/v1/teachers/me/students/{id}/practice-attempts", student.studentId).header("Authorization", bearer(teacher)))
+                .andExpect(status().isOk())).path("content");
+        JsonNode measuredRow = null, olderRow = null;
+        for (JsonNode row : rows) {
+            if (measured.equals(row.path("analysisId").asText())) measuredRow = row;
+            if (older.equals(row.path("analysisId").asText())) olderRow = row;
+        }
+        assertNotNull(measuredRow); assertNotNull(olderRow);
+        // 학생 분석 조회와 같은 저장값
+        JsonNode studentView = json(mvc.perform(get("/api/v1/speech/analyses/{id}", measured).header("Authorization", bearer(student.token))).andExpect(status().isOk()));
+        assertEquals(studentView.path("speechMetrics"), measuredRow.path("speechMetrics"));
+        assertEquals(3.91, measuredRow.path("speechMetrics").path("speakingRate").path("syllablesPerSecond").asDouble(), 0.0001);
+        assertEquals("NOT_SUPPORTED", measuredRow.path("speechMetrics").path("pronunciation").path("status").asText());
+        // 이전 기록은 측정값 없음(소급 계산하지 않음), 내부 JSON 원문은 내보내지 않음
+        assertTrue(olderRow.path("speechMetrics").isNull() || olderRow.path("speechMetrics").isMissingNode());
+        assertTrue(measuredRow.path("assessmentJson").isMissingNode());
+        assertTrue(measuredRow.path("pronunciationScore").isMissingNode() || measuredRow.path("pronunciationScore").isNull());
+    }
 
     @Test
     void theAssignedTeacherSeesSelfAndHomeworkPracticeAndOthersAreBlocked() throws Exception {

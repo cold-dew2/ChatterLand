@@ -29,6 +29,9 @@ public class GuardianController {
     @GetMapping("/students/me/guardians")
     public List<Map<String,Object>> myGuardians(@AuthenticationPrincipal TokenPrincipal principal) { return guardians.myGuardians(principal); }
 
+    @GetMapping("/students/me/guardian-events")
+    public List<Map<String,Object>> linkEvents(@AuthenticationPrincipal TokenPrincipal principal) { return guardians.linkEvents(principal); }
+
     @DeleteMapping("/students/me/guardians/{guardianId}") @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unlinkGuardian(@AuthenticationPrincipal TokenPrincipal principal, @PathVariable long guardianId) { guardians.unlinkGuardian(principal, guardianId); }
 

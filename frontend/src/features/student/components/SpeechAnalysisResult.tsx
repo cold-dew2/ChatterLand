@@ -2,6 +2,7 @@ import Badge from "@/shared/components/badge/Badge";
 import Card from "@/shared/components/card/Card";
 import Notice from "@/shared/components/feedback/Notice";
 import ProgressBar from "@/shared/components/progressBar/ProgressBar";
+import SpeechMetricList, { PronunciationPreparing } from "@/features/speechMetrics/components/SpeechMetricList";
 import type { SpeechAnalysis, SpeechWordDiff } from "@/features/student/types";
 import { analysisTypeLabel, isWordAnalysis, textMatchRate } from "@/features/student/utils/speechAssessment";
 
@@ -31,7 +32,7 @@ function HoldNotice({ analysis }: { analysis: SpeechAnalysis }) {
   return <Notice tone="warning"><b>판정 보류</b> · {message}</Notice>;
 }
 
-/** 측정값이 있으면 막대로, 없으면 '미평가'로 표시한다. 다른 값으로 대체하지 않는다. */
+/** 외부 제공자 점수: 값이 있으면 막대로, 없으면 '미평가'로 표시한다. 다른 값으로 대체하지 않는다. */
 function MetricRows({ analysis }: { analysis: SpeechAnalysis }) {
   return (
     <dl className="space-y-2">
@@ -80,9 +81,7 @@ export default function SpeechAnalysisResult({ analysis }: { analysis: SpeechAna
             <p className="mt-1 text-[15px] font-bold text-[var(--ink-900)]">{analysis.transcript}</p>
           </div>
         )}
-        <div className="flex items-center gap-2 border-t border-[var(--ink-100)] pt-3 text-xs text-[var(--ink-600)]">
-          <span>발음 평가</span><Badge tone="neutral">미평가</Badge>
-        </div>
+        <dl className="border-t border-[var(--ink-100)] pt-3"><PronunciationPreparing audience="student" /></dl>
       </Card>
     );
   }
@@ -120,7 +119,8 @@ export default function SpeechAnalysisResult({ analysis }: { analysis: SpeechAna
         <HoldNotice analysis={analysis} />
         {lowConfidence && <Notice tone="warning">컴퓨터가 확실하게 알아듣지 못했어요. 조용한 곳에서 다시 녹음해 보세요.</Notice>}
         {singleWord && <Notice tone="info">낱말 하나는 컴퓨터가 다르게 알아듣는 경우가 많아요. 텍스트 일치율이 낮아도 잘못 말한 것이 아닐 수 있어요.</Notice>}
-        <div className="border-t border-[var(--ink-100)] pt-3"><MetricRows analysis={analysis} /></div>
+        {/* 측정값은 저장된 값만 표시한다. 측정 기능 이전 분석은 '기록 없음'(소급 계산하지 않음) */}
+        <div className="border-t border-[var(--ink-100)] pt-3"><SpeechMetricList metrics={analysis.speechMetrics} audience="student" analysisStatus={analysis.status} /></div>
         <p className="text-xs leading-relaxed text-[var(--ink-500)]">텍스트 일치율은 음성 인식 결과와 목표 문장의 글자 일치 정도예요. 발음 정확도 점수나 진단 결과가 아니에요.</p>
       </Card>
     );

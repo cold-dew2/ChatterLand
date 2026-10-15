@@ -47,6 +47,8 @@ export const studentApi = {
   endConversation: (id: string) => apiClient.post<Record<string, unknown>>(`/api/v1/ai/conversations/${encodeURIComponent(id)}/end`),
   createGuardianLinkCode: () => apiClient.post<{ code: string; expiresAt: string; validMinutes: number }>('/api/v1/students/me/guardian-link-codes'),
   guardians: () => apiClient.get<{ guardianId: number; name: string; linkedOn: string }[]>('/api/v1/students/me/guardians'),
+  /** 보호자 연결·해제 알림(최근 30일) */
+  guardianEvents: () => apiClient.get<unknown[]>('/api/v1/students/me/guardian-events'),
   unlinkGuardian: (guardianId: number) => apiClient.delete<void>(`/api/v1/students/me/guardians/${guardianId}`),
   history: (type?: string, page = 0, size = 10) => apiClient.get<Record<string, unknown>>(`/api/v1/students/me/history${queryString({ type, page, size })}`),
 }

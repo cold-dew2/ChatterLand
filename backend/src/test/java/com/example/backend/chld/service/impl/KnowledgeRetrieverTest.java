@@ -14,23 +14,35 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * 근거 검색: 출처·사용 권한이 확인되고(VERIFIED) 승인된 자료만. 목표 문장에 적용될 수 있는 조항 태그가 맞는 자료를 학생 결과와 겹치는 순으로.
+ * 근거 검색: 출처·사용 권한이 확인되고(VERIFIED) 내용이 승인된(APPROVED + 실제 계정의 승인 기록) 자료만. 설정으로 미승인 자료를 넣을 수 없다. 목표 문장에 적용될 수 있는 조항 태그가 맞는 자료를 학생 결과와 겹치는 순으로.
  * 조항 자료는 자모만 같다고 쓰지 않는다. 조항 태그가 없는 안내 자료(조음 위치·방법 등)는 학생 결과의 자모가 겹칠 때만, 조항 자료보다 낮은 순위로 쓴다.
  */
 class KnowledgeRetrieverTest {
     private final KnowledgeMapper mapper = mock(KnowledgeMapper.class);
     private final KnowledgeRetriever retriever = new KnowledgeRetriever(mapper, "APPROVED");
 
+    /** 정상 승인된 자료(출처·권한 확인 + APPROVED + 승인 기록: 실제 선생님 계정 9가 승인) */
     private static Map<String,Object> chunk(String id, String location, String tags) {
-        return Map.of("chunkId", id, "documentId", "std", "location", location, "content", location + " 내용", "tags", tags,
-                "title", "표준 발음법", "citation", "고시", "version", 2, "reviewStatus", "APPROVED", "verificationStatus", "VERIFIED");
+        Map<String,Object> chunk = new HashMap<>(Map.of("chunkId", id, "documentId", "std", "location", location, "content", location + " 내용", "tags", tags,
+                "title", "표준 발음법", "citation", "고시", "version", 2, "reviewStatus", "APPROVED", "verificationStatus", "VERIFIED"));
+        approvedBy(chunk, 9L, "TEACHER");
+        return chunk;
+    }
+
+    /** 승인 기록: 승인자 ID·승인 시각과, 조회에서 붙는 승인자 계정(users) 정보 */
+    private static void approvedBy(Map<String,Object> chunk, Long reviewer, String reviewerRole) {
+        chunk.put("reviewedBy", reviewer);
+        chunk.put("reviewedAt", reviewer == null ? null : java.time.LocalDateTime.of(2026, 10, 15, 9, 0));
+        chunk.put("reviewerUserId", reviewer);
+        chunk.put("reviewerRole", reviewer == null ? null : reviewerRole);
     }
 
     /** 문서 분류·확인 상태를 지정한 청크 */
     private static Map<String,Object> chunk(String id, String documentId, String category, String verification, String review, Long reviewedBy, String tags) {
         Map<String,Object> chunk = new HashMap<>(Map.of("chunkId", id, "documentId", documentId, "location", id + " 위치", "content", id + " 내용", "tags", tags,
                 "title", documentId + " 제목", "citation", "출처 인용", "version", 1, "reviewStatus", review, "verificationStatus", verification));
-        chunk.put("category", category); chunk.put("reviewedBy", reviewedBy);
+        chunk.put("category", category);
+        approvedBy(chunk, reviewedBy, "TEACHER");
         chunk.put("sourceVersion", "문화체육관광부 고시 제2017-13호"); chunk.put("licenseNote", "저작권법 제24조의2");
         return chunk;
     }
@@ -127,5 +139,80 @@ class KnowledgeRetrieverTest {
         KnowledgeRetriever.Retrieval result = retriever.retrieve("라디오", Set.of("라"), Set.of("ㄹ"));
         assertEquals(List.of("example-approved"), ids(result));
         assertEquals("TEACHER_EXAMPLE", result.sources().get(0).category());
+    }
+
+    // ── 승인 우회 방지(설정·승인 기록·Java 재검증) ─────────────────────────────
+
+    private static Map<String,Object> ruleChunk(String id) { return chunk(id, id, "PRONUNCIATION_RULE", "VERIFIED", "APPROVED", 9L, "rule:20,phoneme:ㄴ,phoneme:ㄹ"); }
+
+    private static Map<String,Object> with(Map<String,Object> chunk, String key, Object value) {
+        Map<String,Object> copy = new HashMap<>(chunk);
+        copy.put(key, value);
+        return copy;
+    }
+
+    @Test
+    void addingUnapprovedStatusesToTheSettingCannotBringUnapprovedSourcesIntoTheSearch() {
+        KnowledgeRetriever widened = new KnowledgeRetriever(mapper, " APPROVED , DRAFT,VERIFIED ,RETIRED,PENDING");
+        when(mapper.findSearchableChunks(List.of("APPROVED"))).thenReturn(List.of(
+                with(ruleChunk("draft"), "reviewStatus", "DRAFT"),
+                with(ruleChunk("verified-as-review"), "reviewStatus", "VERIFIED"),
+                with(ruleChunk("retired"), "reviewStatus", "RETIRED"),
+                ruleChunk("approved")));
+        KnowledgeRetriever.Retrieval result = widened.retrieve("신라", Set.of("신"), Set.of("ㄴ", "ㄹ"));
+        assertEquals(List.of("approved"), ids(result));
+        verify(mapper).findSearchableChunks(List.of("APPROVED")); // SQL에도 APPROVED만 넘긴다(DRAFT 등은 무시)
+        verify(mapper, never()).findSearchableChunks(argThat(statuses -> statuses.contains("DRAFT")));
+    }
+
+    @Test
+    void settingsWithoutApprovedOrInvalidValuesSearchNothing() {
+        for (String setting : java.util.Arrays.asList("DRAFT", "DRAFT,VERIFIED", "approved", "", " , ", "NOT_A_STATUS", null)) {
+            reset(mapper);
+            KnowledgeRetriever.Retrieval result = new KnowledgeRetriever(mapper, setting).retrieve("신라", Set.of("신"), Set.of("ㄴ", "ㄹ"));
+            assertTrue(result.empty(), "설정=" + setting);
+            verifyNoInteractions(mapper); // 미승인만 허용하는 설정이면 조회 자체를 하지 않는다(근거 자료 부족)
+        }
+    }
+
+    @Test
+    void approvedWithoutAValidApprovalRecordIsNotUsed() {
+        Map<String,Object> ok = ruleChunk("approved");
+        when(mapper.findSearchableChunks(List.of("APPROVED"))).thenReturn(List.of(
+                with(with(with(ruleChunk("no-approver"), "reviewedBy", null), "reviewerUserId", null), "reviewerRole", null),
+                with(ruleChunk("no-approved-at"), "reviewedAt", null),
+                with(with(ruleChunk("ghost-approver"), "reviewerUserId", null), "reviewerRole", null), // reviewed_by가 없는 계정을 가리킴
+                with(ruleChunk("mismatched-approver"), "reviewerUserId", 10L),
+                with(ruleChunk("non-numeric-approver"), "reviewedBy", "9"),
+                with(ruleChunk("not-verified"), "verificationStatus", "PENDING"),
+                ok));
+        assertEquals(List.of("approved"), ids(retriever.retrieve("신라", Set.of("신"), Set.of("ㄴ", "ㄹ"))));
+    }
+
+    @Test
+    void teacherExamplesNeedATeacherApproverWhileGeneralSourcesNeedAnExistingAccount() {
+        Map<String,Object> exampleByTeacher = chunk("example-teacher", "teacher-ex-1", "TEACHER_EXAMPLE", "VERIFIED", "APPROVED", 5L, "phoneme:ㄹ");
+        when(mapper.findSearchableChunks(List.of("APPROVED"))).thenReturn(List.of(
+                with(chunk("example-student", "teacher-ex-2", "TEACHER_EXAMPLE", "VERIFIED", "APPROVED", 6L, "phoneme:ㄹ"), "reviewerRole", "STUDENT"),
+                with(chunk("example-guardian", "teacher-ex-3", "TEACHER_EXAMPLE", "VERIFIED", "APPROVED", 7L, "phoneme:ㄹ"), "reviewerRole", "GUARDIAN"),
+                with(chunk("example-no-time", "teacher-ex-4", "TEACHER_EXAMPLE", "VERIFIED", "APPROVED", 5L, "phoneme:ㄹ"), "reviewedAt", null),
+                exampleByTeacher));
+        assertEquals(List.of("example-teacher"), ids(retriever.retrieve("라디오", Set.of("라"), Set.of("ㄹ"))));
+        // 일반 자료는 승인자 계정이 실제로 있으면 된다(역할 제한은 정책 미정이라 두지 않음)
+        assertTrue(KnowledgeRetriever.approved(with(ruleChunk("general"), "reviewerRole", "GUARDIAN")));
+        assertFalse(KnowledgeRetriever.approved(with(exampleByTeacher, "reviewerRole", "GUARDIAN")));
+    }
+
+    @Test
+    void rowsThatPassedTheQueryButFailTheApprovalCheckAreDroppedAndTheRestKeepTheirOrder() {
+        // 조회(SQL)를 통과한 것처럼 섞여 들어온 미승인 행: Java 재검증에서만 걸러지고 승인 자료의 순위·번호는 그대로
+        when(mapper.findSearchableChunks(List.of("APPROVED"))).thenReturn(List.of(
+                with(chunk("c20-draft", "d1", "PRONUNCIATION_RULE", "VERIFIED", "DRAFT", 9L, "rule:20,phoneme:ㄴ,phoneme:ㄹ"), "category", "PRONUNCIATION_RULE"),
+                chunk("place", "nikl-pron-place", "ARTICULATION_PLACE", "VERIFIED", "APPROVED", 9L, "phoneme:ㄷ,phoneme:ㄴ,phoneme:ㄹ"),
+                with(chunk("manner-no-approver", "nikl-pron-manner", "ARTICULATION_MANNER", "VERIFIED", "APPROVED", null, "phoneme:ㄹ"), "reviewStatus", "APPROVED"),
+                chunk("c20", "nikl-pron-assimilation", "PRONUNCIATION_RULE", "VERIFIED", "APPROVED", 9L, "rule:20,phoneme:ㄴ,phoneme:ㄹ")));
+        KnowledgeRetriever.Retrieval result = retriever.retrieve("신라", Set.of("신"), Set.of("ㄴ", "ㄹ"));
+        assertEquals(List.of("c20", "place"), ids(result));
+        assertEquals(List.of("S1", "S2"), result.sources().stream().map(KnowledgeRetriever.Source::marker).toList());
     }
 }

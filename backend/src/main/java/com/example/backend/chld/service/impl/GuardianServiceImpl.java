@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Comparator;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -83,6 +84,39 @@ public class GuardianServiceImpl implements GuardianService {
     public void unlinkGuardian(TokenPrincipal principal, long guardianId) {
         if (guardians.unlink(guardianId, studentId(principal), "STUDENT") != 1)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "연결된 보호자를 찾을 수 없습니다.");
+    }
+
+    static final int EVENT_DAYS = 30;
+
+    /**
+     * 보호자 연결·해제 알림(자녀 계정). 별도 알림 저장 없이 연결 기록(guardian_students)에서 만든다:
+     * 연결·해제가 같은 행·같은 트랜잭션의 상태라 알림과 연결 상태가 어긋나거나 같은 사건이 두 번 나오지 않는다.
+     * 실패한 연결 시도(잘못된·만료·이미 쓴 코드)는 연결 기록을 바꾸지 않으므로 알림도 생기지 않는다.
+     * 한계: 같은 보호자를 다시 연결하면 그 행의 이전 해제 시각은 지워진다(가장 최근 상태만). 읽음 표시는 없다.
+     */
+    @Override
+    public List<Map<String,Object>> linkEvents(TokenPrincipal principal) {
+        List<Map<String,Object>> events = new java.util.ArrayList<>();
+        for (Map<String,Object> row : guardians.findRecentLinkChanges(studentId(principal), EVENT_DAYS)) events.addAll(eventsOf(row));
+        events.sort(Comparator.comparing((Map<String,Object> event) -> String.valueOf(event.get("occurredAt"))).reversed());
+        return events;
+    }
+
+    static List<Map<String,Object>> eventsOf(Map<String,Object> row) {
+        List<Map<String,Object>> events = new java.util.ArrayList<>();
+        Object guardianId = row.get("guardianId"), name = row.get("guardianName");
+        if (row.get("linkedAt") != null)
+            events.add(event("GUARDIAN_LINKED", "guardian-linked-" + guardianId + "-" + row.get("linkedAt"), name, row.get("linkedAt"), null));
+        if ("UNLINKED".equals(String.valueOf(row.get("status"))) && row.get("unlinkedAt") != null)
+            events.add(event("GUARDIAN_UNLINKED", "guardian-unlinked-" + guardianId + "-" + row.get("unlinkedAt"), name, row.get("unlinkedAt"), row.get("unlinkedBy")));
+        return events;
+    }
+
+    private static Map<String,Object> event(String type, String key, Object guardianName, Object occurredAt, Object by) {
+        Map<String,Object> event = new LinkedHashMap<>();
+        event.put("key", key); event.put("type", type); event.put("guardianName", guardianName); event.put("occurredAt", occurredAt);
+        if (by != null) event.put("unlinkedBy", by);
+        return event;
     }
 
     // ── 보호자 계정 ─────────────────────────────────────────────

@@ -6,6 +6,7 @@ import { guardianApi, type ChildConsent, type GuardianChild } from "@/features/g
 import LearningReportView from "@/features/learningReport/components/LearningReportView";
 import type { HistoryItem } from "@/features/student/types";
 import { mapHistoryItem } from "@/features/student/utils/mappers";
+import { GUARDIAN_LINK_SCOPE } from "@/features/guardian/utils/linkPolicy";
 import { errorMessage } from "@/shared/api/client";
 import Badge from "@/shared/components/badge/Badge";
 import Button from "@/shared/components/button/Button";
@@ -102,7 +103,7 @@ export default function GuardianChildDetail({ studentId, onBack, onUnlinked }: {
                 ))}
               </ul>
               <p className="text-xs leading-relaxed text-[var(--ink-500)]">
-                보기만 할 수 있어요. 동의를 바꾸려면 자녀 계정의 마이페이지 › 동의 관리에서 해 주세요. 이 화면의 연결은 가입 때 남긴 법정대리인 동의 기록과는 별개예요.
+                보기만 할 수 있어요. 동의를 바꾸려면 자녀 계정의 마이페이지 › 동의 관리에서 해 주세요. 이 화면의 연결은 가입 때 남긴 법정대리인 동의 기록과는 별개예요. {GUARDIAN_LINK_SCOPE}
               </p>
             </Card>
           </div>

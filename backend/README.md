@@ -2,6 +2,15 @@
 
 Spring Boot 4 / Java 17 service for the ChatterLand language rehabilitation app. The backend follows the TripMate-style domain layers: controller, service/implementation, mapper, DTO, and MyBatis XML. MariaDB stores users, student profiles, therapy, practice, speech analysis, conversations, and homework.
 
+## Project status (2026-10-15)
+
+Details live in `docs/design/` (per feature) and `docs/testing/test-results.md` (actual test runs). This is only a summary.
+
+- **Implemented:** auth/roles, homework and practice flows, local Whisper ASR with text match rate, VAD-based speaking rate and pause measurements, consistent measurement states on student and teacher screens (`docs/design/speech-metrics.md`), RAG-grounded AI feedback that only uses sources verified for source/permission and approved with a recorded reviewer account (enforced in SQL and Java; the status setting can only narrow it, `docs/design/ai-feedback.md` 11.2), and a speech-metric validation tool (`sh gradlew speechValidation`, test sources only).
+- **Awaiting validation:** accuracy of speaking rate/pauses on children's speech and the 0.25 s pause threshold for children (no child speech has been tested; the tool was only self-checked with synthetic speech); Gemini answer quality on approved RAG material (no LIVE run on approved material).
+- **Needs external decisions:** a RAG reviewer/approver (all 7 source documents are seeded as verified for source/permission but not approved, so with the seeded state AI explanations report insufficient sources; the development/production database values were not checked); a validation lead, ethics review, guardian consent, data storage/deletion rules and expert annotation rules for child-speech validation; model choice, privacy review and score policy for pronunciation accuracy.
+- **Not implemented:** pronunciation accuracy scoring (shown as "준비 중" / preparing). The text match rate is not a pronunciation score, and speaking rate/pauses are measurements, not ability or fluency scores.
+
 ## Local development
 
 1. Configure `.env` from `.env.example` with your MariaDB connection and a private `JWT_SECRET`.
@@ -32,7 +41,7 @@ Protected APIs enforce JWT roles and teacher/student ownership. Passwords are BC
 
 Measured accuracy (2026-10-02, large-v3-turbo q5_0): 40 adult read sentences from Zeroth-Korean had a syllable error rate of 9.5%, and most of the large errors came from clips that were cut off or had extra speech. With Yuna TTS at four speaking rates plus real background noise, 25 of 40 single words were recognized exactly and 8 of 8 sentences. 포도, 파나마, 불 and 로봇 failed often. Recognition confidence did not separate right from wrong results. We have not tested children's speech. Whisper also "corrects" mispronunciations (숩속 → 숲속, 거부기 → 거북이), so the sentence match rate is not a pronunciation score.
 
-Uploads must be 16-bit PCM WAV (the web app converts recordings in the browser). Results store the transcript and a syllable-based sentence match rate; pronunciation/rate/fluency scores are **not evaluated**. Speech-therapy learners are saved as `PENDING` for teacher review. Recognition is not validated on children's speech.
+Uploads must be 16-bit PCM WAV (the web app converts recordings in the browser). Results store the transcript, a syllable-based text match rate (not a pronunciation score), and `speechMetrics`: speaking rate (recognized syllables over the span from first to last speech) and pauses (VAD silences ≥ 0.25 s). These are measurements, not scores, and are not validated on children's speech. Pronunciation accuracy is **not evaluated** (no model; shown as "준비 중"). See `docs/design/speech-metrics.md`. Speech-therapy learners are saved as `PENDING` for teacher review. Recognition is not validated on children's speech.
 
 `SPEECH_ENGINE=external` keeps the legacy provider (`SPEECH_API_URL`, `SPEECH_API_KEY`); update the consent notice if you switch, because audio then leaves the server.
 
@@ -58,14 +67,14 @@ Every local analysis stores an automatic assessment next to the transcript. It c
 
 A real phoneme-level pronunciation score needs a phoneme model validated on Korean children's speech. Options found (2026-10-02, not integrated):
 
-- Azure Speech Pronunciation Assessment supports `ko-KR`. It is paid, and audio leaves the server, so the consent text would need to change.
+- Azure Speech Pronunciation Assessment supports `ko-KR` (as recorded on 2026-10-02; a later check on 2026-10-14 could not confirm it in the official language table, so re-check before relying on it). It is paid, and audio leaves the server, so the consent text would need to change.
 - On Hugging Face, `slplab/wav2vec2-xls-r-300m_phoneme-mfa_korean_nia13-asia-9634_001` (Apache-2.0, ~1.3 GB, Korean phoneme CTC).
 - On Hugging Face, `Miniijune/wav2vec2-xls-r-300m-Korean-children-pronunciation-jamo-based-semi-supervised_V2` (Apache-2.0, ~2.5 GB). Its model card does not state the training data.
 - Validation data such as AI Hub "한국어 아동 음성" (dataSetSn=540) and "구음장애 음성인식" (dataSetSn=608) requires an application.
 
 ## AI chat (external)
 
-AI replies require `AI_API_URL`, `AI_API_KEY` and optionally `AI_MODEL` (default `gpt-4o-mini`). The backend sends an OpenAI-compatible Chat Completions request (`POST`, `Authorization: Bearer <key>`, body `{model, messages}`), so `AI_API_URL` must be the full endpoint ending in `/chat/completions`, not a base URL. Only text is sent (voice messages are transcribed locally and deleted). Missing settings return 503 (`AI_API_URL 및 AI_API_KEY 환경변수 설정이 필요합니다.`); there are no fake replies.
+AI replies require `AI_API_URL`, `AI_API_KEY` and optionally `AI_MODEL` (default `gpt-4o-mini`). A Gemini native endpoint (`.../models/{model}:generateContent`, sent with the `x-goog-api-key` header) is also supported; the model then comes from the URL (`docs/design/ai-feedback.md`). The backend sends an OpenAI-compatible Chat Completions request (`POST`, `Authorization: Bearer <key>`, body `{model, messages}`), so `AI_API_URL` must be the full endpoint ending in `/chat/completions`, not a base URL. Only text is sent (voice messages are transcribed locally and deleted). Missing settings return 503 (`AI_API_URL 및 AI_API_KEY 환경변수 설정이 필요합니다.`); there are no fake replies.
 
 - Local: put the values in `backend/.env` (loaded from the working directory by `spring.config.import`, so start the app from `backend/`, e.g. `./gradlew bootRun`), then restart the backend.
 - Deployment: set them as environment variables or secrets of the backend process/container. Never put the key in the frontend (`NEXT_PUBLIC_*` values are bundled into the browser).

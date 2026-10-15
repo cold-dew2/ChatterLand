@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { createStudent, loginUi, mic, openPractice, recordAndAnalyze } from './helpers'
+import { createStudent, layoutProblems, loginUi, mic, openPractice, recordAndAnalyze } from './helpers'
 
 test.use({ launchOptions: { args: mic('mic-weather.wav') }, permissions: ['microphone'] })
 
@@ -14,6 +14,18 @@ test('E2E-04 문장 녹음 → 문장 유형 결과', async ({ page }) => {
   await expect(page.getByText('문장', { exact: true })).toBeVisible()
   await expect(page.getByText('단어 비교')).toBeVisible()
   await expect(page.getByText('학습 기록에 저장했어요.')).toBeVisible()
+  // 말하기 측정: 발음 분석은 준비 중(점수 없음), 속도는 실제 측정값(초당 n글자) 또는 측정 불가 이유
+  await expect(page.getByText('발음을 분석하는 기능을 준비하고 있어요.')).toBeVisible()
+  await expect(page.getByText('미평가')).toHaveCount(0)
+  await expect(page.getByText(/초당 \d+\.\d글자|측정 불가/).first()).toBeVisible()
+  // 측정값은 막대로 그리지 않는다(결과 막대는 텍스트 일치율뿐, 화면 위 연습 진행 막대는 별개)
+  const bars = await page.getByRole('progressbar').evaluateAll((items) => items.map((item) => item.getAttribute('aria-label') ?? ''))
+  expect(bars.some((label) => label.startsWith('텍스트 일치율'))).toBe(true)
+  expect(bars.filter((label) => /속도|멈춤|발음|유창성/.test(label))).toEqual([])
+  // 작은 화면에서도 측정 영역이 넘치지 않는다
+  expect(await layoutProblems(page)).toEqual([])
+  await page.setViewportSize({ width: 320, height: 720 })
+  expect(await layoutProblems(page)).toEqual([])
 })
 
 test('E2E-05 말하는 도중 녹음 종료 → 판정 보류 → 다시 녹음', async ({ page }) => {

@@ -67,7 +67,11 @@ class LiveAiIntegrationTest {
     @Test
     void ragFeedbackLatencyAndGroundingOnTenSentences(org.springframework.boot.test.system.CapturedOutput output) throws Exception {
         // 출처·권한이 확인된(VERIFIED) 원문 조항 자료를 이 테스트 안에서만 승인한다(개발자 요약 자료는 PENDING이라 쓰지 않는다).
-        jdbc.update("UPDATE knowledge_documents SET review_status='APPROVED', reviewed_at=NOW() WHERE document_id IN ('nikl-pron-assimilation','nikl-pron-coda')");
+        // 승인 기록(실제 검수자 계정 + 승인 시각)이 있어야 검색된다. 검수자는 테스트 전용 선생님 계정(롤백).
+        String reviewerEmail = "rag-reviewer-" + java.util.UUID.randomUUID() + "@example.test";
+        jdbc.update("INSERT INTO users(role,center_id,name,email,password_hash,terms_agreed) VALUES('TEACHER',1,'자료 검수 선생님',?,'not-used',TRUE)", reviewerEmail);
+        long reviewer = jdbc.queryForObject("SELECT user_id FROM users WHERE email=?", Long.class, reviewerEmail);
+        jdbc.update("UPDATE knowledge_documents SET review_status='APPROVED', reviewed_by=?, reviewed_at=NOW() WHERE document_id IN ('nikl-pron-assimilation','nikl-pron-coda')", reviewer);
         String token = consentedStudentToken();
         long studentId = jdbc.queryForObject("SELECT sp.student_id FROM student_profiles sp JOIN users u ON u.user_id=sp.user_id WHERE u.email=?", Long.class, lastEmail);
         String[][] cases = {{"신라","실라","ㄴ","ㄹ","신"},{"국물","국물","",""," "},{"국밥","국밥","","",""},{"같이","가치","ㅌ","ㅊ","같"},{"강릉","강릉","","",""},

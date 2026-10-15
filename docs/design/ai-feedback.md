@@ -202,7 +202,7 @@ cd backend && LIVE_AI_TEST=1 sh gradlew integrationTest --tests '*LiveAiIntegrat
 - **초기 자료**: 「표준어 규정」 제2부 표준 발음법(문교부 고시 제88-2호, 1988) 8개 조항을 요약했다.
   - 대상 조항: 제8·9·13·17·18·19·20·23항
   - **개발자가 작성한 요약이라 `DRAFT`로 등록했다.**
-  - 검색은 `APPROVED` 문서만 대상으로 한다(`AI_RAG_ALLOWED_STATUSES`, 기본 APPROVED). **따라서 지금 상태로는 실제 서비스에서 AI 설명이 '근거 자료 부족'으로 나온다.**
+  - 검색은 내용이 승인된(`APPROVED` + 승인 기록) 문서만 대상으로 한다(11.2). 설정 `app.ai.rag.allowed-statuses`(기본 APPROVED)는 대상을 좁히기만 하고 APPROVED가 아닌 값은 무시한다(2026-10-15 수정). 이전에 적었던 `AI_RAG_ALLOWED_STATUSES` 환경변수는 `application.properties`에 연결되어 있지 않다. **따라서 지금 상태로는 실제 서비스에서 AI 설명이 '근거 자료 부족'으로 나온다.**
   - 검수자가 원문과 대조한 뒤 아래 명령으로 승인해야 한다.
     ```sql
     UPDATE knowledge_documents SET review_status='APPROVED', reviewed_by=?, reviewed_at=NOW() WHERE document_id=?
@@ -320,7 +320,7 @@ cd backend && LIVE_AI_TEST=1 sh gradlew integrationTest --tests '*LiveAiIntegrat
 - 자료의 상태는 두 가지로 따로 관리한다.
   - **출처·사용 권한 확인**: `verification_status` = PENDING(확인 전·불명확) / VERIFIED(출처 URL과 저작권 정책 확인) / REJECTED
   - **내용 검수(승인)**: 기존 `review_status` = DRAFT / APPROVED / RETIRED, 승인자·시각은 `reviewed_by`/`reviewed_at`
-- **AI 검색 대상 = VERIFIED이면서 APPROVED**인 문서다. 교사 설명 예시(`TEACHER_EXAMPLE`)는 승인자(`reviewed_by`)까지 있어야 한다.
+- **AI 검색 대상 = VERIFIED이면서 APPROVED이고 승인 기록이 있는** 문서다. 승인 기록 = `reviewed_by`가 실제 계정(users)을 가리키고 `reviewed_at`이 있음. 교사 설명 예시(`TEACHER_EXAMPLE`)는 승인자가 선생님(TEACHER) 계정이어야 한다(2026-10-15 강화, 11.2).
   - 같은 조건을 Mapper SQL과 `KnowledgeRetriever`에서 두 번 확인한다.
 - 벡터 DB는 쓰지 않는다. MariaDB 태그 검색을 유지한다. 프롬프트는 v3(`feedback-v3-rag`)와 기존 안전 검사를 그대로 쓴다.
 
@@ -396,7 +396,7 @@ VALUES('teacher-ex-<번호>','<제목>','<작성 기관·작성자>','<기관>',
   '<기관 내부 작성물 등 이용 권한>','TEACHER_EXAMPLE','VERIFIED',NOW(),'<작성자 확인 방법>','DRAFT',1);
 INSERT INTO knowledge_chunks(chunk_id,document_id,chunk_order,location,content,tags)
 VALUES('teacher-ex-<번호>-01','teacher-ex-<번호>',1,'<예시 위치>','<설명 예시 본문>','phoneme:<자모>');
--- 승인: review_status='APPROVED', reviewed_by=<승인 교사 user_id>, reviewed_at=NOW() (승인자가 없으면 검색되지 않는다)
+-- 승인: review_status='APPROVED', reviewed_by=<승인 교사 user_id>, reviewed_at=NOW() (승인자가 없거나, 없는 계정이거나, 선생님 계정이 아니거나, 승인 시각이 없으면 검색되지 않는다)
 ```
 
 ### 10.6 검색 변경 (`KnowledgeRetriever`)
@@ -456,3 +456,54 @@ VALUES('teacher-ex-<번호>-01','teacher-ex-<번호>',1,'<예시 위치>','<설�
   - 실제 승인 전에는 실행하지 않았다(무료 등급 하루 20회 한도도 아꼈다).
   - 승인 후 실행 명령: `cd backend && LIVE_AI_TEST=1 sh gradlew integrationTest --tests '*LiveAiIntegrationTest'`
   - `LiveAiIntegrationTest`는 격리된 테스트 DB에서 돈다. 테스트 트랜잭션 안에서만 자료를 승인 상태로 쓰고 롤백한다. 따라서 이 테스트 결과가 운영 DB의 승인을 대신하지 않는다.
+
+## 11. RAG 자료 검수·승인 상태와 후속 조건 (2026-10-15)
+
+### 11.1 현재 상태
+
+| 항목 | 상태 | 근거 |
+|---|---|---|
+| 원문 자료 7개 문서·40개 청크 등록 | 완료 | `schema.sql` 생성 블록, 원문 대조 40/40 일치(10.9) |
+| 출처·사용 권한 확인(`verification_status`) | 완료(개발 작업 중 확인, 법률 자문 아님) | 7개 모두 VERIFIED |
+| 내용 승인(`review_status`) | **외부 결정 필요** | 7개 모두 DRAFT, `reviewed_by` 없음(테스트 DB 조회, 2026-10-15). 개발·운영 DB의 값은 조회하지 않았다 → 확인 필요 |
+| 자료 검수자·승인 권한자 | **외부 결정 필요** | 지정되지 않음. 임의로 지정하거나 승인 SQL을 실행하지 않았다 |
+| 교사 설명 예시 | 미구현(자료 없음) | 0건. 구조만 있음 |
+| 개발자 요약 자료(`std-pronunciation-1988`) | 사용 안 함 | PENDING + DRAFT |
+| Gemini LIVE 품질 검증(승인 자료 기준) | **검증 대기** | 승인된 자료가 없어 실행하지 않았다. 실행은 별도 허가 후 |
+
+- 출처·권한 확인(VERIFIED)과 내용 승인(APPROVED)은 다른 항목이다. 출처와 권한이 확인됐다고 해서 학습 콘텐츠로서의 내용까지 승인된 것은 아니다. 원문 일치 여부와 아동 학습 자료로서의 적절성은 사람이 검수해야 한다.
+
+### 11.2 승인 상태를 검색에서 강제하는지 (2026-10-15 수정 후)
+
+같은 승인 조건을 두 단계에서 검사한다. 설정만 바꿔서는 미승인 자료를 검색에 넣을 수 없다.
+
+| 단계 | 위치 | 검사 |
+|---|---|---|
+| SQL | `KnowledgeMapper.findSearchableChunks` | `review_status='APPROVED'`(고정) AND `verification_status='VERIFIED'` AND `reviewed_at IS NOT NULL` AND `users`와 내부 조인(`reviewed_by`가 실제 계정) AND (교사 예시면 승인자 `role='TEACHER'`) AND `review_status IN (설정값)`. 설정값이 비면 `1=0`(결과 없음) |
+| Java | `KnowledgeRetriever.approved` | SQL 결과를 믿지 않고 다시 확인: VERIFIED, APPROVED, `reviewedBy`·`reviewedAt` 있음, 조인된 승인자 계정 ID = `reviewedBy`, 교사 예시면 승인자 역할 TEACHER |
+| 설정 | `KnowledgeRetriever` 생성자 | `app.ai.rag.allowed-statuses`를 APPROVED와 교집합. DRAFT·VERIFIED·PENDING 등은 무시하고 경고 로그. APPROVED가 없거나(빈 값·소문자·알 수 없는 값 포함) 결과가 비면 조회하지 않음(근거 자료 부족) |
+
+- 승인자 유효성 기준은 현재 데이터 모델과 기존 승인 절차(10.5)에 근거했다: 승인 기록은 `reviewed_by`+`reviewed_at`, `reviewed_by`는 `users`의 계정(외래 키가 없어 없는 ID가 들어갈 수 있으므로 조인으로 확인), 교사 예시는 '승인 교사'. 일반 자료의 승인자 역할 제한은 정책이 없어 두지 않았다(11.3).
+- 바뀐 동작: 승인자 기록 없이 상태만 APPROVED인 일반 자료, 없는 계정이 승인한 자료, 승인 시각이 없는 자료, 선생님이 아닌 계정이 승인한 교사 예시는 이제 검색되지 않는다. 정상 승인 자료(위 조건 충족)의 검색·순위는 그대로다. 시드 원문 자료는 모두 DRAFT라 서비스 동작(근거 자료 부족)은 바뀌지 않는다.
+- 보호하는 테스트:
+  - `KnowledgeRetrieverTest`(단위, 매퍼 mock): 넓힌 설정에서도 APPROVED만 조회·사용, APPROVED 없는 설정·잘못된 값은 조회하지 않음, 승인자 없음·승인 시각 없음·없는 계정·계정 불일치·숫자 아닌 승인자·출처 미확인 제외, 교사 예시의 학생·보호자 승인 제외, SQL을 통과한 것처럼 섞인 미승인 행만 빠지고 나머지 순위 유지
+  - `KnowledgeApprovalIntegrationTest`(테스트 DB): SQL만으로 11가지 승인 상태 중 정상 2건만 반환(넓은 설정·빈 설정 포함), 넓은 설정의 검색기도 승인 자료만 사용
+  - `SpeechFeedbackIntegrationTest`: 승인 픽스처를 실제 검수자 계정 기록과 함께 승인하도록 바꿈(상태만 바꾸면 검색되지 않으므로)
+
+### 11.3 남은 결정 (미완료)
+
+1. 일반 자료 승인자의 역할 제한: 현재는 '실제 계정'이면 된다(학생·보호자 계정이 승인해도 검색됨). 검수자 역할(선생님만, 또는 별도 검수자 역할)을 정할지 결정이 필요하다. 정해지면 SQL·Java 조건과 테스트에 함께 반영한다.
+2. 승인자 계정이 나중에 비활성(INACTIVE)이 된 경우의 처리: 현재는 승인을 유지한다(정책 없음).
+3. `reviewed_by` 외래 키: DB 스키마 변경이 필요해 하지 않았다. 지금은 조회 조인으로 없는 계정을 거른다.
+4. 설정 변경 절차: 설정으로 미승인 자료를 넣을 수는 없지만, APPROVED를 빼면 RAG가 꺼진다(근거 자료 부족). 운영 설정 확인 절차에 포함한다.
+
+### 11.4 Gemini LIVE 검증의 선행 조건
+
+1. 자료 검수자·승인 권한자 지정
+2. 검수자가 원문(`verify_seed.py` 결과 포함)과 학습 적절성을 확인하고 본인 user_id로 승인(10.5)
+3. LIVE 실행 허가(무료 등급 하루 20회 한도, 유료 전환 여부 결정)
+4. 대표 케이스 실행(`LIVE_AI_TEST=1 sh gradlew integrationTest --tests '*LiveAiIntegrationTest'`): 출처 연결·근거 일치·안전성 기록
+5. 교사 검수 기준(9.7)으로 응답 품질 평가
+
+- 자동 테스트 통과(외부 AI는 mock)와 실제 Gemini 응답의 정확성·안전성·학습 적절성 검증은 별개다. 후자는 아직 수행하지 않았다.
+

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { guardianApi, type GuardianChild } from "@/features/guardian/api/guardianApi";
+import { GUARDIAN_LINK_LIMITS, GUARDIAN_LINK_SCOPE } from "@/features/guardian/utils/linkPolicy";
 import { errorMessage } from "@/shared/api/client";
 import Button from "@/shared/components/button/Button";
 import Notice from "@/shared/components/feedback/Notice";
@@ -44,7 +45,7 @@ export default function LinkChildForm({ onLinked }: { onLinked: (child: Guardian
           error={error || undefined} onChange={(event) => { setCode(event.target.value.toUpperCase()); setError(""); }} />
         <Button type="submit" className="mt-[26px] min-h-[54px] shrink-0" loading={saving} loadingLabel="연결 중…">자녀 연결</Button>
       </div>
-      <Notice tone="info">연결은 자녀 계정에 접근할 수 있는지만 확인해요. 보호자 본인 확인이나 법정대리인 증명 절차는 아직 제공하지 않아요.</Notice>
+      <Notice tone="info">{GUARDIAN_LINK_SCOPE} {GUARDIAN_LINK_LIMITS}</Notice>
     </form>
   );
 }

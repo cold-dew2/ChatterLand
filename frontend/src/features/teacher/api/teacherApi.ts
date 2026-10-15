@@ -1,6 +1,6 @@
 import { apiClient, queryString } from '@/shared/api/client'
 import type { LearnerType, SpeechJudgement, TeacherSpeechAnalysis } from '@/features/teacher/types'
-import type { AiFeedback, ConfirmedError, ContentType, PronunciationRule } from '@/features/student/types'
+import type { AiFeedback, ConfirmedError, ContentType, PronunciationRule, SpeechMetrics } from '@/features/student/types'
 
 /** 담당 학생의 연습 기록 한 건(GET /teachers/me/students/{id}/practice-attempts). textMatchRate는 발음 점수가 아니다 */
 export type StudentAttempt = {
@@ -8,6 +8,9 @@ export type StudentAttempt = {
   exerciseId: number; exerciseTitle: string; pronunciationRule?: PronunciationRule | null; contentType?: ContentType | null
   analysisId?: string | null; analysisStatus?: string | null; assessmentStatus?: string | null; targetText?: string | null
   transcript?: string | null; textMatchRate?: number | null; createdAt: string
+  evaluationMode?: string | null
+  /** 학생 결과 화면과 같은 저장 측정값(말하기 속도·멈춤, 발음 분석 지원 여부). 측정 기능 이전 기록은 null */
+  speechMetrics?: SpeechMetrics | null
 }
 /** practiceCount: 숙제가 아닌 연습 전체(기존 계약). selfCount·lessonCount: 새 기록, unclassifiedCount: 유형 구분 전 기존 기록 */
 export type StudentAttemptSummary = { totalCount: number; practiceCount: number; homeworkCount: number; exerciseCount: number; lastPracticedAt?: string | null

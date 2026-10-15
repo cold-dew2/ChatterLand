@@ -223,7 +223,7 @@ export default function StudentPage({ initialRoute = "home", sessionId }: { init
       {tab === "home" && (
         <StudentHomeScreen student={home.student} nextSession={home.nextSession} homeworks={home.homeworks} homeworkState={home.homeworkState}
           profileState={home.profileState} recent={home.recent} recentState={home.recentState} onRetry={home.reload} onNavigate={(target) => setScreen(target)}
-          notificationSettings={home.notificationSettings} />
+          notificationSettings={home.notificationSettings} guardianEvents={home.guardianEvents} />
       )}
       {tab === "history" && <StudentHistoryScreen />}
       {tab === "mypage" && <StudentMyPageScreen student={home.student} loggingOut={loggingOut} onLogout={() => void logout()}

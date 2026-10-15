@@ -1,0 +1,9 @@
+# 하네스 동작 확인용(성인 합성음, 실제 아동 음성 아님). 정확도 검증 결과로 쓰지 않는다.
+recording_id	audio_path	target_text	age_band	learner_type	item_type	conditions	annotator	ref_syllables_with_disfluency	ref_syllables_without_disfluency	ref_speech_segments	notes
+syn-pause	speech/sentence-weather-pause-recorded.wav	오늘은 날씨가 좋아요.	N/A	SYNTHETIC	SENTENCE	LONG_PAUSE|RECORDING_MARGIN|ROOM_NOISE	selftest-A	9	9	500-930;1670-2720	구성 위치+배경 소음 최대 진폭 1.5배 기준으로 계산한 구간
+syn-pause							selftest-B	9	9	510-940;1660-2730	하네스 일치도 계산 확인용 가상 표시(±10ms)
+syn-pause							FINAL	9	9	500-930;1670-2720	A와 같음
+syn-fluent	speech/sentence-weather-recorded.wav	오늘은 날씨가 좋아요.	N/A	SYNTHETIC	SENTENCE	RECORDING_MARGIN|ROOM_NOISE	FINAL	9	9	500-1880	
+syn-word	speech/word-radio-recorded.wav	라디오	N/A	SYNTHETIC	WORD	RECORDING_MARGIN|ROOM_NOISE	FINAL	3	3	500-950	
+syn-cut	speech/sentence-weather-cut.wav	오늘은 날씨가 좋아요.	N/A	SYNTHETIC	SENTENCE	SPEECH_CUT_OFF	FINAL			500-1355	말소리가 녹음 끝까지 이어짐. 남은 음절 수는 확인하지 않아 비움
+syn-silence	speech/silence.wav	오늘은 날씨가 좋아요.	N/A	SYNTHETIC	SENTENCE	NO_SPEECH	FINAL	0	0		말소리 없음

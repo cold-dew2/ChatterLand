@@ -1,9 +1,13 @@
 package com.example.backend.chld.service.impl;
 
 import com.example.backend.chld.dto.response.SpeechAssessment;
+import com.example.backend.chld.dto.response.SpeechAssessment.PauseMetric;
 import com.example.backend.chld.dto.response.SpeechAssessment.PhonemeCandidate;
 import com.example.backend.chld.dto.response.SpeechAssessment.PreviousAttempt;
+import com.example.backend.chld.dto.response.SpeechAssessment.PronunciationMetric;
 import com.example.backend.chld.dto.response.SpeechAssessment.Repetition;
+import com.example.backend.chld.dto.response.SpeechAssessment.SpeakingRateMetric;
+import com.example.backend.chld.dto.response.SpeechAssessment.SpeechMetrics;
 import com.example.backend.chld.dto.response.SpeechAssessment.SpeechTiming;
 import com.example.backend.chld.dto.response.SpeechRecognitionResult;
 import com.example.backend.chld.dto.response.SpeechRecognitionResult.SpeechSegment;
@@ -19,6 +23,7 @@ import java.util.Set;
 /**
  * 인식 결과·녹음 측정값으로 자동 분석 결과(SpeechAssessment)를 만든다.
  * 녹음 품질이나 인식 결과가 불확실하면 판정 보류(HOLD)로 두고 이유를 남긴다. 발음 점수는 만들지 않는다.
+ * 말하기 속도·멈춤은 VAD 말소리 구간과 인식 텍스트의 음절 수로 잰 측정값이다(점수·종합 유창성 판정이 아님).
  */
 @Component
 public class SpeechAssessmentEvaluator {
@@ -29,6 +34,15 @@ public class SpeechAssessmentEvaluator {
     static final long MIN_SPEECH_MS = 200;
     static final int LOW_VOLUME_PEAK = 1500;
     static final double CLIPPING_RATIO = 0.005;
+    static final String METRICS_VERSION = "speech-metrics-v1";
+    /**
+     * 멈춤 기준: 발화 구간 안 VAD 말소리 구간 사이 무음 250ms 이상(무성 휴지 연구에서 흔히 쓰는 기준).
+     * VAD가 구간 앞뒤에 30ms씩 여유를 붙이므로 실제 무음으로는 약 310ms 이상이다. 100ms 미만 무음은 VAD가 한 구간으로 합친다.
+     */
+    static final long PAUSE_THRESHOLD_MS = 250;
+    /** 말하기 속도 측정 최소 조건. 짧은 발화는 VAD 구간 여유(약 60ms)·음절 하나 차이가 속도를 크게 바꾼다. */
+    static final int MIN_RATE_SYLLABLES = 4;
+    static final long MIN_RATE_UTTERANCE_MS = 1000;
 
     /** 같은 문항의 이전 분석(반복 비교용) */
     public record PreviousAnalysis(String createdAt, String transcript, BigDecimal textMatchRate, String assessmentStatus, List<String> candidateSignatures) { }
@@ -50,7 +64,49 @@ public class SpeechAssessmentEvaluator {
         String status = !holdReasons.isEmpty() ? SpeechAssessment.STATUS_HOLD
                 : candidates.isEmpty() ? SpeechAssessment.STATUS_NO_CANDIDATES : SpeechAssessment.STATUS_ERROR_CANDIDATES;
         return new SpeechAssessment(type, status, holdReasons, SpeechAssessment.BASIS, targetPhonemes,
-                phonemes.targetPositions(target, targetPhonemes), candidates, timing, repetition(recognized, candidates, previous));
+                phonemes.targetPositions(target, targetPhonemes), candidates, timing, repetition(recognized, candidates, previous),
+                metrics(type, recognition.speechSegments(), holdReasons, recognizedSyllables));
+    }
+
+    /**
+     * 말하기 속도·멈춤 측정. 녹음 앞뒤 무음(녹음 여유)은 빼고 첫 말소리 시작~마지막 말소리 끝만 쓴다.
+     * - 낱말 문항: 속도·멈춤을 재지 않는다(NOT_SUPPORTED, WORD_ITEM).
+     * - VAD 구간이 없거나(VAD_UNAVAILABLE) 판정 보류(ASSESSMENT_HOLD)면 측정하지 않는다(UNAVAILABLE).
+     * - 속도는 4음절 이상·발화 1초 이상일 때만 잰다(UTTERANCE_TOO_SHORT).
+     */
+    static SpeechMetrics metrics(String analysisType, List<SpeechSegment> segments, List<String> holdReasons, int recognizedSyllables) {
+        PronunciationMetric pronunciation = new PronunciationMetric(SpeechAssessment.METRIC_NOT_SUPPORTED, "NO_PRONUNCIATION_MODEL");
+        String notMeasured = SpeechAssessment.TYPE_WORD.equals(analysisType) ? "WORD_ITEM"
+                : segments == null || segments.isEmpty() ? "VAD_UNAVAILABLE"
+                : !holdReasons.isEmpty() ? "ASSESSMENT_HOLD" : null;
+        if (notMeasured != null) {
+            String status = "WORD_ITEM".equals(notMeasured) ? SpeechAssessment.METRIC_NOT_SUPPORTED : SpeechAssessment.METRIC_UNAVAILABLE;
+            return new SpeechMetrics(METRICS_VERSION, pronunciation,
+                    new SpeakingRateMetric(status, notMeasured, null, null, null, null, null, null),
+                    new PauseMetric(status, notMeasured, null, null, null, null, null, PAUSE_THRESHOLD_MS));
+        }
+        long utteranceMs = segments.get(segments.size() - 1).endMs() - segments.get(0).startMs();
+        long speechMs = 0, totalPauseMs = 0, longestPauseMs = 0;
+        int pauseCount = 0;
+        for (int i = 0; i < segments.size(); i++) {
+            speechMs += segments.get(i).endMs() - segments.get(i).startMs();
+            if (i == 0) continue;
+            long gap = segments.get(i).startMs() - segments.get(i - 1).endMs();
+            if (gap >= PAUSE_THRESHOLD_MS) { pauseCount++; totalPauseMs += gap; longestPauseMs = Math.max(longestPauseMs, gap); }
+        }
+        PauseMetric pauses = new PauseMetric(SpeechAssessment.METRIC_MEASURED, null, pauseCount, totalPauseMs, longestPauseMs,
+                utteranceMs > 0 ? BigDecimal.valueOf(totalPauseMs / (double) utteranceMs).setScale(3, RoundingMode.HALF_UP) : null,
+                segments.size(), PAUSE_THRESHOLD_MS);
+        SpeakingRateMetric rate = recognizedSyllables < MIN_RATE_SYLLABLES || utteranceMs < MIN_RATE_UTTERANCE_MS || speechMs <= 0
+                ? new SpeakingRateMetric(SpeechAssessment.METRIC_UNAVAILABLE, "UTTERANCE_TOO_SHORT", recognizedSyllables, "ASR_TRANSCRIPT_SYLLABLES",
+                        utteranceMs, speechMs, null, null)
+                : new SpeakingRateMetric(SpeechAssessment.METRIC_MEASURED, null, recognizedSyllables, "ASR_TRANSCRIPT_SYLLABLES", utteranceMs, speechMs,
+                        perSecond(recognizedSyllables, utteranceMs), perSecond(recognizedSyllables, speechMs));
+        return new SpeechMetrics(METRICS_VERSION, pronunciation, rate, pauses);
+    }
+
+    private static BigDecimal perSecond(int syllables, long ms) {
+        return BigDecimal.valueOf(syllables * 1000.0 / ms).setScale(2, RoundingMode.HALF_UP);
     }
 
     static SpeechTiming timing(SpeechRecognitionResult recognition, int recognizedSyllables) {

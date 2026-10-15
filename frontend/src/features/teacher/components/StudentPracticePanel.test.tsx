@@ -27,12 +27,43 @@ describe('StudentPracticePanel', () => {
     expect(screen.getAllByText('자율 연습').length).toBeGreaterThan(0)
     expect(screen.getByText('2회')).toBeTruthy()
     expect(screen.getAllByText('(발음 점수 아님)')).toHaveLength(2)
-    expect(screen.getAllByText('미평가')).toHaveLength(2)
+    // 측정 기능 이전 기록(speechMetrics 없음): 발음 분석은 준비 중, 속도·멈춤은 '기록 없음'(값을 지어내지 않음)
+    expect(screen.queryByText('미평가')).toBeNull()
+    expect(screen.getAllByText('준비 중')).toHaveLength(2)
+    expect(screen.getAllByText('기록 없음')).toHaveLength(4)
     expect(screen.getAllByRole('button', { name: /학생이 본 AI 설명 보기/ })).toHaveLength(2) // 기존 선생님 AI 설명 조회 재사용
     expect(studentAttempts).toHaveBeenCalledWith(7, undefined, 0, 20)
 
     fireEvent.click(screen.getByRole('tab', { name: '숙제 연습' }))
     await waitFor(() => expect(studentAttempts).toHaveBeenLastCalledWith(7, 'HOMEWORK', 0, 20))
+  })
+
+  it('shows the same stored measurements as the student screen, and keeps failures and unmeasurable recordings apart from 준비 중', async () => {
+    studentAttemptSummary.mockResolvedValue({ totalCount: 3, practiceCount: 3, homeworkCount: 0, exerciseCount: 1 })
+    const metrics = {
+      version: 'speech-metrics-v1', pronunciation: { status: 'NOT_SUPPORTED', reason: 'NO_PRONUNCIATION_MODEL' },
+      speakingRate: { status: 'MEASURED', syllables: 9, utteranceMs: 2300, speechMs: 1720, syllablesPerSecond: 3.91, articulationRate: 5.23 },
+      pauses: { status: 'MEASURED', pauseCount: 1, totalPauseMs: 580, longestPauseMs: 580, pauseRatio: 0.252, speechSegmentCount: 2, pauseThresholdMs: 250 },
+    }
+    studentAttempts.mockResolvedValue({ content: [
+      row(3, 'SELF', { exerciseTitle: '측정된 기록', speechMetrics: metrics }),
+      row(2, 'SELF', { exerciseTitle: '보류된 기록', assessmentStatus: 'HOLD', speechMetrics: { ...metrics,
+        speakingRate: { status: 'UNAVAILABLE', reason: 'ASSESSMENT_HOLD' }, pauses: { status: 'UNAVAILABLE', reason: 'ASSESSMENT_HOLD', pauseThresholdMs: 250 } } }),
+      row(1, 'SELF', { exerciseTitle: '실패한 기록', analysisStatus: 'FAILED', transcript: null, textMatchRate: null }),
+    ], totalElements: 3 })
+    render(<StudentPracticePanel studentId={7} />)
+    const measured = (await screen.findByText('측정된 기록')).closest('article')!
+    expect(measured.textContent).toContain('초당 3.9글자')
+    expect(measured.textContent).toContain('9음절 / 발화 2.3초 · 멈춤 제외 초당 5.2음절')
+    expect(measured.textContent).toContain('1회최장 0.6초 · 합계 0.6초')
+    expect(measured.textContent).toContain('발음 분석 준비 중')
+    const held = screen.getByText('보류된 기록').closest('article')!
+    expect(held.textContent).toContain('측정 불가')
+    expect(held.textContent).toContain('판정 보류 녹음이라 측정하지 않음')
+    const failed = screen.getByText('실패한 기록').closest('article')!
+    expect(failed.textContent).toContain('분석이 실패해 측정값이 없습니다')
+    expect(failed.textContent).not.toContain('준비 중')
+    expect(screen.queryAllByRole('progressbar')).toHaveLength(0) // 측정값을 점수 막대로 그리지 않는다
   })
 
   it('shows empty and error states with retry', async () => {

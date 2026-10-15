@@ -32,6 +32,8 @@ public interface GuardianMapper {
     List<Map<String,Object>> findActiveChildren(@Param("guardianId") long guardianId);
     /** 자녀 계정 기준: 연결된 보호자 목록(이름·연결일만) */
     List<Map<String,Object>> findActiveGuardians(@Param("studentId") long studentId);
+    /** 자녀 계정 기준: 최근 days일 안에 연결되었거나 해제된 보호자 연결(알림용, 보호자 이름·시각·해제 주체만) */
+    List<Map<String,Object>> findRecentLinkChanges(@Param("studentId") long studentId, @Param("days") int days);
     /** 자녀 계정의 동의 상태(종류·동의 여부·시각만. 보호자 이름 등은 내보내지 않는다) */
     List<Map<String,Object>> findChildConsents(@Param("studentId") long studentId);
 }

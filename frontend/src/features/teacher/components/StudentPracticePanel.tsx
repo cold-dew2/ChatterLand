@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import SpeechMetricList from "@/features/speechMetrics/components/SpeechMetricList";
 import TeacherAiFeedback from "@/features/teacher/components/TeacherAiFeedback";
 import { teacherApi, type StudentAttempt, type StudentAttemptSummary } from "@/features/teacher/api/teacherApi";
 import { attemptTypeLabel, contentTypeLabel, ruleLabel } from "@/features/student/utils/practiceLabels";
@@ -20,6 +21,7 @@ const statusLabel: Record<string, string> = { COMPLETED: "분석 완료", PROCES
  * 담당 학생의 연습 기록(학생이 따로 제출하지 않아도 저장된 기록). 자율·수업·숙제 연습을 구분해 보여 준다.
  * '이전 기록'은 유형을 구분하기 전에 저장되어 자율/수업 출처를 알 수 없는 기록이다(임의로 재분류하지 않음).
  * 텍스트 일치율은 음성 인식 글자 비교라 발음 정확도가 아니므로 통계로 쓰지 않고 기록마다 참고로만 표시한다.
+ * 발음 분석·말하기 측정값은 학생 결과 화면과 같은 공통 표시(SpeechMetricList)를 쓴다.
  */
 export default function StudentPracticePanel({ studentId }: { studentId: number }) {
   const [filter, setFilter] = useState<Filter>("ALL");
@@ -88,8 +90,9 @@ export default function StudentPracticePanel({ studentId }: { studentId: number 
             <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">목표</dt><dd className="text-gray-800">{row.targetText ?? "-"}</dd></div>
             <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">인식 결과</dt><dd className="text-gray-800">{row.transcript || "-"}</dd></div>
             {typeof row.textMatchRate === "number" && <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">텍스트 일치율</dt><dd className="text-gray-800">{Math.round(row.textMatchRate)}% <span className="text-xs text-gray-400">(발음 점수 아님)</span></dd></div>}
-            <div className="flex gap-2"><dt className="w-20 shrink-0 pt-px text-xs text-[var(--ink-500)]">발음 평가</dt><dd><Badge tone="neutral">미평가</Badge></dd></div>
           </dl>
+          {/* 학생 결과 화면과 같은 저장값: 발음 분석 준비 중, 속도·멈춤 측정값(이전 기록은 '기록 없음') */}
+          {row.analysisId && row.evaluationMode !== "EXTERNAL_PROVIDER" && <SpeechMetricList metrics={row.speechMetrics} audience="teacher" analysisStatus={row.analysisStatus} />}
           {row.analysisId && row.analysisStatus === "COMPLETED" && <TeacherAiFeedback analysisId={row.analysisId} />}
         </Card>
       ))}

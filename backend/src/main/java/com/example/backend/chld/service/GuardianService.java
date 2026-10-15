@@ -19,6 +19,8 @@ public interface GuardianService {
     Map<String,Object> createLinkCode(TokenPrincipal student);
     List<Map<String,Object>> myGuardians(TokenPrincipal student);
     void unlinkGuardian(TokenPrincipal student, long guardianId);
+    /** 자녀 계정 앱 안 알림: 최근 보호자 연결·해제(연결 기록에서 만들어 연결 상태와 항상 일치) */
+    List<Map<String,Object>> linkEvents(TokenPrincipal student);
 
     // 보호자 계정
     List<Map<String,Object>> children(TokenPrincipal guardian);

@@ -406,6 +406,80 @@ class SpeechAnalysisIntegrationTest {
                 .andExpect(status().isOk()).andExpect(jsonPath("$.teacherJudgement").value("ACCEPTABLE"));
     }
 
+    @Test
+    void sentenceRecordingsGetMeasuredSpeakingRateAndPausesButNoPronunciationScore() throws Exception {
+        Student student = signupStudent();
+        long itemId = itemId(4, "오늘은 날씨가 좋아요.");
+        // "오늘은" + 무음 0.7초(실제 배경 소음) + "날씨가 좋아요." 합성음, 앞뒤 배경 소음 0.5초
+        String paused = analyze(student, 4, itemId, "sentence-weather-pause-recorded.wav");
+        String body = mvc.perform(get("/api/v1/speech/analyses/{id}", paused).header("Authorization", bearer(student.token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.textMatchRate").value(100.0)) // 텍스트 일치율은 기존 계산 그대로
+                .andExpect(jsonPath("$.speechMetrics.version").value("speech-metrics-v1"))
+                .andExpect(jsonPath("$.speechMetrics.pronunciation.status").value("NOT_SUPPORTED"))
+                .andExpect(jsonPath("$.speechMetrics.pronunciation.reason").value("NO_PRONUNCIATION_MODEL"))
+                .andExpect(jsonPath("$.speechMetrics.speakingRate.status").value("MEASURED"))
+                .andExpect(jsonPath("$.speechMetrics.speakingRate.syllables").value(9))
+                .andExpect(jsonPath("$.speechMetrics.pauses.status").value("MEASURED"))
+                .andExpect(jsonPath("$.speechMetrics.pauses.pauseCount").value(1))
+                .andExpect(jsonPath("$.speechMetrics.pauses.pauseThresholdMs").value(250))
+                .andExpect(jsonPath("$.pronunciationScore").doesNotExist())
+                .andExpect(jsonPath("$.speechRateScore").doesNotExist())
+                .andExpect(jsonPath("$.fluencyScore").doesNotExist())
+                .andReturn().getResponse().getContentAsString();
+        JsonNode metrics = objectMapper.readTree(body).path("speechMetrics");
+        // VAD는 구간 앞뒤에 여유를 붙여 무음을 실제(0.7초)보다 약 0.1초 짧게 잰다.
+        long longest = metrics.path("pauses").path("longestPauseMs").asLong();
+        assertTrue(longest >= 450 && longest <= 750, "longestPauseMs=" + longest);
+        // 녹음 앞뒤 여유(배경 소음 0.5초씩)는 발화 구간에서 빠진다: 녹음 3.26초보다 짧다.
+        long utterance = metrics.path("speakingRate").path("utteranceMs").asLong();
+        assertTrue(utterance >= 1800 && utterance <= 2700, "utteranceMs=" + utterance);
+        double rate = metrics.path("speakingRate").path("syllablesPerSecond").asDouble();
+        double articulation = metrics.path("speakingRate").path("articulationRate").asDouble();
+        assertEquals(9 * 1000.0 / utterance, rate, 0.01);
+        assertTrue(articulation > rate, "멈춤을 뺀 조음 속도가 멈춤 포함 속도보다 빠르다");
+        // 저장 확인: 다시 조회해도 같은 측정값(DB의 assessment_json에 저장)
+        String stored = jdbc.queryForObject("SELECT assessment_json FROM speech_analyses WHERE analysis_id=?", String.class, paused);
+        assertTrue(stored.contains("\"metrics\"") && stored.contains("speech-metrics-v1"));
+
+        // 멈춤 없는 같은 문장: 멈춤 0회
+        String fluent = analyze(student, 4, itemId, "sentence-weather-recorded.wav");
+        mvc.perform(get("/api/v1/speech/analyses/{id}", fluent).header("Authorization", bearer(student.token)))
+                .andExpect(jsonPath("$.speechMetrics.pauses.pauseCount").value(0))
+                .andExpect(jsonPath("$.speechMetrics.speakingRate.status").value("MEASURED"));
+    }
+
+    @Test
+    void wordItemsHeldRecordingsFailuresAndOlderAnalysesAreReportedSeparately() throws Exception {
+        Student student = signupStudent();
+        // 낱말 문항: 속도·멈춤 미지원
+        String word = analyze(student, 1, itemId(1, "라디오"), "word-radio-recorded.wav");
+        mvc.perform(get("/api/v1/speech/analyses/{id}", word).header("Authorization", bearer(student.token)))
+                .andExpect(jsonPath("$.speechMetrics.speakingRate.status").value("NOT_SUPPORTED"))
+                .andExpect(jsonPath("$.speechMetrics.speakingRate.reason").value("WORD_ITEM"))
+                .andExpect(jsonPath("$.speechMetrics.pauses.status").value("NOT_SUPPORTED"))
+                .andExpect(jsonPath("$.speechMetrics.pronunciation.status").value("NOT_SUPPORTED"));
+        // 잘린 녹음(판정 보류): 측정하지 않음
+        String cut = analyze(student, 4, itemId(4, "오늘은 날씨가 좋아요."), "sentence-weather-cut.wav");
+        mvc.perform(get("/api/v1/speech/analyses/{id}", cut).header("Authorization", bearer(student.token)))
+                .andExpect(jsonPath("$.assessmentStatus").value("HOLD"))
+                .andExpect(jsonPath("$.speechMetrics.speakingRate.status").value("UNAVAILABLE"))
+                .andExpect(jsonPath("$.speechMetrics.speakingRate.reason").value("ASSESSMENT_HOLD"))
+                .andExpect(jsonPath("$.speechMetrics.pauses.status").value("UNAVAILABLE"));
+        // 무음 녹음: 분석 실패(422), 측정값 없음
+        mvc.perform(multipart("/api/v1/speech/analyze").file(audio("silence.wav"))
+                        .part(part("exerciseId", "4")).part(part("itemId", String.valueOf(itemId(4, "오늘은 날씨가 좋아요."))))
+                        .header("Authorization", bearer(student.token)))
+                .andExpect(status().isUnprocessableContent());
+        String failed = jdbc.queryForObject("SELECT analysis_id FROM speech_analyses WHERE student_id=? AND status='FAILED'", String.class, student.studentId);
+        mvc.perform(get("/api/v1/speech/analyses/{id}", failed).header("Authorization", bearer(student.token)))
+                .andExpect(jsonPath("$.status").value("FAILED")).andExpect(jsonPath("$.speechMetrics").doesNotExist());
+        // 이 기능 이전에 저장된 분석(metrics 없음): null로 구분(값을 새로 지어내지 않음)
+        jdbc.update("UPDATE speech_analyses SET assessment_json='{\"timing\":{\"source\":\"VAD\",\"audioMs\":3000}}' WHERE analysis_id=?", word);
+        mvc.perform(get("/api/v1/speech/analyses/{id}", word).header("Authorization", bearer(student.token)))
+                .andExpect(jsonPath("$.speechMetrics").doesNotExist()).andExpect(jsonPath("$.speechTiming.source").value("VAD"));
+    }
+
     private String analyze(Student student, long exerciseId, long itemId, String file) throws Exception {
         String response = mvc.perform(multipart("/api/v1/speech/analyze").file(audio(file))
                         .part(part("exerciseId", String.valueOf(exerciseId))).part(part("itemId", String.valueOf(itemId)))

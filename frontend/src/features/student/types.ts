@@ -62,6 +62,27 @@ export type SpeechTiming = {
   pauseCount: number | null; longestPauseMs: number | null; syllablesPerSecond: number | null
 }
 
+/** 측정함 / 이 항목 미지원(평가 모델 없음·낱말 문항) / 이번 녹음에서 측정 못 함(VAD 없음·판정 보류·짧은 발화) */
+export type SpeechMetricStatus = 'MEASURED' | 'NOT_SUPPORTED' | 'UNAVAILABLE'
+
+/**
+ * 말하기 측정값(점수 아님). 녹음 앞뒤 무음은 빼고 첫 말소리~마지막 말소리 구간만 쓴다.
+ * speakingRate.syllablesPerSecond: 음절/발화 구간(멈춤 포함), articulationRate: 음절/말소리 시간(멈춤 제외).
+ * pauses: 말소리 구간 사이 무음 pauseThresholdMs 이상을 멈춤으로 센 값(종합 유창성 점수 아님).
+ */
+export type SpeechMetrics = {
+  version: string
+  pronunciation: { status: SpeechMetricStatus; reason?: string | null }
+  speakingRate: {
+    status: SpeechMetricStatus; reason?: string | null; syllables?: number | null; syllableBasis?: string | null
+    utteranceMs?: number | null; speechMs?: number | null; syllablesPerSecond?: number | null; articulationRate?: number | null
+  }
+  pauses: {
+    status: SpeechMetricStatus; reason?: string | null; pauseCount?: number | null; totalPauseMs?: number | null
+    longestPauseMs?: number | null; pauseRatio?: number | null; speechSegmentCount?: number | null; pauseThresholdMs: number
+  }
+}
+
 export type Repetition = {
   previousAttempts: number; sameTranscriptCount: number; recurringCandidates: string[]
   recent: { createdAt: string; transcript: string | null; textMatchRate: number | null; assessmentStatus: string | null }[]
@@ -89,6 +110,8 @@ export type SpeechAnalysis = {
   targetPositions?: PhonemePosition[] | null
   phonemeCandidates?: PhonemeCandidate[] | null
   speechTiming?: SpeechTiming | null
+  /** 말하기 속도·멈춤 측정값과 발음 정확도 지원 여부. 이 기능 이전 분석·실패한 분석이면 없다. */
+  speechMetrics?: SpeechMetrics | null
   repetition?: Repetition | null
   analysisVersion?: string | null
   teacherConfirmedErrors?: ConfirmedError[] | null

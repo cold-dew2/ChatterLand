@@ -101,7 +101,8 @@ export default function StudentFormModal({ initialStudent, onClose, onSave }: {
               <button type="button" role="radio" aria-checked={selected} key={String(student.studentId)} onClick={() => {
                 setSelectedExisting(student);
                 setErrors({});
-                setForm((current) => ({ ...current, name: String(student.name ?? ""), age: String(student.age ?? ""), phone: String(student.parentPhone ?? ""), tags: String(student.focusAreas ?? "").split(",").filter(Boolean), memo: String(student.memo ?? ""), sessionsTotal: String(student.sessionsTotal ?? 20) }));
+                // 담당 전 목록에는 이름·나이만 온다(연락처·메모는 연결한 뒤 상세에서 본다)
+                setForm((current) => ({ ...current, name: String(student.name ?? ""), age: String(student.age ?? "") }));
               }} className={cardClassName({ padding: "sm", className: `w-full text-left ${selected ? "border-[1.5px] border-[var(--meadow-700)] bg-[var(--meadow-50)]" : ""}` })}>
                 <span className="block text-sm font-semibold text-gray-800">{String(student.name ?? "학생")} · {String(student.age ?? "")}세</span>
                 <span className="mt-1 block text-xs text-gray-500">{String(student.centerName ?? "센터 미상")} · 기존 학생 계정</span>

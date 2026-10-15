@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { accountApi, DEFAULT_NOTIFICATION_SETTINGS, type NotificationSettings } from '@/features/account/api/accountApi'
 import { studentApi } from '@/features/student/api/studentApi'
 import type { HistoryItem, Homework, LoadState, Session, StudentSummary } from '@/features/student/types'
+import { mapGuardianEvents, type GuardianEvent } from '@/features/student/utils/guardianNotifications'
 import { mapHistoryItem, mapHomework, mapSession, toNumberOrNull } from '@/features/student/utils/mappers'
 
 const initialStudent: StudentSummary = {
@@ -22,6 +23,8 @@ export function useStudentHome() {
   const [revision, setRevision] = useState(0)
   // 숙제 알림 설정(홈의 종 아이콘). 불러오지 못하면 기본값(모두 켜짐)으로 보여 준다.
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>(DEFAULT_NOTIFICATION_SETTINGS)
+  // 보호자 연결·해제 알림. 불러오지 못하면 null(알림 창에 안내), 성공하면 목록
+  const [guardianEvents, setGuardianEvents] = useState<GuardianEvent[] | null>([])
 
   useEffect(() => {
     let active = true
@@ -37,6 +40,7 @@ export function useStudentHome() {
       setProfileState('ready')
     }).catch(() => { if (active) setProfileState('error') })
     accountApi.notificationSettings().then((settings) => { if (active) setNotificationSettings(settings) }).catch(() => undefined)
+    studentApi.guardianEvents().then((rows) => { if (active) setGuardianEvents(mapGuardianEvents(rows)) }).catch(() => { if (active) setGuardianEvents(null) })
     studentApi.sessions(0, 1, 'UPCOMING').then((response) => {
       const row = (response as { content?: Record<string, unknown>[] }).content?.[0]
       if (active) setNextSession(row ? mapSession(row) : null)
@@ -64,5 +68,5 @@ export function useStudentHome() {
     setHomeworks((current) => current.map((homework) => homework.id === id ? { ...homework, done: true } : homework))
   }, [])
 
-  return { student, profileState, nextSession, homeworks, homeworkState, recent, recentState, reload, markHomeworkDone, notificationSettings, setNotificationSettings }
+  return { student, profileState, nextSession, homeworks, homeworkState, recent, recentState, reload, markHomeworkDone, notificationSettings, setNotificationSettings, guardianEvents }
 }

@@ -282,11 +282,28 @@ public class TeacherServiceImpl implements TeacherService {
     @Override public Map<String,Object> report(TokenPrincipal principal,long studentId,LocalDate startDate,LocalDate endDate) {
         Map<String,Object> student=student(principal,studentId); Map<String,Object> analytics=analytics(principal,studentId,startDate,endDate);
         List<Map<String,Object>> areas=(List<Map<String,Object>>)analytics.get("areaScores");
-        List<Map<String,Object>> scored=areas.stream().filter(x->x.get("score")!=null).toList();
-        String strongest=scored.stream().max(Comparator.comparingDouble(x->((Number)x.get("score")).doubleValue())).map(x->String.valueOf(x.get("label"))).orElse("분석 데이터 없음");
-        String focus=scored.stream().min(Comparator.comparingDouble(x->((Number)x.get("score")).doubleValue())).map(x->String.valueOf(x.get("label"))).orElse("분석 데이터 없음");
+        String[] observed=observedAreas(areas);
+        // 응답 키(strength·practiceFocus)는 그대로 두고 값만 관찰 기록에 근거한 중립 문구로 정한다.
         return map("student",student,"analytics",analytics,"startDate",startDate,"endDate",endDate,
-                "strength",strongest,"practiceFocus",focus,"generatedAt",java.time.Instant.now().toString());
+                "strength",observed[0],"practiceFocus",observed[1],"generatedAt",java.time.Instant.now().toString());
+    }
+
+    static final int MIN_SCORED_ATTEMPTS_PER_AREA=5;
+    static final String NOT_ENOUGH_RECORDS="기록이 부족해 아직 판단하기 어려워요";
+    static final String NO_CLEAR_DIFFERENCE="영역 사이에 뚜렷한 차이가 보이지 않아요";
+
+    /**
+     * 리포트의 '기록상 점수가 높은 영역 / 함께 살펴볼 영역'. 진단이 아니라 관찰된 기록 비교다.
+     * 외부 분석 점수가 있고 기록이 영역마다 5회 이상인 영역이 2개 이상일 때만 비교하고, 아니면 판단을 보류한다.
+     */
+    static String[] observedAreas(List<Map<String,Object>> areas) {
+        List<Map<String,Object>> enough=areas.stream()
+                .filter(x->x.get("score") instanceof Number&&x.get("attempts") instanceof Number attempts&&attempts.longValue()>=MIN_SCORED_ATTEMPTS_PER_AREA).toList();
+        if(enough.size()<2) return new String[]{NOT_ENOUGH_RECORDS,NOT_ENOUGH_RECORDS};
+        Comparator<Map<String,Object>> byScore=Comparator.comparingDouble(x->((Number)x.get("score")).doubleValue());
+        Map<String,Object> high=enough.stream().max(byScore).orElseThrow(), low=enough.stream().min(byScore).orElseThrow();
+        if(((Number)high.get("score")).doubleValue()==((Number)low.get("score")).doubleValue()) return new String[]{NO_CLEAR_DIFFERENCE,NO_CLEAR_DIFFERENCE};
+        return new String[]{String.valueOf(high.get("label")),String.valueOf(low.get("label"))};
     }
 
     @Override public PageResponse<Map<String,Object>> speechAnalyses(TokenPrincipal principal,long studentId,String reviewStatus,int page,int size) {
@@ -318,13 +335,19 @@ public class TeacherServiceImpl implements TeacherService {
     /**
      * 담당 학생의 연습 기록(자율 연습·숙제 연습). 담당 여부는 서버에서 확인한다(담당이 아니면 403/404, 기존 학생 상세와 같은 검사).
      * textMatchRate는 음성 인식 글자 일치율이며 발음 정확도가 아니다.
+     * speechMetrics는 학생 결과 화면과 같은 저장값(말하기 속도·멈춤 측정값, 발음 분석 지원 여부)이다. 이전 기록은 null.
      */
     @Override public PageResponse<Map<String,Object>> studentAttempts(TokenPrincipal principal,long studentId,String type,int page,int size) {
         long teacherId=requireTeacher(principal); assignedStudent(teacherId,studentId);
         String t=type==null||type.isBlank()?null:type.trim().toUpperCase(Locale.ROOT);
         if(t!=null&&!Set.of("PRACTICE","SELF","LESSON","HOMEWORK").contains(t)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"연습 종류는 SELF·LESSON·HOMEWORK·PRACTICE(구분 전 기록)입니다.");
         PageResponse.Window p=PageResponse.window(page,size);
-        return PageResponse.of(teachers.findStudentAttempts(studentId,t,p.size(),p.offset()),teachers.countStudentAttempts(studentId,t),p);
+        List<Map<String,Object>> rows=teachers.findStudentAttempts(studentId,t,p.size(),p.offset()).stream().map(row->{
+            Map<String,Object> attempt=new LinkedHashMap<>(row);
+            attempt.put("speechMetrics",speechAnalysis.speechMetrics(attempt.remove("assessmentJson")));
+            return attempt;
+        }).toList();
+        return PageResponse.of(rows,teachers.countStudentAttempts(studentId,t),p);
     }
 
     /** 담당 학생의 누적 학습 리포트. 학생 본인 화면(학습 현황)과 같은 집계를 쓴다. 담당이 아니면 403 */
@@ -367,7 +390,8 @@ public class TeacherServiceImpl implements TeacherService {
                 List.of("선생님 검토 대기",analytics.get("pendingReviews")+"건"),
                 List.of("숙제 수행 (마감일 기준)",analytics.get("homeworkCompleted")+" / "+analytics.get("homeworkTotal")+"건 완료"),
                 List.of("완료 세션",analytics.get("completedSessions")+"회"),
-                List.of("강점 영역 / 연습 영역",report.get("strength")+" / "+report.get("practiceFocus"))),new float[]{2,3},List.of()));
+                List.of("기록상 점수가 높은 영역",String.valueOf(report.get("strength"))),
+                List.of("함께 살펴볼 영역",String.valueOf(report.get("practiceFocus")))),new float[]{2,3},List.of()));
         sections.add(ReportPdfGenerator.Section.table("영역별 결과",List.of("영역","연습 수","평균 텍스트 일치율","외부 분석 점수"),
                 areas.stream().map(a->List.of(String.valueOf(a.get("label")),a.get("attempts")+"회",percent(a.get("matchRate"),"-"),a.get("score")==null?"미평가":a.get("score")+"점")).toList(),
                 new float[]{2,1,2,2},List.of("영역별 기록이 없습니다.")));

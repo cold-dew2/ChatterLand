@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BookOpen, GraduationCap } from "lucide-react";
+import { BookOpen, GraduationCap, HeartHandshake } from "lucide-react";
 import { authApi } from "@/features/auth/api/authApi";
 import AuthPageShell from "@/features/auth/components/AuthPageShell";
 import { validateName } from "@/features/auth/utils/validation";
@@ -16,7 +16,24 @@ import Input from "@/shared/components/input/Input";
 import Select from "@/shared/components/select/Select";
 import Tabs from "@/shared/components/tabs/Tabs";
 
-type Role = "STUDENT" | "TEACHER";
+type Role = "STUDENT" | "TEACHER" | "GUARDIAN";
+
+/**
+ * 보호자 계정 아이디 찾기는 지원하지 않는다: 가입 때 이메일 소유를 확인하지 않았고 보호자는 센터 소속도 아니라
+ * 본인임을 확인할 수단이 없다. 계정을 조회하지 않으므로(서버 호출 없음) 계정이 있는지도 드러나지 않는다.
+ */
+function GuardianFindIdGuide() {
+  return (
+    <Card tone="raised" padding="lg" className="space-y-3">
+      <p className="text-[15px] font-bold text-[var(--ink-900)]">보호자 계정은 아이디(이메일) 찾기를 아직 지원하지 않아요</p>
+      <p className="text-sm leading-relaxed text-[var(--ink-700)]">
+        보호자 계정은 본인임을 확인할 수 있는 수단(예: 휴대폰 본인 확인)이 아직 없어, 이름 같은 정보만으로 이메일을 알려 드리지 않아요.
+        가입할 때 쓴 것으로 기억나는 이메일이 있다면 비밀번호 재설정을 해 보세요. 그 이메일로 인증 코드를 받으면 로그인할 수 있어요.
+      </p>
+      <Link href={paths.resetPassword} className={buttonClassName({ variant: "line", size: "lg", fullWidth: true })}>비밀번호 재설정</Link>
+    </Card>
+  );
+}
 
 export default function FindIdPage() {
   const centers = useCenters();
@@ -31,7 +48,7 @@ export default function FindIdPage() {
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (loading) return;
+    if (loading || role === "GUARDIAN") return; // 보호자는 조회하지 않는다(위 안내)
     const next = { name: validateName(name), center: center ? undefined : "센터를 선택해 주세요." };
     setErrors(next);
     if (next.name || next.center) return;
@@ -62,7 +79,9 @@ export default function FindIdPage() {
       ) : (
         <form onSubmit={(event) => void submit(event)} className="space-y-4" noValidate>
           <Tabs ariaLabel="계정 역할" variant="outline" value={role} onChange={setRole}
-            items={[{ value: "STUDENT", label: <><BookOpen size={14} aria-hidden="true" /> 학생</> }, { value: "TEACHER", label: <><GraduationCap size={14} aria-hidden="true" /> 선생님</> }]} />
+            items={[{ value: "STUDENT", label: <><BookOpen size={14} aria-hidden="true" /> 학생</> }, { value: "TEACHER", label: <><GraduationCap size={14} aria-hidden="true" /> 선생님</> },
+              { value: "GUARDIAN", label: <><HeartHandshake size={14} aria-hidden="true" /> 보호자</> }]} />
+          {role === "GUARDIAN" ? <GuardianFindIdGuide /> : <>
           <Input label="이름" required value={name} maxLength={80} error={errors.name} autoComplete="name"
             onChange={(event) => { setName(event.target.value); setErrors((current) => ({ ...current, name: undefined })); }} />
           <Select label="언어재활센터" required value={center} options={centers.options} error={errors.center}
@@ -72,6 +91,7 @@ export default function FindIdPage() {
           {notFound && <Notice tone="warning">입력한 정보와 일치하는 계정을 찾지 못했어요. 이름과 센터, 역할을 확인해 주세요.</Notice>}
           {error && <Notice tone="error">{error}</Notice>}
           <Button type="submit" size="lg" fullWidth loading={loading} loadingLabel="찾는 중…">아이디 찾기</Button>
+          </>}
         </form>
       )}
     </AuthPageShell>

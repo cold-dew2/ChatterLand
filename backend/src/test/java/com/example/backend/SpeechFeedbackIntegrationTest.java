@@ -37,12 +37,26 @@ class SpeechFeedbackIntegrationTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final String GROUNDED = "'신라'를 끝까지 말했어요! ㄴ이 ㄹ 앞에서 ㄹ로 소리 나서 [실라]처럼 말해요 [S1].";
 
-    /** 원문 자료 중 조항 자료(출처·권한 확인 VERIFIED)는 검수 전(DRAFT)이라 검색되지 않는다. 이 테스트에서만 승인 상태로 바꾼다(트랜잭션 롤백). */
+    /**
+     * 원문 자료 중 조항 자료(출처·권한 확인 VERIFIED)는 검수 전(DRAFT)이라 검색되지 않는다. 이 테스트에서만 승인한다(트랜잭션 롤백).
+     * 승인은 승인 기록(실제 검수자 계정 reviewed_by + reviewed_at)과 함께 해야 검색된다(상태만 APPROVED면 검색되지 않음).
+     */
     private static final String RULE_DOCUMENT = "nikl-pron-assimilation";
 
     @org.junit.jupiter.api.BeforeEach
     void approveTheVerifiedStandardPronunciationSource() {
-        jdbc.update("UPDATE knowledge_documents SET review_status='APPROVED', reviewed_at=NOW() WHERE document_id=?", RULE_DOCUMENT);
+        approve(RULE_DOCUMENT);
+    }
+
+    /** 테스트 전용 검수자(선생님 계정, 롤백) */
+    private long reviewerTeacherId() {
+        String email = "rag-reviewer-" + UUID.randomUUID() + "@example.test";
+        jdbc.update("INSERT INTO users(role,center_id,name,email,password_hash,terms_agreed) VALUES('TEACHER',1,'자료 검수 선생님',?,'not-used',TRUE)", email);
+        return jdbc.queryForObject("SELECT user_id FROM users WHERE email=?", Long.class, email);
+    }
+
+    private void approve(String documentId) {
+        jdbc.update("UPDATE knowledge_documents SET review_status='APPROVED', reviewed_by=?, reviewed_at=NOW() WHERE document_id=?", reviewerTeacherId(), documentId);
     }
 
     @Test
@@ -188,7 +202,7 @@ class SpeechFeedbackIntegrationTest {
     void approvedButUnverifiedOrPendingSourcesAreNeverUsed() throws Exception {
         // 개발자 요약 자료(std-pronunciation-1988)는 출처·권한 확인 전(PENDING)이라 승인 상태여도 쓰지 않는다.
         assertEquals("PENDING", jdbc.queryForObject("SELECT verification_status FROM knowledge_documents WHERE document_id='std-pronunciation-1988'", String.class));
-        jdbc.update("UPDATE knowledge_documents SET review_status='APPROVED' WHERE document_id='std-pronunciation-1988'");
+        approve("std-pronunciation-1988"); // 승인 기록까지 있어도 출처·권한 확인 전(PENDING)이면 쓰지 않는다
         jdbc.update("UPDATE knowledge_documents SET verification_status='PENDING' WHERE document_id=?", RULE_DOCUMENT);
         Student owner = signupStudent(true);
         String analysisId = insertSentenceAnalysis(owner.studentId, "ERROR_CANDIDATES");
@@ -235,7 +249,7 @@ class SpeechFeedbackIntegrationTest {
     @Test
     void approvedGuideSourcesExplainWordsWithoutAnApplicableRule() throws Exception {
         // 조항이 적용되지 않는 낱말(라디오)의 첫소리 후보 ㄹ→ㄴ: 승인된 조음 위치 안내 자료로 설명한다.
-        jdbc.update("UPDATE knowledge_documents SET review_status='APPROVED', reviewed_at=NOW() WHERE document_id='nikl-pron-place'");
+        approve("nikl-pron-place");
         Student owner = signupStudent(true);
         String analysisId = insertAnalysis(owner.studentId, "라디오", "나디오", "ONSET", "ㄹ", "ㄴ", "라");
         when(ai.isConfigured()).thenReturn(true);
@@ -265,9 +279,9 @@ class SpeechFeedbackIntegrationTest {
 
     @Test
     void approvedTeacherExamplesAreUsedAsTheirOwnSourceType() throws Exception {
-        // 승인자는 실제로 있는 계정이어야 한다. 빈 테스트 DB(CI)에서도 사용자가 생긴 뒤에 고른다(먼저 고르면 NULL → 승인자 없음).
+        // 교사 설명 예시의 승인자는 실제 선생님 계정이어야 한다(승인 절차: 승인 교사 user_id).
         long studentId = signupStudentId();
-        insertTestTeacherExample(jdbc.queryForObject("SELECT MIN(user_id) FROM users", Long.class));
+        insertTestTeacherExample(reviewerTeacherId());
         String analysisId = insertAnalysis(studentId, "라디오", "나디오", "ONSET", "ㄹ", "ㄴ", "라");
         when(ai.isConfigured()).thenReturn(true);
         when(ai.modelName()).thenReturn("gemini-flash-latest");
