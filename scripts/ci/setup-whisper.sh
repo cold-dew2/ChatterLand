@@ -13,10 +13,12 @@ if ! command -v whisper-cli >/dev/null 2>&1 || ! command -v whisper-vad-speech-s
     SRC="${WHISPER_SRC_DIR:-$HOME/.cache/chatterland/whisper.cpp}"
     [ -d "$SRC/.git" ] || git clone --depth 1 --branch "$WHISPER_VERSION" https://github.com/ggml-org/whisper.cpp.git "$SRC"
     # 정적 링크: 실행 파일만 복사해도 빌드 디렉터리의 공유 라이브러리에 의존하지 않도록 한다.
-    cmake -S "$SRC" -B "$SRC/build" -DCMAKE_BUILD_TYPE=Release -DWHISPER_BUILD_EXAMPLES=ON -DBUILD_SHARED_LIBS=OFF >/dev/null
-    cmake --build "$SRC/build" -j"$(nproc)" --target whisper-cli whisper-vad-speech-segments >/dev/null
+    # GGML_NATIVE=OFF: 빌드한 러너의 CPU 전용 명령어를 쓰지 않는다(캐시된 빌드를 다른 CPU의 러너에서 실행해도 동작). Dockerfile과 같다.
+    BUILD="$SRC/build-portable"
+    cmake -S "$SRC" -B "$BUILD" -DCMAKE_BUILD_TYPE=Release -DWHISPER_BUILD_EXAMPLES=ON -DBUILD_SHARED_LIBS=OFF -DGGML_NATIVE=OFF >/dev/null
+    cmake --build "$BUILD" -j"$(nproc)" --target whisper-cli whisper-vad-speech-segments >/dev/null
     mkdir -p "$HOME/.local/bin"
-    cp "$SRC/build/bin/whisper-cli" "$SRC/build/bin/whisper-vad-speech-segments" "$HOME/.local/bin/"
+    cp "$BUILD/bin/whisper-cli" "$BUILD/bin/whisper-vad-speech-segments" "$HOME/.local/bin/"
     echo "$HOME/.local/bin" >> "${GITHUB_PATH:-/dev/null}"
     export PATH="$HOME/.local/bin:$PATH"
   fi
@@ -37,4 +39,6 @@ download ggml-large-v3-turbo-q5_0.bin "https://huggingface.co/ggerganov/whisper.
   394221709cd5ad1f40c46e6031ca61bce88931e6e088c188294c6d5a55ffa7e2
 download ggml-silero-v5.1.2.bin "https://huggingface.co/ggml-org/whisper-vad/resolve/main/ggml-silero-v5.1.2.bin" \
   29940d98d42b91fbd05ce489f3ecf7c72f0a42f027e4875919a28fb4c04ea2cf
+# 실행 파일이 이 러너에서 실제로 도는지 확인한다(깨진 빌드면 테스트가 아니라 여기서 실패).
+whisper-cli --help >/dev/null 2>&1 || { echo "whisper-cli를 실행할 수 없습니다(빌드 확인 필요)" >&2; exit 1; }
 echo "whisper 준비 완료: $(command -v whisper-cli), 모델 $MODEL_DIR"
