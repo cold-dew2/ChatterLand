@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# whisper.cpp 실행 파일과 음성 모델(Whisper large-v3-turbo q5_0, Silero VAD)을 준비한다. 모델은 SHA-256으로 검증한다.
+# whisper.cpp 실행 파일과 음성 모델(기본 large-v3-turbo q5_0, CI는 small · Silero VAD)을 준비한다. 모델은 SHA-256으로 검증한다.
 # macOS: Homebrew whisper-cpp / Linux(CI): whisper.cpp v1.9.4 소스 빌드(cmake). 모델 위치: ~/.cache/chatterland/whisper
 set -euo pipefail
 WHISPER_VERSION="${WHISPER_VERSION:-v1.9.4}"
@@ -35,8 +35,14 @@ download() { # 파일명 URL sha256
   echo "$3  $file.part" | sha256_check || { echo "체크섬 불일치: $1" >&2; rm -f "$file.part"; exit 1; }
   mv "$file.part" "$file"
 }
-download ggml-large-v3-turbo-q5_0.bin "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo-q5_0.bin" \
-  394221709cd5ad1f40c46e6031ca61bce88931e6e088c188294c6d5a55ffa7e2
+# 음성 모델: 기본은 large-v3-turbo q5_0(개발 Mac, GPU). CI는 WHISPER_MODEL_FILE=ggml-small.bin(운영 Cloud Run과 같은 모델, CPU에서 4~5배 빠름).
+case "${WHISPER_MODEL_FILE:-ggml-large-v3-turbo-q5_0.bin}" in
+  ggml-large-v3-turbo-q5_0.bin) download ggml-large-v3-turbo-q5_0.bin "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo-q5_0.bin" \
+    394221709cd5ad1f40c46e6031ca61bce88931e6e088c188294c6d5a55ffa7e2 ;;
+  ggml-small.bin) download ggml-small.bin "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin" \
+    1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b ;;
+  *) echo "알 수 없는 모델: $WHISPER_MODEL_FILE (ggml-large-v3-turbo-q5_0.bin | ggml-small.bin)" >&2; exit 2 ;;
+esac
 download ggml-silero-v5.1.2.bin "https://huggingface.co/ggml-org/whisper-vad/resolve/main/ggml-silero-v5.1.2.bin" \
   29940d98d42b91fbd05ce489f3ecf7c72f0a42f027e4875919a28fb4c04ea2cf
 # 실행 파일이 이 러너에서 실제로 도는지 확인한다(깨진 빌드면 테스트가 아니라 여기서 실패).
