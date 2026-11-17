@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { api, createStudent, createTeacher, loginUi, mic, openPractice, recordAndAnalyze } from './helpers'
+import { API, api, createStudent, createTeacher, loginUi, mic, openPractice, recordAndAnalyze } from './helpers'
 
 test.use({ launchOptions: { args: mic('mic-dadio.wav') }, permissions: ['microphone'] })
 
@@ -56,6 +56,6 @@ test('E2E-07 담당이 아닌 선생님은 다른 선생님의 학생 결과에 
   await expect(page.getByText('담당 학생 정보에 접근할 수 없습니다.')).toBeVisible()
   await expect(page.getByText('제자 상세 정보')).toHaveCount(0)
   await expect(page.getByText('남의학생')).toHaveCount(0)
-  const response = await fetch(`http://localhost:8080/api/v1/teachers/me/students/${student.studentId}/speech-analyses`, { headers: { Authorization: `Bearer ${outsider.token}` } })
+  const response = await fetch(`${API}/api/v1/teachers/me/students/${student.studentId}/speech-analyses`, { headers: { Authorization: `Bearer ${outsider.token}` } })
   expect(response.status).toBe(403)
 })

@@ -63,9 +63,10 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.7'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.7'
 
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-    // Cloud Run의 Cloud SQL 연결(Unix 소켓, JDBC localSocket 옵션)에 MariaDB 드라이버가 JNA를 쓴다. 없으면 소켓 연결이 실패한다.
-    runtimeOnly 'net.java.dev.jna:jna:5.17.0'
+    // MySQL 8.4 (로컬·테스트 DB와 Cloud SQL for MySQL 공통)
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    // Cloud Run → Cloud SQL 연결(서비스 계정 IAM, 공인 IP 허용 목록 없이). JDBC URL의 cloudSqlInstance·socketFactory로 쓴다.
+    runtimeOnly 'com.google.cloud.sql:mysql-socket-factory-connector-j-8:1.31.0'
 
     // 비밀번호 재설정 인증 코드 메일 발송 (SMTP)
     implementation 'org.springframework.boot:spring-boot-starter-mail'

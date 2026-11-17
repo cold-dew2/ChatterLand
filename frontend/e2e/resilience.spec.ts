@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { api, createStudent, createTeacher, layoutProblems, loginUi, PASSWORD } from './helpers'
+import { API, api, createStudent, createTeacher, layoutProblems, loginUi, PASSWORD } from './helpers'
 
 test('E2E-13 인증 만료 → 로그인(만료 안내) → 원래 보던 화면으로 복귀', async ({ page }) => {
   const student = await createStudent('expire', '만료학생')
@@ -23,10 +23,11 @@ test('E2E-13 인증 만료 → 로그인(만료 안내) → 원래 보던 화면
 test('E2E-14 외부 주소 복귀 경로는 무시하고, 로그인한 사용자가 로그인 화면에 오면 홈으로 보낸다', async ({ page }) => {
   const student = await createStudent('nextsafe', '안전학생')
   await page.goto('/login?expired=1&next=' + encodeURIComponent('https://evil.example/steal'))
+  const appOrigin = new URL(page.url()).origin // 테스트 대상 앱 주소(E2E_FRONTEND_PORT에 따라 달라짐)
   await page.locator('#login-email').fill(student.email)
   await page.locator('#login-password').fill(PASSWORD)
   await page.locator('form').getByRole('button', { name: '로그인' }).click()
-  await page.waitForURL((url) => url.origin === 'http://localhost:3000' && url.pathname === '/student')
+  await page.waitForURL((url) => url.origin === appOrigin && url.pathname === '/student')
   await page.goto('/login')
   await page.waitForURL((url) => url.pathname === '/student')
 })
@@ -44,7 +45,7 @@ test('E2E-15 로그아웃 후 뒤로 가기·새로고침·직접 주소로 보�
   await page.goto('/student/history')
   await page.reload()
   await page.waitForURL((url) => !url.pathname.startsWith('/student'))
-  const refresh = await fetch('http://localhost:8080/api/v1/auth/refresh', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ refreshToken: 'any' }) })
+  const refresh = await fetch(API + '/api/v1/auth/refresh', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ refreshToken: 'any' }) })
   expect(refresh.status).toBe(401)
 })
 

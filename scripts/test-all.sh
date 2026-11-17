@@ -75,7 +75,7 @@ else set_result frontend "NOT RUN" "선택하지 않음"; fi
 
 if wants e2e; then
   echo "== E2E (Playwright + Chrome)"
-  if port_open 8080 && [ "${E2E_REUSE_BACKEND:-0}" != "1" ]; then blocked e2e "8080 포트 사용 중(다른 백엔드). 종료하거나 테스트 DB로 띄운 경우 E2E_REUSE_BACKEND=1"
+  if port_open "${E2E_BACKEND_PORT:-8080}" && [ "${E2E_REUSE_BACKEND:-0}" != "1" ]; then blocked e2e "${E2E_BACKEND_PORT:-8080} 포트 사용 중(다른 백엔드). 종료하거나 테스트 DB로 띄운 경우 E2E_REUSE_BACKEND=1"
   elif ! command -v whisper-cli >/dev/null || [ ! -r "$MODEL" ]; then blocked e2e "whisper-cli 또는 모델 없음(scripts/ci/setup-whisper.sh)"
   else
     (cd "$ROOT/frontend" && npx playwright test > "$REPORT_DIR/e2e.log" 2>&1); code=$?

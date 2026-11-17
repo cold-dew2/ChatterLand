@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { api, createStudent, createTeacher, layoutProblems, loginUi, mic, recordAndAnalyze } from './helpers'
+import { API, api, createStudent, createTeacher, layoutProblems, loginUi, mic, recordAndAnalyze } from './helpers'
 
 test.use({ launchOptions: { args: mic('mic-radio.wav') }, permissions: ['microphone'] })
 
@@ -59,6 +59,6 @@ test('E2E-25 숙제 없이 연습 찾기 → 녹음·분석·저장(자율 연�
 
   // 다른 학생 ID로 직접 요청하면 서버가 막는다
   const other = await createStudent('learn-other', '다른학생')
-  const blocked = await fetch(`http://localhost:8080/api/v1/teachers/me/students/${other.studentId}/practice-attempts`, { headers: { Authorization: `Bearer ${teacher.token}` } })
+  const blocked = await fetch(`${API}/api/v1/teachers/me/students/${other.studentId}/practice-attempts`, { headers: { Authorization: `Bearer ${teacher.token}` } })
   expect([403, 404]).toContain(blocked.status)
 })

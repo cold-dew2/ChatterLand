@@ -5,6 +5,28 @@
 
 > `<PROJECT_ID>`, `<REGION>`, `<INSTANCE>` 등은 실제 GCP 조사 후 정한다. 기존 리소스가 있으면 그것을 우선 쓴다.
 
+## 0. 현재 운영 배포 (2026-11-17 최초 배포)
+
+| 항목 | 값 |
+|---|---|
+| GCP 계정·프로젝트 | `colddew26@gmail.com` · `project-cea944d8-cfd0-43db-994` (My First Project, 번호 599455957940) |
+| 리전 | `asia-northeast3`(서울) |
+| Cloud SQL | `chatterland-db` — MySQL 8.4, Enterprise `db-f1-micro`(공유 코어, 유료), SSD 10GB 자동 증가, 자동 백업 18:00 UTC, 플래그 `default_time_zone=+09:00`, `character_set_server=utf8mb4`. 공인 IP는 있으나 허용 네트워크 없음(Auth Proxy·소켓 팩토리로만 접속) |
+| DB 계정 | `root`(관리, 비밀번호 `chatterland-db-root-password`), `chatterland_app`(앱, `chatterland.*` SELECT/INSERT/UPDATE/DELETE만, `cloudsqlsuperuser` 회수) |
+| 데이터 | 개발 DB `chatterland` 전체(26개 테이블, 6,136행)를 `import_dev_dump.sh`로 복구 — 행 수 26개·핵심 지문 12개 테이블 일치. 백업은 개발 PC `~/chatterland-backups/20261117-*` |
+| Cloud Run | `chatterland-backend` — https://chatterland-backend-599455957940.asia-northeast3.run.app (gen2, 4 vCPU, 4GiB, 동시 요청 4, 인스턴스 0~2, 시간 제한 300초) |
+| 이미지 | `asia-northeast3-docker.pkg.dev/project-cea944d8-cfd0-43db-994/chatterland/backend:<커밋>-<시각>` (Cloud Build, 빌드 계정 `chatterland-build@`) |
+| 음성 인식 | whisper.cpp small 모델(CPU) + Silero VAD (2.1의 B안) |
+| 음성 파일 | 버킷 `gs://project-cea944d8-cfd0-43db-994-chatterland-audio`(비공개) → `/mnt/audio` |
+| 비밀값 | Secret Manager: `chatterland-db-password`, `chatterland-jwt-secret`(새로 생성), `chatterland-ai-api-key`(개발 `.env`의 키), `chatterland-db-root-password` |
+| 프런트 | Vercel `hanyiseuls-projects/chatter-land` → https://chatter-land.vercel.app, Production 환경변수 `NEXT_PUBLIC_API_BASE_URL`=위 Cloud Run 주소 |
+
+배포 때 남겨 둔 것
+- 개발 PC의 기존 녹음 파일(`backend/storage/audio`)은 출처 확인 전이라 버킷으로 옮기지 않았다. 이전된 기존 기록의 `audio_path`는 개발 PC 경로 그대로라 재생되지 않는다(새 녹음은 버킷에 저장).
+- 메일(SMTP)·GitHub Actions 자동 배포(Workload Identity·저장소 변수)는 아직 설정하지 않았다.
+- 운영 DB에 테스트 데이터를 만들지 않기 위해 운영에서 녹음·음성 인식은 실행해 보지 않았다(확인: 공개 API 200, 인증 401, CORS, Vercel 화면의 센터 목록 조회).
+- 수동 재배포: `gcloud builds submit backend --config=<cloudbuild.yaml> --region=asia-northeast3 --service-account=projects/<PROJECT_ID>/serviceAccounts/chatterland-build@<PROJECT_ID>.iam.gserviceaccount.com` 후 `gcloud run deploy chatterland-backend --image=<새 이미지>` (기존 설정 유지).
+
 ## 1. 구성
 
 | 구성 요소 | 내용 |
@@ -29,7 +51,7 @@ Cloud Run 기본은 CPU만 있으므로 지금 모델 그대로면 녹음 한 �
 | C. 외부 음성 인식 API(SPEECH_ENGINE=external) | 인프라 단순 | 아동 음성을 외부로 전송(동의 문구·개인정보 검토 필요), 현재 코드의 외부 제공자 형식에 맞는 서비스 연동 개발 필요 |
 | D. CPU 4 vCPU 그대로 | 추가 개발 없음 | 녹음당 30~60초 이상, 사용 불가에 가까움 |
 
-Dockerfile은 **현재 기능을 그대로 유지**(large-v3-turbo + Silero VAD, CPU 빌드)하도록 준비했다. 결정 후 바꾼다.
+**결정(2026-11-17): B안.** Dockerfile은 small 모델(CPU) + Silero VAD를 쓴다. 개발 Mac·CI는 large-v3-turbo라 같은 녹음이라도 인식 결과·텍스트 일치율이 다를 수 있다.
 
 ### 2.2 Cloud SQL 시간대
 앱 SQL이 `CURDATE()`, `DATE(created_at)`로 '오늘·기간'을 계산한다. 개발 DB는 KST, Cloud SQL 기본은 UTC → **데이터베이스 플래그 `default_time_zone=+09:00` 필수**(없으면 집계가 9시간 어긋남).
@@ -98,11 +120,11 @@ gcloud run deploy <SERVICE> --region=<REGION> --image=<이미지@digest> \
   --cpu=4 --memory=8Gi --concurrency=4 --min-instances=0 --max-instances=3 --timeout=300 \
   --allow-unauthenticated \
   --set-env-vars=SQL_INIT_MODE=never,DB_USERNAME=chatterland_app,DB_POOL_SIZE=5,CORS_ALLOWED_ORIGINS=https://chatter-land.vercel.app,AUDIO_STORAGE_PATH=/mnt/audio,AI_API_URL=<Gemini 주소>,AI_MODEL=<모델>,TZ=Asia/Seoul \
-  --set-env-vars="^@^DB_URL=jdbc:mariadb://localhost/chatterland?localSocket=/cloudsql/<PROJECT_ID>:<REGION>:<INSTANCE>&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul" \
+  --set-env-vars="^@^DB_URL=jdbc:mysql:///chatterland?cloudSqlInstance=<PROJECT_ID>:<REGION>:<INSTANCE>&socketFactory=com.google.cloud.sql.mysql.SocketFactory&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul" \
   --set-secrets=DB_PASSWORD=chatterland-db-password:latest,JWT_SECRET=chatterland-jwt-secret:latest,AI_API_KEY=chatterland-ai-api-key:latest \
   --add-volume=name=audio,type=cloud-storage,bucket=<AUDIO_BUCKET> --add-volume-mount=volume=audio,mount-path=/mnt/audio
 ```
-- DB 연결: Cloud Run의 Cloud SQL 연결(Unix 소켓). 공인 IP 허용 목록을 열지 않는다.
+- DB 연결: MySQL Connector/J + Cloud SQL 소켓 팩토리(`com.google.cloud.sql:mysql-socket-factory-connector-j-8`). Cloud Run 서비스 계정에 `roles/cloudsql.client`가 필요하고, 공인 IP 허용 목록을 열지 않는다(2026-11-17 MariaDB 드라이버·localSocket에서 변경).
 - 연결 수: 인스턴스당 풀 5 × 최대 3 = 15 < Cloud SQL 최대 연결 수. 늘리면 함께 계산.
 - 앱 안의 예약 작업(토큰 정리·음성 보관 기간 삭제·멈춘 분석 정리)은 인스턴스가 떠 있을 때만 돈다(최소 인스턴스 0이면 요청이 없을 때 멈춤). 모두 여러 번 실행해도 안전한 작업이지만, 정기 실행이 꼭 필요하면 최소 인스턴스 1 또는 Cloud Scheduler 검토.
 

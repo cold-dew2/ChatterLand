@@ -37,3 +37,7 @@ tsconfig.tsbuildinfo
 
 # 테스트 실행기 결과
 /test-reports/
+
+# Vercel CLI 연결 정보(로컬 전용)
+.vercel
+.env.local

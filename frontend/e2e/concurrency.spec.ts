@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { api, createStudent, createTeacher, loginUi, mailCode, PASSWORD } from './helpers'
+import { API, api, createStudent, createTeacher, loginUi, mailCode, PASSWORD } from './helpers'
 
 type HomeworkRow = { homeworkId: number; title: string; version: number }
 const teacherHomeworks = async (token: string) =>
@@ -95,7 +95,7 @@ test('E2E-19 비밀번호를 재설정하면 다른 기기의 로그인도 바�
 
   // 이 기기의 access token은 아직 만료 전이지만 서버가 거절하고, refresh token도 폐기되어 다시 로그인해야 한다.
   const stale = await page.evaluate(() => window.sessionStorage.getItem('chatterland.accessToken'))
-  expect((await fetch('http://localhost:8080/api/v1/auth/me', { headers: { Authorization: `Bearer ${stale}` } })).status).toBe(401)
+  expect((await fetch(API + '/api/v1/auth/me', { headers: { Authorization: `Bearer ${stale}` } })).status).toBe(401)
   await page.reload()
   await page.waitForURL(/\/login\?expired=1&next=%2Fteacher%2Fstudents/)
   await expect(page.getByText('로그인 시간이 만료되었어요. 다시 로그인해 주세요.')).toBeVisible()
@@ -113,15 +113,15 @@ test('E2E-20 로그아웃하면 이 기기의 access 토큰은 만료 전이어�
   const student = await createStudent('logout-access', '로그아웃학생')
   await loginUi(page, student.email)
   const access = await page.evaluate(() => window.sessionStorage.getItem('chatterland.accessToken'))
-  expect((await fetch('http://localhost:8080/api/v1/auth/me', { headers: { Authorization: `Bearer ${access}` } })).status).toBe(200)
+  expect((await fetch(API + '/api/v1/auth/me', { headers: { Authorization: `Bearer ${access}` } })).status).toBe(200)
   await page.goto('/student/mypage')
   await page.getByRole('button', { name: '로그아웃' }).click()
   await page.waitForURL((url) => url.pathname === '/')
   expect(await page.evaluate(() => window.sessionStorage.getItem('chatterland.accessToken'))).toBeNull()
   // 화면에서 지운 것만이 아니라 서버도 이 토큰을 더 받지 않는다.
-  expect((await fetch('http://localhost:8080/api/v1/auth/me', { headers: { Authorization: `Bearer ${access}` } })).status).toBe(401)
+  expect((await fetch(API + '/api/v1/auth/me', { headers: { Authorization: `Bearer ${access}` } })).status).toBe(401)
   // 다른 기기(별도 로그인)는 영향이 없다.
-  expect((await fetch('http://localhost:8080/api/v1/auth/me', { headers: { Authorization: `Bearer ${student.token}` } })).status).toBe(200)
+  expect((await fetch(API + '/api/v1/auth/me', { headers: { Authorization: `Bearer ${student.token}` } })).status).toBe(200)
 })
 
 test('E2E-21 내 정보 수정에서 비밀번호를 바꾸면 이 기기는 로그인을 유지하고 다른 기기는 끊긴다', async ({ page }) => {
@@ -151,10 +151,10 @@ test('E2E-21 내 정보 수정에서 비밀번호를 바꾸면 이 기기는 로
   await page.goto('/student/mypage')
   await expect(page.getByRole('button', { name: '로그아웃' })).toBeVisible()
   // 다른 기기(테스트 시작 때 받은 토큰): 거절
-  expect((await fetch('http://localhost:8080/api/v1/auth/me', { headers: { Authorization: `Bearer ${student.token}` } })).status).toBe(401)
-  expect((await fetch('http://localhost:8080/api/v1/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+  expect((await fetch(API + '/api/v1/auth/me', { headers: { Authorization: `Bearer ${student.token}` } })).status).toBe(401)
+  expect((await fetch(API + '/api/v1/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: student.email, password: PASSWORD }) })).status).toBe(401)
-  expect((await fetch('http://localhost:8080/api/v1/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+  expect((await fetch(API + '/api/v1/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: student.email, password: 'Changed-Pass!789' }) })).status).toBe(200)
 })
 

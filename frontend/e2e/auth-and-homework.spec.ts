@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { api, createStudent, createTeacher, loginUi, mailCode, PASSWORD } from './helpers'
+import { API, api, createStudent, createTeacher, loginUi, mailCode, PASSWORD } from './helpers'
 
 test('E2E-01 학생 로그인 → 홈 → 오늘의 숙제 → 학습 화면 이동 → 숙제 완료', async ({ page }) => {
   const student = await createStudent('homework', '숙제학생')
@@ -99,6 +99,6 @@ test('AUTH-E2E 아이디 찾기 → 비밀번호 재설정(실제 메일) → �
   await page.locator('input[type="password"]').nth(1).fill('NewPassword!9')
   await page.getByRole('button', { name: '비밀번호 변경' }).click()
   await expect(page.getByText('비밀번호를 변경했어요')).toBeVisible()
-  const login = await fetch('http://localhost:8080/api/v1/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: teacher.email, password: 'NewPassword!9' }) })
+  const login = await fetch(API + '/api/v1/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: teacher.email, password: 'NewPassword!9' }) })
   expect(login.status).toBe(200)
 })

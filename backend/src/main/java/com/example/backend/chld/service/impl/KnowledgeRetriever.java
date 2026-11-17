@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * RAG 근거 검색(MariaDB, 외부 호출 없음). 출처·사용 권한이 확인되고(VERIFIED) 내용이 승인된(APPROVED + 승인 기록) 자료만 쓴다.
+ * RAG 근거 검색(MySQL, 외부 호출 없음). 출처·사용 권한이 확인되고(VERIFIED) 내용이 승인된(APPROVED + 승인 기록) 자료만 쓴다.
  * - 승인 조건(SQL·Java 두 단계에서 같은 기준): verification_status=VERIFIED, review_status=APPROVED,
  *   승인 기록(reviewed_by·reviewed_at)이 있고 reviewed_by가 실제 계정(users)일 것. 교사 설명 예시는 승인자가 TEACHER 계정일 것.
  * - 설정(app.ai.rag.allowed-statuses)은 검색 대상을 좁히기만 한다. APPROVED가 아닌 값(DRAFT 등)은 무시하고,

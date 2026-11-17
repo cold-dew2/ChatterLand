@@ -13,11 +13,11 @@ Details live in `docs/design/` (per feature) and `docs/testing/test-results.md` 
 
 ## Local development
 
-1. Configure `.env` from `.env.example` with your MariaDB connection and a private `JWT_SECRET`.
+1. Configure `.env` from `.env.example` with your MySQL connection (`jdbc:mysql://…`) and a private `JWT_SECRET`.
 2. Run `bash gradlew bootRun` from `backend/`.
 3. Run Next.js from `frontend/`; its default API origin is `http://localhost:8080`.
 
-The project can use an existing local MariaDB or MySQL instance. `schema.sql` initializes the required tables and starter practice content. For an isolated Docker database, run `docker compose up -d db`; it uses host port `3307` by default so it does not conflict with a local database on `3306`. Set `DB_URL` to port `3307` when using that container. DB, pool, JWT, audio storage, AI, and speech settings come from environment variables. No external provider credentials are bundled.
+The project uses MySQL 8.4 (the same major version as Cloud SQL; locally `brew install mysql@8.4`). MariaDB is no longer used. `schema.sql` initializes the required tables and starter practice content. For an isolated Docker database, run `docker compose up -d db`; it uses host port `3307` by default so it does not conflict with a local database on `3306`. Set `DB_URL` to port `3307` when using that container. DB, pool, JWT, audio storage, AI, and speech settings come from environment variables. No external provider credentials are bundled.
 
 ## API domains
 
@@ -93,7 +93,7 @@ Reports embed NanumGothic (SIL Open Font License 1.1, `src/main/resources/fonts/
 
 ## Tests
 
-1. Start the isolated test database once: `scripts/test-db.sh start`. This runs a separate MariaDB on 127.0.0.1:3310 with DB `chatterland_test`. Data lives in `build/test-db`, and a random password is stored in `build/test-db/env`.
+1. Start the isolated test database once: `scripts/test-db.sh start`. This runs a separate MySQL 8.4 on 127.0.0.1:3310 with DB `chatterland_test`. Data lives in `build/test-db`, and a random password is stored in `build/test-db/env`.
 2. Run `sh gradlew unitTest` (no DB), `sh gradlew integrationTest` (test DB required), or `sh gradlew test` (both). Integration tests use `build/test-db/env` or `TEST_DB_URL` / `TEST_DB_USERNAME` / `TEST_DB_PASSWORD`. They never fall back to the `.env` development DB; if no test DB is configured or reachable, they fail and say why. Set `REQUIRE_SPEECH_MODEL=true` / `REQUIRE_MAILPIT=true` to turn a missing whisper model or Mailpit into a failure instead of a skip. `scripts/test-all.sh` in the repo root runs every stage and summarizes the results.
 3. Speech tests run real whisper.cpp inference when the model exists, and are skipped otherwise. Mail tests use an in-memory GreenMail SMTP server.
 4. Browser E2E tests are in `frontend/e2e`. Run them with `npm run test:e2e`; Playwright starts this backend against the test DB.

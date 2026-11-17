@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { api, createStudent, createTeacher, layoutProblems, loginUi, mic, openPractice, PASSWORD, POLICY, recordAndAnalyze, uniqueEmail } from './helpers'
+import { API, api, createStudent, createTeacher, layoutProblems, loginUi, mic, openPractice, PASSWORD, POLICY, recordAndAnalyze, uniqueEmail } from './helpers'
 
 test.use({ launchOptions: { args: mic('mic-radio.wav') }, permissions: ['microphone'] })
 
@@ -95,17 +95,17 @@ test('E2E-27 보호자: 자녀 코드로 연결 → 리포트 보기 → 다른 
   await expect(g.getByRole('region', { name: '자녀 계정의 동의 상태' })).toBeVisible()
   await expect(g.getByRole('tab', { name: '최근 30일' })).toBeVisible()
   // 같은 코드는 다시 쓸 수 없다
-  const reuse = await fetch('http://localhost:8080/api/v1/guardians/me/children', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${guardian.token}` }, body: JSON.stringify({ code }) })
+  const reuse = await fetch(API + '/api/v1/guardians/me/children', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${guardian.token}` }, body: JSON.stringify({ code }) })
   expect(reuse.status).toBe(400)
 
   // 주소의 학생 ID를 바꿔도 연결되지 않은 학생은 보이지 않는다(서버가 막음)
   await g.goto(`/guardian/children/${other.studentId}`)
   await expect(g.getByText('연결된 자녀 정보를 찾을 수 없습니다.')).toBeVisible()
-  expect((await fetch(`http://localhost:8080/api/v1/guardians/me/children/${other.studentId}/learning-report`, { headers: { Authorization: `Bearer ${guardian.token}` } })).status).toBe(404)
+  expect((await fetch(`${API}/api/v1/guardians/me/children/${other.studentId}/learning-report`, { headers: { Authorization: `Bearer ${guardian.token}` } })).status).toBe(404)
   // 역할 분리: 보호자는 학생·선생님 화면/API를 쓸 수 없다
   await g.goto('/student')
   await g.waitForURL(/\/guardian$/)
-  expect((await fetch('http://localhost:8080/api/v1/students/me', { headers: { Authorization: `Bearer ${guardian.token}` } })).status).toBe(403)
+  expect((await fetch(API + '/api/v1/students/me', { headers: { Authorization: `Bearer ${guardian.token}` } })).status).toBe(403)
 
   // 자녀가 연결을 해제하면 보호자는 바로 볼 수 없다
   await page.reload()
