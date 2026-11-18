@@ -157,6 +157,14 @@ Settings → Environments → `production` 생성(필요하면 배포 승인자 
 4. 이미지 빌드 → `backend:<SHA>` 업로드 → 트래픽 없이 새 리비전 배포(태그 `sha-<7자리>`) → 태그 주소 점검(`/api/v1/centers` 200, 인증 401, 입력 검증 400) → 통과 시 트래픽 100%.
 5. 결과 요약에 커밋·이미지 digest·새/이전 리비전 기록.
 
+## 6.1 운영 E2E 점검(필요할 때만, 정리 필수)
+운영 DB에 `e2e-…@example.test` 계정·학습 데이터가 생기므로 아래 순서를 지킨다(2026-11-18 실행: 32개 통과, 정리 후 행 수 동일).
+1. 백업: `gcloud sql backups create --instance=chatterland-db --description="before production E2E <날짜>"`
+2. 기준값: Auth Proxy로 접속해 `SELECT MAX(user_id) FROM users`(= M)와 테이블별 행 수 기록
+3. 실행: `cd frontend && E2E_API_URL=<Cloud Run 주소> npx playwright test -c playwright.prod.config.ts` (메일이 필요한 E2E-19 제외, 외부 AI 호출 없음)
+4. 정리: `user_id > M AND email LIKE 'e2e-%@example.test'` 사용자만 대상으로, 한 트랜잭션에서 practice_attempts → speech_analyses → conversations → homeworks → teacher_students → therapy_sessions → student_profiles → users 순 삭제(나머지는 CASCADE). 지우기 전에 해당 학생의 `speech_analyses.audio_path`를 모아 버킷 파일도 삭제
+5. 확인: 테이블별 행 수가 2의 기준값과 같아야 한다. 그 사이 다른 사용자가 가입했으면 `user_id > M` 중 e2e가 아닌 계정은 남는다
+
 ## 7. 되돌리기
 ```bash
 gcloud run revisions list --service <SERVICE> --region <REGION>

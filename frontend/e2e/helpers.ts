@@ -4,8 +4,8 @@ import { expect, type Page } from '@playwright/test'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
 
-/** 테스트 백엔드 주소(기본 8080. 다른 백엔드가 8080을 쓰면 E2E_BACKEND_PORT로 바꾼다) */
-export const API = `http://localhost:${process.env.E2E_BACKEND_PORT ?? '8080'}`
+/** 테스트 백엔드 주소(기본 8080. 다른 백엔드가 8080을 쓰면 E2E_BACKEND_PORT로 바꾼다). 운영 점검(playwright.prod.config.ts)은 E2E_API_URL. */
+export const API = process.env.E2E_API_URL ?? `http://localhost:${process.env.E2E_BACKEND_PORT ?? '8080'}`
 export const PASSWORD = 'Chatterland!234'
 export const POLICY = '2026-10-01'
 export const mic = (file: string) => ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream',
