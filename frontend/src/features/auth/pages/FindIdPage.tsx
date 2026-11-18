@@ -20,7 +20,7 @@ type Role = "STUDENT" | "TEACHER" | "GUARDIAN";
 
 /**
  * 보호자 계정 아이디 찾기는 지원하지 않는다: 가입 때 이메일 소유를 확인하지 않았고 보호자는 센터 소속도 아니라
- * 본인임을 확인할 수단이 없다. 계정을 조회하지 않으므로(서버 호출 없음) 계정이 있는지도 드러나지 않는다.
+ * 본인임을 확인할 수단이 없다(비밀번호 재설정은 이메일을 알고 있을 때 가입 정보로 본인 확인). 계정을 조회하지 않으므로(서버 호출 없음) 계정이 있는지도 드러나지 않는다.
  */
 function GuardianFindIdGuide() {
   return (
@@ -28,7 +28,7 @@ function GuardianFindIdGuide() {
       <p className="text-[15px] font-bold text-[var(--ink-900)]">보호자 계정은 아이디(이메일) 찾기를 아직 지원하지 않아요</p>
       <p className="text-sm leading-relaxed text-[var(--ink-700)]">
         보호자 계정은 본인임을 확인할 수 있는 수단(예: 휴대폰 본인 확인)이 아직 없어, 이름 같은 정보만으로 이메일을 알려 드리지 않아요.
-        가입할 때 쓴 것으로 기억나는 이메일이 있다면 비밀번호 재설정을 해 보세요. 그 이메일로 인증 코드를 받으면 로그인할 수 있어요.
+        가입할 때 쓴 것으로 기억나는 이메일이 있다면 비밀번호 재설정에서 그 이메일과 이름·센터로 본인을 확인한 뒤 새 비밀번호를 정할 수 있어요.
       </p>
       <Link href={paths.resetPassword} className={buttonClassName({ variant: "line", size: "lg", fullWidth: true })}>비밀번호 재설정</Link>
     </Card>

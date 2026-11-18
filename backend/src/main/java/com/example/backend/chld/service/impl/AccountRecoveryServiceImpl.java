@@ -2,6 +2,7 @@ package com.example.backend.chld.service.impl;
 
 import com.example.backend.chld.dto.request.FindIdRequest;
 import com.example.backend.chld.dto.request.PasswordResetConfirmRequest;
+import com.example.backend.chld.dto.request.PasswordResetIdentityRequest;
 import com.example.backend.chld.dto.request.PasswordResetRequest;
 import com.example.backend.chld.dto.request.PasswordResetVerifyRequest;
 import com.example.backend.chld.dto.response.FindIdResponse;
@@ -28,6 +29,7 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class AccountRecoveryServiceImpl implements AccountRecoveryService {
@@ -36,6 +38,9 @@ public class AccountRecoveryServiceImpl implements AccountRecoveryService {
     static final int MAX_ATTEMPTS = 5;
     static final int RESEND_COOLDOWN_MINUTES = 1;
     static final int MAX_REQUESTS_PER_HOUR = 5;
+    /** 가입 정보 본인 확인 시도(성공·실패 모두) 계정당 1시간 상한 */
+    static final int MAX_IDENTITY_ATTEMPTS_PER_HOUR = 5;
+    static final String IDENTITY_MISMATCH = "입력한 정보와 일치하는 계정을 찾지 못했어요. 이메일, 이름, 센터, 역할(학생은 나이)을 확인해 주세요.";
 
     private final UserMapper users;
     private final PasswordResetMapper resets;
@@ -101,6 +106,41 @@ public class AccountRecoveryServiceImpl implements AccountRecoveryService {
         String token = newToken();
         if (resets.markVerified(requestId, sha256(token), TOKEN_MINUTES) != 1)
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 사용된 인증 코드예요. 인증 코드를 다시 받아 주세요.");
+        return new PasswordResetTokenResponse(token, TOKEN_MINUTES * 60L);
+    }
+
+    /**
+     * 메일 없이 가입 정보로 본인 확인(임시 방식). 이후 단계(confirmPasswordReset)는 메일 인증과 같다.
+     * - 어느 항목이 틀렸는지, 이메일이 가입돼 있는지 알려 주지 않는다(같은 오류 문구).
+     * - 계정당 1시간 5회까지(시도 기록은 password_reset_requests에 남기고 실패하면 바로 무효화). 실패 기록은 롤백하지 않는다.
+     * - 새 요청을 만들 때 이전에 열려 있던 요청(메일 코드·재설정 토큰)은 모두 무효화한다.
+     */
+    @Override
+    @Transactional(noRollbackFor = ResponseStatusException.class)
+    public PasswordResetTokenResponse verifyIdentity(PasswordResetIdentityRequest request) {
+        Map<String,Object> user = users.findRecoveryIdentityByEmail(request.email().trim());
+        if (user == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, IDENTITY_MISMATCH);
+        long userId = ((Number) user.get("userId")).longValue();
+        if (resets.countRequestsSince(userId, 60) >= MAX_IDENTITY_ATTEMPTS_PER_HOUR)
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "확인 시도가 너무 많아요. 1시간 뒤에 다시 시도해 주세요.");
+        resets.invalidateOpenRequests(userId);
+        resets.insertRequest(userId, hmac(newToken()), TOKEN_MINUTES); // 코드는 쓰지 않으므로 아무도 모르는 값
+        Map<String,Object> attempt = resets.findActiveCodeRequest(userId);
+        if (attempt == null) throw new IllegalStateException("재설정 요청을 만들지 못했습니다.");
+        long requestId = ((Number) attempt.get("requestId")).longValue();
+        String role = String.valueOf(user.get("role"));
+        Number age = (Number) user.get("age");
+        boolean matches = role.equals(request.role())
+                && Objects.equals(((Number) user.get("centerId")).longValue(), request.centerId())
+                && String.valueOf(user.get("name")).trim().equals(request.name().trim())
+                && (!role.equals("STUDENT") || (age != null && request.age() != null && age.intValue() == request.age()));
+        if (!matches) {
+            resets.invalidateRequest(requestId);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, IDENTITY_MISMATCH);
+        }
+        String token = newToken();
+        if (resets.markVerified(requestId, sha256(token), TOKEN_MINUTES) != 1)
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "다른 곳에서 먼저 재설정을 시작했어요. 처음부터 다시 진행해 주세요.");
         return new PasswordResetTokenResponse(token, TOKEN_MINUTES * 60L);
     }
 

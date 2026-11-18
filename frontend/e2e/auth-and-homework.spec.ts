@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { API, api, createStudent, createTeacher, loginUi, mailCode, PASSWORD } from './helpers'
+import { API, api, createStudent, createTeacher, loginUi, PASSWORD } from './helpers'
 
 test('E2E-01 학생 로그인 → 홈 → 오늘의 숙제 → 학습 화면 이동 → 숙제 완료', async ({ page }) => {
   const student = await createStudent('homework', '숙제학생')
@@ -75,7 +75,7 @@ test('AUTH-E2E 마이크 권한 거부 → 안내 후 다시 시도 가능', asy
   await expect(page.getByRole('button', { name: '녹음 시작' })).toBeEnabled()
 })
 
-test('AUTH-E2E 아이디 찾기 → 비밀번호 재설정(실제 메일) → 새 비밀번호 로그인', async ({ page }) => {
+test('AUTH-E2E 아이디 찾기 → 비밀번호 재설정(가입 정보로 본인 확인, 메일 없음) → 새 비밀번호 로그인', async ({ page }) => {
   const teacher = await createTeacher('reset', '재설정선생님')
   await page.goto('/find-id')
   await page.getByRole('tab', { name: /선생님/ }).click()
@@ -86,15 +86,16 @@ test('AUTH-E2E 아이디 찾기 → 비밀번호 재설정(실제 메일) → �
   await expect(page.getByText(teacher.email)).toHaveCount(0)
 
   await page.goto('/reset-password')
+  await page.getByRole('tab', { name: /선생님/ }).click()
   await page.getByRole('textbox', { name: /가입한 이메일/ }).fill(teacher.email)
-  await page.getByRole('button', { name: '인증 코드 받기' }).click()
-  await expect(page.getByRole('textbox', { name: /인증 코드/ })).toBeVisible()
-  const code = await mailCode(teacher.email)
-  await page.getByRole('textbox', { name: /인증 코드/ }).fill('000000' === code ? '111111' : '000000')
-  await page.getByRole('button', { name: '인증하기' }).click()
-  await expect(page.getByText(/인증 코드가 올바르지 않아요. \(남은 시도 4회\)/)).toBeVisible()
-  await page.getByRole('textbox', { name: /인증 코드/ }).fill(code)
-  await page.getByRole('button', { name: '인증하기' }).click()
+  await page.getByRole('textbox', { name: /이름/ }).fill('재설정선생님')
+  await page.getByRole('combobox', { name: /언어재활센터/ }).selectOption('2')
+  await page.getByRole('button', { name: '본인 확인' }).click()
+  // 하나라도 틀리면(센터) 어느 항목인지 알려 주지 않는다
+  await expect(page.getByText(/입력한 정보와 일치하는 계정을 찾지 못했어요/)).toBeVisible()
+  await page.getByRole('combobox', { name: /언어재활센터/ }).selectOption('1')
+  await page.getByRole('button', { name: '본인 확인' }).click()
+  await expect(page.getByText('본인 확인이 끝났어요. 15분 안에 새 비밀번호를 정해 주세요.')).toBeVisible()
   await page.locator('input[type="password"]').nth(0).fill('NewPassword!9')
   await page.locator('input[type="password"]').nth(1).fill('NewPassword!9')
   await page.getByRole('button', { name: '비밀번호 변경' }).click()

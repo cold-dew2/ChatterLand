@@ -2,6 +2,7 @@ package com.example.backend.chld.service;
 
 import com.example.backend.chld.dto.request.FindIdRequest;
 import com.example.backend.chld.dto.request.PasswordResetConfirmRequest;
+import com.example.backend.chld.dto.request.PasswordResetIdentityRequest;
 import com.example.backend.chld.dto.request.PasswordResetRequest;
 import com.example.backend.chld.dto.request.PasswordResetVerifyRequest;
 import com.example.backend.chld.dto.response.FindIdResponse;
@@ -15,6 +16,9 @@ public interface AccountRecoveryService {
     void requestPasswordReset(PasswordResetRequest request);
 
     PasswordResetTokenResponse verifyResetCode(PasswordResetVerifyRequest request);
+
+    /** 메일 없이 가입 정보(이메일·이름·센터·역할, 학생은 나이)로 본인을 확인하고 재설정 토큰을 준다(임시 방식). */
+    PasswordResetTokenResponse verifyIdentity(PasswordResetIdentityRequest request);
 
     void confirmPasswordReset(PasswordResetConfirmRequest request);
 }

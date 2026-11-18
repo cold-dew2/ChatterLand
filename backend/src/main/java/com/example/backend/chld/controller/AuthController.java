@@ -4,6 +4,7 @@ import com.example.backend.chld.dto.request.FindIdRequest;
 import com.example.backend.chld.dto.request.LoginRequest;
 import com.example.backend.chld.dto.request.PasswordChangeRequest;
 import com.example.backend.chld.dto.request.PasswordResetConfirmRequest;
+import com.example.backend.chld.dto.request.PasswordResetIdentityRequest;
 import com.example.backend.chld.dto.request.PasswordResetRequest;
 import com.example.backend.chld.dto.request.PasswordResetVerifyRequest;
 import com.example.backend.chld.dto.request.RefreshRequest;
@@ -44,6 +45,7 @@ public class AuthController {
         return Map.of("message", "입력한 이메일로 가입된 계정이 있으면 인증 코드를 보냈어요. 메일함(스팸함 포함)을 확인해 주세요.");
     }
     @PostMapping("/password-reset/verify") public PasswordResetTokenResponse verifyResetCode(@Valid @RequestBody PasswordResetVerifyRequest request) { return recovery.verifyResetCode(request); }
+    @PostMapping("/password-reset/identity") public PasswordResetTokenResponse verifyIdentity(@Valid @RequestBody PasswordResetIdentityRequest request) { return recovery.verifyIdentity(request); }
     @PostMapping("/password-reset/confirm") @ResponseStatus(HttpStatus.NO_CONTENT)
     public void confirmPasswordReset(@Valid @RequestBody PasswordResetConfirmRequest request) { recovery.confirmPasswordReset(request); }
     /** 로그인 상태 비밀번호 변경. 다른 기기는 로그아웃되고, 이 기기에는 새 access·refresh token을 돌려준다. */

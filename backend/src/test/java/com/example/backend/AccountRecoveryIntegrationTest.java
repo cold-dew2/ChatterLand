@@ -219,4 +219,78 @@ class AccountRecoveryIntegrationTest {
         JsonNode count = objectMapper.valueToTree(jdbc.queryForObject("SELECT COUNT(*) FROM password_reset_requests WHERE user_id=(SELECT user_id FROM users WHERE email=?)", Integer.class, email));
         assertEquals(1, count.asInt());
     }
+
+    // ── 메일 없이 가입 정보로 본인 확인(임시 방식) ──────────────────────────────
+
+    private String identity(String email, String name, long centerId, String role, Integer age) {
+        return "{\"email\":\"" + email + "\",\"name\":\"" + name + "\",\"centerId\":" + centerId + ",\"role\":\"" + role + "\""
+                + (age == null ? "" : ",\"age\":" + age) + "}";
+    }
+
+    private String signupStudent(String name, int age) throws Exception {
+        String email = "recovery-s-" + UUID.randomUUID().toString().substring(0, 8) + "@example.test";
+        mvc.perform(post("/api/v1/auth/signup").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"role\":\"STUDENT\",\"name\":\"" + name + "\",\"email\":\"" + email + "\",\"password\":\"Chatterland!234\",\"centerId\":1,\"termsAgreed\":true,\"age\":" + age + ","
+                                + "\"consents\":{\"privacy\":true,\"voice\":true,\"aiChat\":false,\"policyVersion\":\"2026-10-01\",\"guardianConfirmed\":true,\"guardianName\":\"보호자\",\"guardianRelation\":\"부모\"}}"))
+                .andExpect(status().isCreated());
+        return email;
+    }
+
+    @Test
+    void identityResetChangesPasswordWithoutMailAndRevokesSessions() throws Exception {
+        String email = signupTeacher("정보확인선생님");
+        String refresh = objectMapper.readTree(mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON).content(json("email", email, "password", "Chatterland!234")))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("refreshToken").asText();
+        int mailsBefore = greenMail.getReceivedMessages().length;
+
+        String token = objectMapper.readTree(mvc.perform(post("/api/v1/auth/password-reset/identity").contentType(MediaType.APPLICATION_JSON)
+                        .content(identity(email.toUpperCase(), " 정보확인선생님 ", 2, "TEACHER", null)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.expiresInSeconds").value(900))
+                .andReturn().getResponse().getContentAsString()).path("resetToken").asText();
+        assertFalse(token.isBlank());
+        mvc.perform(post("/api/v1/auth/password-reset/confirm").contentType(MediaType.APPLICATION_JSON)
+                        .content(json("resetToken", token, "newPassword", "NewPassword!9", "newPasswordConfirm", "NewPassword!9")))
+                .andExpect(status().isNoContent());
+
+        assertEquals(mailsBefore, greenMail.getReceivedMessages().length, "메일을 보내지 않는다");
+        mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON).content(json("email", email, "password", "Chatterland!234"))).andExpect(status().isUnauthorized());
+        mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON).content(json("email", email, "password", "NewPassword!9"))).andExpect(status().isOk());
+        mvc.perform(post("/api/v1/auth/refresh").contentType(MediaType.APPLICATION_JSON).content(json("refreshToken", refresh))).andExpect(status().isUnauthorized());
+        // 토큰은 한 번만 쓸 수 있다
+        mvc.perform(post("/api/v1/auth/password-reset/confirm").contentType(MediaType.APPLICATION_JSON)
+                        .content(json("resetToken", token, "newPassword", "Another!Pass1", "newPasswordConfirm", "Another!Pass1")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void identityResetRejectsAnyMismatchWithSameMessageAndLimitsAttempts() throws Exception {
+        String email = signupStudent("정보확인학생", 9);
+        String[] wrong = {
+                identity(email, "다른이름", 1, "STUDENT", 9),
+                identity(email, "정보확인학생", 2, "STUDENT", 9),
+                identity(email, "정보확인학생", 1, "TEACHER", 9),
+                identity(email, "정보확인학생", 1, "STUDENT", 8),
+                identity(email, "정보확인학생", 1, "STUDENT", null),
+        };
+        for (String body : wrong) {
+            mvc.perform(post("/api/v1/auth/password-reset/identity").contentType(MediaType.APPLICATION_JSON).content(body))
+                    .andExpect(status().isBadRequest()).andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.startsWith("입력한 정보와 일치하는 계정을 찾지 못했어요")));
+        }
+        // 가입되지 않은 이메일도 같은 응답(가입 여부를 드러내지 않음)
+        mvc.perform(post("/api/v1/auth/password-reset/identity").contentType(MediaType.APPLICATION_JSON)
+                        .content(identity("nobody-" + UUID.randomUUID() + "@example.test", "정보확인학생", 1, "STUDENT", 9)))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.startsWith("입력한 정보와 일치하는 계정을 찾지 못했어요")));
+        // 1시간 5회를 넘으면 정보가 맞아도 막는다
+        mvc.perform(post("/api/v1/auth/password-reset/identity").contentType(MediaType.APPLICATION_JSON).content(identity(email, "정보확인학생", 1, "STUDENT", 9)))
+                .andExpect(status().isTooManyRequests());
+        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM password_reset_requests WHERE user_id=(SELECT user_id FROM users WHERE email=?) AND reset_token_hash IS NOT NULL", Integer.class, email));
+        mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON).content(json("email", email, "password", "Chatterland!234"))).andExpect(status().isOk());
+    }
+
+    @Test
+    void identityResetForStudentRequiresMatchingAge() throws Exception {
+        String email = signupStudent("나이확인학생", 7);
+        mvc.perform(post("/api/v1/auth/password-reset/identity").contentType(MediaType.APPLICATION_JSON).content(identity(email, "나이확인학생", 1, "STUDENT", 7)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.resetToken").isNotEmpty());
+    }
 }

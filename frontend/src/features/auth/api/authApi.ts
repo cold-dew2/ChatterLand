@@ -14,6 +14,9 @@ export const authApi = {
   findId: (body: { name: string; centerId: number; role: UserRole }) => apiClient.post<{ maskedEmails: string[] }>('/api/v1/auth/find-id', body),
   requestPasswordReset: (email: string) => apiClient.post<{ message: string }>('/api/v1/auth/password-reset/request', { email }),
   verifyResetCode: (email: string, code: string) => apiClient.post<{ resetToken: string; expiresInSeconds: number }>('/api/v1/auth/password-reset/verify', { email, code }),
+  /** 메일 없이 가입 정보로 본인 확인(임시 방식). 학생은 나이까지 확인한다. */
+  verifyResetIdentity: (body: { email: string; name: string; centerId: number; role: UserRole; age?: number }) =>
+    apiClient.post<{ resetToken: string; expiresInSeconds: number }>('/api/v1/auth/password-reset/identity', body),
   confirmPasswordReset: (body: { resetToken: string; newPassword: string; newPasswordConfirm: string }) => apiClient.post<void>('/api/v1/auth/password-reset/confirm', body),
   login: (body: { email: string; password: string }) => apiClient.post<AuthResult>('/api/v1/auth/login', body),
   logout: () => apiClient.post<void>('/api/v1/auth/logout', { refreshToken: typeof window === 'undefined' ? '' : window.sessionStorage.getItem('chatterland.refreshToken') }),

@@ -23,7 +23,8 @@
 
 배포 때 남겨 둔 것
 - 개발 PC의 기존 녹음 파일(`backend/storage/audio`)은 출처 확인 전이라 버킷으로 옮기지 않았다. 이전된 기존 기록의 `audio_path`는 개발 PC 경로 그대로라 재생되지 않는다(새 녹음은 버킷에 저장).
-- 메일(SMTP)·GitHub Actions 자동 배포(Workload Identity·저장소 변수)는 아직 설정하지 않았다.
+- 메일(SMTP)은 아직 설정하지 않았다. 비밀번호 재설정은 메일 없이 가입 정보(이메일·이름·센터·역할, 학생은 나이)로 본인 확인하는 임시 방식(`POST /api/v1/auth/password-reset/identity`, 계정당 1시간 5회)을 쓴다. 메일 인증 API는 남아 있고, Secret Manager `chatterland-mail-password`(값 없음)는 Gmail 연결용으로 만들어 두었다.
+- GitHub Actions 자동 배포(2026-11-18 설정): 배포 계정 `chatterland-deploy@`(run.developer, 저장소 쓰기, 실행 계정 actAs — DB 권한 없음), Workload Identity 풀 `github`/제공자 `chatterland`(`cold-dew2/ChatterLand`의 main만), 저장소 Variables 6개, Environment `production`. 첫 자동 배포 `dde3997` 성공(CI 8분 30초 + 배포 6분).
 - 운영 DB에 테스트 데이터를 만들지 않기 위해 운영에서 녹음·음성 인식은 실행해 보지 않았다(확인: 공개 API 200, 인증 401, CORS, Vercel 화면의 센터 목록 조회).
 - 수동 재배포: `gcloud builds submit backend --config=<cloudbuild.yaml> --region=asia-northeast3 --service-account=projects/<PROJECT_ID>/serviceAccounts/chatterland-build@<PROJECT_ID>.iam.gserviceaccount.com` 후 `gcloud run deploy chatterland-backend --image=<새 이미지>` (기존 설정 유지).
 

@@ -9,6 +9,8 @@ import java.util.Map;
 @Mapper
 public interface UserMapper {
     Map<String, Object> findByEmail(@Param("email") String email);
+    /** 비밀번호 재설정 본인 확인용(이름·센터·역할·나이). */
+    Map<String, Object> findRecoveryIdentityByEmail(@Param("email") String email);
     Map<String, Object> findById(@Param("userId") long userId);
     Long findStudentIdByUserId(@Param("userId") long userId);
     int insertUser(@Param("role") String role, @Param("centerId") long centerId,

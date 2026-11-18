@@ -75,6 +75,9 @@
   <delete id="deleteOldPasswordChangeFailures">
     DELETE FROM password_change_failures WHERE created_at &lt; DATE_SUB(CURRENT_TIMESTAMP, INTERVAL #{olderThanSeconds} SECOND) LIMIT #{limit}
   </delete>
+  <select id="findRecoveryIdentityByEmail" resultType="map">
+    SELECT user_id AS userId, role, center_id AS centerId, name, age FROM users WHERE email = LOWER(#{email}) AND status = 'ACTIVE' LIMIT 1
+  </select>
   <select id="findEmailsByNameCenterRole" resultType="string">
     SELECT email FROM users WHERE name=#{name} AND center_id=#{centerId} AND role=#{role} AND status='ACTIVE' ORDER BY user_id LIMIT 5
   </select>

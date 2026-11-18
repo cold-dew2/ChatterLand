@@ -8,6 +8,7 @@ import { Eye, EyeOff, GraduationCap, BookOpen, HeartHandshake } from "lucide-rea
 import { authApi } from "@/features/auth/api/authApi";
 import AuthPageShell from "@/features/auth/components/AuthPageShell";
 import { validateEmail, validateName, validatePassword } from "@/features/auth/utils/validation";
+import { studentAgeOptions } from "@/features/auth/utils/ageOptions";
 import { errorMessage } from "@/shared/api/client";
 import { paths } from "@/routes/path/paths";
 import Button from "@/shared/components/button/Button";
@@ -24,8 +25,6 @@ import { CONSENT_POLICY_VERSION, guardianRequired } from "@/features/consent/con
 type Role = "student" | "teacher" | "guardian";
 type SignupForm = { name: string; email: string; password: string; age: string; center: string };
 type FieldErrors = Partial<Record<keyof SignupForm, string>>;
-
-const ages = Array.from({ length: 13 }, (_, i) => ({ value: String(i + 4), label: `${i + 4}세` }));
 
 const roleTabs = [
   { value: "student" as Role, label: <><BookOpen size={14} aria-hidden="true" /> 학생</> },
@@ -163,7 +162,7 @@ export default function SignupPage() {
         <div className={role === "student" ? "grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-2" : undefined}>
           {role === "student" && (
             <Select id="signup-age" label="나이" required value={form.age} onChange={update("age")}
-              placeholder="나이 선택" options={ages} error={fieldErrors.age} />
+              placeholder="나이 선택" options={studentAgeOptions} error={fieldErrors.age} />
           )}
           <Select id="signup-center" label={role === "student" ? "언어재활센터" : role === "teacher" ? "소속 언어재활센터" : "자녀가 다니는 언어재활센터"} required value={form.center}
             onChange={update("center")} placeholder={centers.state === "loading" ? "센터 목록을 불러오는 중…" : "센터를 선택하세요"}
